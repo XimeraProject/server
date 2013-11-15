@@ -1,0 +1,93 @@
+\documentclass{amsart}
+\usepackage{multicol}
+\usepackage{kmath,kerkis}
+\usepackage{multirow}
+\usepackage{fancyvrb}
+
+
+\begin{document}
+\pagenumbering{gobble}
+\title{XIMERA: Markup in Practice} %%%% CHANGE PER COURSE
+\maketitle
+
+\section{Writing Exercises}
+
+A basic form of interactive is the ability to turn a static exercise
+into an interactive exercise.
+
+\begin{Verbatim}[frame=single,numbers=left]
+\begin{exercise}
+  Compute $2+2$
+  \begin{answser}
+    $17$
+  \end{answer}
+\end{exercise}
+\end{Verbatim}
+
+\begin{Verbatim}[frame=single,numbers=left]
+\begin{exercise}
+  Compute $2'+2'$
+  \begin{answser}
+    $17$ feet
+  \end{answer}
+\end{exercise}
+\end{Verbatim}
+
+
+\begin{Verbatim}[frame=single,numbers=left]
+\begin{exercise}
+  Compute $3\cdot 5$
+  \begin{hint}
+    $3\cdot 5$ represents $3$ groups of $5$
+    \pause
+    So we compute
+    \[
+    5+5+5
+    \]
+    \pause
+    $=15$. 
+  \end{hint}
+  \begin{answser}
+    $15$
+  \end{answer}
+\end{exercise}
+\end{Verbatim}
+
+
+\begin{Verbatim}[frame=single,numbers=left]
+\begin{exercise}[\var{n}={integer from 0 to 10, 3}]
+  Compute $2^\var{n}$.
+  \begin{answser}
+    $\evaluate{2^\var{n}}$ 
+  \end{answer}
+\end{exercise}
+\end{Verbatim}
+
+
+%% Here we have a ``random'' variable. integer vs real with a random
+%% range given via ``from'' ``to'' and ``and''
+
+\begin{Verbatim}[frame=single,numbers=left]
+\begin{exercise}[\var{n}={integer from 1 to 10 and -1 to -10, 3}]
+  Compute $1/\var{n}$.
+  \begin{answser}
+    $\evaluate{1/\var{n}}$ 
+  \end{answer}
+\end{exercise}
+\end{Verbatim}
+
+
+
+%% For this one we really need totally different prose for the latex
+%% version and the text version. Of course if XIMERA works, then we
+%% don't! The online version is good.
+
+\begin{Verbatim}[frame=single,numbers=left]
+\begin{exercise}
+\begin{interactive}[limitsOracle.js]
+  Find the value of each of the indicated limits by evaluating
+  $f(x)$ at various values, or state that the limit does not
+  exist (DNE).
+\end{interactive}
+\end{Verbatim}
+\end{document}

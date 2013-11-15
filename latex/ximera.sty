@@ -1,0 +1,55 @@
+\NeedsTeXFormat{LaTeX2e}% LaTeX 2.09 can't be used (nor non-LaTeX)
+[1994/12/01]% LaTeX date must be December 1994 or later
+\ProvidesPackage{ximera}[2012/01/30 v0.3]
+\ProcessOptions\relax
+
+\RequirePackage{amssymb,amsmath,amsthm}
+\let\iint\undefined 
+\let\iiint\undefined 
+\RequirePackage{tikz,pgfplots}
+\RequirePackage{kmath,kerkis}
+\RequirePackage{changepage}
+\RequirePackage{multicol}
+\RequirePackage{tabu}
+%% \RequirePackage{ntheorem}
+%% \RequirePackage{thmtools}
+
+\everymath{\displaystyle}
+\renewcommand{\bar}{\overline}
+\newcommand{\ddx}{\frac{d}{dx}}
+\renewcommand{\theta}{\vartheta}
+
+
+\colorlet{penColor}{blue!50!black} % Color of a curve in a plot
+\colorlet{background}{white}
+\colorlet{textColor}{black}
+\colorlet{penColor}{blue!50!black} % Color of a curve in a plot
+\colorlet{penColor2}{red!50!black} % Color of a curve in a plot
+\colorlet{penColor3}{red!50!blue} % Color of a curve in a plot
+\colorlet{penColor4}{green!50!black} % Color of a curve in a plot
+\colorlet{penColor5}{orange!80!black} % Color of a curve in a plot
+
+
+\renewcommand{\l}{\ell}
+\renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$} %% Letters for lists
+\renewcommand{\labelenumi}{\theenumi}
+\renewcommand*\thesection{\arabic{section}} % Counts sections correctly
+\renewcommand{\d}{\, d}
+\newcommand{\Z}{\mathbb Z}
+
+
+\newtheoremstyle{question}{\topsep}{\topsep}%%% space between body and thm
+		{}                      %%% Thm body font
+		{}                              %%% Indent amount (empty = no indent)
+		{\bfseries}            %%% Thm head font
+		{)}                    %%% Punctuation after thm head
+		{ }                           %%% Space after thm head
+		{\thmnumber{#2}\thmnote{ \bfseries (#3)}}%%% Thm head spec
+\theoremstyle{question}
+\newtheorem{prob}{}[section]
+\renewcommand{\theprob}{\arabic{question}}
+
+
+
+
+\endinput
