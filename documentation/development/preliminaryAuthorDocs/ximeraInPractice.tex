@@ -14,6 +14,8 @@
 \title{XIMERA: Markup in Practice}
 \maketitle
 
+\tableofcontents
+
 The goal of the XIMERA Project is to allow authors to write online
 interactive content though \LaTeX\ documents.
 
@@ -171,10 +173,10 @@ with solutions with/or without answer fields:
 
 
 
-\section{Presenting one question of a theme of questions}
+\section{Presenting one question of a variation of questions}
 
 To allow the student to master a concept, it is often useful to have a
-group of questions that are all presented as a single question in the
+variation of questions that are all presented as a single question in the
 online experience. To do this, use the \code{shuffle} command.
 
 
@@ -195,9 +197,8 @@ at random for the student to solve with the option of repeating the
 question, though due to the randomization, the student will probably
 be asked to solve a different variation of the question. The highest
 score achieved on any of the variations of the question is recorded as
-the students performance.
-
-There are several options for \code{shuffle}, 
+the students performance. There are several options for
+\code{shuffle},
 \begin{description}
 \item[\code{once}] Chooses a problem variation at random and allows
   exactly one attempt to solve the problem.
@@ -226,5 +227,6 @@ In addition there is the global option \code{adaptive}. If this option
 is selected, the problems will no longer be random. Instead, the
 adaptive learning algorithm will select a mid difficulty variation of
 the problem. If the student is successful, a harder variation will be
-given next. If the student is unsuccessful, then the student will be given an easier question for the next attempt. 
+given next. If the student is unsuccessful, then the student will be
+given an easier question for the next attempt.
 \end{document}
