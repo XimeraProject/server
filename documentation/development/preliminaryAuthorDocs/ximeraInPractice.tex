@@ -3,91 +3,228 @@
 \usepackage{kmath,kerkis}
 \usepackage{multirow}
 \usepackage{fancyvrb}
+\usepackage{xcolor}
 
+\newcommand\code[1]{{\bfseries\texttt{#1}}}
+
+
+\fvset{commandchars=+(),formatcom=\color{blue!50!black}}
 
 \begin{document}
-\pagenumbering{gobble}
-\title{XIMERA: Markup in Practice} %%%% CHANGE PER COURSE
+\title{XIMERA: Markup in Practice}
 \maketitle
 
-\section{Writing Exercises}
+The goal of the XIMERA Project is to allow authors to write online
+interactive content though \LaTeX\ documents.
 
-A basic form of interactive is the ability to turn a static exercise
-into an interactive exercise.
 
-\begin{Verbatim}[frame=single,numbers=left]
-\begin{exercise}
-  Compute $2+2$
-  \begin{answser}
-    $17$
-  \end{answer}
-\end{exercise}
+\section{Writing basic questions}
+
+
+The XIMERA Project offers four basic problem-like environments:
+\code{exercise}, \code{problem}, \code{question}, and
+\code{hint}. From the interactive viewpoint, each of these
+environments does basically the same thing, providing a question for
+the student.
+
+An \code{exercise} is for checking computational or rote performance:
+
+\begin{Verbatim}
+  +color(red)\begin{exercise}
+    An exercise.
+  +color(red)\end{exercise}
 \end{Verbatim}
 
-\begin{Verbatim}[frame=single,numbers=left]
-\begin{exercise}
-  Compute $2'+2'$
-  \begin{answser}
-    $17$ feet
-  \end{answer}
-\end{exercise}
+A \code{problem} is for a more challenging question.
+
+\begin{Verbatim}
+    +color(red)\begin{problem}
+    A problem.
+    +color(red)\end{problem}
+\end{Verbatim}
+
+A \code{question} is for more open-ended exploration. 
+
+\begin{Verbatim}
+    +color(red)\begin{question}
+    A question.
+    +color(red)\end{question}
+\end{Verbatim}
+
+A \code{hint} is a sub-question that will help with solving the main
+question.
+
+
+
+\section{Adding solutions and answer fields}
+
+
+As coded above, none of the problem-like environments have answers,
+they are simply displayed questions.  For a problem-like environment to
+have a solution, we must add a \code{solution} environment.
+
+
+\begin{Verbatim}
+  \begin{problem}
+    A problem.
+    +color(red)\begin{solution}
+      A solution. 
+    +color(red)\end{solution}
+  \end{problem}
+\end{Verbatim}
+
+However, as it stands, the student will be presented with a problem,
+and then be able to ``click'' to see the solution. To have an answer
+field we to add the \code{answer}.
+
+\begin{Verbatim}
+  \begin{problem}
+    A problem.
+    \begin{solution}
+      A solution. 
+      +color(red)\answer{The answer.}
+    \end{solution}
+  \end{problem}
+\end{Verbatim}
+
+The default type for an answer is a mathematical expression. However,
+there are other choices: \code{free-response}, \code{image}, and
+\code{multiple-choice}. The option \code{free-response} provides a
+text field that is ungraded. The option \code{image} allows the
+student to upload an image as the solution. The option
+\code{multiple-choice} accepts a pre-defined (non-case sensitive)
+answer.
+
+\begin{Verbatim}
+  \begin{problem}
+    A multiple choice problem.
+    \begin{itemize}
+      \item Choice a. % with label a
+      \item Choice b. % with label b
+    \end{itemize}
+    \begin{solution}
+      A solution. 
+      +color(red)\answer[multiple-choice]{a}
+    \end{solution}
+  \end{problem}
 \end{Verbatim}
 
 
-\begin{Verbatim}[frame=single,numbers=left]
-\begin{exercise}
-  Compute $3\cdot 5$
-  \begin{hint}
-    $3\cdot 5$ represents $3$ groups of $5$
-    \pause
-    So we compute
-    \[
-    5+5+5
-    \]
-    \pause
-    $=15$. 
-  \end{hint}
-  \begin{answser}
-    $15$
-  \end{answer}
-\end{exercise}
+
+\section{Questions with multiple-parts and hints}
+
+To add questions with multiple parts, simply add more answers to the
+solution environment.
+
+\begin{Verbatim}
+  \begin{problem}
+    A problem. 
+    +color(red)\begin{solution}
+      First solution. 
+      \answer{First answer.}
+    +color(red)\end{solution}
+    A follow-up problem.
+    +color(red)\begin{solution}
+      Second solution. 
+      \answer{Second answer.}
+    +color(red)\end{solution}
+  \end{problem}
 \end{Verbatim}
 
 
-\begin{Verbatim}[frame=single,numbers=left]
-\begin{exercise}[\var{n}={integer from 0 to 10, 3}]
-  Compute $2^\var{n}$.
-  \begin{answser}
-    $\evaluate{2^\var{n}}$ 
-  \end{answer}
-\end{exercise}
+To add hints to the question, add a \code{hint} within the
+\code{solution} environment.
+
+
+
+\begin{Verbatim}
+  \begin{problem}
+    A problem. 
+    \begin{solution}
+      +color(red)\begin{hint}
+        A hint.
+      +color(red)\end{hint}
+      A solution. 
+      \answer{First answer.}
+    \end{solution}
+  \end{problem}
+\end{Verbatim}
+
+To make the hints more Socratic, they themselves can be questions
+with solutions with/or without answer fields:
+
+\begin{Verbatim}
+  \begin{problem}
+    A problem. 
+    \begin{solution}
+      +color(red)\begin{hint}
+        A hint.
+        +color(red)\begin{solution}
+        The solution to the question asked by the hint.
+        +color(red)\end{solution}
+      +color(red)\end{hint}
+      A solution. 
+      \answer{First answer.}
+    \end{solution}
+  \end{problem}
 \end{Verbatim}
 
 
-%% Here we have a ``random'' variable. integer vs real with a random
-%% range given via ``from'' ``to'' and ``and''
 
-\begin{Verbatim}[frame=single,numbers=left]
-\begin{exercise}[\var{n}={integer from 1 to 10 and -1 to -10, 3}]
-  Compute $1/\var{n}$.
-  \begin{answser}
-    $\evaluate{1/\var{n}}$ 
-  \end{answer}
-\end{exercise}
+\section{Presenting one question of a theme of questions}
+
+To allow the student to master a concept, it is often useful to have a
+group of questions that are all presented as a single question in the
+online experience. To do this, use the \code{shuffle} command.
+
+
+\begin{Verbatim}
+  +color(red)\begin{shuffle}
+    \begin{problem}
+      A variation of a problem, solution etc.
+    \end{problem}
+    
+    \begin{problem}
+      Another variation of a problem, solution etc.
+    \end{problem}
+  +color(red)\end{shuffle}
+\end{Verbatim}
+
+By default \code{shuffle} simply presents a variation of the problem
+at random for the student to solve with the option of repeating the
+question, though due to the randomization, the student will probably
+be asked to solve a different variation of the question. The highest
+score achieved on any of the variations of the question is recorded as
+the students performance.
+
+There are several options for \code{shuffle}, 
+\begin{description}
+\item[\code{once}] Chooses a problem variation at random and allows
+  exactly one attempt to solve the problem.
+\item[\code{order}] Presents the problems in the order listed to the student, should the student choose to attempt the problem multiple times. 
+\item[\code{mastery}] Presents the problems at random and encourages
+  the student to attempt the problem multiple times. Here the score is
+  based on the aggregate performance, rather than the single highest
+  attempt.
+\end{description}
+
+
+\begin{Verbatim}
+  +color(red)\begin{shuffle}[mastery]
+    \begin{exercise}
+      A variation of an exercise, solution etc.
+    \end{exercise}
+    
+    \begin{exercise}
+      Another variation of an exercise, solution etc.
+    \end{exercise}
+  +color(red)\end{shuffle}
 \end{Verbatim}
 
 
-
-%% For this one we really need totally different prose for the latex
-%% version and the text version. Of course if XIMERA works, then we
-%% don't! The online version is good.
-
-\begin{Verbatim}[frame=single,numbers=left]
-\begin{exercise}
-\begin{interactive}[limitsOracle.js]
-  Find the value of each of the indicated limits by evaluating
-  $f(x)$ at various values, or state that the limit does not
-  exist (DNE).
-\end{interactive}
-\end{Verbatim}
+In addition there is the global option \code{adaptive}. If this option
+is selected, the problems will no longer be random. Instead, the
+adaptive learning algorithm will select a mid difficulty variation of
+the problem. If the student is successful, a harder variation will be
+given next. If the student is unsuccessful, then the student will be given an easier question for the next attempt. 
 \end{document}
