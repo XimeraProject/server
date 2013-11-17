@@ -29,7 +29,8 @@ The XIMERA Project offers four basic problem-like environments:
 environments does basically the same thing, providing a question for
 the student.
 
-An \code{exercise} is for checking computational or rote performance:
+The \code{exercise} environment is for checking computational or rote
+performance:
 
 \begin{Verbatim}
   +color(red)\begin{exercise}
@@ -37,7 +38,7 @@ An \code{exercise} is for checking computational or rote performance:
   +color(red)\end{exercise}
 \end{Verbatim}
 
-A \code{problem} is for a more challenging question.
+The \code{problem} environment is for a more challenging question.
 
 \begin{Verbatim}
     +color(red)\begin{problem}
@@ -45,7 +46,7 @@ A \code{problem} is for a more challenging question.
     +color(red)\end{problem}
 \end{Verbatim}
 
-A \code{question} is for more open-ended exploration. 
+The \code{question} environment is for more open-ended exploration. 
 
 \begin{Verbatim}
     +color(red)\begin{question}
@@ -53,8 +54,8 @@ A \code{question} is for more open-ended exploration.
     +color(red)\end{question}
 \end{Verbatim}
 
-A \code{hint} is a sub-question that will help with solving the main
-question.
+The \code{hint} is a sub-question environment that will help with
+solving the main question.
 
 
 
@@ -133,6 +134,8 @@ solution environment.
   \end{problem}
 \end{Verbatim}
 
+\break
+
 
 To add hints to the question, add a \code{hint} within the
 \code{solution} environment.
@@ -152,6 +155,8 @@ To add hints to the question, add a \code{hint} within the
   \end{problem}
 \end{Verbatim}
 
+
+
 To make the hints more Socratic, they themselves can be questions
 with solutions with/or without answer fields:
 
@@ -165,8 +170,15 @@ with solutions with/or without answer fields:
         The solution to the question asked by the hint.
         +color(red)\end{solution}
       +color(red)\end{hint}
+      +color(red)\begin{hint}
+        Another hint.
+        +color(red)\begin{solution}
+        \answer{An answer to the hint.}
+        This time the hint was a question with an answer field.
+        +color(red)\end{solution}
+      +color(red)\end{hint}
       A solution. 
-      \answer{First answer.}
+      \answer{An answer.}
     \end{solution}
   \end{problem}
 \end{Verbatim}
