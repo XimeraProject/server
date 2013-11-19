@@ -20,11 +20,43 @@ The goal of the XIMERA Project is to allow authors to write online
 interactive content though \LaTeX\ documents.
 
 
+\section{Setup}
+
+To begin, use the \code{ximera} document class.
+
+
+\begin{Verbatim}
+  +color(red)\documentclass{ximera}
+  \begin{document}
+  Your document.
+  \end{document}
+\end{Verbatim}
+
+
+To help navigate the collection of activities, authors should try to
+include prerequisites and outcomes.
+
+\begin{Verbatim}
+  \documentclass{ximera}
+  +color(red)\prerequisites{prereq1,prereq2}
+  +color(red)\outcomes{outcome1,outcome2}
+  \begin{document}
+  Your document.
+  \end{document}
+\end{Verbatim}
+
+Each prerequisite and outcome should be without spaces, and every
+attempt should be made to use already available tags for the
+prerequisites and outcomes needed/delivered by this activity.
+
+
+
+
 \section{Writing basic questions}
 
 
 The XIMERA Project offers four basic problem-like environments:
-\code{exercise}, \code{problem}, \code{question}, and
+\code{exercise}, \code{question}, \code{exploration}, and
 \code{hint}. From the interactive viewpoint, each of these
 environments does basically the same thing, providing a question for
 the student.
@@ -38,20 +70,20 @@ performance:
   +color(red)\end{exercise}
 \end{Verbatim}
 
-The \code{problem} environment is for a more challenging question.
+The \code{question} environment is for a more challenging problem.
 
 \begin{Verbatim}
-    +color(red)\begin{problem}
-    A problem.
-    +color(red)\end{problem}
+  +color(red)\begin{question}
+    A question.
+  +color(red)\end{question}
 \end{Verbatim}
 
-The \code{question} environment is for more open-ended exploration. 
+The \code{exploration} environment is for more open-ended problems. 
 
 \begin{Verbatim}
-    +color(red)\begin{question}
-    A question.
-    +color(red)\end{question}
+  +color(red)\begin{exploration}
+    An exploration.
+  +color(red)\end{exploration}
 \end{Verbatim}
 
 The \code{hint} is a sub-question environment that will help with
@@ -68,12 +100,12 @@ have a solution, we must add a \code{solution} environment.
 
 
 \begin{Verbatim}
-  \begin{problem}
-    A problem.
+  \begin{question}
+    A question.
     +color(red)\begin{solution}
       A solution. 
     +color(red)\end{solution}
-  \end{problem}
+  \end{question}
 \end{Verbatim}
 
 However, as it stands, the student will be presented with a problem,
@@ -81,37 +113,42 @@ and then be able to ``click'' to see the solution. To have an answer
 field we to add the \code{answer}.
 
 \begin{Verbatim}
-  \begin{problem}
-    A problem.
+  \begin{question}
+    A question.
     \begin{solution}
       A solution. 
       +color(red)\answer{The answer.}
     \end{solution}
-  \end{problem}
+  \end{question}
 \end{Verbatim}
 
 The default type for an answer is a mathematical expression. However,
 there are other choices: \code{free-response}, \code{image}, and
 \code{multiple-choice}. The option \code{free-response} provides a
 text field that is ungraded. The option \code{image} allows the
-student to upload an image as the solution. The option
-\code{multiple-choice} accepts a pre-defined (non-case sensitive)
-answer.
+student to upload an image as the solution. 
+
+For multiple-choice questions, authors should use the
+\code{multiple-choice} environment to list the solutions. This has an
+optional argument to display fewer than the total number of
+options. Concerning the answer, the option \code{multiple-choice}
+accepts a pre-defined (non-case sensitive) answer.
 
 \begin{Verbatim}
-  \begin{problem}
-    A multiple choice problem.
-    \begin{itemize}
-      \item Choice a. % with label a
-      \item Choice b. % with label b
-    \end{itemize}
+  \begin{question}
+    A multiple choice question.
+    \begin{multiple-choice}[3]
+      \item \label{mc:answer1} Choice a.
+      \item Choice b.
+      \item \label{mc:answer2} Choice c.
+      \item Choice d.
+    \end{multiple-choice}
     \begin{solution}
       A solution. 
-      +color(red)\answer[multiple-choice]{a}
+      +color(red)\answer[multiple-choice]{\ref{mc:answer1},\ref{mc:answer2}}
     \end{solution}
-  \end{problem}
+  \end{question}
 \end{Verbatim}
-
 
 
 \section{Questions with multiple-parts and hints}
@@ -120,21 +157,20 @@ To add questions with multiple parts, simply add more answers to the
 solution environment.
 
 \begin{Verbatim}
-  \begin{problem}
-    A problem. 
+  \begin{question}
+    A question. 
     +color(red)\begin{solution}
       First solution. 
       \answer{First answer.}
     +color(red)\end{solution}
-    A follow-up problem.
+    A follow-up question.
     +color(red)\begin{solution}
       Second solution. 
       \answer{Second answer.}
     +color(red)\end{solution}
-  \end{problem}
+  \end{question}
 \end{Verbatim}
 
-\break
 
 
 To add hints to the question, add a \code{hint} within the
@@ -143,8 +179,8 @@ To add hints to the question, add a \code{hint} within the
 
 
 \begin{Verbatim}
-  \begin{problem}
-    A problem. 
+  \begin{question}
+    A question. 
     \begin{solution}
       +color(red)\begin{hint}
         A hint.
@@ -152,7 +188,7 @@ To add hints to the question, add a \code{hint} within the
       A solution. 
       \answer{First answer.}
     \end{solution}
-  \end{problem}
+  \end{question}
 \end{Verbatim}
 
 
@@ -161,8 +197,8 @@ To make the hints more Socratic, they themselves can be questions
 with solutions with/or without answer fields:
 
 \begin{Verbatim}
-  \begin{problem}
-    A problem. 
+  \begin{question}
+    A question. 
     \begin{solution}
       +color(red)\begin{hint}
         A hint.
@@ -180,7 +216,7 @@ with solutions with/or without answer fields:
       A solution. 
       \answer{An answer.}
     \end{solution}
-  \end{problem}
+  \end{question}
 \end{Verbatim}
 
 
@@ -194,31 +230,36 @@ online experience. To do this, use the \code{shuffle} command.
 
 \begin{Verbatim}
   +color(red)\begin{shuffle}
-    \begin{problem}
-      A variation of a problem, solution etc.
-    \end{problem}
+    \begin{question}
+      A variation of a question, solution etc.
+    \end{question}
     
-    \begin{problem}
-      Another variation of a problem, solution etc.
-    \end{problem}
+    \begin{question}
+      Another variation of a question, solution etc.
+    \end{question}
   +color(red)\end{shuffle}
 \end{Verbatim}
 
-By default \code{shuffle} simply presents a variation of the problem
-at random for the student to solve with the option of repeating the
-question, though due to the randomization, the student will probably
-be asked to solve a different variation of the question. The highest
-score achieved on any of the variations of the question is recorded as
-the students performance. There are several options for
-\code{shuffle},
+By default \code{shuffle} initially presents a variation of the
+problem at random for the student to solve with the option of
+repeating the question, though due to the randomization, the student
+will probably be asked to solve a different variation of the
+question. As student data is collected, the presentation goes from
+truly random to a more adaptive approach, presenting easier or harder
+questions based on the student's performance. The highest score
+achieved on any of the variations of the question is recorded as the
+students performance. There are several options for \code{shuffle},
 \begin{description}
 \item[\code{once}] Chooses a problem variation at random and allows
   exactly one attempt to solve the problem.
-\item[\code{order}] Presents the problems in the order listed to the student, should the student choose to attempt the problem multiple times. 
-\item[\code{mastery}] Presents the problems at random and encourages
-  the student to attempt the problem multiple times. Here the score is
-  based on the aggregate performance, rather than the single highest
-  attempt.
+\item[\code{order}] Presents the problems in the order listed to the
+  student, should the student choose to attempt the problem multiple
+  times.
+\item[\code{mastery}] Presents the problems initially at random and
+  encourages the student to attempt the problem multiple times. This
+  will change to an adaptive presentation after enough data is
+  collected. Here the score is based on the aggregate performance,
+  rather than the single highest attempt.
 \end{description}
 
 
@@ -235,10 +276,23 @@ the students performance. There are several options for
 \end{Verbatim}
 
 
-In addition there is the global option \code{adaptive}. If this option
-is selected, the problems will no longer be random. Instead, the
-adaptive learning algorithm will select a mid difficulty variation of
-the problem. If the student is successful, a harder variation will be
-given next. If the student is unsuccessful, then the student will be
-given an easier question for the next attempt.
+
+\section{Adding interactive elements}
+
+To add interactive elements, use the \code{interactive} environment.
+
+
+\begin{Verbatim}
+  +color(red)\begin{interactive}[interactiveContent.js]
+    Static content.
+  +color(red)\end{interactive}
+\end{Verbatim}
+
+
+
+
+
+
+
+
 \end{document}
