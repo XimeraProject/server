@@ -1,0 +1,34 @@
+\documentclass{article}
+
+\def\pgfsysdriver{pgfsys-tex4ht.def}
+\usepackage{tikz}
+
+\begin{document}
+
+Hello there.
+
+This is a test with $5x$ and such.
+
+\begin{question}
+I also want to test displayed equations like
+$$\int_a^b f(x) \, dx$$
+and similar equations.
+
+\begin{solution}
+Whee!
+\end{solution}
+
+\end{question}
+
+  \begin{tikzpicture}
+    \path (0,0) node[draw] (A) {$A$};
+    \path (2,0) node[draw] (B) {$B$};
+    \draw (A) -- (B) node[midway,above = 0 em] {via};
+\end{tikzpicture}
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
