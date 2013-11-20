@@ -1,10 +1,9 @@
 Models of Teaching
-------------------
-------------------
+==================
 
 
-Activity Based Learning
------------------------
+- Activity Based Learning
+
 
 The activity could be done in class. Then the online activity would be 
 nightly homework (in addition to any regular homework).
