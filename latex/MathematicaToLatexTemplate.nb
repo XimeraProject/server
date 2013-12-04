@@ -10,123 +10,66 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[      5645,        148]
-NotebookOptionsPosition[      5202,        127]
-NotebookOutlinePosition[      5539,        142]
-CellTagsIndexPosition[      5496,        139]
+NotebookDataLength[      3190,         84]
+NotebookOptionsPosition[      2936,         70]
+NotebookOutlinePosition[      3271,         85]
+CellTagsIndexPosition[      3228,         82]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
 Notebook[{
-
-Cell[CellGroupData[{
 Cell[BoxData[{
  RowBox[{
-  RowBox[{"n", "=", "3"}], ";"}], "\[IndentingNewLine]", 
- RowBox[{"For", "[", 
   RowBox[{
-   RowBox[{"i", "=", "0"}], ",", 
-   RowBox[{"i", "<", "n"}], ",", 
-   RowBox[{"i", "++"}], ",", 
-   RowBox[{
-    RowBox[{"a", " ", "=", " ", 
-     RowBox[{"Random", "[", 
-      RowBox[{"Integer", ",", 
-       RowBox[{"{", 
-        RowBox[{"1", ",", "10"}], "}"}]}], "]"}]}], ";", 
-    "\[IndentingNewLine]", 
-    RowBox[{"b", "=", 
-     RowBox[{"Random", "[", 
-      RowBox[{"Integer", ",", 
-       RowBox[{"{", 
-        RowBox[{"1", ",", "10"}], "}"}]}], "]"}]}], ";", 
-    "\[IndentingNewLine]", 
-    RowBox[{"Print", "[", 
+   RowBox[{"code", ":=", 
+    RowBox[{"Module", "[", "\[IndentingNewLine]", 
      RowBox[{
-     "\"\<\\\\begin{question}\\nWhat is $\>\"", ",", "a", ",", "\"\<+\>\"", 
-      ",", "b", ",", "\"\<$?\\n\\\\begin{solution}\\nThe sum of $\>\"", ",", 
-      "a", ",", "\"\< and \>\"", ",", "b", ",", "\"\<$ is $\\\\answer{\>\"", 
-      ",", 
-      RowBox[{"a", "+", "b"}], ",", 
-      "\"\<}$.\\n\\\\end{solution}\\n\\\\end{question}\\n\>\""}], "]"}]}]}], 
-  "\[IndentingNewLine]", "]"}]}], "Input",
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"a", " ", "=", " ", 
+         RowBox[{"Random", "[", 
+          RowBox[{"Integer", ",", 
+           RowBox[{"{", 
+            RowBox[{"1", ",", "10"}], "}"}]}], "]"}]}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{"b", "=", 
+         RowBox[{"Random", "[", 
+          RowBox[{"Integer", ",", 
+           RowBox[{"{", 
+            RowBox[{"1", ",", "10"}], "}"}]}], "]"}]}]}], "}"}], ",", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Print", "[", 
+       RowBox[{
+       "\"\<\\\\begin{question}\\nWhat is $\>\"", ",", "a", ",", "\"\<+\>\"", 
+        ",", "b", ",", "\"\<$?\\n\\\\begin{solution}\\nThe sum of $\>\"", ",",
+         "a", ",", "\"\<$ and $\>\"", ",", "b", ",", 
+        "\"\<$ is $\\\\answer{\>\"", ",", 
+        RowBox[{"a", "+", "b"}], ",", 
+        "\"\<}$.\\n\\\\end{solution}\\n\\\\end{question}\\n\>\""}], "]"}]}], 
+     "]"}]}], ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{"Do", "[", 
+  RowBox[{"code", ",", 
+   RowBox[{"{", "7", "}"}]}], "]"}]}], "Input",
  CellChangeTimes->{{3.595089976699493*^9, 3.595090058171722*^9}, {
    3.595090412504594*^9, 3.5950904195124197`*^9}, {3.595090471768955*^9, 
    3.595090538487771*^9}, {3.595090608471394*^9, 3.595090677784129*^9}, {
    3.5950907146479397`*^9, 3.595090928952973*^9}, {3.595091396792729*^9, 
    3.595091448585423*^9}, 3.59509150449126*^9, {3.595091666987838*^9, 
-   3.59509168581257*^9}},
- CellID->749403528],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- InterpretationBox[
-  RowBox[{"\<\"\\\\begin{question}\\nWhat is $\"\>", "\[InvisibleSpace]", "3",
-    "\[InvisibleSpace]", "\<\"+\"\>", "\[InvisibleSpace]", "10", 
-   "\[InvisibleSpace]", "\<\"$?\\n\\\\begin{solution}\\nThe sum of $\"\>", 
-   "\[InvisibleSpace]", "3", "\[InvisibleSpace]", "\<\" and \"\>", 
-   "\[InvisibleSpace]", "10", 
-   "\[InvisibleSpace]", "\<\"$ is $\\\\answer{\"\>", "\[InvisibleSpace]", 
-   "13", "\[InvisibleSpace]", \
-"\<\"}$.\\n\\\\end{solution}\\n\\\\end{question}\\n\"\>"}],
-  SequenceForm[
-  "\\begin{question}\nWhat is $", 3, "+", 10, 
-   "$?\n\\begin{solution}\nThe sum of $", 3, " and ", 10, "$ is $\\answer{", 
-   13, "}$.\n\\end{solution}\n\\end{question}\n"],
-  Editable->False]], "Print",
- CellChangeTimes->{
-  3.5950906781376133`*^9, {3.5950907721104517`*^9, 3.595090803648673*^9}, {
-   3.595090855553944*^9, 3.595090895300664*^9}, {3.595090932283049*^9, 
-   3.5950909405312843`*^9}, {3.595091443029768*^9, 3.595091449412972*^9}, 
-   3.5950915048549128`*^9, 3.595091671659915*^9}],
-
-Cell[BoxData[
- InterpretationBox[
-  RowBox[{"\<\"\\\\begin{question}\\nWhat is $\"\>", "\[InvisibleSpace]", "9",
-    "\[InvisibleSpace]", "\<\"+\"\>", "\[InvisibleSpace]", "7", 
-   "\[InvisibleSpace]", "\<\"$?\\n\\\\begin{solution}\\nThe sum of $\"\>", 
-   "\[InvisibleSpace]", "9", "\[InvisibleSpace]", "\<\" and \"\>", 
-   "\[InvisibleSpace]", "7", "\[InvisibleSpace]", "\<\"$ is $\\\\answer{\"\>",
-    "\[InvisibleSpace]", "16", 
-   "\[InvisibleSpace]", "\<\"}$.\\n\\\\end{solution}\\n\\\\end{question}\\n\"\
-\>"}],
-  SequenceForm[
-  "\\begin{question}\nWhat is $", 9, "+", 7, 
-   "$?\n\\begin{solution}\nThe sum of $", 9, " and ", 7, "$ is $\\answer{", 
-   16, "}$.\n\\end{solution}\n\\end{question}\n"],
-  Editable->False]], "Print",
- CellChangeTimes->{
-  3.5950906781376133`*^9, {3.5950907721104517`*^9, 3.595090803648673*^9}, {
-   3.595090855553944*^9, 3.595090895300664*^9}, {3.595090932283049*^9, 
-   3.5950909405312843`*^9}, {3.595091443029768*^9, 3.595091449412972*^9}, 
-   3.5950915048549128`*^9, 3.5950916716679296`*^9}],
-
-Cell[BoxData[
- InterpretationBox[
-  RowBox[{"\<\"\\\\begin{question}\\nWhat is $\"\>", "\[InvisibleSpace]", "9",
-    "\[InvisibleSpace]", "\<\"+\"\>", "\[InvisibleSpace]", "8", 
-   "\[InvisibleSpace]", "\<\"$?\\n\\\\begin{solution}\\nThe sum of $\"\>", 
-   "\[InvisibleSpace]", "9", "\[InvisibleSpace]", "\<\" and \"\>", 
-   "\[InvisibleSpace]", "8", "\[InvisibleSpace]", "\<\"$ is $\\\\answer{\"\>",
-    "\[InvisibleSpace]", "17", 
-   "\[InvisibleSpace]", "\<\"}$.\\n\\\\end{solution}\\n\\\\end{question}\\n\"\
-\>"}],
-  SequenceForm[
-  "\\begin{question}\nWhat is $", 9, "+", 8, 
-   "$?\n\\begin{solution}\nThe sum of $", 9, " and ", 8, "$ is $\\answer{", 
-   17, "}$.\n\\end{solution}\n\\end{question}\n"],
-  Editable->False]], "Print",
- CellChangeTimes->{
-  3.5950906781376133`*^9, {3.5950907721104517`*^9, 3.595090803648673*^9}, {
-   3.595090855553944*^9, 3.595090895300664*^9}, {3.595090932283049*^9, 
-   3.5950909405312843`*^9}, {3.595091443029768*^9, 3.595091449412972*^9}, 
-   3.5950915048549128`*^9, 3.595091671668972*^9}]
-}, Open  ]]
-}, Open  ]]
+   3.59509168581257*^9}, {3.595171109883203*^9, 3.595171169131988*^9}, 
+   3.595171221500626*^9, {3.595171266063025*^9, 3.595171351388433*^9}, {
+   3.595171438123507*^9, 3.595171439306554*^9}, {3.5951714821726723`*^9, 
+   3.595171521423411*^9}, 3.595171566458395*^9, {3.595171647401272*^9, 
+   3.595171651530827*^9}, {3.5951716928287077`*^9, 3.595171750873138*^9}, {
+   3.595171842153842*^9, 3.595171856760941*^9}, {3.595171948697104*^9, 
+   3.595171955783751*^9}, {3.595171991050302*^9, 3.59517199434295*^9}, {
+   3.5951720328581123`*^9, 3.5951720476728153`*^9}, 3.595172080758382*^9, {
+   3.595172175255205*^9, 3.595172195398014*^9}, {3.595172244342599*^9, 
+   3.595172251833375*^9}, {3.595172288902524*^9, 3.595172324342518*^9}, {
+   3.5951723578767347`*^9, 3.595172371732545*^9}},
+ CellID->749403528]
 },
-WindowSize->{740, 706},
-WindowMargins->{{130, Automatic}, {Automatic, -8}},
+WindowSize->{1280, 991},
+WindowMargins->{{Automatic, 0}, {0, Automatic}},
 FrontEndVersion->"9.0 for Linux x86 (64-bit) (February 7, 2013)",
 StyleDefinitions->"Default.nb"
 ]
@@ -141,15 +84,8 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[CellGroupData[{
-Cell[579, 22, 1465, 36, 165, "Input",
- CellID->749403528],
-Cell[CellGroupData[{
-Cell[2069, 62, 1035, 19, 138, "Print"],
-Cell[3107, 83, 1033, 19, 138, "Print"],
-Cell[4143, 104, 1031, 19, 138, "Print"]
-}, Open  ]]
-}, Open  ]]
+Cell[557, 20, 2375, 48, 187, "Input",
+ CellID->749403528]
 }
 ]
 *)
