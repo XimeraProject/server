@@ -10,46 +10,45 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[      3190,         84]
-NotebookOptionsPosition[      2936,         70]
-NotebookOutlinePosition[      3271,         85]
-CellTagsIndexPosition[      3228,         82]
+NotebookDataLength[      3980,         98]
+NotebookOptionsPosition[      3689,         83]
+NotebookOutlinePosition[      4024,         98]
+CellTagsIndexPosition[      3981,         95]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
 Notebook[{
-Cell[BoxData[{
+Cell[BoxData[
  RowBox[{
-  RowBox[{
-   RowBox[{"code", ":=", 
-    RowBox[{"Module", "[", "\[IndentingNewLine]", 
-     RowBox[{
-      RowBox[{"{", 
-       RowBox[{
-        RowBox[{"a", " ", "=", " ", 
-         RowBox[{"Random", "[", 
-          RowBox[{"Integer", ",", 
-           RowBox[{"{", 
-            RowBox[{"1", ",", "10"}], "}"}]}], "]"}]}], ",", 
-        "\[IndentingNewLine]", 
-        RowBox[{"b", "=", 
-         RowBox[{"Random", "[", 
-          RowBox[{"Integer", ",", 
-           RowBox[{"{", 
-            RowBox[{"1", ",", "10"}], "}"}]}], "]"}]}]}], "}"}], ",", 
-      "\[IndentingNewLine]", "\[IndentingNewLine]", 
-      RowBox[{"Print", "[", 
-       RowBox[{
-       "\"\<\\\\begin{question}\\nWhat is $\>\"", ",", "a", ",", "\"\<+\>\"", 
-        ",", "b", ",", "\"\<$?\\n\\\\begin{solution}\\nThe sum of $\>\"", ",",
-         "a", ",", "\"\<$ and $\>\"", ",", "b", ",", 
-        "\"\<$ is $\\\\answer{\>\"", ",", 
-        RowBox[{"a", "+", "b"}], ",", 
-        "\"\<}$.\\n\\\\end{solution}\\n\\\\end{question}\\n\>\""}], "]"}]}], 
-     "]"}]}], ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
- RowBox[{"Do", "[", 
-  RowBox[{"code", ",", 
-   RowBox[{"{", "7", "}"}]}], "]"}]}], "Input",
+  RowBox[{"code", ":=", 
+   RowBox[{"Module", "[", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"a", " ", "=", " ", 
+        RowBox[{"Random", "[", 
+         RowBox[{"Integer", ",", 
+          RowBox[{"{", 
+           RowBox[{"1", ",", "10"}], "}"}]}], "]"}]}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{"b", "=", 
+        RowBox[{"Random", "[", 
+         RowBox[{"Integer", ",", 
+          RowBox[{"{", 
+           RowBox[{"1", ",", "10"}], "}"}]}], "]"}]}]}], "}"}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{"StringJoin", "[", 
+      RowBox[{"\"\<\\\\begin{question}\\nWhat is $\>\"", ",", 
+       RowBox[{"ToString", "[", "a", "]"}], ",", "\"\<+\>\"", ",", 
+       RowBox[{"ToString", "[", "b", "]"}], ",", 
+       "\"\<$?\\n\\\\begin{solution}\\nThe sum of $\>\"", ",", 
+       RowBox[{"ToString", "[", "a", "]"}], ",", "\"\<$ and $\>\"", ",", 
+       RowBox[{"ToString", "[", "b", "]"}], ",", "\"\<$ is $\\\\answer{\>\"", 
+       ",", 
+       RowBox[{"ToString", "[", 
+        RowBox[{"a", "+", "b"}], "]"}], ",", 
+       "\"\<}$.\\n\\\\end{solution}\\n\\\\end{question}\\n\\n\>\""}], "]"}]}],
+     "]"}]}], "\[IndentingNewLine]", "\[IndentingNewLine]"}]], "Input",
  CellChangeTimes->{{3.595089976699493*^9, 3.595090058171722*^9}, {
    3.595090412504594*^9, 3.5950904195124197`*^9}, {3.595090471768955*^9, 
    3.595090538487771*^9}, {3.595090608471394*^9, 3.595090677784129*^9}, {
@@ -65,11 +64,25 @@ Cell[BoxData[{
    3.5951720328581123`*^9, 3.5951720476728153`*^9}, 3.595172080758382*^9, {
    3.595172175255205*^9, 3.595172195398014*^9}, {3.595172244342599*^9, 
    3.595172251833375*^9}, {3.595172288902524*^9, 3.595172324342518*^9}, {
-   3.5951723578767347`*^9, 3.595172371732545*^9}},
- CellID->749403528]
+   3.5951723578767347`*^9, 3.595172371732545*^9}, {3.595174743748755*^9, 
+   3.59517484860288*^9}, {3.595174882601203*^9, 3.59517488503141*^9}, {
+   3.5951751151755753`*^9, 3.5951751730964622`*^9}, {3.595175204423194*^9, 
+   3.595175250805628*^9}, {3.5956064121342497`*^9, 3.595606586965694*^9}, {
+   3.595606660051437*^9, 3.595606666627283*^9}, {3.5956067095568647`*^9, 
+   3.5956068255717154`*^9}, {3.595606865826139*^9, 3.5956068998428926`*^9}, {
+   3.595606944257813*^9, 3.59560696393953*^9}},
+ CellID->931296407],
+
+Cell[BoxData[
+ RowBox[{"StringJoin", "[", 
+  RowBox[{"Table", "[", 
+   RowBox[{"code", ",", 
+    RowBox[{"{", "5", "}"}]}], "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.595175314584038*^9, 3.595175322637774*^9}, {
+  3.59560692015832*^9, 3.595606924799046*^9}}]
 },
-WindowSize->{1280, 991},
-WindowMargins->{{Automatic, 0}, {0, Automatic}},
+WindowSize->{1280, 964},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
 FrontEndVersion->"9.0 for Linux x86 (64-bit) (February 7, 2013)",
 StyleDefinitions->"Default.nb"
 ]
@@ -84,8 +97,9 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[557, 20, 2375, 48, 187, "Input",
- CellID->749403528]
+Cell[557, 20, 2864, 53, 165, "Input",
+ CellID->931296407],
+Cell[3424, 75, 261, 6, 32, "Input"]
 }
 ]
 *)
