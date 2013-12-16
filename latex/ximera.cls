@@ -3,7 +3,7 @@
 % A LaTeX2e document class for preparing exams.
 
 %% ximera.cls
-%% Copyright (c) 2013 Bart Snapp
+%% Copyright (c) 2013 Bart Snapp and Jim Fowler
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3c
@@ -51,13 +51,18 @@
 
 \RequirePackage{ifthen}
 \RequirePackage{environ}
+\RequirePackage{xcolor}
 
 
 
-\newif\ifprintanswers
-\printanswersfalse
-\DeclareOption{solutions}{\printsolutionstrue}
-\DeclareOption{nosolutions}{\printsolutionsfalse}
+\newif\ifsolutions
+\solutionstrue
+\DeclareOption{handout}{\solutionsfalse}
+
+
+\newif\ifhints
+\hintstrue
+\DeclareOption{nohints}{\hintsfalse}
 
 \newif\ifcancelspace
 \cancelspacefalse
@@ -71,6 +76,10 @@
 \ProcessOptions\relax
 \LoadClass{article}
 \RequirePackage{titling}
+
+
+\newcommand{\answer}{}
+
 
 
 
@@ -109,7 +118,7 @@
 \setlength{\marginparwidth}{.5in}
 \setlength{\marginparsep}{5pt}
 
-
+%\setlength{\topskip}{10pt}
 
 
 
@@ -129,12 +138,11 @@
 
 
 
-
-
-
-% We use the counter name `partno' for the parts environment so that
-% we will not interfere with the counter `part' used by the article
-% document class.
+\NewEnviron{headline}{
+  \textsl{
+    \BODY
+  }
+}
 
 
 
@@ -149,28 +157,45 @@
 %
 
 
-% We use the counter name `partno' for the parts environment so that
-% we will not interfere with the counter `part' used by the article
-% document class.
-
 \newcounter{problem}
-\NewEnviron{question}{
-  \subsubsection*{Question}
-  \BODY
+\NewEnviron{question}{\refstepcounter{problem}
+  \noindent \textbf{Question \theproblem.} \,
+  \textsl{
+    \BODY
+  }
+}
+
+\NewEnviron{exercise}{\refstepcounter{problem}
+  %\topskip
+  \noindent \textbf{Exercise \theproblem.} \,
+  \textsl{
+    \BODY
+  }
 }
 
 
+\NewEnviron{exploration}{\refstepcounter{problem}
+  \noindent \textbf{Exploration \theproblem.} \,
+  \textsl{
+    \BODY
+  }
+}
 
 
-\newif\ifsolutions
-\solutionstrue
+\NewEnviron{hint}{
+  \ifhints
+  \color{gray}\textbf{Hint:}\,
+  \textsl{
+    \BODY
+  }\\
+  \fi}
 
- \NewEnviron{solution}{
+
+\NewEnviron{solution}{\\
    \ifsolutions
-     \subsubsection*{Solution}
+   \textbf{\textit{Solution.}}\\
      \BODY
    \else
-     \subsubsection*{Solution}
      \vfill
    \fi}
 
