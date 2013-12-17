@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[     16624,        298]
-NotebookOptionsPosition[     16347,        283]
-NotebookOutlinePosition[     16703,        299]
-CellTagsIndexPosition[     16660,        296]
+NotebookDataLength[     17553,        315]
+NotebookOptionsPosition[     17276,        300]
+NotebookOutlinePosition[     17632,        316]
+CellTagsIndexPosition[     17589,        313]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -25,13 +25,14 @@ Cell[BoxData[{
     RowBox[{
      RowBox[{"{", "\[IndentingNewLine]", 
       RowBox[{
-       RowBox[{"point", "=", 
-        RowBox[{"Random", "[", 
-         RowBox[{"Integer", ",", 
-          RowBox[{"{", 
-           RowBox[{
-            RowBox[{"-", "10"}], ",", "10"}], "}"}]}], "]"}]}], ",", 
-       "\[IndentingNewLine]", 
+       RowBox[{"prePoint", "=", 
+        RowBox[{
+         RowBox[{"Random", "[", 
+          RowBox[{"Integer", ",", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"-", "50"}], ",", "50"}], "}"}]}], "]"}], "/", "10"}]}], 
+       ",", "\[IndentingNewLine]", 
        RowBox[{"a4", " ", "=", " ", 
         RowBox[{"Random", "[", 
          RowBox[{"Integer", ",", 
@@ -68,6 +69,12 @@ Cell[BoxData[{
             RowBox[{"-", "5"}], ",", "5"}], "}"}]}], "]"}]}]}], 
       "\[IndentingNewLine]", "}"}], ",", "\[IndentingNewLine]", 
      RowBox[{
+      RowBox[{"point", "=", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"IntegerQ", "[", "prePoint", "]"}], ",", "prePoint", ",", 
+         RowBox[{"N", "[", "prePoint", "]"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
       RowBox[{
        RowBox[{"f", "[", "x_", "]"}], "=", 
        RowBox[{
@@ -84,7 +91,10 @@ Cell[BoxData[{
          RowBox[{"TeXForm", "[", 
           RowBox[{"f", "[", "x", "]"}], "]"}], "]"}], ",", 
         "\"\<$, evaluate $f(\>\"", ",", 
-        RowBox[{"ToString", "[", "point", "]"}], ",", 
+        RowBox[{"ToString", "[", 
+         RowBox[{
+          RowBox[{"IntegerPart", "[", "point", "]"}], "+", 
+          RowBox[{"FractionalPart", "[", "point", "]"}]}], "]"}], ",", 
         "\"\<)$.\n\\\\begin{solution}\n\\\\begin{hint}\n$f(\>\"", ",", 
         RowBox[{"ToString", "[", "point", "]"}], ",", "\"\<)=\>\"", ",", 
         RowBox[{"StringReplace", "[", 
@@ -106,9 +116,9 @@ Cell[BoxData[{
         RowBox[{"ToString", "[", 
          RowBox[{"TeXForm", "[", 
           RowBox[{"f", "[", "x", "]"}], "]"}], "]"}], ",", 
-        "\"\<$, evaluated at $f(\>\"", ",", 
+        "\"\<$, evaluated at $x=\>\"", ",", 
         RowBox[{"ToString", "[", "point", "]"}], ",", 
-        "\"\<)$ is $\\\\answer{\>\"", ",", 
+        "\"\<$, is $\\\\answer{\>\"", ",", 
         RowBox[{"ToString", "[", 
          RowBox[{"f", "[", "point", "]"}], "]"}], ",", 
         "\"\<}$.\n\\\\end{solution}\n\\\\end{exercise}\\n\\n\>\""}], 
@@ -116,7 +126,7 @@ Cell[BoxData[{
  RowBox[{"StringJoin", "[", 
   RowBox[{"Table", "[", 
    RowBox[{"code", ",", 
-    RowBox[{"{", "27", "}"}]}], "]"}], "]"}], "\[IndentingNewLine]"}], "Input",\
+    RowBox[{"{", "4", "}"}]}], "]"}], "]"}], "\[IndentingNewLine]"}], "Input",\
 
  CellChangeTimes->{{3.595089976699493*^9, 3.595090058171722*^9}, {
    3.595090412504594*^9, 3.5950904195124197`*^9}, {3.595090471768955*^9, 
@@ -278,11 +288,18 @@ Cell[BoxData[{
    3.596204518953597*^9, 3.596204521461187*^9}, 3.596204960275951*^9, {
    3.596205038577489*^9, 3.5962050390062017`*^9}, {3.596213723608474*^9, 
    3.596213726071185*^9}, {3.596215354192922*^9, 3.5962153763088493`*^9}, 
-   3.596216081563592*^9},
+   3.596216081563592*^9, {3.596289317991593*^9, 3.596289370913377*^9}, 
+   3.5962894614054728`*^9, {3.596289740911409*^9, 3.596289749838128*^9}, {
+   3.5962897931385736`*^9, 3.596289805072072*^9}, {3.596289921266181*^9, 
+   3.596289924098226*^9}, {3.596299030333315*^9, 3.5962990371500883`*^9}, 
+   3.5962991334561996`*^9, {3.59629927536167*^9, 3.5962992881486073`*^9}, {
+   3.5962993986393023`*^9, 3.596299446800701*^9}, {3.596299477328966*^9, 
+   3.596299490783845*^9}, {3.5963039527673063`*^9, 3.596303960529457*^9}, 
+   3.596304143565431*^9},
  CellID->931296407]
 },
-WindowSize->{1366, 708},
-WindowMargins->{{0, Automatic}, {Automatic, 0}},
+WindowSize->{1280, 991},
+WindowMargins->{{Automatic, 0}, {0, Automatic}},
 ShowSelection->True,
 FrontEndVersion->"9.0 for Linux x86 (64-bit) (February 7, 2013)",
 StyleDefinitions->"Default.nb"
@@ -298,7 +315,7 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[557, 20, 15786, 261, 583, "Input",
+Cell[557, 20, 16715, 278, 605, "Input",
  CellID->931296407]
 }
 ]

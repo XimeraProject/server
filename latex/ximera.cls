@@ -49,10 +49,11 @@
 \ProvidesClass{ximera}[\filedate\space Version \fileversion\space by
   Bart Snapp]
 
-\RequirePackage{ifthen}
 \RequirePackage{environ}
 \RequirePackage{xcolor}
-
+\RequirePackage{ifmtarg}% http://ctan.org/pkg/ifmtarg
+\RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
+\RequirePackage{multido}% http://ctan.org/pkg/multido
 
 
 \newif\ifsolutions
@@ -64,7 +65,7 @@
 \hintstrue
 \DeclareOption{nohints}{\hintsfalse}
 
-\newif\ifcancelspace
+\newif\ifcancelspace %% NOT YET IMPLEMENTED
 \cancelspacefalse
 \DeclareOption{cancelspace}{\cancelspacetrue}
 \DeclareOption{nocancelspace}{\cancelspacefalse}
@@ -118,12 +119,12 @@
 \setlength{\marginparwidth}{.5in}
 \setlength{\marginparsep}{5pt}
 
-%\setlength{\topskip}{10pt}
+%\setlength{\topsep}{10pt}
 
 
 
-%--------------------------------------------------------------------
-%---------------------------------------------------------------------
+% ---------------------------------------------------------------------
+% ---------------------------------------------------------------------
 %
 %                    ************************************
 %                    ** TITLE AND ACTIVITY DESCRIPTION **
@@ -133,71 +134,123 @@
 %
 
 \pretitle{\begin{flushleft}\LARGE\bfseries}
-\posttitle{\par\end{flushleft}\vskip 0.5em}
+\posttitle{\par\end{flushleft}}
+\predate{}
 \date{}
+\postdate{\vskip -3em}
 
 
 
 \NewEnviron{headline}{
-  \textsl{
-    \BODY
+  \par\noindent\textsl{
+    \noindent\BODY
   }
 }
 
 
 
-%--------------------------------------------------------------------
-%---------------------------------------------------------------------
+% ---------------------------------------------------------------------
+% ---------------------------------------------------------------------
 %
 %                    ***************************
 %                    ** PROBLEM ENVIRONMENTS **
 %                    ***************************
 %
 %
-%
+% These environments were inspired by: 
+% http://tex.stackexchange.com/questions/11098/nice-formatting-for-theorems?lq=1
+
+
+
 
 
 \newcounter{problem}
-\NewEnviron{question}{\refstepcounter{problem}
-  \noindent \textbf{Question \theproblem.} \,
-  \textsl{
-    \BODY
-  }
+
+\makeatletter%
+\newcommand{\hang}{% top theorem decoration
+  \begingroup%
+  \setlength{\unitlength}{.005\linewidth}% \linewidth/200
+    \begin{picture}(0,0)(1.5,0)%
+      \linethickness{1pt} \color{black!50}%
+      \put(-3,2){\line(1,0){206}}% Top line
+      \multido{\iA=2+-1,\iB=50+-10}{5}{% Top hangs
+        \color{black!\iB}%
+        \put(-3,\iA){\line(0,-1){1}}% Top left hang
+        %\put(203,\iA){\line(0,-1){1}}% Top right hang
+      }%
+    \end{picture}%
+  \endgroup%
+}%
+\newcommand{\hung}{% bottom theorem decoration
+  \nobreak
+  \begingroup%
+    \setlength{\unitlength}{.005\linewidth}% \linewidth/200
+    \begin{picture}(0,0)(1.5,0)%
+      \linethickness{1pt} \color{black!50}%
+      \put(-3,0){\line(1,0){206}}% Bottom line
+      \multido{\iA=0+1,\iB=50+-10}{5}{% Bottom hangs
+        \color{black!\iB}%
+        %\put(-3,\iA){\line(0,1){1}}% Bottom left hang
+        \put(203,\iA){\line(0,1){1}}% Bottom right hang
+      }%
+    \end{picture}%
+  \endgroup%
+}%
+
+\NewEnviron{exercise}[1][]{%
+    \par\noindent\hang\par\nobreak\noindent
+    \refstepcounter{problem}\postdisplaypenalty=10000 %
+    {\sffamily\bfseries\upshape Exercise \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
+    \BODY % Typeset theorem body/content
+    \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}%
 }
 
-\NewEnviron{exercise}{\refstepcounter{problem}
-  %\topskip
-  \noindent \textbf{Exercise \theproblem.} \,
-  \textsl{
-    \BODY
-  }
+\NewEnviron{question}[1][]{%
+    \par\noindent\hang\par\nobreak\noindent
+    \refstepcounter{problem}\postdisplaypenalty=10000 %
+    {\sffamily\bfseries\upshape Question \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
+    \BODY % Typeset theorem body/content
+    \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}%
 }
 
-
-\NewEnviron{exploration}{\refstepcounter{problem}
-  \noindent \textbf{Exploration \theproblem.} \,
-  \textsl{
-    \BODY
-  }
+\NewEnviron{exploration}[1][]{%
+    \par\noindent\hang\par\nobreak\noindent
+    \refstepcounter{problem}\postdisplaypenalty=10000 %
+    {\sffamily\bfseries\upshape Exploration \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
+    \BODY % Typeset theorem body/content
+    \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}%
 }
 
+\NewEnviron{solution}[1][]{%
+  \ifsolutions\par\noindent\par\nobreak\noindent
+  \postdisplaypenalty=10000 %
+    {\itshape\bfseries Solution \@ifnotmtarg{#1}{\ (#1)}}\ \ \upshape\ignorespaces%
+    \BODY % Typeset theorem body/content
+    \par\addvspace{-1ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
+    \fi}
 
-\NewEnviron{hint}{
-  \ifhints
-  \color{gray}\textbf{Hint:}\,
-  \textsl{
-    \BODY
-  }\\
-  \fi}
+\NewEnviron{hint}[1][]{%
+  \ifhints\par\noindent\par\nobreak\noindent%\addvspace{-.5ex}
+  \postdisplaypenalty=10000 %
+                 {\small\slshape\bfseries\color{gray} Hint:\@ifnotmtarg{#1}{\ (#1)}}\ \ \small\color{gray}\slshape\ignorespaces%
+                 \BODY % Typeset theorem body/content
+                 \par\addvspace{0ex}\nobreak\noindent\par\addvspace{.4ex}%
+                 \fi}
 
 
-\NewEnviron{solution}{\\
-   \ifsolutions
-   \textbf{\textit{Solution.}}\\
-     \BODY
-   \else
-     \vfill
-   \fi}
+
+
+\makeatother
+
+
+\def\getline#1\par{%
+\gdef\theline{#1}#1%
+}
+
+\newenvironment{shuffle}{%
+  \getline%
+}{\theline}
+
 
 
 \endinput
