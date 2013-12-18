@@ -1,0 +1,18 @@
+{
+    "name": "ximera",
+    "version": "0.0.1",
+    "dependencies": {
+	"requirejs": "*",
+	"moment": "*",
+	"lex": "https://github.com/aaditmshah/lexer.git",
+	"jquery": "*",
+        "bootstrap": "2.3.2",
+        "angular": "1.0.7",
+	"underscore": "*",
+        "font-awesome": "*",
+	"x-editable": "*",
+	"threejs": "https://github.com/mrdoob/three.js.git",
+	"pagedown-bootstrap": "https://github.com/samwillis/pagedown-bootstrap.git",
+	"mathquill": "https://github.com/mathquill/mathquill.git"
+    }
+}
