@@ -1,30 +1,36 @@
 {
-    "name": "ximera",
-    "description": "Ximera interactive textbook server",
-    "version": "0.0.1",
-    "private": true,
-    "scripts": {
-        "start": "node app.js",
-        "postinstall": "./node_modules/bower/bin/bower install && cd ./bower_components/mathquill && npm install && make && cd ../.."
-    },
-    "dependencies": {
-        "bower": "*",
-        "express": "*",
-        "less-middleware": "*",
-	"connect-mongo": "*",
-        "markdown": "*",
-	"moment": "*",
-        "passport": "*",
-        "mongodb": "*",
-        "mongojs": "*",
-        "jade": "*",
-	"file": "*",
-	"jsdom": "*",
-        "passport-google": "*",
-	"jison": "*",
-	"requirejs": "*",
-	"jasmine-node": "*",
-	"poet": "*",
-	"grunt-mocha": "*"
-    }
+  "name": "ximera",
+  "description": "Ximera interactive textbook server",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js",
+    "postinstall": "./node_modules/bower/bin/bower install && cd ./bower_components/mathquill && npm install && make && cd ../.."
+  },
+  "dependencies": {
+    "bower": "*",
+    "express": "*",
+    "less-middleware": "*",
+    "connect-mongo": "*",
+    "markdown": "*",
+    "moment": "*",
+    "passport": "*",
+    "mongodb": "*",
+    "mongojs": "*",
+    "jade": "*",
+    "file": "*",
+    "jsdom": "*",
+    "passport-google": "*",
+    "jison": "*",
+    "requirejs": "*",
+    "jasmine-node": "*",
+    "poet": "*",
+    "grunt-mocha": "*",
+    "grunt-mocha-test": "*",
+    "grunt-jison": "*",
+    "grunt-contrib-watch": "*"
+  },
+  "devDependencies": {
+    "load-grunt-tasks": "~0.2.1"
+  }
 }
