@@ -56,14 +56,17 @@
 \RequirePackage{multido}% http://ctan.org/pkg/multido
 
 
-\newif\ifsolutions
-\solutionstrue
-\DeclareOption{handout}{\solutionsfalse}
+\newif\ifhandout
+\handoutfalse
+\DeclareOption{handout}{\handouttrue}
 
 
 \newif\ifhints
 \hintstrue
 \DeclareOption{nohints}{\hintsfalse}
+
+\newif\ifshuffle
+\shufflefalse
 
 \newif\ifcancelspace %% NOT YET IMPLEMENTED
 \cancelspacefalse
@@ -197,37 +200,72 @@
   \endgroup%
 }%
 
+
+
 \NewEnviron{exercise}[1][]{%
-    \par\noindent\hang\par\nobreak\noindent
+  \ifshuffle\iffirstexercise % this format is shown in shuffle
+  \par\noindent\hang\par\nobreak\noindent
+  \refstepcounter{problem}\postdisplaypenalty=10000 %
+    {\sffamily\bfseries\upshape Exercise \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
+    \BODY % Typeset theorem body/content
+    \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}
+    \fi
+    \ifhandout\global\firstexercisefalse\fi % No more exercise environments are set
+    \else 
+    \par\noindent\hang\par\nobreak\noindent % this format is shown when stand-alone
     \refstepcounter{problem}\postdisplaypenalty=10000 %
     {\sffamily\bfseries\upshape Exercise \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
     \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}%
+    \fi
 }
 
 \NewEnviron{question}[1][]{%
-    \par\noindent\hang\par\nobreak\noindent
+  \ifshuffle\iffirstexercise % this format is shown in shuffle
+  \par\noindent\hang\par\nobreak\noindent
+  \refstepcounter{problem}\postdisplaypenalty=10000 %
+    {\sffamily\bfseries\upshape Question \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
+    \BODY % Typeset theorem body/content
+    \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}
+    \fi
+    \ifhandout\global\firstexercisefalse\fi % No more exercise environments are set
+    \else 
+    \par\noindent\hang\par\nobreak\noindent % this format is shown when stand-alone
     \refstepcounter{problem}\postdisplaypenalty=10000 %
     {\sffamily\bfseries\upshape Question \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
     \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}%
+    \fi
 }
 
+
 \NewEnviron{exploration}[1][]{%
-    \par\noindent\hang\par\nobreak\noindent
+  \ifshuffle\iffirstexercise % this format is shown in shuffle
+  \par\noindent\hang\par\nobreak\noindent
+  \refstepcounter{problem}\postdisplaypenalty=10000 %
+    {\sffamily\bfseries\upshape Exploration \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
+    \BODY % Typeset theorem body/content
+    \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}
+    \fi
+    \ifhandout\global\firstexercisefalse\fi % No more exercise environments are set
+    \else 
+    \par\noindent\hang\par\nobreak\noindent % this format is shown when stand-alone
     \refstepcounter{problem}\postdisplaypenalty=10000 %
     {\sffamily\bfseries\upshape Exploration \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
     \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}%
+    \fi
 }
 
+
 \NewEnviron{solution}[1][]{%
-  \ifsolutions\par\noindent\par\nobreak\noindent
+  \ifhandout\relax\else\par\noindent\par\nobreak\noindent
   \postdisplaypenalty=10000 %
     {\itshape\bfseries Solution \@ifnotmtarg{#1}{\ (#1)}}\ \ \upshape\ignorespaces%
     \BODY % Typeset theorem body/content
     \par\addvspace{-1ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
-    \fi}
+    \fi
+    }
 
 \NewEnviron{hint}[1][]{%
   \ifhints\par\noindent\par\nobreak\noindent%\addvspace{-.5ex}
@@ -242,14 +280,14 @@
 
 \makeatother
 
+\newif\iffirstexercise% Condition for first exercise
+\NewEnviron{shuffle}{
+\shuffletrue
+\firstexercisetrue % Allow first exercise environment to be set
+  \BODY
+  \global\shufflefalse}
 
-\def\getline#1\par{%
-\gdef\theline{#1}#1%
-}
 
-\newenvironment{shuffle}{%
-  \getline%
-}{\theline}
 
 
 
