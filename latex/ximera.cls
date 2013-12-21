@@ -160,14 +160,20 @@
 %                    ***************************
 %
 %
-% These environments were inspired by: 
-% http://tex.stackexchange.com/questions/11098/nice-formatting-for-theorems?lq=1
+
 
 
 
 
 
 \newcounter{problem}
+\newcounter{problemType}
+
+% ---------------------------------------------------------------------
+% Problem environment decorations
+
+% The decoration for these envrionments were inspired by
+% http://tex.stackexchange.com/questions/11098/nice-formatting-for-theorems?lq=1
 
 \makeatletter%
 \newcommand{\hang}{% top theorem decoration
@@ -201,16 +207,20 @@
 }%
 
 
+% ---------------------------------------------------------------------
+% Problem environments: Exercise, Question, Exploration
+
 
 \NewEnviron{exercise}[1][]{%
-  \ifshuffle\iffirstexercise % this format is shown in shuffle
+  \ifshuffle\iffirstproblem  % this format is shown in shuffle
   \par\noindent\hang\par\nobreak\noindent
-  \refstepcounter{problem}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Exercise \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
+  \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
+    {\sffamily\bfseries\upshape Exercise \ifhandout\theproblem\else\theproblem.\theproblemType\fi\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
     \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}
+    \addtocounter{problem}{-1}
     \fi
-    \ifhandout\global\firstexercisefalse\fi % No more exercise environments are set
+    \ifhandout\global\firstproblemfalse\fi % No more problem environments are displayed after this one
     \else 
     \par\noindent\hang\par\nobreak\noindent % this format is shown when stand-alone
     \refstepcounter{problem}\postdisplaypenalty=10000 %
@@ -219,16 +229,19 @@
     \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}%
     \fi
 }
+
+
 
 \NewEnviron{question}[1][]{%
-  \ifshuffle\iffirstexercise % this format is shown in shuffle
+  \ifshuffle\iffirstproblem  % this format is shown in shuffle
   \par\noindent\hang\par\nobreak\noindent
-  \refstepcounter{problem}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Question \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
+  \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
+    {\sffamily\bfseries\upshape Question \ifhandout\theproblem\else\theproblem.\theproblemType\fi\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
     \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}
+    \addtocounter{problem}{-1}
     \fi
-    \ifhandout\global\firstexercisefalse\fi % No more exercise environments are set
+    \ifhandout\global\firstproblemfalse\fi % No more problem environments are displayed after this one
     \else 
     \par\noindent\hang\par\nobreak\noindent % this format is shown when stand-alone
     \refstepcounter{problem}\postdisplaypenalty=10000 %
@@ -237,17 +250,17 @@
     \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}%
     \fi
 }
-
 
 \NewEnviron{exploration}[1][]{%
-  \ifshuffle\iffirstexercise % this format is shown in shuffle
+  \ifshuffle\iffirstproblem  % this format is shown in shuffle
   \par\noindent\hang\par\nobreak\noindent
-  \refstepcounter{problem}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Exploration \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
+  \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
+    {\sffamily\bfseries\upshape Exploration \ifhandout\theproblem\else\theproblem.\theproblemType\fi\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
     \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}
+    \addtocounter{problem}{-1}
     \fi
-    \ifhandout\global\firstexercisefalse\fi % No more exercise environments are set
+    \ifhandout\global\firstproblemfalse\fi % No more problem environments are displayed after this one
     \else 
     \par\noindent\hang\par\nobreak\noindent % this format is shown when stand-alone
     \refstepcounter{problem}\postdisplaypenalty=10000 %
@@ -256,6 +269,11 @@
     \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}%
     \fi
 }
+
+
+
+
+
 
 
 \NewEnviron{solution}[1][]{%
@@ -280,12 +298,12 @@
 
 \makeatother
 
-\newif\iffirstexercise% Condition for first exercise
+\newif\iffirstproblem% Condition for first exercise
 \NewEnviron{shuffle}{
 \shuffletrue
-\firstexercisetrue % Allow first exercise environment to be set
+\firstproblemtrue % Allow first exercise environment to be set
   \BODY
-  \global\shufflefalse}
+  \refstepcounter{problem}\setcounter{problemType}{0}\global\shufflefalse}
 
 
 
