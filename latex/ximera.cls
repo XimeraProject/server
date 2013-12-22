@@ -227,64 +227,62 @@
 
 \NewEnviron{exercise}[1][]{%
   \ifshuffle\iffirstproblem  % this format is shown in shuffle
-  \par\noindent\hang\par\nobreak\noindent
+  \par\addvspace{3ex}\noindent\nobreak
   \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
     {\sffamily\bfseries\upshape Exercise \ifhandout\theproblem\else\theproblem.\theproblemType\fi\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
-    \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}
+    \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \addtocounter{problem}{-1}
     \fi
     \ifhandout\global\firstproblemfalse\fi % No more problem environments are displayed after this one
     \else 
-    \par\noindent\hang\par\nobreak\noindent % this format is shown when stand-alone
+    \par\addvspace{2ex}\noindent\nobreak % this format is shown when stand-alone
     \refstepcounter{problem}\postdisplaypenalty=10000 %
     {\sffamily\bfseries\upshape Exercise \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
-    \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}%
+    \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \fi
 }
-
 
 
 \NewEnviron{question}[1][]{%
   \ifshuffle\iffirstproblem  % this format is shown in shuffle
-  \par\noindent\hang\par\nobreak\noindent
+  \par\addvspace{3ex}\noindent\nobreak
   \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
     {\sffamily\bfseries\upshape Question \ifhandout\theproblem\else\theproblem.\theproblemType\fi\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
-    \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}
+    \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \addtocounter{problem}{-1}
     \fi
     \ifhandout\global\firstproblemfalse\fi % No more problem environments are displayed after this one
     \else 
-    \par\noindent\hang\par\nobreak\noindent % this format is shown when stand-alone
+    \par\addvspace{2ex}\noindent\nobreak % this format is shown when stand-alone
     \refstepcounter{problem}\postdisplaypenalty=10000 %
     {\sffamily\bfseries\upshape Question \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
-    \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}%
+    \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \fi
 }
 
+
 \NewEnviron{exploration}[1][]{%
   \ifshuffle\iffirstproblem  % this format is shown in shuffle
-  \par\noindent\hang\par\nobreak\noindent
+  \par\addvspace{3ex}\noindent\nobreak
   \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
     {\sffamily\bfseries\upshape Exploration \ifhandout\theproblem\else\theproblem.\theproblemType\fi\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
-    \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}
+    \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \addtocounter{problem}{-1}
     \fi
     \ifhandout\global\firstproblemfalse\fi % No more problem environments are displayed after this one
     \else 
-    \par\noindent\hang\par\nobreak\noindent % this format is shown when stand-alone
+    \par\addvspace{2ex}\noindent\nobreak % this format is shown when stand-alone
     \refstepcounter{problem}\postdisplaypenalty=10000 %
     {\sffamily\bfseries\upshape Exploration \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
-    \par\addvspace{2ex}\nobreak\noindent\par\addvspace{.4ex}%
+    \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \fi
 }
-
-
 
 
 
@@ -295,7 +293,6 @@
   \postdisplaypenalty=10000 %
     {\itshape\bfseries Solution \@ifnotmtarg{#1}{\ (#1)}}\ \ \upshape\ignorespaces%
     \BODY % Typeset theorem body/content
-    \par\addvspace{-1ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \fi
     }
 
