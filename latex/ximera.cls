@@ -79,10 +79,13 @@
 }
 \ProcessOptions\relax
 \LoadClass{article}
-\RequirePackage{titling}
-
+%\RequirePackage{titling}
+\RequirePackage{titlesec} 
+\RequirePackage{titletoc} 
 
 \newcommand{\answer}{}
+\everymath{\displaystyle} %makes everymath display style could be optional
+
 
 
 
@@ -129,26 +132,37 @@
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
 %
-%                    ************************************
-%                    ** TITLE AND ACTIVITY DESCRIPTION **
-%                    ************************************
+%                    ************************
+%                    ** TITLE AND HEADLINE **
+%                    ************************
 %
 %
 %
 
-\pretitle{\begin{flushleft}\LARGE\bfseries}
-\posttitle{\par\end{flushleft}}
-\predate{}
-\date{}
-\postdate{\vskip -3em}
+%% \pretitle{\begin{flushleft}\LARGE\bfseries}
+%% \posttitle{\par\end{flushleft}}
+%% \predate{}
+%% \date{}
+%% \postdate{\vskip -3em}
 
 
+\newcommand{\activitytitlebreak}{\clearpage}
 
-\NewEnviron{headline}{
-  \par\noindent\textsl{
-    \noindent\BODY
-  }
-}
+\newcommand*{\activityheadline}{}
+\newcommand{\headline}[1]{\def\activityheadline{#1}}
+
+\titleclass{\activitytitle}{straight}[\section]
+\newcounter{activitytitle}
+\titleformat{\activitytitle}
+            {\bfseries\LARGE\raggedright}
+            {\theactivitytitle}{1em}
+            {}
+            [\normalfont\small\itshape\raggedright\activityheadline]
+\titlespacing*{\activitytitle}{0pt}{0pt}{2em}
+\renewcommand{\theactivitytitle}{\arabic{activitytitle}}
+
+\contentsmargin{2.55em}
+\dottedcontents{activitytitle}[3.8em]{}{2.3em}{1pc}
 
 
 
