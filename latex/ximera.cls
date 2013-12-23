@@ -79,11 +79,14 @@
 }
 \ProcessOptions\relax
 \LoadClass{article}
-%\RequirePackage{titling}
 \RequirePackage{titlesec} 
 \RequirePackage{titletoc} 
 
-\newcommand{\answer}{}
+\newcommand{\answer}[1][]{}
+
+\newcommand{\prerequisites}[1]{}
+\newcommand{\outcomes}[1]{}
+
 \everymath{\displaystyle} %makes everymath display style could be optional
 
 
@@ -210,11 +213,12 @@
     \setlength{\unitlength}{.005\linewidth}% \linewidth/200
     \begin{picture}(0,0)(1.5,0)%
       \linethickness{1pt} \color{black!50}%
-      \put(-3,0){\line(1,0){206}}% Bottom line
+      \put(60,0){\line(1,0){143}}% Bottom line
       \multido{\iA=0+1,\iB=50+-10}{5}{% Bottom hangs
         \color{black!\iB}%
         %\put(-3,\iA){\line(0,1){1}}% Bottom left hang
         \put(203,\iA){\line(0,1){1}}% Bottom right hang
+        \put(\iB,0){\line(60,0){10}}% Left fade out
       }%
     \end{picture}%
   \endgroup%
@@ -310,11 +314,18 @@
 \makeatother
 
 \newif\iffirstproblem% Condition for first exercise
-\NewEnviron{shuffle}{
-\shuffletrue
-\firstproblemtrue % Allow first exercise environment to be set
+\NewEnviron{shuffle}[1][]{
+  \shuffletrue
+  \firstproblemtrue % Allow first exercise environment to be set
   \BODY
   \refstepcounter{problem}\setcounter{problemType}{0}\global\shufflefalse}
+           
+
+
+
+
+\NewEnviron{interactive}[1][]{\BODY}
+
 
 
 
