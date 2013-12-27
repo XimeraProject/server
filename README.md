@@ -12,7 +12,7 @@ We use the file extension ".xim" for these files.
 
 To enable syntax highlighting in Emacs, use 
 
- (setq auto-mode-alist
+    (setq auto-mode-alist
      (append
          '(("\\.xim\\'" . latex-mode))
           auto-mode-alist))
