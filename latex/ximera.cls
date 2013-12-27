@@ -295,17 +295,18 @@
 \NewEnviron{solution}[1][]{%
   \ifhandout\relax\else\par\noindent\par\nobreak\noindent
   \postdisplaypenalty=10000 %
-    {\itshape\bfseries Solution \@ifnotmtarg{#1}{\ (#1)}}\ \ \upshape\ignorespaces%
-    \BODY % Typeset theorem body/content
+    {\small\itshape\bfseries Solution \@ifnotmtarg{#1}{\ (#1)}}\ \ \upshape\ignorespaces%
+    \small\BODY % Typeset theorem body/content
+    \par\addvspace{1ex}\nobreak\noindent
     \fi
     }
 
 \NewEnviron{hint}[1][]{%
-  \ifhints\par\noindent\par\nobreak\noindent%\addvspace{-.5ex}
+  \ifhints\par\addvspace{.5ex}\nobreak\noindent
   \postdisplaypenalty=10000 %
                  {\small\slshape\bfseries\color{gray} Hint:\@ifnotmtarg{#1}{\ (#1)}}\ \ \small\color{gray}\slshape\ignorespaces%
                  \BODY % Typeset theorem body/content
-                 \par\addvspace{0ex}\nobreak\noindent\par\addvspace{.4ex}%
+                 \par\addvspace{.5ex}\nobreak\noindent%
                  \fi}
 
 
@@ -327,7 +328,9 @@
 \NewEnviron{interactive}[1][]{\BODY}
 
 
-
+\RequirePackage{enumitem}
+\newlist{multiple-choice}{enumerate}{2}
+\setlist[multiple-choice]{label*=\arabic*.}
 
 
 
