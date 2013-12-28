@@ -327,10 +327,13 @@
 
 \NewEnviron{interactive}[1][]{\BODY}
 
+\NewEnviron{multiple-choice}[1][]{
+  \renewcommand{\labelenumi}{$(\mathrm{\alph{enumi}})$}
+  \begin{enumerate}
+    \BODY
+  \end{enumerate}
+}
 
-\RequirePackage{enumitem}
-\newlist{multiple-choice}{enumerate}{2}
-\setlist[multiple-choice]{label*=\arabic*.}
 
 
 
