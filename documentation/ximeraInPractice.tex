@@ -34,21 +34,24 @@ To begin, use the \code{ximera} document class.
 
 
 To help navigate the collection of activities, authors should try to
-include prerequisites and outcomes.
+include a headline, title, prerequisites, and outcomes.
 
 \begin{Verbatim}
   \documentclass{ximera}
+  \begin{document}
+  +color(red)\headline{An example of syntax.} 
+  +color(red)\activitytitle{The Title} 
   +color(red)\prerequisites{prereq1,prereq2}
   +color(red)\outcomes{outcome1,outcome2}
-  \begin{document}
   Your document.
   \end{document}
 \end{Verbatim}
 
-Each prerequisite and outcome should be without spaces, and every
-attempt should be made to use already available tags for the
-prerequisites and outcomes needed/delivered by this activity.
-
+The headline should be a one sentence description of the activity, and
+must come before the title. Each prerequisite and outcome should be
+without spaces, and every attempt should be made to use already
+available tags for the prerequisites and outcomes needed/delivered by
+this activity. These may appear anywhere in the document.
 
 
 
