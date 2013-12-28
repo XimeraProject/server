@@ -68,10 +68,11 @@
 \newif\ifshuffle
 \shufflefalse
 
-\newif\ifcancelspace %% NOT YET IMPLEMENTED
-\cancelspacefalse
-\DeclareOption{cancelspace}{\cancelspacetrue}
-\DeclareOption{nocancelspace}{\cancelspacefalse}
+\newif\ifspace %% NOT YET IMPLEMENTED
+\spacefalse
+\DeclareOption{space}{\spacetrue}
+%% This basically works for exercises, though page breaks are weird. 
+%% Also, there needs to be an optional argument to change the space. 
 
 
 \DeclareOption*{%
@@ -235,6 +236,7 @@
   \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
     {\sffamily\bfseries\upshape Exercise \ifhandout\theproblem\else\theproblem.\theproblemType\fi\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
+    \ifspace\par\addvspace{2in}\nobreak\fi
     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \addtocounter{problem}{-1}
     \fi
@@ -244,6 +246,7 @@
     \refstepcounter{problem}\postdisplaypenalty=10000 %
     {\sffamily\bfseries\upshape Exercise \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
+    \ifspace\par\addvspace{2in}\nobreak\fi
     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \fi
 }
