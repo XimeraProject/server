@@ -236,7 +236,7 @@
   \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
     {\sffamily\bfseries\upshape Exercise \ifhandout\theproblem\else\theproblem.\theproblemType\fi\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
-    \ifspace\par\addvspace{2in}\nobreak\fi
+    \ifhandout\ifspace\par\addvspace{2in}\nobreak\fi\fi
     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \addtocounter{problem}{-1}
     \fi
@@ -246,7 +246,7 @@
     \refstepcounter{problem}\postdisplaypenalty=10000 %
     {\sffamily\bfseries\upshape Exercise \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
-    \ifspace\par\addvspace{2in}\nobreak\fi
+    \ifhandout\ifspace\par\addvspace{2in}\nobreak\fi\fi
     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \fi
 }
@@ -330,8 +330,8 @@
 
 \NewEnviron{interactive}[1][]{\BODY}
 
+\renewcommand{\labelenumi}{$(\mathrm{\alph{enumi}})$}
 \NewEnviron{multiple-choice}[1][]{
-  \renewcommand{\labelenumi}{$(\mathrm{\alph{enumi}})$}
   \begin{enumerate}
     \BODY
   \end{enumerate}
