@@ -258,6 +258,7 @@
   \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
     {\sffamily\bfseries\upshape Question \ifhandout\theproblem\else\theproblem.\theproblemType\fi\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
+    \ifhandout\ifspace\par\addvspace{2in}\nobreak\fi\fi
     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \addtocounter{problem}{-1}
     \fi
@@ -267,6 +268,7 @@
     \refstepcounter{problem}\postdisplaypenalty=10000 %
     {\sffamily\bfseries\upshape Question \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
+    \ifhandout\ifspace\par\addvspace{2in}\nobreak\fi\fi
     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \fi
 }
@@ -278,6 +280,7 @@
   \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
     {\sffamily\bfseries\upshape Exploration \ifhandout\theproblem\else\theproblem.\theproblemType\fi\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
+    \ifhandout\ifspace\par\addvspace{2in}\nobreak\fi\fi
     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \addtocounter{problem}{-1}
     \fi
@@ -287,6 +290,7 @@
     \refstepcounter{problem}\postdisplaypenalty=10000 %
     {\sffamily\bfseries\upshape Exploration \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
+    \ifhandout\ifspace\par\addvspace{2in}\nobreak\fi\fi
     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \fi
 }
