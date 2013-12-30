@@ -4,61 +4,74 @@
 \usepackage{multirow}
 \usepackage{fancyvrb}
 \usepackage{xcolor}
+\usepackage{dirtree}
 
 \newcommand\code[1]{{\bfseries\texttt{#1}}}
+\newcommand\ximera{\textsl{Ximera}}
 
 
 \fvset{commandchars=+(),formatcom=\color{blue!50!black}}
 
 \begin{document}
-\title{XIMERA: Markup in Practice}
+\title{\ximera\: Markup in Practice}
 \maketitle
 
 \tableofcontents
 
-The goal of the XIMERA Project is to allow authors to write online
+The goal of the \ximera\ Project is to allow authors to write online
 interactive content though \LaTeX\ documents.
 
 
 \section{Setup}
 
-To begin, use the \code{ximera} document class.
 
+
+We'll start with a directory \code{ximeraActivities}. Within this
+directory, we need \code{ximera.cls} and at least one directory for
+each activity, say \code{firstActivity}. Within first activity we have
+two files, \code{firstActivity.tex} and \code{firstActivitySource.xim}.
+Here is a schematic of the directory tree:
+\dirtree{%
+.1 ximeraActivities.
+.2 ximera.cls.
+.2 firstActivity.
+.3 firstActivity.tex.
+.3 firstActivitySource.xim.
+}
+
+The file \code{firstActivity.tex} is simply a wrapper for \code{firstActivitySource.xim} and contains the following code:
 
 \begin{Verbatim}
-  +color(red)\documentclass{ximera}
+  \documentclass{../ximera}
   \begin{document}
-  Your document.
+  \input{firstActivitySource.xim}
   \end{document}
 \end{Verbatim}
 
-
-To help navigate the collection of activities, authors should try to
-include a headline, title, prerequisites, and outcomes.
+On the otherhand, \code{firstActivitySource.xim} should look something
+like: 
 
 \begin{Verbatim}
-  \documentclass{ximera}
-  \begin{document}
   +color(red)\headline{An example of syntax.} 
   +color(red)\activitytitle{The Title} 
   +color(red)\prerequisites{prereq1,prereq2}
   +color(red)\outcomes{outcome1,outcome2}
   Your document.
-  \end{document}
 \end{Verbatim}
-
-The headline should be a one sentence description of the activity, and
-must come before the title. Each prerequisite and outcome should be
-without spaces, and every attempt should be made to use already
-available tags for the prerequisites and outcomes needed/delivered by
-this activity. These may appear anywhere in the document.
+To help navigate the collection of activities, authors should try to
+include a headline, title, prerequisites, and outcomes.  The headline
+should be a one sentence description of the activity, and must come
+before the title. Each prerequisite and outcome should be without
+spaces, and every attempt should be made to use already available tags
+for the prerequisites and outcomes needed/delivered by this
+activity. These may appear anywhere in the document.
 
 
 
 \section{Writing basic questions}
 
 
-The XIMERA Project offers four basic problem-like environments:
+The \ximera\ Project offers four basic problem-like environments:
 \code{exercise}, \code{question}, \code{exploration}, and
 \code{hint}. From the interactive viewpoint, each of these
 environments does basically the same thing, providing a question for
@@ -292,8 +305,19 @@ To add interactive elements, use the \code{interactive} environment.
 \end{Verbatim}
 
 
+\section{Suggested directory structure}
 
-
+\dirtree{%
+.1 ximeraActivities.
+.2 course.tex.
+.2 ximera.cls.
+.2 firstActivity.
+.3 firstActivity.tex.
+.3 firstActivitySource.xim.
+.2 secondActivity.
+.3 secondActivity.tex.
+.3 secondActivitySource.xim.
+}
 
 
 
