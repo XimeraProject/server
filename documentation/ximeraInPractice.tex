@@ -66,6 +66,9 @@ spaces, and every attempt should be made to use already available tags
 for the prerequisites and outcomes needed/delivered by this
 activity. These may appear anywhere in the document.
 
+While this may seem to be a strange directory structure, we think it
+allows for flexiable use of the source, see Section~\ref{S:Course}.
+
 
 
 \section{Writing basic questions}
@@ -305,7 +308,7 @@ To add interactive elements, use the \code{interactive} environment.
 \end{Verbatim}
 
 
-\section{Suggested directory structure}
+\section{Building a course}\label{S:Course}
 
 \dirtree{%
 .1 ximeraActivities.
@@ -317,9 +320,25 @@ To add interactive elements, use the \code{interactive} environment.
 .2 secondActivity.
 .3 secondActivity.tex.
 .3 secondActivitySource.xim.
+.2 thirdActivity.
+.3 thirdActivity.tex.
+.3 thirdActivitySource.xim.
 }
 
+The file \code{course.tex} contains the following code:
 
+\begin{Verbatim}
+  \documentclass{ximera}
+  \begin{document}
+  \title{The Title of the Course}
+  \author{The authors}
+  \maketitle
+  \tableofcontents
+  \input{./firstActivity/firstActivitySource.xim}
+  \input{./secondActivity/secondActivitySource.xim}
+  \input{./thirdActivity/thirdActivitySource.xim}
+\end{document}
+\end{Verbatim}
 
 
 \end{document}

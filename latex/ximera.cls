@@ -161,7 +161,7 @@
             {\bfseries\LARGE\raggedright}
             {\theactivitytitle}{1em}
             {}
-            [\normalfont\small\itshape\raggedright\activityheadline]
+            [\normalfont\small\itshape\raggedright\activityheadline\setcounter{problem}{0}]
 \titlespacing*{\activitytitle}{0pt}{0pt}{2em}
 \renewcommand{\theactivitytitle}{\arabic{activitytitle}}
 
