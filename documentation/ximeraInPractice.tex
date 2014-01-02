@@ -48,7 +48,7 @@ The file \code{firstActivity.tex} is simply a wrapper for \code{firstActivitySou
   \end{document}
 \end{Verbatim}
 
-On the otherhand, \code{firstActivitySource.xim} should look something
+On the other hand, \code{firstActivitySource.xim} should look something
 like: 
 
 \begin{Verbatim}
@@ -67,7 +67,7 @@ for the prerequisites and outcomes needed/delivered by this
 activity. These may appear anywhere in the document.
 
 While this may seem to be a strange directory structure, we think it
-allows for flexiable use of the source, see Section~\ref{S:Course}.
+allows for flexible use of the source, see Section~\ref{S:Course}.
 
 
 
@@ -107,6 +107,8 @@ The \code{exploration} environment is for more open-ended problems.
 
 The \code{hint} is a sub-question environment that will help with
 solving the main question.
+
+Each of these environments (except for hint) can have space after it in 
 
 
 
@@ -309,6 +311,25 @@ To add interactive elements, use the \code{interactive} environment.
 
 
 \section{Building a course}\label{S:Course}
+
+The document class allows for some optional arguments:
+\begin{description}
+\item[nohints] Displays all questions with solutions but no hints are shown.
+\item[handout] Displays the first of each question in a shuffle environment, without solutions or hints.
+\item[space] To be used with the \code{handout} option, provides 2
+  inches of blank space below each problem. Note: Each problem
+  environment also has an optional argument where the author can
+  change the amount of space displayed.
+\end{description}
+
+
+Links to videos can be added with the \code{video} command:
+
+\begin{Verbatim}
+  +color(red)\video{some-video-url}
+\end{Verbatim}
+
+
 
 \dirtree{%
 .1 ximeraActivities.

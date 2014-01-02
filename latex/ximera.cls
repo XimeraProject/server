@@ -49,11 +49,14 @@
 \ProvidesClass{ximera}[\filedate\space Version \fileversion\space by
   Bart Snapp]
 
+%\RequirePackage{hyperref} %% this breaks something!
 \RequirePackage{environ}
+\RequirePackage{url}
 \RequirePackage{xcolor}
-\RequirePackage{ifmtarg}% http://ctan.org/pkg/ifmtarg
+%\RequirePackage{ifmtarg}% http://ctan.org/pkg/ifmtarg
 \RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
 \RequirePackage{multido}% http://ctan.org/pkg/multido
+\RequirePackage{amsmath}
 
 
 \newif\ifhandout
@@ -68,11 +71,11 @@
 \newif\ifshuffle
 \shufflefalse
 
-\newif\ifspace %% NOT YET IMPLEMENTED
+\newif\ifspace 
 \spacefalse
 \DeclareOption{space}{\spacetrue}
 %% This basically works for exercises, though page breaks are weird. 
-%% Also, there needs to be an optional argument to change the space. 
+
 
 
 \DeclareOption*{%
@@ -87,6 +90,10 @@
 
 \newcommand{\prerequisites}[1]{}
 \newcommand{\outcomes}[1]{}
+\newcommand{\video}[1]{\footnote{Video link: \url{#1}}}
+
+
+
 
 \everymath{\displaystyle} %makes everymath display style could be optional
 
@@ -229,14 +236,16 @@
 % ---------------------------------------------------------------------
 % Problem environments: Exercise, Question, Exploration
 
+%\@ifnotmtarg{#1}{\ (#1)}}
 
-\NewEnviron{exercise}[1][]{%
+
+\NewEnviron{exercise}[1][2in]{%
   \ifshuffle\iffirstproblem  % this format is shown in shuffle
   \par\addvspace{3ex}\noindent\nobreak
   \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Exercise \ifhandout\theproblem\else\theproblem.\theproblemType\fi\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
+    {\sffamily\bfseries\upshape Exercise \ifhandout\theproblem\else\theproblem.\theproblemType\fi} \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
-    \ifhandout\ifspace\par\addvspace{2in}\nobreak\fi\fi
+    \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \addtocounter{problem}{-1}
     \fi
@@ -244,21 +253,21 @@
     \else 
     \par\addvspace{2ex}\noindent\nobreak % this format is shown when stand-alone
     \refstepcounter{problem}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Exercise \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
+    {\sffamily\bfseries\upshape Exercise \theproblem\slshape} \ \ignorespaces%
     \BODY % Typeset theorem body/content
-    \ifhandout\ifspace\par\addvspace{2in}\nobreak\fi\fi
+    \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \fi
 }
 
 
-\NewEnviron{question}[1][]{%
+\NewEnviron{question}[1][2in]{%
   \ifshuffle\iffirstproblem  % this format is shown in shuffle
   \par\addvspace{3ex}\noindent\nobreak
   \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Question \ifhandout\theproblem\else\theproblem.\theproblemType\fi\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
+    {\sffamily\bfseries\upshape Question \ifhandout\theproblem\else\theproblem.\theproblemType\fi} \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
-    \ifhandout\ifspace\par\addvspace{2in}\nobreak\fi\fi
+    \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \addtocounter{problem}{-1}
     \fi
@@ -266,21 +275,22 @@
     \else 
     \par\addvspace{2ex}\noindent\nobreak % this format is shown when stand-alone
     \refstepcounter{problem}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Question \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
+    {\sffamily\bfseries\upshape Question \theproblem\slshape} \ \ignorespaces%
     \BODY % Typeset theorem body/content
-    \ifhandout\ifspace\par\addvspace{2in}\nobreak\fi\fi
+    \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \fi
 }
 
 
-\NewEnviron{exploration}[1][]{%
+
+\NewEnviron{exploration}[1][2in]{%
   \ifshuffle\iffirstproblem  % this format is shown in shuffle
   \par\addvspace{3ex}\noindent\nobreak
   \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Exploration \ifhandout\theproblem\else\theproblem.\theproblemType\fi\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
+    {\sffamily\bfseries\upshape Exploration \ifhandout\theproblem\else\theproblem.\theproblemType\fi} \ \slshape\ignorespaces%
     \BODY % Typeset theorem body/content
-    \ifhandout\ifspace\par\addvspace{2in}\nobreak\fi\fi
+    \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \addtocounter{problem}{-1}
     \fi
@@ -288,30 +298,27 @@
     \else 
     \par\addvspace{2ex}\noindent\nobreak % this format is shown when stand-alone
     \refstepcounter{problem}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Exploration \theproblem\@ifnotmtarg{#1}{\ (#1)}}\ \ \slshape\ignorespaces%
+    {\sffamily\bfseries\upshape Exploration \theproblem\slshape} \ \ignorespaces%
     \BODY % Typeset theorem body/content
-    \ifhandout\ifspace\par\addvspace{2in}\nobreak\fi\fi
+    \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \fi
 }
 
 
-
-
-
-\NewEnviron{solution}[1][]{%
+\NewEnviron{solution}{%
   \ifhandout\relax\else\par\noindent\par\nobreak\noindent
   \postdisplaypenalty=10000 %
-    {\small\itshape\bfseries Solution \@ifnotmtarg{#1}{\ (#1)}}\ \ \upshape\ignorespaces%
+    {\small\itshape\bfseries Solution} \ \upshape\ignorespaces%
     \small\BODY % Typeset theorem body/content
     \par\addvspace{1ex}\nobreak\noindent
     \fi
     }
 
-\NewEnviron{hint}[1][]{%
+\NewEnviron{hint}{%
   \ifhints\par\addvspace{.5ex}\nobreak\noindent
   \postdisplaypenalty=10000 %
-                 {\small\slshape\bfseries\color{gray} Hint:\@ifnotmtarg{#1}{\ (#1)}}\ \ \small\color{gray}\slshape\ignorespaces%
+                 {\small\slshape\bfseries\color{gray} Hint:\small\color{gray}} \ \slshape\ignorespaces%
                  \BODY % Typeset theorem body/content
                  \par\addvspace{.5ex}\nobreak\noindent%
                  \fi}
@@ -321,10 +328,10 @@
 
 \makeatother
 
-\newif\iffirstproblem% Condition for first exercise
+\newif\iffirstproblem% Condition for first problem
 \NewEnviron{shuffle}[1][]{
   \shuffletrue
-  \firstproblemtrue % Allow first exercise environment to be set
+  \firstproblemtrue % Allow first problem environment to be set
   \BODY
   \refstepcounter{problem}\setcounter{problemType}{0}\global\shufflefalse}
            
