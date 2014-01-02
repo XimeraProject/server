@@ -108,9 +108,21 @@ The \code{exploration} environment is for more open-ended problems.
 The \code{hint} is a sub-question environment that will help with
 solving the main question.
 
-Each of these environments (except for hint) can have space after it in 
+Each of these environments (except for hint) can have space after it in via an optional documentclass argument \code{space}.
 
 
+\begin{Verbatim}
+  \documentclass+color(red)[space]+color(blue!50!black){../ximera}
+  ...
+  \begin{exercise}
+    An exercise followed by 2 inches of space.
+  \end{exercise}
+
+  \begin{exercise}+color(red)[5in]
+    An exercise followed by 5 inches of space.
+  \end{exercise}
+
+\end{Verbatim}
 
 \section{Adding solutions and answer fields}
 
