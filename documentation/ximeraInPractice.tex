@@ -29,26 +29,26 @@ interactive content though \LaTeX\ documents.
 We'll start with a directory \code{ximeraActivities}. Within this
 directory, we need \code{ximera.cls} and at least one directory for
 each activity, say \code{firstActivity}. Within first activity we have
-two files, \code{firstActivity.tex} and \code{firstActivitySource.xim}.
+two files, \code{firstActivity.tex} and \code{firstActivitySource.tex}.
 Here is a schematic of the directory tree:
 \dirtree{%
 .1 ximeraActivities.
 .2 ximera.cls.
 .2 firstActivity.
 .3 firstActivity.tex.
-.3 firstActivitySource.xim.
+.3 firstActivitySource.tex.
 }
 
-The file \code{firstActivity.tex} is simply a wrapper for \code{firstActivitySource.xim} and contains the following code:
+The file \code{firstActivity.tex} is simply a wrapper for \code{firstActivitySource.tex} and contains the following code:
 
 \begin{Verbatim}
   \documentclass{../ximera}
   \begin{document}
-  \input{firstActivitySource.xim}
+  \input{firstActivitySource.tex}
   \end{document}
 \end{Verbatim}
 
-On the other hand, \code{firstActivitySource.xim} should look something
+On the other hand, \code{firstActivitySource.tex} should look something
 like: 
 
 \begin{Verbatim}
@@ -349,13 +349,13 @@ Links to videos can be added with the \code{video} command:
 .2 ximera.cls.
 .2 firstActivity.
 .3 firstActivity.tex.
-.3 firstActivitySource.xim.
+.3 firstActivitySource.tex.
 .2 secondActivity.
 .3 secondActivity.tex.
-.3 secondActivitySource.xim.
+.3 secondActivitySource.tex.
 .2 thirdActivity.
 .3 thirdActivity.tex.
-.3 thirdActivitySource.xim.
+.3 thirdActivitySource.tex.
 }
 
 The file \code{course.tex} contains the following code:
@@ -367,9 +367,9 @@ The file \code{course.tex} contains the following code:
   \author{The authors}
   \maketitle
   \tableofcontents
-  \input{./firstActivity/firstActivitySource.xim}
-  \input{./secondActivity/secondActivitySource.xim}
-  \input{./thirdActivity/thirdActivitySource.xim}
+  \input{./firstActivity/firstActivitySource.tex}
+  \input{./secondActivity/secondActivitySource.tex}
+  \input{./thirdActivity/thirdActivitySource.tex}
 \end{document}
 \end{Verbatim}
 
