@@ -1,0 +1,7 @@
+extends layout
+
+block content
+  h1= Activities
+  each activity, i in activities
+    a(href='/activity/' + activity._id) #{activity._id}
+    br
