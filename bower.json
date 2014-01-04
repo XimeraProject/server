@@ -6,7 +6,7 @@
 	"moment": "*",
 	"lex": "https://github.com/aaditmshah/lexer.git",
 	"jquery": "*",
-        "bootstrap": "2.3.2",
+        "bootstrap": "*",
         "angular": "1.0.7",
 	"underscore": "*",
         "font-awesome": "*",

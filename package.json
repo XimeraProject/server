@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "postinstall": "./node_modules/bower/bin/bower install && cd ./bower_components/mathquill && npm install && make && cd ../.."
+    "postinstall": "./node_modules/bower/bin/bower install && cd ./components/mathquill && npm install && make && cd ../.."
   },
   "dependencies": {
     "bower": "*",
@@ -25,6 +25,8 @@
     "requirejs": "*",
     "jasmine-node": "*",
     "poet": "*",
+    "chai": "*",
+    "karma-mocha": "*",
     "grunt-mocha": "*",
     "grunt-mocha-test": "*",
     "grunt-jison": "*",
