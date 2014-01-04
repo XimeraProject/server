@@ -63,6 +63,10 @@
 \handoutfalse
 \DeclareOption{handout}{\handouttrue}
 
+\newif\ifnewpage
+\newpagefalse
+\DeclareOption{newpage}{\newpagetrue}
+
 
 \newif\ifhints
 \hintstrue
@@ -119,22 +123,22 @@
 
 % will all work:
 
-\setlength{\textwidth}{\paperwidth}
-\addtolength{\textwidth}{-2in}
-\setlength{\oddsidemargin}{0pt}
-\setlength{\evensidemargin}{0pt}
+%% \setlength{\textwidth}{\paperwidth}
+%% \addtolength{\textwidth}{-2in}
+%% \setlength{\oddsidemargin}{0pt}
+%% \setlength{\evensidemargin}{0pt}
 
-\setlength{\headheight}{15pt}
-\setlength{\headsep}{15pt}
-\setlength{\topmargin}{0in}
-\addtolength{\topmargin}{-\headheight}
-\addtolength{\topmargin}{-\headsep}
-\setlength{\footskip}{29pt}
-\setlength{\textheight}{\paperheight}
-\addtolength{\textheight}{-2.2in}
+%% \setlength{\headheight}{15pt}
+%% \setlength{\headsep}{15pt}
+%% \setlength{\topmargin}{0in}
+%% \addtolength{\topmargin}{-\headheight}
+%% \addtolength{\topmargin}{-\headsep}
+%% \setlength{\footskip}{29pt}
+%% \setlength{\textheight}{\paperheight}
+%% \addtolength{\textheight}{-2.2in}
 
-\setlength{\marginparwidth}{.5in}
-\setlength{\marginparsep}{5pt}
+%% \setlength{\marginparwidth}{.5in}
+%% \setlength{\marginparsep}{5pt}
 
 %\setlength{\topsep}{10pt}
 
@@ -257,7 +261,8 @@
     \BODY % Typeset theorem body/content
     \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
-    \fi
+    \fi  
+    \ifnewpage\newpage\fi
 }
 
 
@@ -280,6 +285,7 @@
     \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \fi
+    \ifnewpage\newpage\fi
 }
 
 
@@ -303,6 +309,7 @@
     \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
     \fi
+    \ifnewpage\newpage\fi
 }
 
 
@@ -341,7 +348,9 @@
 
 \NewEnviron{interactive}[1][]{\BODY}
 
-\renewcommand{\labelenumi}{$(\mathrm{\alph{enumi}})$}
+\renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}
+\renewcommand{\labelenumi}{\theenumi}
+
 \NewEnviron{multiple-choice}[1][]{
   \begin{enumerate}
     \BODY
