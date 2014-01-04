@@ -1,0 +1,28 @@
+.navbar.navbar-fixed-top
+  .navbar-inner
+    .container
+      a.brand(href="#")
+        | Gratis
+        strong.gratisu U
+      .nav-collapse.collapse
+        ul.nav.pull-right
+           if user
+             li.dropdown-right
+               a.dropdown-toggle(href="#",data-toggle="dropdown")
+                 | <i class="icon-user"></i> #{user.name} 
+                 b.caret
+               ul.dropdown-menu
+                 li
+                   a(href="/users/#{user._id}") <i class='icon-cogs'></i> Profile
+                 li
+                   a(href="/logout") <i class='icon-signout'></i> Logout
+           else
+             li
+               a(href="/auth/google") Sign In
+        ul.nav
+          li.active
+            a(href="#") Home
+          li
+            a(href="#about") About
+          li
+            a(href="#contact") Contact
