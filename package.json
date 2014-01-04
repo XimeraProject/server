@@ -26,9 +26,9 @@
     "jasmine-node": "*",
     "poet": "*",
     "chai": "*",
+    "karma": "*",
     "karma-mocha": "*",
-    "grunt-mocha": "*",
-    "grunt-mocha-test": "*",
+    "karma-chai": "*",
     "grunt-jison": "*",
     "grunt-contrib-watch": "*"
   },
