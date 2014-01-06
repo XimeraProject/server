@@ -1,5 +1,28 @@
-extends layout
+extends layouts/main
 
 block content
-  h1= title
-  p Welcome to #{title}
+  .callout
+     .container
+       .row
+         .col-md-12
+           h1 <span style="font-weight: 200;">The</span> <span style="font-weight: 700;">Ximera</span> <span style="font-weight: 200;">Project</span>
+       .row
+         .col-md-12
+           h2 Open courses.  Free math.
+       .row
+         .col-md-9
+           h2 Starting March 2013.
+         .col-md-3
+           h2
+             a.btn.btn-primary.btn-lg(href="courses/") View Courses
+  .container
+    if user
+        p Hello #{user.name}!
+        p
+            a(href="/logout") Logout
+    else
+        a(href="/auth/google") Sign In with Google
+     
+    each i in [1,2,3,4,5]
+     p
+      | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus volutpat urna id scelerisque ornare. Donec mattis leo a mauris dapibus semper. Vestibulum vel nisl eu tortor lobortis porttitor. Duis consectetur vestibulum odio, sed aliquam neque pellentesque id. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce suscipit augue ut tempus luctus. Nunc fermentum leo eu nibh ultrices euismod at lobortis massa. Sed semper fringilla aliquam. Aenean quam est, dignissim at dolor tempor, sodales convallis purus. Cras velit tortor, viverra a pretium et, bibendum viverra risus. Sed vulputate dictum lectus, vel euismod leo faucibus facilisis. Proin quis dapibus nisl. Phasellus eu ante eu nisl adipiscing suscipit non eget arcu.
