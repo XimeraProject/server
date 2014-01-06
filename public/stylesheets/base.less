@@ -58,8 +58,8 @@
 
 @secondary-color:  #BB0000;
 
-@secondary-color-dark: darken(@secondary-color,10%);
-@secondary-color-darkest: darken(@secondary-color,20%);
+@secondary-color-dark: darken(@secondary-color,15%);
+@secondary-color-darkest: darken(@secondary-color,25%);
 @secondary-color-light: lighten(@secondary-color,20%);
 @secondary-color-whiter: mix(@secondary-color,@white,50%);
 
@@ -78,8 +78,7 @@
 @navbar-default-brand-color: #989CAE;
 
 @navbar-inverse-bg: @secondary-color-darkest;
-
-@navbar-default-bg: @secondary-color;
+@navbar-default-bg: @secondary-color-dark;
 @navbar-default-color: @white;
 @navbar-default-link-color: @white;
 @navbar-default-link-hover-color: @secondary-color-whiter;
@@ -136,8 +135,8 @@ div.footer .navbar-static-bottom {
 
 @font-family-sans-serif: 'Raleway', Helvetica, Ariel;
 
-@link-color: @secondary-color;
-@link-hover-color: @secondary-color-darkest;
+@link-color: @primary-color-light;
+@link-hover-color: @primary-color-darkest;
 
 /*****************************************************************/
 /* Big boxes in which to feature content */
@@ -189,8 +188,8 @@ body {
 }
 
 /* Set the fixed height of the footer here */
-#footer {
-  height: @footer-height;
+div.footer {
+  min-height: @footer-height;
 }
 
 #wrap > .container {
@@ -212,13 +211,13 @@ body {
 
 footer {
     color: @navbar-default-color;
-    height: @footer-height;
 }
 
 footer.navbar {
   margin-bottom: 0px;
   padding-top: 12pt;
   margin-top: 12pt;
+  min-height: @footer-height;
 }
 
 footer h5 {
