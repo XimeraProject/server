@@ -30,7 +30,13 @@
     "karma-mocha": "*",
     "karma-chai": "*",
     "grunt-jison": "*",
-    "grunt-contrib-watch": "*"
+    "grunt-contrib-watch": "*",
+    "grunt-contrib-less": "*",
+    "gridfs-stream": "*",
+    "mongoose": "*",
+    "fstream": "*",
+    "winston": "*",
+    "less": "*"
   },
   "devDependencies": {
     "load-grunt-tasks": "~0.2.1"
