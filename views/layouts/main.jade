@@ -11,7 +11,7 @@ html(lang="en",ng-app='ximeraApp')
         block title
         |  - Ximera
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    meta(name="description",content="Ximera provides backend technology for online courses")
+    meta(name="description",content="Ximera provides the backend technology for online courses")
     meta(name="author", content="The Ximera Project")
     meta(name="keywords", content="mathematics, math, maths, courses, course, education, calculus, complex analysis, algebra, geometry, graphs, plots, MOOC")
 
@@ -30,10 +30,9 @@ html(lang="en",ng-app='ximeraApp')
     link(rel="shortcut icon",type="image/x-icon",href="/favicon.ico")
 
   body
-     .wrap
+     #wrap
        include includes/header
        block content
-       .push
      .footer
        include includes/footer
 
