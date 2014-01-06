@@ -3,15 +3,12 @@ mixin breadcrumbs(links,titles)
     li
       a(href="/")
         | Home
-      span.divider /
     - var i = 0;
     - var linkCount = links.length
     - while ( i < linkCount - 1 )
       li
         a(href="#{links[i]}")
           | #{titles[i]}
-        if i != linkCount - 1
-          span.divider / 
       - i++;
     li.active
       | #{titles[linkCount - 1]}

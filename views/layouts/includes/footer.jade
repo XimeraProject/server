@@ -1,21 +1,18 @@
-footer.navbar.navbar-inverse.navbar-static-top
-  .navbar-inner
+footer.navbar.navbar-inverse.navbar-static-bottom
     .container
       .row
-        .span3
+        .col-md-3
           h5
             a(href="/courses") Courses
           a Calculus One
           a Calculus One
           a Calculus One
-        .span3
+        .col-md-3
           h5
             a(href="/about") About
           a(href="/about/faq") FAQ
           a(href="/blog") Blog
-          a(href="/about/privacy") Privacy
-          a(href="/about/legal") Legal
-        .span3
+        .col-md-3
           h5 Social
           a 
             | Twitter 
@@ -26,17 +23,20 @@ footer.navbar.navbar-inverse.navbar-static-top
           a 
             | Google Plus 
             i.icon-google-plus
-          a(href='https://github.com/coreystaten/gratisu-course-backend')
+          a(href='https://github.com/kisonecat/ximera')
             | GitHub 
             i.icon-github
           a(href='/about/contact') Contact Us 
             i.icon-envelope
-        .span3.address
+        .col-md-3.address
           p
             :markdown
-              Built in [Columbus, Ohio](https://en.wikipedia.org/wiki/Columbus,_Ohio)
+              Built in [Columbus, Ohio](https://en.wikipedia.org/wiki/Columbus,_Ohio) at [OSU](http://www.osu.edu/)
           p
             :markdown
               Built on [Node.js](http://nodejs.org/)
+          p
+            :markdown
+              Funded by [NSF Grant DUE-1245433](http://www.nsf.gov/awardsearch/showAward?AWD_ID=1245433)
           p.muted
-            &copy; #{new Date().getFullYear()}, Gratis<strong class="gratisu">U</strong>, Inc.
+            &copy; 2013&ndash;#{new Date().getFullYear()}, <a href="/about/team">Ximera team</a>
