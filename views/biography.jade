@@ -1,0 +1,15 @@
+mixin byline(name,image,link,text)
+  div.media
+    a.pull-left(href="#{link}")
+      img.media-object(src="#{image}")
+    div.media-body
+      h4.media-heading #{name}
+      p
+        != text
+
+mixin biography(name)
+  if name == 'Jim Fowler'
+    mixin byline('Jim Fowler','https://secure.gravatar.com/avatar/6d975935526f533a2732e278ac54d97b.jpg?d=retro&s=64','http://www.math.osu.edu/~fowler/','A lecturer in the <a href="http://www.math.osu.edu/">math department at Ohio State</a>, Jim Fowler\'s research interests broadly include geometry and topology, and more specifically focus on the topology of high-dimensional manifolds and geometric group theory.  You can reach him at <a href="mailto:fowler@math.osu.edu">fowler@math.osu.edu</a>.')
+  if name == 'Steve Gubkin'
+    mixin byline('Steve Gubkin','https://secure.gravatar.com/avatar/6d975935526f533a2732e278ac54d97b.jpg?d=retro&s=64','http://www.math.osu.edu/~fowler/','A graduate student in <a href="http://www.math.osu.edu/">the math department at Ohio State</a>, Steve Gubkin studies complex analysis.')
+
