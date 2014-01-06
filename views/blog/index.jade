@@ -1,0 +1,12 @@
+extends ../layouts/main
+
+block content
+  .container
+    mixin breadcrumbs(['/blog'],['Blog'])
+
+    - var posts = getPosts(0,5)
+    - var page  = 1
+    - each post in posts
+      include includes/postSnippet
+
+    include includes/pagination

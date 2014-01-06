@@ -1,0 +1,10 @@
+div.blogpost
+  .page-header
+    h1
+      a(href=post.url)
+        = post.title
+      small
+        span.date  #{moment(post.date).format("D MMMM YYYY")}
+
+  div.content
+    != post.preview

@@ -1,0 +1,9 @@
+extends ../layouts/main
+
+block title
+  | #{tag}
+
+block content
+  .container
+    - each post in posts
+      include includes/postSnippet
