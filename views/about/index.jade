@@ -1,0 +1,9 @@
+extends ../layouts/main
+
+block content
+  .container
+     mixin breadcrumbs(['/about'],['About Ximera'])
+     .page-header
+       h1 About
+     include index.markdown
+
