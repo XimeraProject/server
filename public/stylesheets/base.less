@@ -1,0 +1,272 @@
+/*****************************************************************/
+/* mathquill */
+@import "../../components/mathquill/build/mathquill.css";
+
+.mathquill-editable {
+  font-size: 14px;
+  min-width: 206px;
+
+  display: inline-block;
+  min-height: @line-height-base;
+  padding: 4px 6px;
+  margin-bottom: @line-height-base / 2;
+  color: @gray;
+  border-radius: @input-border-radius;
+  //vertical-align: middle;
+
+  background-color: @input-bg;
+  border: 1px solid @input-border;
+  .box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
+  .transition(~"border linear .2s, box-shadow linear .2s");
+
+  // Focus state
+  &:focus {
+    border-color: rgba(82,168,236,.8);
+    outline: 0;
+    outline: thin dotted \9; /* IE6-9 */
+    .box-shadow(~"inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6)");
+  }
+}
+
+.input-append,
+.input-prepend {
+  .mathquill-editable {
+    position: relative;
+    margin-bottom: 0;
+    *margin-left: 0;
+    vertical-align: top;
+    border-radius: 0 @input-border-radius @input-border-radius 0;
+    // Make input on top when focused so blue border and shadow always show
+    &:focus {
+      z-index: 2;
+    }
+  }
+}
+
+
+@import 'bootstrap';
+
+/*****************************************************************/
+/* A color scheme from http://colorschemedesigner.com/#4X32Gw0w0w0w0 */
+
+@primary-color: #442369;
+
+@primary-color-dark: darken(@primary-color,10%);
+@primary-color-darkest: darken(@primary-color,20%);
+@primary-color-light: lighten(@primary-color,20%);
+@primary-color-whiter: mix(@primary-color,@white,50%);
+
+@secondary-color:  #BB0000;
+
+@secondary-color-dark: darken(@secondary-color,10%);
+@secondary-color-darkest: darken(@secondary-color,20%);
+@secondary-color-light: lighten(@secondary-color,20%);
+@secondary-color-whiter: mix(@secondary-color,@white,50%);
+
+@tertiary-color: #dcaa38;
+
+@tertiary-color-dark: darken(@tertiary-color,10%);
+@tertiary-color-darkest: darken(@tertiary-color,20%);
+@tertiary-color-light: lighten(@tertiary-color,20%);
+@tertiary-color-whiter: mix(@tertiary-color,@white,50%);
+
+@white: #ffffff;
+
+/****************************************************************/
+
+@body-bg: @white;
+@navbar-default-brand-color: #989CAE;
+
+@navbar-inverse-bg: @secondary-color-darkest;
+
+@navbar-default-bg: @secondary-color;
+@navbar-default-color: @white;
+@navbar-default-link-color: @white;
+@navbar-default-link-hover-color: @secondary-color-whiter;
+@navbar-default-link-active-color: @secondary-color-darkest;
+@navbar-default-link-active-bg: @secondary-color-whiter;
+@navbar-default-brand-color: @white;
+
+.navbar, .navbar .brand, .navbar .nav > li > a {
+    text-shadow: none;
+}
+
+/* Links to ximera should not be emphasized */
+a.ximera {
+    color: inherit;
+}
+
+/* Create the impression that the header is "above" the content with a shadow */
+.navbar-fixed-top {
+  background-color: @navbar-default-bg;
+  background-image: none;
+  background-image: none;
+  background-image: none;
+  background-image: none;
+  background-image: none;
+  background-image: none;
+  background-repeat: no-repeat;
+  filter: none;
+  border: none;
+}
+
+.navbar-fixed-top {
+    .box-shadow(0 0 5px 5px rgba(0,0,0,0.1));
+}
+
+/* Create the impression that the footer is "under" the content with an inset shadow */
+div.footer .navbar-static-bottom {
+  background-color: @navbar-inverse-bg;
+  background-image: none;
+  background-image: none;
+  background-image: none;
+  background-image: none;
+  background-image: none;
+  background-image: none;
+  background-repeat: no-repeat;
+  filter: none;
+}
+
+div.footer .navbar-static-bottom {
+    .box-shadow(inset 0 3px 10px 0 rgba(0,0,0,1));
+}
+
+@footer-height: 14em;
+@navbar-border-radius: 0px;
+
+@font-family-sans-serif: 'Raleway', Helvetica, Ariel;
+
+@link-color: @secondary-color;
+@link-hover-color: @secondary-color-darkest;
+
+/*****************************************************************/
+/* Big boxes in which to feature content */
+
+.feature {
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+
+.dark {
+  background-color: darken(@body-bg,10%);
+}
+
+.callout {
+  padding-top: 120px;
+  padding-bottom: 60px;
+  background-color: @tertiary-color-whiter;
+  border-bottom: solid black 1px;
+  box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.1);
+}
+
+.callout h1 {
+  font-size: 80pt;
+  line-height: 80pt;
+}
+
+.callout h2 {
+  font-size: 36pt;
+  line-height: 36pt;
+}
+
+/*****************************************************************/
+/* If there isn't enough content on the page, push it down. */
+
+/* The html and body elements cannot have any padding or margin. */
+html,
+body {
+  height: 100%;
+}
+
+/* Wrapper for page content to push down footer */
+#wrap {
+  min-height: 100%;
+  height: auto;
+  /* Negative indent footer by its height */
+  margin: 0 auto -@footer-height;
+  /* Pad bottom by footer height */
+  padding: 0 0 @footer-height;
+}
+
+/* Set the fixed height of the footer here */
+#footer {
+  height: @footer-height;
+}
+
+.wrap > .container {
+  padding-top: 60px;
+  margin-bottom: 60px;
+}
+
+.wrap > .container-fluid {
+  padding-top: 60px;
+  margin-bottom: 60px;
+}
+
+/*****************************************************************/
+/* Chunky footer */
+
+/*footer .address .muted {
+  color: darken(@navbar-default-link-hover-color,5%);
+}*/
+
+footer {
+    color: @navbar-default-color;
+    height: @footer-height;
+}
+
+footer.navbar {
+  margin-bottom: 0px;
+  padding-top: 12pt;
+  margin-top: 12pt;
+}
+
+footer h5 {
+  text-transform:uppercase;
+  font-weight: 700;
+}
+
+footer a {
+    display: block;
+    color: @navbar-default-link-color;
+    text-shadow: 0 -1px 0 rgba(0,0,0,.25);
+    &:hover,
+    &:focus {
+	color: @navbar-default-link-hover-color;
+	text-decoration: none;
+    }
+}
+
+footer .address p {
+    color: @navbar-default-link-color;
+}
+
+footer .address a {
+    display: inline;
+}
+
+
+/*****************************************************************/
+/* Font Awesome to replace the glypicons from bootstrap */
+@import "../../components/font-awesome/css/font-awesome.min.css";
+
+@import "../../components/pagedown-bootstrap/Markdown.Editor.less";
+.icon-link,
+.icon-blockquote,
+.icon-code,
+.icon-bullet-list,
+.icon-list,
+.icon-header,
+.icon-hr-line,
+.icon-undo {
+        background-image: url(/components/pagedown-bootstrap/Markdown.Editor.Icons.png);
+}
+
+@import "user.less";
+
+.btn:focus {outline: thin dotted black;}
+
+/*****************************************************************/
+/* x-editable styles */
+@import "../../components/x-editable/dist/bootstrap-editable/css/bootstrap-editable.css";
+
