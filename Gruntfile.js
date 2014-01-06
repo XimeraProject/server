@@ -14,6 +14,17 @@ module.exports = function(grunt) {
 	    }
 	},
 
+	less: {
+	    development: {
+		options: {
+		    paths: ["components/bootstrap/less"]
+		},
+		files: {
+		    "public/stylesheets/base.css": "public/stylesheets/base.less"
+		}
+	    },
+	},
+	
 	/****************************************************************/
 	watch: {
 	    jison: {
@@ -24,7 +35,6 @@ module.exports = function(grunt) {
 
     });
 
-    require('load-grunt-tasks')(grunt);
-
+    require('load-grunt-tasks')(grunt);    
     grunt.registerTask('default', ['jison']);
 };
