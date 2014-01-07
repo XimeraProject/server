@@ -5,6 +5,7 @@ requirejs.config({
 	"angular": "/components/angular/angular",
 	"underscore": "/components/underscore/underscore-min",
 	"x-editable": "/components/x-editable/dist/bootstrap-editable/js/bootstrap-editable.min",
+    "domReady": "/components/requirejs-domready/domReady",
 	"threejs": "/components/threejs/build/three.min",
 	"moment": "/components/moment/min/moment.min",
 
@@ -55,14 +56,17 @@ requirejs.config({
 
 	"mathquill": { deps: ['jquery'] },
     },
-
 });
 
-require( ["angular", "bootstrap", "input-math", "mathjax", "moment"], function(angular) {
+// TODO: Add bootstrap back in.
+// TODO: Add back in input-math
+require( ["require", "angular", "directives/mathjax", "moment", "activity-display"], function(require, angular) {
     'use strict';
 
-    var app = angular.module('ximeraApp', ['ximeraApp.inputMath', 'ximeraApp.mathJax']);
-    angular.bootstrap(document, [app['name']]);
+    var app = angular.module('ximeraApp', ['ximeraApp.mathJax', 'ximeraApp.activity']);
+    require(['domReady!'], function (document) {
+        angular.bootstrap(document, [app['name']]);
+    });
 });
 
 // Load the main app module to start the app

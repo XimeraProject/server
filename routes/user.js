@@ -29,7 +29,7 @@ exports.get = function(req, res){
 		document.gravatar = crypto.createHash('md5').update(document.emails[0]).digest("hex");
 
 	    // Superusers can edit anyone; users can edit themselves
-	    var editable = ('user' in req) && (req.user.superuser || (req.user._id == document._id));
+	    var editable = ('user' in req) && (req.user.superuser || (req.user._id === document._id));
 
 	    res.render('user', { person: document, user: req.user, editable: editable, title: document.name });
         }
@@ -42,7 +42,7 @@ exports.get = function(req, res){
 exports.put = function(req, res){
     var id = req.params.id;
 
-    if ( ('user' in req) && (req.user.superuser || (req.user._id == document._id)) ) {
+    if ( ('user' in req) && (req.user.superuser || (req.user._id === document._id)) ) {
 	hash = {};
 	hash[req.body.name] = req.body.value;
 	console.log( hash );

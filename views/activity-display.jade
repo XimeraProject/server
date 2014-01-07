@@ -1,10 +1,8 @@
 extends layouts/main
 
 block content
-    script.
-        var activityId = "#{activityId}";
-    script(src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js")
-    script(src="http://code.jquery.com/jquery-1.10.2.js")
-    script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.min.js")
-    script(src='/public/javascripts/activity-display.js')
-    | !{activityHtml}
+
+    div.container.activity(data-activityId=activityId)
+        button(ng-controller="ResetButtonCtrl", ng-click="resetPage()")
+            | Reset Page        
+        | !{activityHtml}

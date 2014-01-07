@@ -8,7 +8,7 @@
 define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
     'use strict';
 
-    angular.module('gratisuApp.mathJax', [])
+    angular.module('ximeraApp.mathJax', [])
 	.directive('mathjax', [function() {
 	    return {
 		restrict: 'E', // this directive will only be used as an element

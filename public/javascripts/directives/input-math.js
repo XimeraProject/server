@@ -5,7 +5,7 @@
  *
  */
 
-define(['angular', 'jquery', 'underscore', 'parser/parser', 'mathquill', 'bootstrap'], function(angular, $, _, parse) {
+define(['angular', 'jquery', 'underscore', 'algebra/parser', 'mathquill', 'bootstrap'], function(angular, $, _, parse) {
     'use strict';
 
     angular.module('gratisuApp.inputMath', [])

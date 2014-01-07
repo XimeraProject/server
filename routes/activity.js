@@ -16,25 +16,31 @@ exports.list = function(req, res){
  * GET individual activity.
  */
 
-exports.display = function(req, res){
-    mdb.Activity.findOne({_id: req.params.id}, function (err, activity) {
-        if (activity) {
-            var accum = "";
-            var readStream = mdb.gfs.createReadStream({_id: activity.htmlFileId});
-            readStream.on('data', function (data) {
-                winston.info("Data: %s", data.toString());
-                accum += data;
-            });
-            readStream.on('end', function () {
-                winston.info("End");
-                res.render('activity-display', { activityHtml: accum, activityId: activity._id });
-            });
-            readStream.on('error', function () {
-                res.send('Error reading activity.');
-            })
-        }
-        else {
-            res.send("Activity not found.");
-        }
-    });
+// TODO: Temporary user accounts
+exports.display = function(req, res) {
+    if (!req.user) {
+        res.status(500).send('Need to login.');
+    }
+    else {
+        mdb.Activity.findOne({_id: req.params.id}, function (err, activity) {
+            if (activity) {
+                var accum = "";
+                var readStream = mdb.gfs.createReadStream({_id: activity.htmlFileId});
+                readStream.on('data', function (data) {
+                    winston.info("Data: %s", data.toString());
+                    accum += data;
+                });
+                readStream.on('end', function () {
+                    winston.info("End");
+                    res.render('activity-display', { activityHtml: accum, activityId: activity._id });
+                });
+                readStream.on('error', function () {
+                    res.send('Error reading activity.');
+                })
+            }
+            else {
+                res.send("Activity not found.");
+            }
+        });        
+    }
 };

@@ -13,10 +13,12 @@ var express = require('express')
   , less = require('less-middleware')
   , passport = require('passport')
   , mongo = require('mongodb')
+  , mongoose = require('mongoose')
   , GoogleStrategy = require('passport-google').Strategy
   , http = require('http')
   , path = require('path')
   , angularState = require('./routes/angular-state')
+  , winston = require('winston')
   ;
 
 // Some filters for Jade; admittedly, Jade comes with its own Markdown
@@ -63,15 +65,12 @@ var databaseUrl = 'mongodb://' + process.env.XIMERA_MONGO_URL + "/" + process.en
 var collections = ["users", "scopes"]
 var db = require("mongojs").connect(databaseUrl, collections);
 
-// BADBAD: need mongojs to finish connecting, so I can reference it in the session code
-db.users.find(function(err, client) {
-
-    // Configure passport for use with Google authentication.
-    passport.use(new GoogleStrategy({
+// Configure passport for use with Google authentication.
+passport.use(new GoogleStrategy({
 	returnURL: rootUrl + '/auth/google/return',
 	realm: rootUrl
     }, function (identifier, profile, done) {
-	var err = null;
+	   var err = null;
 	
     	// add unique index on openId field
     	db.ensureIndex({openId:1}, {unique: true}, function(err,indexName) {} );
@@ -91,120 +90,128 @@ db.users.find(function(err, client) {
             done(err, document);
     	});
     }));
-    
-    // Only store the user _id in the session
-    passport.serializeUser(function(user, done) {
-	done(null, user._id);
-    });
 
-    passport.deserializeUser(function(id, done) {
-	db.users.findOne({_id: new mongo.ObjectID(id)}, function(err,document) {
-	    done(err, document);
-	});
-    });
-    
-    var bootstrapPath = path.join(__dirname, 'node_modules', 'bootstrap');
+// Only store the user _id in the session
+passport.serializeUser(function(user, done) {
+   done(null, user._id);
+});
 
-    // Middleware for all environments
-    function addDatabaseMiddleware(req, res, next) {
-	req.db = db;
-	next();
-    }
+passport.deserializeUser(function(id, done) {
+   db.users.findOne({_id: new mongo.ObjectID(id)}, function(err,document) {
+       done(err, document);
+   });
+});
 
-    app.use('/public', express.static(path.join(__dirname, 'public')));
-    app.use('/components', express.static(path.join(__dirname, 'components')));
-    app.use(express.favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
-    app.use(express.logger('dev'));
-    app.use(express.bodyParser());
-    app.use(express.methodOverride());
+var bootstrapPath = path.join(__dirname, 'node_modules', 'bootstrap');
 
-    cookieSecret = 'BADBAD: Fill in with an actual secret from ENV';
-    app.use(express.cookieParser(cookieSecret));
-    app.use(express.session({
+// Middleware for all environments
+function addDatabaseMiddleware(req, res, next) {
+   req.db = db;
+   res.locals.user = req.user;
+   next();
+}
+
+app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/components', express.static(path.join(__dirname, 'components')));
+app.use(express.favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
+app.use(express.logger('dev'));
+app.use(express.bodyParser());
+app.use(express.methodOverride());
+
+cookieSecret = 'BADBAD: Fill in with an actual secret from ENV';
+app.use(express.cookieParser(cookieSecret));
+app.use(express.session({
 	secret: cookieSecret,
 	store: new MongoStore({
-	    db: db.client
+	    db: mongoose.connections[0].db
 	})
-    }));
-    
-    app.use(express.session());
-    app.use(passport.initialize());
-    app.use(passport.session());
-    app.use(addDatabaseMiddleware);
-    app.use(less({
-	src    : path.join(__dirname, 'public', 'stylesheets'),
-	paths  : [path.join(bootstrapPath, 'less')],
-	dest   : path.join(__dirname, 'public', 'stylesheets'),
-	prefix : '/stylesheets'
-    }));
-    
-    app.use(app.router);
+}));
 
-    // Middleware for development only
-    if ('development' == app.get('env')) {
-	app.use(express.errorHandler());
-    }
-    
-    // Setup routes.
-    // TODO: Move to separate file.
-    app.get('/', routes.index);
-    app.get('/users', user.list);
-    app.get('/users/:id', user.get);
-    app.put('/users/:id', user.put);
+app.use(express.session());
+app.use(passport.initialize());
+app.use(passport.session());
 
-    app.get('/activities', activity.list);
-    app.get('/activity/:id', activity.display);    
 
-    app.get('/auth/google', passport.authenticate('google'));
-    app.get('/auth/google/return',
-	    passport.authenticate('google', { successRedirect: '/',
-					      failureRedirect: '/auth/google'}));
-    app.get('/logout', function (req, res) {
-	req.logout();
-	res.redirect('/');
-    });
-    
-    app.get('/about', about.index);
-    app.get('/about/privacy', about.privacy);
-    app.get('/about/contact', about.contact);
-    app.get('/about/faq', about.faq);
 
-    app.get('/angular-state/:activityId', angularState.get);
-    app.put('/angular-state/:activityId', angularState.put)
+app.use(addDatabaseMiddleware);
+app.use(less({
+    src    : path.join(__dirname, 'public', 'stylesheets'),
+    paths  : [path.join(bootstrapPath, 'less')],
+    dest   : path.join(__dirname, 'public', 'stylesheets'),
+    prefix : '/stylesheets'
+}));
 
-    app.locals({
-	moment: require('moment')
-    });
 
-    // Setup blogs
-    var Poet = require('poet')
-    var poet = Poet(app, {
-	posts: './blog/',  // Directory of posts
-	postsPerPage: 5,     // Posts per page in pagination
-	readMoreLink: function (post) {
-	    // readMoreLink is a function that
-	    // takes the post object and formats an anchor
-	    // to be used to append to a post's preview blurb
-	    // and returns the anchor text string
-	    return '<a href="' + post.url + '">Read More &raquo;</a>';
-	},
-	readMoreTag: '<!--more-->', // tag used to generate the preview. More in 'preview' section
 
-	routes: {
-	    '/blog/post/:post': 'blog/post',
-	    '/blog/page/:page': 'blog/page',
-	    '/blog/tag/:tag': 'blog/tag',
-	    '/blog/category/:category': 'blog/category'
-	}
-    });
+app.use(app.router);
 
-    app.get( '/blog', function ( req, res ) { res.render( 'blog/index' ); });
+// Middleware for development only
+if ('development' == app.get('env')) {
+app.use(express.errorHandler());
+}
 
-    poet.init().then( function() {
-	// Start HTTP server for fully configured express App.
-	http.createServer(app).listen(app.get('port'), function(){
-	    console.log('Express server listening on port ' + app.get('port'));
-	});
-    });
 
+
+// Setup routes.
+// TODO: Move to separate file.
+app.get('/', routes.index);
+app.get('/users', user.list);
+app.get('/users/:id', user.get);
+app.put('/users/:id', user.put);
+
+app.get('/activities', activity.list);
+app.get('/activity/:id', activity.display);    
+
+app.get('/auth/google', passport.authenticate('google'));
+app.get('/auth/google/return',
+    passport.authenticate('google', { successRedirect: '/',
+				      failureRedirect: '/auth/google'}));
+app.get('/logout', function (req, res) {
+req.logout();
+res.redirect('/');
 });
+
+app.get('/about', about.index);
+app.get('/about/privacy', about.privacy);
+app.get('/about/contact', about.contact);
+app.get('/about/faq', about.faq);
+
+app.get('/angular-state/:activityId', angularState.get);
+app.put('/angular-state/:activityId', angularState.put)
+
+app.locals({
+moment: require('moment')
+});
+
+// Setup blogs
+var Poet = require('poet')
+var poet = Poet(app, {
+posts: './blog/',  // Directory of posts
+postsPerPage: 5,     // Posts per page in pagination
+readMoreLink: function (post) {
+    // readMoreLink is a function that
+    // takes the post object and formats an anchor
+    // to be used to append to a post's preview blurb
+    // and returns the anchor text string
+    return '<a href="' + post.url + '">Read More &raquo;</a>';
+},
+readMoreTag: '<!--more-->', // tag used to generate the preview. More in 'preview' section
+
+routes: {
+    '/blog/post/:post': 'blog/post',
+    '/blog/page/:page': 'blog/page',
+    '/blog/tag/:tag': 'blog/tag',
+    '/blog/category/:category': 'blog/category'
+}
+});
+
+app.get( '/blog', function ( req, res ) { res.render( 'blog/index' ); });
+
+poet.init().then( function() {
+// Start HTTP server for fully configured express App.
+http.createServer(app).listen(app.get('port'), function(){
+       console.log('Express server listening on port ' + app.get('port'));
+   });
+});
+
+
