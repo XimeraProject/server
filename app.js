@@ -16,6 +16,7 @@ var express = require('express')
   , GoogleStrategy = require('passport-google').Strategy
   , http = require('http')
   , path = require('path')
+  , angularState = require('./routes/angular-state')
   ;
 
 // Some filters for Jade; admittedly, Jade comes with its own Markdown
@@ -167,6 +168,9 @@ db.users.find(function(err, client) {
     app.get('/about/privacy', about.privacy);
     app.get('/about/contact', about.contact);
     app.get('/about/faq', about.faq);
+
+    app.get('/angular-state/:activityId', angularState.get);
+    app.put('/angular-state/:activityId', angularState.put)
 
     app.locals({
 	moment: require('moment')

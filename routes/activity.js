@@ -27,7 +27,7 @@ exports.display = function(req, res){
             });
             readStream.on('end', function () {
                 winston.info("End");
-                res.render('activity-display', { activityHtml: accum });
+                res.render('activity-display', { activityHtml: accum, activityId: activity._id });
             });
             readStream.on('error', function () {
                 res.send('Error reading activity.');

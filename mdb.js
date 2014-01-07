@@ -1,3 +1,5 @@
+// TODO: Unify this with the DB code in app.js
+
 var Grid = require('gridfs-stream');
 var mongoose = require('mongoose');
 var fstream = require('fstream');
