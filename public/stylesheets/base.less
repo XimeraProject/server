@@ -49,14 +49,14 @@
 /*****************************************************************/
 /* A color scheme from http://colorschemedesigner.com/#4X32Gw0w0w0w0 */
 
-@primary-color: #442369;
+@primary-color: #BB0000;
 
 @primary-color-dark: darken(@primary-color,10%);
 @primary-color-darkest: darken(@primary-color,20%);
 @primary-color-light: lighten(@primary-color,20%);
 @primary-color-whiter: mix(@primary-color,@white,50%);
 
-@secondary-color:  #BB0000;
+@secondary-color: #442369;
 
 @secondary-color-dark: darken(@secondary-color,15%);
 @secondary-color-darkest: darken(@secondary-color,25%);
@@ -75,16 +75,32 @@
 /****************************************************************/
 
 @body-bg: @white;
-@navbar-default-brand-color: #989CAE;
+//@navbar-default-brand-color: #989CAE;
+@navbar-default-brand-color: #000;
 
-@navbar-inverse-bg: @secondary-color-darkest;
-@navbar-default-bg: @secondary-color-dark;
-@navbar-default-color: @white;
-@navbar-default-link-color: @white;
-@navbar-default-link-hover-color: @secondary-color-whiter;
-@navbar-default-link-active-color: @secondary-color-darkest;
-@navbar-default-link-active-bg: @secondary-color-whiter;
-@navbar-default-brand-color: @white;
+//@navbar-inverse-bg: @secondary-color;
+@navbar-inverse-bg: #EEE;
+@navbar-inverse-color: #555;
+@navbar-inverse-link-color: #666;
+
+//@navbar-default-bg: @secondary-color;
+//@navbar-default-color: @white;
+
+@navbar-default-bg: @white;
+@navbar-default-color: #000;
+
+//@navbar-default-link-color: @white;
+//@navbar-default-link-hover-color: @secondary-color-whiter;
+//@navbar-default-link-active-color: @secondary-color-darkest;
+//@navbar-default-link-active-bg: @secondary-color-whiter;
+
+@navbar-default-link-color: #000;
+@navbar-default-link-hover-color: #222;
+@navbar-default-link-hover-bg: #EEE;
+@navbar-default-link-active-color: #333;
+@navbar-default-link-active-bg: #DDD;
+
+//@navbar-default-brand-color: @white;
 
 .navbar, .navbar .brand, .navbar .nav > li > a {
     text-shadow: none;
@@ -127,7 +143,7 @@ div.footer .navbar-static-bottom {
 }
 
 div.footer .navbar-static-bottom {
-    .box-shadow(inset 0 3px 10px 0 rgba(0,0,0,1));
+    box-shadow: inset 1px 4px 9px -6px; 
 }
 
 @footer-height: 14em;
@@ -147,20 +163,24 @@ div.footer .navbar-static-bottom {
 }
 
 .dark {
-  background-color: darken(@body-bg,10%);
+  background-color: #000;
 }
 
 .callout {
   padding-top: 120px;
   padding-bottom: 60px;
-  background-color: @tertiary-color-whiter;
+  background-color: #000;
+  color: @white;
   border-bottom: solid black 1px;
   box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.1);
+  background-image:url('/public/images/patterns/exes.png');
+  background-repeat:repeat;
 }
 
 .callout h1 {
   font-size: 80pt;
   line-height: 80pt;
+  text-transform:uppercase;
 }
 
 .callout h2 {
@@ -193,13 +213,13 @@ div.footer {
 }
 
 #wrap > .container {
-  padding-top: 60px;
-  margin-bottom: 60px;
+  padding-top: 80px;
+  margin-bottom: 80px;
 }
 
 #wrap > .container-fluid {
-  padding-top: 60px;
-  margin-bottom: 60px;
+  padding-top: 80px;
+  margin-bottom: 80px;
 }
 
 /*****************************************************************/
@@ -210,7 +230,7 @@ div.footer {
 }*/
 
 footer {
-    color: @navbar-default-color;
+    color: @navbar-inverse-color;
 }
 
 footer.navbar {
@@ -227,8 +247,8 @@ footer h5 {
 
 footer a {
     display: block;
-    color: @navbar-default-link-color;
-    text-shadow: 0 -1px 0 rgba(0,0,0,.25);
+    color: @navbar-inverse-link-color;
+    // text-shadow: 0 -1px 0 rgba(0,0,0,.25);
     &:hover,
     &:focus {
 	color: @navbar-default-link-hover-color;
@@ -237,7 +257,7 @@ footer a {
 }
 
 footer .address p {
-    color: @navbar-default-link-color;
+    color: @navbar-inverse-link-color;
 }
 
 footer .address a {
@@ -262,6 +282,14 @@ footer .address a {
 }
 
 @import "user.less";
+
+////////////////////////////////////////////////////////////////
+// stix fonts
+//@import "fonts.less";
+//@font-family-serif: 'STIXGeneral', Georgia, 'Times New Roman', Times, serif;
+//@font-family-base: @font-family-serif;
+//@headings-font-family: @font-family-sans-serif;
+//@font-size-base: 14pt;
 
 .btn:focus {outline: thin dotted black;}
 
