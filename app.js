@@ -19,6 +19,7 @@ var express = require('express')
   , path = require('path')
   , angularState = require('./routes/angular-state')
   , winston = require('winston')
+  , template = require('./routes/template')
   ;
 
 // Some filters for Jade; admittedly, Jade comes with its own Markdown
@@ -178,6 +179,8 @@ app.get('/about/faq', about.faq);
 
 app.get('/angular-state/:activityId', angularState.get);
 app.put('/angular-state/:activityId', angularState.put)
+
+app.get('/template/:templateFile', template.renderTemplate)
 
 app.locals({
 moment: require('moment')

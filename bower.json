@@ -8,7 +8,7 @@
 	"lex": "https://github.com/aaditmshah/lexer.git",
 	"jquery": "*",
         "bootstrap": "*",
-        "angular": "1.0.7",
+        "angular": "*",
 	"underscore": "*",
         "font-awesome": "*",
 	"x-editable": "*",
