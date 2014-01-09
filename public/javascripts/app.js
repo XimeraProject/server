@@ -5,7 +5,6 @@ requirejs.config({
 	"angular": "/components/angular/angular",
 	"underscore": "/components/underscore/underscore-min",
 	"x-editable": "/components/x-editable/dist/bootstrap-editable/js/bootstrap-editable.min",
-	"domReady": "/components/requirejs-domready/domReady",
 	"threejs": "/components/threejs/build/three.min",
 	"moment": "/components/moment/min/moment.min",
 
@@ -41,13 +40,10 @@ require( ["require", "angular", "bootstrap", "directives/mathjax", "moment", "ac
     'use strict';
 
     var app = angular.module('ximeraApp', ['ximeraApp.mathJax', 'ximeraApp.activity']);
-    //require(['domReady!'], function (document) {
+    $(document).ready(function() {
         angular.bootstrap(document, [app['name']]);
-//});
+    });
 });
-
-// Load the main app module to start the app
-//requirejs([
 
 /*
     script(src="/public/javascripts/setup-editable.js")
