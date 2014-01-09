@@ -143,7 +143,7 @@ have a solution, we must add a \code{solution} environment.
 
 However, as it stands, the student will be presented with a problem,
 and then be able to ``click'' to see the solution. To have an answer
-field we to add the \code{answer}.
+field we to add the \code{answer}. Note, if the answer is a math expression, then the \$ \dots \$ should be inside the answer. 
 
 \begin{Verbatim}
   \begin{question}
@@ -155,11 +155,21 @@ field we to add the \code{answer}.
   \end{question}
 \end{Verbatim}
 
-The default type for an answer is a mathematical expression. However,
-there are other choices: \code{free-response}, \code{image}, and
-\code{multiple-choice}. The option \code{free-response} provides a
+The default type for an answer is a mathematical expression---hence the argument should be inline math-mode:
+\begin{Verbatim}
+  \begin{question}
+    A question.
+    \begin{solution}
+      A solution. 
+      +color(red)\answer{$6$}.
+    \end{solution}
+  \end{question}
+\end{Verbatim}
+
+However, there are other choices: \code{free-response}, \code{image},
+and \code{multiple-choice}. The option \code{free-response} provides a
 text field that is ungraded. The option \code{image} allows the
-student to upload an image as the solution. 
+student to upload an image as the solution.
 
 For multiple-choice questions, authors should use the
 \code{multiple-choice} environment to list the solutions. This has an
