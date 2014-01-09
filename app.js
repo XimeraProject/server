@@ -111,8 +111,18 @@ function addDatabaseMiddleware(req, res, next) {
    next();
 }
 
+////////////////////////////////////////////////////////////////
+// Less Middleware
+var bootstrapPath = path.join(__dirname, 'components', 'bootstrap');
+app.use(less({
+    src    : path.join(__dirname, 'public', 'stylesheets'),
+    prefix   : '/public/stylesheets',
+    paths  : [path.join(bootstrapPath, 'less')],
+    dest   : path.join(__dirname, 'public', 'stylesheets'),
+}));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/components', express.static(path.join(__dirname, 'components')));
+
 app.use(express.favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
@@ -133,14 +143,6 @@ app.use(passport.session());
 
 app.use(addDatabaseMiddleware);
 
-////////////////////////////////////////////////////////////////
-// Less Middleware
-var bootstrapPath = path.join(__dirname, 'components', 'bootstrap');
-app.use(less({
-    src    : path.join(__dirname, 'public', 'stylesheets'),
-    paths  : [path.join(bootstrapPath, 'less')],
-    dest   : path.join(__dirname, 'public', 'stylesheets'),
-}));
 
 app.use(app.router);
 
