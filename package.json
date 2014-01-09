@@ -8,6 +8,7 @@
     "postinstall": "./node_modules/bower/bin/bower install && cd ./components/mathquill && npm install && make && cd ../.."
   },
   "dependencies": {
+    "underscore": "*",
     "bower": "*",
     "express": "*",
     "less-middleware": "*",
@@ -31,7 +32,6 @@
     "karma-chai": "*",
     "grunt-jison": "*",
     "grunt-contrib-watch": "*",
-    "grunt-contrib-less": "*",
     "gridfs-stream": "*",
     "mongoose": "*",
     "fstream": "*",

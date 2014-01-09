@@ -14,17 +14,6 @@ module.exports = function(grunt) {
 	    }
 	},
 
-	less: {
-	    development: {
-		options: {
-		    paths: ["components/bootstrap/less"]
-		},
-		files: {
-		    "public/stylesheets/base.css": "public/stylesheets/base.less"
-		}
-	    },
-	},
-	
 	/****************************************************************/
 	watch: {
 	    jison: {

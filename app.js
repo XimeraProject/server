@@ -104,8 +104,6 @@ passport.deserializeUser(function(id, done) {
    });
 });
 
-var bootstrapPath = path.join(__dirname, 'node_modules', 'bootstrap');
-
 // Middleware for all environments
 function addDatabaseMiddleware(req, res, next) {
    req.db = db;
@@ -133,17 +131,16 @@ app.use(express.session());
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-
 app.use(addDatabaseMiddleware);
+
+////////////////////////////////////////////////////////////////
+// Less Middleware
+var bootstrapPath = path.join(__dirname, 'components', 'bootstrap');
 app.use(less({
     src    : path.join(__dirname, 'public', 'stylesheets'),
     paths  : [path.join(bootstrapPath, 'less')],
     dest   : path.join(__dirname, 'public', 'stylesheets'),
-    prefix : '/stylesheets'
 }));
-
-
 
 app.use(app.router);
 
