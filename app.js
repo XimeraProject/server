@@ -19,6 +19,8 @@ var express = require('express')
   , path = require('path')
   , angularState = require('./routes/angular-state')
   , winston = require('winston')
+  , template = require('./routes/template')
+  , tikzpicture = require('./routes/tikzpicture')
   ;
 
 // Some filters for Jade; admittedly, Jade comes with its own Markdown
@@ -62,8 +64,8 @@ var MongoStore = require('connect-mongo')(express);
 // the easiest way to use both mongoose for our models and
 // connect-mongo for sessions).
 var databaseUrl = 'mongodb://' + process.env.XIMERA_MONGO_URL + "/" + process.env.XIMERA_MONGO_DATABASE;
-var collections = ["users", "scopes"]
-var db = require("mongojs").connect(databaseUrl, collections);
+var collections = ['users', 'scopes', 'tikzPngFiles'];
+var db = require('mongojs').connect(databaseUrl, collections);
 
 // Configure passport for use with Google authentication.
 passport.use(new GoogleStrategy({
@@ -102,8 +104,6 @@ passport.deserializeUser(function(id, done) {
    });
 });
 
-var bootstrapPath = path.join(__dirname, 'node_modules', 'bootstrap');
-
 // Middleware for all environments
 function addDatabaseMiddleware(req, res, next) {
    req.db = db;
@@ -111,8 +111,18 @@ function addDatabaseMiddleware(req, res, next) {
    next();
 }
 
+////////////////////////////////////////////////////////////////
+// Less Middleware
+var bootstrapPath = path.join(__dirname, 'components', 'bootstrap');
+app.use(less({
+    src    : path.join(__dirname, 'public', 'stylesheets'),
+    prefix   : '/public/stylesheets',
+    paths  : [path.join(bootstrapPath, 'less')],
+    dest   : path.join(__dirname, 'public', 'stylesheets'),
+}));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/components', express.static(path.join(__dirname, 'components')));
+
 app.use(express.favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
@@ -131,16 +141,7 @@ app.use(express.session());
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-
 app.use(addDatabaseMiddleware);
-app.use(less({
-    src    : path.join(__dirname, 'public', 'stylesheets'),
-    paths  : [path.join(bootstrapPath, 'less')],
-    dest   : path.join(__dirname, 'public', 'stylesheets'),
-    prefix : '/stylesheets'
-}));
-
 
 
 app.use(app.router);
@@ -172,12 +173,15 @@ res.redirect('/');
 });
 
 app.get('/about', about.index);
-app.get('/about/privacy', about.privacy);
+app.get('/about/team', about.team);
 app.get('/about/contact', about.contact);
 app.get('/about/faq', about.faq);
 
 app.get('/angular-state/:activityId', angularState.get);
-app.put('/angular-state/:activityId', angularState.put)
+app.put('/angular-state/:activityId', angularState.put);
+
+app.get('/template/:templateFile', template.renderTemplate);
+app.get('/tikzpictures/:hash', tikzpicture.tikzpicture);
 
 app.locals({
 moment: require('moment')

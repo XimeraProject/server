@@ -1,6 +1,32 @@
+/*
+   Event names:
+        attemptAnswer - Whenever an answer-type element has been attempted by the user.
+            {
+                success: Was the answer correct
+                answerUuid: Uuid of the answer element
+                answer: Text representation of user's answer
+                correctAnswer: The complete correct answer
+            }
+        completeSolution - Whenever a question part is completed.
+            {solutionUuid: Uuid of the solution element}
+        completeQuestion - Whenever all parts of a question are completed.
+            {questionUuid: Uuid of the question/exploration/exercise element}
+*/
+
 // Script expects data-activityId attribute in activity div.
 define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
     var app = angular.module('ximeraApp.activity', []);
+
+    // Make sure a list of DOM elements is sorted in the same order in the DOM itself.
+    function sortElements(elements) {
+        var last = null;
+        _.each(elements, function (element) {
+            if (last) {
+                $(element).insertAfter(last);
+            }
+            last = element;
+        });
+    }
 
     app.factory('answerService', ['stateService', function (stateService) {
         var answerService = {};
@@ -151,7 +177,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
     // question, exercise, exploration, solution, answer, (multiple questions not blocking; multiple solutions is blocking), shuffle, hint (Get hint!)
 
     // Choose from among multiple problems
-    app.directive('ximeraShuffle', ['$timeout', 'questionService', 'stateService', function ($timeout, questionService, stateService) {
+    app.directive('ximeraShuffle', ['$timeout', 'stateService', function ($timeout, stateService) {
         return {
             restrict: 'A',
             scope: {},
@@ -171,28 +197,27 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                     });
                 });
 
-                $timeout(function () {
-                    questionService.registerForQuestions(element, function (questionUuid) {
-                        $scope.db.doneUuids.push(questionUuid);
-                        if ($scope.db.activeQuestionUuid === questionUuid) {
-                            var questions = $(element).find('.question, .exercise, .exploration');
-                            var uuids = questions.map(function() {
-                                return $(this).attr('data-uuid');
-                            }).get();
-                            var freeUuids = _.difference(uuids, $scope.db.doneUuids);
+                $(element).on("completeQuestion", function (event, data) {
+                    var questionUuid = data.questionUuid;
+                    $scope.db.doneUuids.push(questionUuid);
+                    if ($scope.db.activeQuestionUuid === questionUuid) {
+                        var questions = $(element).find('.question, .exercise, .exploration');
+                        var uuids = questions.map(function() {
+                            return $(this).attr('data-uuid');
+                        }).get();
+                        var freeUuids = _.difference(uuids, $scope.db.doneUuids);
 
-                            if (freeUuids.length > 0) {
-                                $scope.db.activeQuestionUuid = freeUuids[Math.floor(Math.random() * freeUuids.length)];                       
-                            }
-                            else {
-                                $scope.db.activeQuestionUuid = null;
-                            }
+                        if (freeUuids.length > 0) {
+                            $scope.db.activeQuestionUuid = freeUuids[Math.floor(Math.random() * freeUuids.length)];                       
                         }
-                    });
+                        else {
+                            $scope.db.activeQuestionUuid = null;
+                        }
+                    }
                 });
 
                 // Setup watches.
-                $scope.$watch("[db.doneUuids, db.activeQuestionUuid]", function (newVals) {
+                $scope.$watchCollection("[db.doneUuids, db.activeQuestionUuid]", function (newVals) {
                     var doneUuids = newVals[0];
                     var activeQuestionUuid = newVals[1];
                     if (!doneUuids) {
@@ -200,18 +225,11 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                     }
 
                     // Sort by order done.
-                    var last = null;
-                    _.each(doneUuids, function (doneUuid) {
-                        var doneElt = $(element).find("[data-uuid='" + doneUuid + "']");
-                        if (last) {
-                            $(doneElt).insertAfter(last);
-                        }
-                        else {
-                            // TODO: Prettify
-                            $("[data-uuid=" + activeQuestionUuid + "]").insertAfter(doneElt);
-                        }
-                        last = doneElt;
+                    var sortedQuestions = _.map(doneUuids, function (uuid) {
+                        return $(element).find("[data-uuid=" + uuid + "]");
                     });
+                    sortedQuestions.push($(element).find("[data-uuid=" + activeQuestionUuid + "]"));
+                    sortElements(sortedQuestions);
 
                     // Show number of previous problem given in history count, along with current problem.
                     $(element).find('.question, .exercise, .exploration').each(function (index, questionElt) {
@@ -233,24 +251,32 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
     }]);
 
     // For now, use this as directive function for questions, explorations, and exercises.
-    var questionDirective = ["$timeout", "answerService", "questionService", "stateService", function ($timeout, answerService, questionService, stateService) {
+    var questionDirective = ['$rootScope', '$timeout', 'stateService', function ($rootScope, $timeout, stateService) {
         return {
             restrict: 'A',
             scope: {},
             link: function($scope, element, attrs, controller) {
                 stateService.bindState($scope, $(element).attr('data-uuid'), function () {
                     $timeout(function () {
-                        $scope.db.solutionProgress = 0;
                         var solutions = $(element).find('.solution');
-                        $scope.db.totalSolutionParts = solutions.length;
+                        $scope.db.solutionUuids = _.map(solutions, function (solution) {
+                            return $(solution).attr('data-uuid');
+                        })
+                        if (solutions.length > 0) {
+                            $scope.db.currentSolution = $scope.db.solutionUuids[0];
+                        }
+                        else {
+                            $scope.db.currentSolution = "";
+                        }
+                        $scope.db.complete = false;
                     });
                 });
+
                 // Which part of the question are we up to; only reveal next part after first is complete.
-
-
-                $scope.$watch('db.solutionProgress', function (part) {
+                $scope.$watch('db.currentSolution', function (uuid) {
+                    var index = _.indexOf($scope.db.solutionUuids, $scope.db.currentSolution);
                     $(element).find('.solution').each(function (ii, solutionElt) {
-                        if (ii <= part) {
+                        if ((index === -1) || (ii <= index)) {
                             $(solutionElt).show();
                         }
                         else {
@@ -259,17 +285,22 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                     });
                 });
 
-                // TODO: Track by UUID instead of by counting; syncing with answer element?
-                answerService.registerForAnswers(element, function (success) {
-                    // TODO: Change display when complete?
-                    if (success) {
-                        $scope.db.solutionProgress += 1;
-                    }
-                    if ($scope.db.solutionProgress >= $scope.db.totalSolutionParts) {
-                        questionService.completeQuestion(element);
+                // TODO: Change display when complete?
+                $(element).on('completeSolution', function (event, data) {
+                    if (data.solutionUuid === $scope.db.currentSolution) {
+                        var index = _.indexOf($scope.db.solutionUuids, $scope.db.currentSolution);
+                        if ($scope.db.solutionUuids.length > (index + 1)) {
+                            $scope.db.currentSolution = $scope.db.solutionUuids[index + 1];
+                        }
+                        else {
+                            $scope.db.currentSolution = "";
+                            if (!$scope.db.complete) {
+                                $scope.db.complete = true;
+                                $(element).trigger('completeQuestion', {questionUuid: $(element).attr('data-uuid')});
+                            }
+                        }
                     }
                 });
-
             }
         }
     }]
@@ -278,7 +309,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
     app.directive('ximeraExercise', questionDirective);
     app.directive('ximeraExploration', questionDirective)
 
-    app.directive('ximeraSolution', ["answerService", "stateService", function (answerService, stateService) {
+    app.directive('ximeraSolution', ['$rootScope', 'stateService', function ($rootScope, stateService) {
         return {
             restrict: 'A',
             scope: {},
@@ -287,17 +318,91 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                     $scope.db.complete = false;
                 });
 
-                answerService.registerForAnswers(element, function (success) {
-                    // TODO: Change display when complete?
-                    if (success) {
+                $(element).on('attemptAnswer', function (event, data) {
+                    if (data.success && !$scope.db.complete) {
                         $scope.db.complete = true;
+                        $(element).trigger('completeSolution', {solutionUuid: $(element).attr('data-uuid')});                        
                     }
                 });
             }
         };
     }]);
 
-    app.directive('ximeraAnswer', ["answerService", "stateService", function (answerService, stateService) {
+    app.directive('ximeraMultipleChoice', ['$rootScope', 'stateService', function ($rootScope, stateService) {
+        return {
+            restrict: 'A',
+            scope: {},
+            templateUrl: '/template/ximera-multiple-choice',
+            transclude: true,
+            link: function($scope, element, attrs, controller, transclude) {
+                stateService.bindState($scope, $(element).attr('data-uuid'), function () {
+                    $scope.db.success = false;
+                    $scope.db.message = "";
+                    $scope.db.correctAnswer = $(element).attr('data-answer');
+
+                    // Default to "correct" as answer so that default usage is \choice{Blahblah}{correct}
+                    if ($scope.db.correctAnswer === "") {
+                        $scope.db.correctAnswer = "correct";
+                    }
+
+                    // Extract choice content from original.
+                    transclude(function (clone) {
+                        var choiceElements = $(clone).filter('.choice');
+                        $scope.db.choices = _.map(choiceElements, function (choice) {
+                            var value = $(choice).attr('data-value');
+                            if (value === "") {
+                                // Generate a random value; all options must have distinct values.
+                                value = _.random(0, 1000000000).toString();
+                            }
+                            return {
+                                value: value,
+                                label: $(choice).text(),
+                            }
+                        });
+
+                        // Randomize order.
+                        $scope.db.choices = _.shuffle($scope.db.choices);                       
+                    });
+
+                    $scope.db.radioGroup = $(element).attr('data-uuid');                        
+                });
+
+                $scope.$watch('db.order', function (order) {
+                    var sortedChoices = _.map(order, function (uuid) {
+                        return $(element).find("[data-uuid=" + uuid + "]");
+                    });
+                    sortElements(sortedChoices);
+                }, true);
+                
+                $scope.attemptAnswer = function () {
+                    if (!$scope.db.success) {
+                        var success = false;
+                        if ($scope.db.radioValue === $scope.db.correctAnswer) {
+                            success = true;
+                        }
+
+                        $(element).trigger('attemptAnswer', {
+                            success: success,
+                            answerUuid: $(element).attr('data-uuid'),
+                            answer: $scope.db.radioValue,
+                            correctAnswer: $scope.db.correctAnswer
+                        });
+
+                        if (success) {
+                            $scope.db.message = "Correct";
+                        }
+                        else {
+                            $scope.db.message = "Incorrect";
+                        }
+                        $scope.db.success = success;
+                    }
+                };
+            }
+        };
+    }]);
+
+    // For now answer is just a plain text entry.
+    app.directive('ximeraAnswer', ['$rootScope', 'stateService', function ($rootScope, stateService) {
         return {
             restrict: 'A',
             scope: {},
@@ -307,29 +412,38 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                 stateService.bindState($scope, $(element).attr('data-uuid'), function () {
                     $scope.db.success = false;
                     $scope.db.answer = "";
+                    $scope.db.correctAnswer = $(element).attr('data-answer');
                     $scope.db.message = "";
                 });
                 
                 $scope.attemptAnswer = function () {
                     if (!$scope.db.success) {
-                        $scope.db.success = answerService.attemptAnswerFor(element, $scope.db.answer);
-                        if ($scope.db.success) {
-                            $scope.db.message = "Correct";
+                        var success = false;
+                        if ($scope.db.answer === $scope.db.correctAnswer) {
+                            success = true;
+                        }
+
+                        $(element).trigger('attemptAnswer', {
+                            success: success,
+                            answerUuid: $(element).attr('data-uuid'),
+                            answer: $scope.db.answer,
+                            correctAnswer: $scope.db.correctAnswer
+                        });                        
+
+                        if (success) {
+                            $scope.db.message = 'Correct';
                         }
                         else {
-                            $scope.db.message = "Incorrect";
+                            $scope.db.message = 'Incorrect';
                         }
+                        $scope.db.success = success;
                     }
                 };
             }
-        };    
+        };
     }]);
 
     app.controller('ResetButtonCtrl', ['$scope', 'stateService', function ($scope, stateService) {
         $scope.resetPage = stateService.resetPage;
     }]);
-
-    //  Multiple choice:
-    // TODO: Display multiple choice form.
-    // TODO: Count correct answer.
 });

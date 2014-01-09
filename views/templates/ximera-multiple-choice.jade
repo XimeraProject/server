@@ -1,0 +1,9 @@
+div
+    div(ng-repeat='choice in db.choices')
+        input(type='radio' ng-model='db.radioValue' name='{{db.radioGroup}}' value='{{choice.value}}')
+        | &nbsp;
+        label
+            {{choice.label}}
+    button(ng-hide='db.success' ng-click='attemptAnswer()')
+        | Submit
+    div(ng-bind='db.message')
