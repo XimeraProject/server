@@ -174,7 +174,7 @@ res.redirect('/');
 });
 
 app.get('/about', about.index);
-app.get('/about/privacy', about.privacy);
+app.get('/about/team', about.team);
 app.get('/about/contact', about.contact);
 app.get('/about/faq', about.faq);
 

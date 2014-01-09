@@ -1,0 +1,72 @@
+extends ../layouts/main
+
+mixin person_photo(person)
+  if person['photo']    
+    img(style="float: left; margin-right: 16pt; margin-left: 16pt; margin-bottom: 16pt;" class="img-rounded" src="/public/images/people/#{person['photo']}-150.jpg")
+  else
+    img(style="float: left; margin-right: 16pt; margin-left: 16pt; margin-bottom: 16pt;" class="img-rounded" src="/public/images/people/silhouette-150.jpg")
+
+mixin developer(person)
+  if person['link']
+    a(href=person['link'])
+      mixin person_photo(person)
+  else
+    mixin person_photo(person)
+
+  h4 
+    if person['email']
+      span.developer-email
+        a(href="mailto:#{person['email']}") #{person['email']}
+    if person['link']
+      a(href=person['link'])
+        | #{person['name']}
+    else
+      | #{person['name']}
+
+  p
+    | !{person['description']}
+
+// /*
+// <% unless person.link.nil? %><a href="<%= person.link %>"><% end %>
+// <img style="float: left; margin-right: 16pt; margin-left: 16pt; margin-bottom: 16pt;" class="img-rounded"
+// <% if not person.photo.nil? %>
+//   src="/photos/<%= person.photo %>-150.jpg"/>
+// <% else %>
+//   src="/photos/silhouette-150.png"/>
+// <% end %>
+// <% unless person.link.nil? %></a><% end %>
+
+
+// <h4>
+// <% unless person.email.nil? %>
+//   <span class="developer_email"><a href="mailto:<%= person.email %>"><%= person.email %></a></span>
+// <% end %>
+// <% if person.link.nil? %>
+//   <%= person.name %>
+// <% else %>
+//   <a href="<%= person.link %>"><%= person.name %></a>
+// <% end %>
+// </h4>
+// <p><%=raw person.description.gsub( 'MOOCulus', html_logo ) %></p>
+// */
+
+block content
+  .container
+     mixin breadcrumbs(['/about'],['Development Team'])
+     .page-header
+       h1 Development Team
+         small  or Who made this?
+     p It takes a ton of people to make an experience like this possible. Here are some of the culprits.
+     - var people_per_row = 2;
+     - for (var i = 0; i < team.length / people_per_row; ++i) {
+       .row
+         - for (var j = 0; j < people_per_row; ++j) {
+           - var person = team[people_per_row*i + j]
+           .col-md-6
+             if person
+               mixin developer(person)
+         - }
+     - }
+
+     include team.markdown
+
