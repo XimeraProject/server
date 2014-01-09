@@ -164,21 +164,22 @@ student to upload an image as the solution.
 For multiple-choice questions, authors should use the
 \code{multiple-choice} environment to list the solutions. This has an
 optional argument to display fewer than the total number of
-options. Concerning the answer, the option \code{multiple-choice}
-accepts a pre-defined (non-case sensitive) answer.
+options. No \code{answer} should be given with multiple-choice, as
+this information is encoded with the choices. However, a solution
+should be given, and this would include things that would aid the
+online student, as well as any \code{hints}, see below.
 
 \begin{Verbatim}
   \begin{question}
     A multiple choice question.
     \begin{multiple-choice}[3]
-      \item \label{mc:answer1} Choice a.
-      \item Choice b.
-      \item \label{mc:answer2} Choice c.
-      \item Choice d.
+      \choice[correct]{Choice a.}
+      \choice{Choice b.}
+      \choice[correct]{Choice c.}
+      \choice{Choice d.}
     \end{multiple-choice}
     \begin{solution}
-      A solution. 
-      +color(red)\answer[multiple-choice]{\ref{mc:answer1},\ref{mc:answer2}}
+       Select the best answer above. 
     \end{solution}
   \end{question}
 \end{Verbatim}
@@ -225,6 +226,23 @@ To add hints to the question, add a \code{hint} within the
 \end{Verbatim}
 
 
+Or with a multiple-choice question:
+
+\begin{Verbatim}
+  \begin{question}
+    \begin{multiple-choice}[3]
+      \choice[correct]{Choice a.}
+      \choice{Choice b.}
+      \choice[correct]{Choice c.}
+      \choice{Choice d.}
+    \end{multiple-choice}
+    \begin{solution}
+      Select the best answer above. 
+      +color(red)\begin{hint}
+        A hint.
+        +color(red)\end{hint}
+    \end{solution}
+  \end{question}
 
 To make the hints more Socratic, they themselves can be questions
 with solutions with/or without answer fields:

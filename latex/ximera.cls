@@ -57,7 +57,7 @@
 \RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
 \RequirePackage{multido}% http://ctan.org/pkg/multido
 \RequirePackage{amsmath}
-
+\RequirePackage{amssymb}
 
 \newif\ifhandout
 \handoutfalse
@@ -66,7 +66,6 @@
 \newif\ifnewpage
 \newpagefalse
 \DeclareOption{newpage}{\newpagetrue}
-
 
 \newif\ifhints
 \hintstrue
@@ -90,13 +89,16 @@
 \RequirePackage{titlesec} 
 \RequirePackage{titletoc} 
 
-\newcommand{\answer}[1][]{}
 
+\newcommand{\answer}[1][]{}
 \newcommand{\prerequisites}[1]{}
 \newcommand{\outcomes}[1]{}
 \newcommand{\video}[1]{\footnote{Video link: \url{#1}}}
 
 
+\newboolean{correct}
+\setboolean{correct}{true}
+\newcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \quad\checkmark\fi}{}}
 
 
 \everymath{\displaystyle} %makes everymath display style could be optional
