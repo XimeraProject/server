@@ -58,6 +58,7 @@
 \RequirePackage{multido}% http://ctan.org/pkg/multido
 \RequirePackage{amsmath}
 \RequirePackage{amssymb}
+\RequirePackage{pgfplots}
 
 \newif\ifhandout
 \handoutfalse
@@ -94,6 +95,7 @@
 \newcommand{\prerequisites}[1]{}
 \newcommand{\outcomes}[1]{}
 \newcommand{\video}[1]{\footnote{Video link: \url{#1}}}
+\newcommand{\youtube}[1]{\footnote{YouTube link: \url{#1}}}
 
 
 \newboolean{correct}
