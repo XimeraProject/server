@@ -8,7 +8,7 @@
 define(['angular', 'jquery', 'underscore', 'algebra/parser', 'mathquill', 'bootstrap'], function(angular, $, _, parse) {
     'use strict';
 
-    angular.module('gratisuApp.inputMath', [])
+    angular.module('ximeraApp.inputMath', [])
 	.directive('mathinput', [function() {
 	    return {
 		restrict: 'E', // this directive will only be used as an element
@@ -17,38 +17,49 @@ define(['angular', 'jquery', 'underscore', 'algebra/parser', 'mathquill', 'boots
 		    ngModel: '='
 		},
 		template: ('<form class="form-inline">' +
-			   '<div class="input-append" data-toggle="buttons-radio">' +
-			   '<input class="plain" type="text"/>' +
-			   '<span class="mathquill-editable"></span>' +
-			   '<button class="wysiwyg btn" type="button">x<sup>2</sup></button>' +
-			   '<button class="plain btn" type="button"><span style="font-family: monospace;">x^2</span></button>' +
-			   '</div>' + 
-			   '<div class="preview"></div>' +
+			   '<div class="input-group">' +
+                           '<span class="mathquill-editable"></span>' +
+                           '<input type="text" class="plain form-control"/>' +
+			   '<span class="input-group-btn">' +
+			   '<button class="wysiwyg btn btn-default" type="button">x<sup>2</sup></button>' +
+			   '<button class="plain btn btn-default"  type="button"><span style="font-family: monospace;">x^2</span></button>' +
+			   '</span>' +
+			   '</div>' +
 			   '</form>'),
 		
 		link: function(scope, element, attrs) {
 		    $('button.plain', element).click( function() {
 			$('input.plain',element).show();
+			$('button.plain',element).addClass('active');
+			$('button.wysiwyg',element).removeClass('active');
 			$('span.mathquill-editable',element).hide();
 		    });
 
 		    $('button.wysiwyg', element).click( function() {
 			$('input.plain',element).hide();
+			$('button.plain',element).removeClass('active');
+			$('button.wysiwyg',element).addClass('active');
 			$('span.mathquill-editable',element).show();
 		    });
-		    
+
+		    // Mathquill needs to be started progmatically since it wasn't present in the DOM on documentready
+		    $('span.mathquill-editable', element).mathquill('editable');
+
 		    // default to ascii input
-		    $('button.plain', element).button('toggle');
+		    //$('button.plain', element).button('toggle');
+		    //$('button.wysiwyg', element).button('toggle');
+		    $('button.wysiwyg', element).click();
 		    $('button.plain', element).click();
 
 		    var update = _.debounce( function() {
 			// change the attribute
 			var result = parse.text.to.latex($('input.plain',element).val());
 			console.log( result );
-
+			/*
 			scope.$apply( function() {
 			    scope.ngModel = result;
 			});
+			*/
 		    }, 30 );
 
 		    //$(document).keyup( update );

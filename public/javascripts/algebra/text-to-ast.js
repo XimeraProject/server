@@ -27,12 +27,12 @@
     nonMinusFactor
 */
 
-define(['lexer'], function(lexer) {
+define(['algebra/lexer'], function(lexer) {
     /****************************************************************/
     /* setup the lexer */
 
     lexer.parse('');
-    lexer = lexer.parser.yy.lexer;
+    lexer = lexer.yy.lexer;
 
     var symbol = '';
     

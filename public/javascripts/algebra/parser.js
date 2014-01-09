@@ -1,9 +1,14 @@
-define(["underscore", "text-to-ast", "ast-to-text", "ast-to-latex"], function(_, textToAst, astToText, astToLatex){
+define(["underscore", "algebra/text-to-ast", "algebra/ast-to-text", "algebra/ast-to-latex", "algebra/latex-to-ast"], function(_, textToAst, astToText, astToLatex, latexToAst){
 
     kinds = ['text', 'latex', 'ast'];
 
     // define the basic converters
     converters = {
+	latex: {
+	    to: { 
+		ast: latexToAst,
+	    }
+	},
 	text: {
 	    to: { 
 		ast: textToAst,

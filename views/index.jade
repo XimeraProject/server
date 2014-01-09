@@ -16,13 +16,34 @@ block content
            h2
              a.btn.btn-primary.btn-lg(href="courses/") View Courses
   .container
-    if user
-        p Hello #{user.name}!
-        p
-            a(href="/logout") Logout
-    else
-        a(href="/auth/google") Sign In with Google
-     
-    each i in [1,2,3,4,5]
-     p
-      | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus volutpat urna id scelerisque ornare. Donec mattis leo a mauris dapibus semper. Vestibulum vel nisl eu tortor lobortis porttitor. Duis consectetur vestibulum odio, sed aliquam neque pellentesque id. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce suscipit augue ut tempus luctus. Nunc fermentum leo eu nibh ultrices euismod at lobortis massa. Sed semper fringilla aliquam. Aenean quam est, dignissim at dolor tempor, sodales convallis purus. Cras velit tortor, viverra a pretium et, bibendum viverra risus. Sed vulputate dictum lectus, vel euismod leo faucibus facilisis. Proin quis dapibus nisl. Phasellus eu ante eu nisl adipiscing suscipit non eget arcu.
+    .row
+      .col-md-4
+        div.giant-badge
+          <i class="fa fa-4x fa-book"></i>
+          h3 For Educators
+          p Ximera lets you write activities in LaTeX and post them for your students.
+      .col-md-4
+        div.giant-badge
+          <i class="fa fa-4x fa-pencil"></i>
+          h3 For Students
+          p Ximera lets you do your homework online.
+      .col-md-4
+        div.giant-badge
+          <i class="fa fa-4x fa-flask"></i>
+          h3 For Researchers 
+          p Ximera computes statistics on student success, such as point biserials.
+
+    hr
+    h3.text-center Convert LaTeX to Interactive Activities
+    .row
+      .col-md-5
+        some latex code goes here
+      .col-md-2
+        <i class="fa fa-4x fa-arrow-right"></i>        
+      .col-md-5
+        some web page goes here
+
+    hr
+    h3.text-center Sign up for the Ximera mailing list
+    p If you are interested in finding out more about Ximera, or if you are interested in using Ximera in your own classroom, please send email us at <a href="mailto:ximera@math.osu.edu">ximera@math.osu.edu</a>.
+

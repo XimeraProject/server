@@ -1,13 +1,29 @@
+@import 'bootstrap';
+
 /*****************************************************************/
-/* mathquill */
+/* mathquill AFTER bootstrap */
 @import "../../components/mathquill/build/mathquill.css";
 
 .mathquill-editable {
+    sup {		    
+	top: inherit;   
+    }
+
+    * {
+	box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	-webkit-box-sizing: content-box;
+    }
+}
+
+.mathquill-editable {
   font-size: 14px;
+  font-size: 28px;
   min-width: 206px;
 
   display: inline-block;
   min-height: @line-height-base;
+  height: @line-height-base;
   padding: 4px 6px;
   margin-bottom: @line-height-base / 2;
   color: @gray;
@@ -29,11 +45,12 @@
 }
 
 .input-append,
-.input-prepend {
+.input-prepend,
+.input-group {
   .mathquill-editable {
     position: relative;
     margin-bottom: 0;
-    *margin-left: 0;
+    margin-left: 0;
     vertical-align: top;
     border-radius: 0 @input-border-radius @input-border-radius 0;
     // Make input on top when focused so blue border and shadow always show
@@ -43,20 +60,17 @@
   }
 }
 
-
-@import 'bootstrap';
-
 /*****************************************************************/
 /* A color scheme from http://colorschemedesigner.com/#4X32Gw0w0w0w0 */
 
-@primary-color: #BB0000;
+@primary-color:  #442369;
 
 @primary-color-dark: darken(@primary-color,10%);
 @primary-color-darkest: darken(@primary-color,20%);
 @primary-color-light: lighten(@primary-color,20%);
 @primary-color-whiter: mix(@primary-color,@white,50%);
 
-@secondary-color: #442369;
+@secondary-color: #BB0000;
 
 @secondary-color-dark: darken(@secondary-color,15%);
 @secondary-color-darkest: darken(@secondary-color,25%);
@@ -126,7 +140,7 @@ a.ximera {
 }
 
 .navbar-fixed-top {
-    .box-shadow(0 0 5px 5px rgba(0,0,0,0.1));
+    .box-shadow(0 0 3px 3px rgba(0,0,0,0.3));
 }
 
 /* Create the impression that the footer is "under" the content with an inset shadow */
@@ -175,6 +189,27 @@ div.footer .navbar-static-bottom {
   box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.1);
   background-image:url('/public/images/patterns/exes.png');
   background-repeat:repeat;
+}
+
+.giant-badge i {
+    vertical-align: middle;
+//    position: absolute;
+//    right: 50%;
+//    left: 50%;
+    text-align: center;
+    display: block;
+    color: #DDD;
+    text-align: center;
+    z-index: -1;
+}
+
+.giant-badge h3 {
+    font-size: 24pt;
+    text-align: center;
+}
+
+.giant-badge p {
+    text-align: center;
 }
 
 .callout h1 {
@@ -282,6 +317,7 @@ footer .address a {
 }
 
 @import "user.less";
+@import "activity.less";
 
 ////////////////////////////////////////////////////////////////
 // stix fonts

@@ -119,6 +119,7 @@ app.use(less({
     prefix   : '/public/stylesheets',
     paths  : [path.join(bootstrapPath, 'less')],
     dest   : path.join(__dirname, 'public', 'stylesheets'),
+    force  : true
 }));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/components', express.static(path.join(__dirname, 'components')));

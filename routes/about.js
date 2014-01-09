@@ -16,6 +16,7 @@ var people = [
     },
     {
 	"name": "Corey Staten",
+	"photo": "corey-staten",
 	"description": 'Corey Staten studies mathematics.',
 	"email": 'corey.staten@gmail.com',
     },
