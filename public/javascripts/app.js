@@ -38,9 +38,9 @@ requirejs.config({
 
 	"mathquill": { deps: ['jquery'] },
 
-        'syntaxhighlighter-latex': { deps: ['syntaxhighlighter'] }
-        'syntaxhighlighter-python': { deps: ['syntaxhighlighter'] }
-        'syntaxhighlighter-javascript': { deps: ['syntaxhighlighter'] }
+        'syntaxhighlighter-latex': { deps: ['syntaxhighlighter'] },
+        'syntaxhighlighter-python': { deps: ['syntaxhighlighter'] },
+        'syntaxhighlighter-javascript': { deps: ['syntaxhighlighter'] },
     },
 });
 
