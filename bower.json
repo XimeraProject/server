@@ -13,6 +13,8 @@
 	"x-editable": "*",
 	"threejs": "https://github.com/mrdoob/three.js.git",
 	"pagedown-bootstrap": "https://github.com/samwillis/pagedown-bootstrap.git",
-	"mathquill": "https://github.com/mathquill/mathquill.git"
+	"mathquill": "https://github.com/mathquill/mathquill.git",
+	"syntaxhighlighter": "https://github.com/alexgorbatchev/syntaxhighlighter.git",
+	"brushes-syntaxhighlighter": "https://github.com/tanahiro/brushes-syntaxhighlighter.git"
     }
 }

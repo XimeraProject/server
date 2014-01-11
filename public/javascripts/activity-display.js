@@ -413,7 +413,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
         return {
             restrict: 'A',
             scope: {},
-            template: "<input type='text' ng-model='db.answer' ng-disabled='db.success'><button ng-hide='db.success' ng-click='attemptAnswer()'>Submit</button><span ng-bind='db.message'></span>",
+            template: "<mathinput></mathinput><input type='text' ng-model='db.answer' ng-disabled='db.success'><button ng-hide='db.success' ng-click='attemptAnswer()'>Submit</button><span ng-bind='db.message'></span>",
             transclude: true,
             link: function($scope, element, attrs, controller) {
                 stateService.bindState($scope, $(element).attr('data-uuid'), function () {

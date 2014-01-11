@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "postinstall": "./node_modules/bower/bin/bower install && cd ./components/mathquill && npm install && make && cd ../.."
+    "postinstall": "./node_modules/bower/bin/bower install && cd ./components/mathquill && npm install && make && cd ../.. && mkdir -p components/syntaxhighlighter/amd && node node_modules/requirejs/bin/r.js -convert components/syntaxhighlighter/scripts components/syntaxhighlighter/amd && mkdir -p components/brushes-syntaxhighlighter/amd && mkdir -p components/brushes-syntaxhighlighter/commonjs && mv components/brushes-syntaxhighlighter/*.js components/brushes-syntaxhighlighter/commonjs && node node_modules/requirejs/bin/r.js -convert components/brushes-syntaxhighlighter/commonjs components/brushes-syntaxhighlighter/amd"
   },
   "dependencies": {
     "underscore": "*",

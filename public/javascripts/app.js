@@ -15,6 +15,11 @@ requirejs.config({
 	"bootstrap": "/components/bootstrap/dist/js/bootstrap.min",
 
 	"mathquill": "/components/mathquill/build/mathquill.min",
+
+	'syntaxhighlighter': '/components/syntaxhighlighter/scripts/shCore',
+	'syntaxhighlighter-javascript': '/components/syntaxhighlighter/scripts/shBrushJScript',
+	'syntaxhighlighter-python': '/components/syntaxhighlighter/scripts/shBrushPython',
+	'syntaxhighlighter-latex': '/components/syntaxhighlighter/scripts/shCore',
     },
 
     priority: [
@@ -32,6 +37,10 @@ requirejs.config({
 	"pagedown-editor": { deps: ['bootstrap'] },
 
 	"mathquill": { deps: ['jquery'] },
+
+        'syntaxhighlighter-latex': { deps: ['syntaxhighlighter'] }
+        'syntaxhighlighter-python': { deps: ['syntaxhighlighter'] }
+        'syntaxhighlighter-javascript': { deps: ['syntaxhighlighter'] }
     },
 });
 
