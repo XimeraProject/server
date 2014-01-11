@@ -44,7 +44,7 @@ var people = [
     {
 	"name": "Roman Holowinsky",
 	"photo":  "roman-holowinsky",
-	"description": 'Roman Holowinsky has been a professor in the OSU Math Department since Fall 2010.  His research in the field of analytic number theory with a focus on L-functions and modular forms.  Roman is an Alfred P. Sloan fellow and the recipient of the 2011 SASTRA Ramanujan prize.',
+	"description": 'Roman Holowinsky has been a professor in the OSU Math Department since Fall 2010.  His research is in the field of analytic number theory with a focus on L-functions and modular forms.  Roman is an Alfred P. Sloan fellow and the recipient of the 2011 SASTRA Ramanujan prize.',
 	"link":'http://www.math.osu.edu/~holowinsky.1',
 	"email": 'romanh@math.osu.edu'
     },
