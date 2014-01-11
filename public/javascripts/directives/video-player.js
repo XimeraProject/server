@@ -73,6 +73,7 @@ define(['angular', 'jquery', 'underscore', 'youtube'], function(angular, $, _, Y
 			    modestbranding: 1, // no YouTube logo in corner
 			    showinfo: 0,
 			    enablejsapi: 1,
+			    wmode: 'transparent' // so it respects z-index
 			},
 			events: {
 			    'onReady': onPlayerReady,
