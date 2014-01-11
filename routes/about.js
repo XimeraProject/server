@@ -17,20 +17,20 @@ var people = [
     {
 	"name": "Corey Staten",
 	"photo": "corey-staten",
-	"description": 'Corey Staten studies mathematics.',
+	"description": 'Corey Staten studies mathematics and builds software.  For Ximera, he was hired as an external contractor and built the backend server with mongodb, express, angular, nodejs, and Haskell.',
 	"email": 'corey.staten@gmail.com',
     },
     {
 	"name": "Jim Fowler",
 	"photo":  "jim-fowler",
-	"description": 'Jim\'s research broadly includes geometry and topology; specifically, his interests focus on the topology of high-dimensional manifolds and geometric group theory, which means he thinks about highly symmetric (and therefore very beautiful) geometric objects.  He\'s fond of using computational techniques to attack problems in pure mathematics. He received an undergraduate degree from <a href="http://www.harvard.edu/">Harvard University</a> and received a Ph.D. from the <a href="http://www.uchicago.edu/">University of Chicago</a>.  Jim built the adaptive learning platform that powers Ximera.',
+	"description": 'Jim\'s research broadly includes geometry and topology; specifically, his interests focus on the topology of high-dimensional manifolds and geometric group theory, which means he thinks about highly symmetric (and therefore very beautiful) geometric objects.  He\'s fond of using computational techniques to attack problems in pure mathematics. He received an undergraduate degree from <a href="http://www.harvard.edu/">Harvard University</a> and received a Ph.D. from the <a href="http://www.uchicago.edu/">University of Chicago</a>.  Jim built the adaptive learning platform that powers MOOCulus.',
 	"link":'http://www.math.osu.edu/~fowler/',
 	"email": 'fowler@math.osu.edu'
     },
     {
 	"name": "Steve Gubkin",
 	"photo":  "steve-gubkin",
-	"description": 'Steve Gubkin is a mathematics Ph.D. student at OSU.  Steve has extensive experience with the <a href="https://github.com/Khan/khan-exercises/" rel="external">khan exercise framework</a>, so for Ximera, he leads the development of <a href="/exercises">our interactive exercises</a>.',
+	"description": 'Steve Gubkin is a mathematics Ph.D. student at OSU.  Steve has extensive experience with the <a href="https://github.com/Khan/khan-exercises/" rel="external">khan exercise framework</a>, so for MOOCulus and Ximera, he leads the development of our interactive exercises.',
 	"link":'http://www.math.osu.edu/people/gubkin.1/view',
 	"email": 'gubkin@math.osu.edu'
     },
