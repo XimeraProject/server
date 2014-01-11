@@ -368,11 +368,15 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                         });
 
                         // Randomize order.
-                        $scope.db.choices = _.shuffle($scope.db.choices);                       
+                        $scope.db.choices = _.shuffle($scope.db.choices);
                     });
 
-                    $scope.db.radioGroup = $(element).attr('data-uuid');                        
+                    $scope.db.radioGroup = $(element).attr('data-uuid');
                 });
+
+		$scope.activate = function(value) {
+		    $scope.db.radioValue = value;
+		};
 
                 $scope.$watch('db.order', function (order) {
                     var sortedChoices = _.map(order, function (uuid) {
@@ -386,6 +390,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                         var success = false;
                         if ($scope.db.radioValue === $scope.db.correctAnswer) {
                             success = true;
+
                         }
 
                         $(element).trigger('attemptAnswer', {
