@@ -147,6 +147,10 @@ app.use(addDatabaseMiddleware);
 
 app.use(app.router);
 
+app.use(function(req, res, next){
+  res.render('404', { status: 404, url: req.url });
+});
+
 // Middleware for development only
 if ('development' == app.get('env')) {
 app.use(express.errorHandler());
