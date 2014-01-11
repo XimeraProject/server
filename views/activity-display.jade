@@ -2,7 +2,7 @@ extends layouts/main
 
 block content
 
-    div.container.activity(data-activityId=activityId)
+    div.container.activity(data-activityId=activityId, style="display: none;", ng-controller="ActivityController")
         button.pull-right.btn.btn-danger(type="button",ng-controller="ResetButtonCtrl", ng-click="resetPage()")
             | <i class="fa fa-eraser"></i> Erase Work
         | !{activityHtml}

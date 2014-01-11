@@ -20,5 +20,12 @@ exports.gfs = gfs;
 exports.initialize = function initialize() {
     winston.info("Initializing Mongo");
     exports.GitRepo = mongoose.model("GitRepo", { url: String, fileId: ObjectId, currentActivityIds: [ObjectId] });
-    exports.Activity = mongoose.model("Activity", { htmlFileId: ObjectId, fileHash: {type: String, index: true}, repoId: ObjectId });
+    exports.Activity = mongoose.model("Activity",
+                                      { htmlFileId: ObjectId,
+                                        baseFileHash: {type: String, index: true},
+                                        repoId: ObjectId,
+                                        gitRelativePath: String,
+                                        latexSource: String,
+                                        description: String,
+                                        title: String });
 }

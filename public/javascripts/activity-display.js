@@ -28,6 +28,13 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
         });
     }
 
+    app.controller('ActivityController', ["$timeout", function ($timeout) {
+        // Show activity after components have had a chance to load.
+        $timeout(function () {
+            $('.activity').show();
+        });
+    }]);
+
     app.factory('answerService', ['stateService', function (stateService) {
         var answerService = {};
         var callbacksByAnswerUuid = {};
