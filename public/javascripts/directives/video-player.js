@@ -61,7 +61,7 @@ define(['angular', 'jquery', 'underscore', 'youtube'], function(angular, $, _, Y
 			    $timeout( everySecond, 1000 );
 			}
 		    };
-		    
+
 		    // replace the interior div...
 		    var iframe = element.children()[0];
 			

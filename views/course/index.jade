@@ -1,0 +1,19 @@
+extends ../layouts/main
+
+block title
+  | Courses
+
+mixin course(course)
+  a(href="/course/#{course.slug}/")
+    h3 #{course.name}
+
+block content
+  .container
+     mixin breadcrumbs(['/course/'],['Courses'])
+     .page-header
+       h1 Courses
+     - for course in courses
+       mixin course(course)
+       hr
+     p If there are courses that you would like to see, but are not included here, please <a href="/about/contact">contact us</a>.
+
