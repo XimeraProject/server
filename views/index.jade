@@ -14,7 +14,7 @@ block content
            h2 Starting March 2013.
          .col-md-3
            h2
-             a.btn.btn-primary.btn-lg(href="courses/") View Courses
+             a.btn.btn-primary.btn-lg(href="/course/") View Courses
   .container
     .row
       .col-md-4
@@ -37,12 +37,11 @@ block content
     h3.text-center Convert LaTeX to Interactive Activities
     .row
       .col-md-5
-        script(type="syntaxhighlighter",class="brush: jscript")
-          :cdata
-            | /* Hello! */
-            | var f = function() {
-            |   console.log( 'whee!' );
-            | };
+        script(type="syntaxhighlighter",class="brush: latex")
+            | \begin{document}
+            |   \begin{question}
+            |   \end{question}
+            | \end{document}
       .col-md-2
         <i class="fa fa-4x fa-arrow-right"></i>        
       .col-md-5
@@ -50,5 +49,5 @@ block content
 
     hr
     h3.text-center Sign up for the Ximera mailing list
-    p If you are interested in finding out more about Ximera, or if you are interested in using Ximera in your own classroom, please send email us at <a href="mailto:ximera@math.osu.edu">ximera@math.osu.edu</a>.
+    p If you are interested in finding out more about Ximera, or if you are interested in using Ximera in your own classroom, please <a href="/about/contact">contact us</a> at <a href="mailto:ximera@math.osu.edu">ximera@math.osu.edu</a>.
 
