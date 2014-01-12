@@ -1,31 +1,34 @@
 var mdb = require('../mdb');
 var winston = require('winston');
 
-/*
- * GET activity listing.
- */
-
-exports.list = function(req, res){
-    mdb.Activity.find({}, function (err, activities) {
-        res.render("activities", {activities: activities});
+exports.index = function(req, res) {
+    mdb.Course.find({}, function (err, courses) {
+	res.render('course/index', { courses: courses });
     });
-};
+}
 
+exports.landing = function(req, res) {
+    var slug = req.params[0];
+    mdb.Course.findOne({slug: slug}).exec( function (err, course) {
+	if (course) {
+	    res.render('course/landing', { course: course });
+	} else {
+            res.send("Course not found.");	    
+	}
+    });
+}
 
-/*
- * GET individual activity.
- */
-
-// TODO: Temporary user accounts
-exports.display = function(req, res) {
+exports.activity = function(req, res) {
     if (!req.user) {
         res.status(500).send('Need to login.');
     }
     else {
+        res.render('course/activity', { params: req.params });
+	    /*
         mdb.Activity.findOne({_id: req.params.id}).exec( function (err, activity) {
             if (activity) {
                 var accum = "";
-                var readStream = mdb.gfs.createReadStream({_id: activity.htmlFile});
+                var readStream = mdb.gfs.createReadStream({_id: activity.htmlFileId});
                 readStream.on('data', function (data) {
                     winston.info("Data: %s", data.toString());
                     accum += data;
@@ -42,17 +45,7 @@ exports.display = function(req, res) {
                 res.send("Activity not found.");
             }
         });        
-    }
-};
+	    */
 
-exports.source = function(req, res) {
-    mdb.Activity.findOne({_id: req.params.id}).populate('repoId').exec( function (err, activity) {
-	console.log( activity );
-        if (activity) {
-            res.render('activity-source', { activity: activity, activityId: activity._id });
-        }
-        else {
-            res.send("Activity not found.");
-        }
-    });        
+    }
 };

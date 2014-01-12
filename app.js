@@ -5,6 +5,7 @@
 var express = require('express')
   , routes = require('./routes')
   , activity = require('./routes/activity')
+  , course = require('./routes/course')
   , user = require('./routes/user')
   , about = require('./routes/about')
   , http = require('http')
@@ -156,8 +157,6 @@ if ('development' == app.get('env')) {
 app.use(express.errorHandler());
 }
 
-
-
 // Setup routes.
 // TODO: Move to separate file.
 app.get('/', routes.index);
@@ -166,7 +165,17 @@ app.get('/users/:id', user.get);
 app.put('/users/:id', user.put);
 
 app.get('/activities', activity.list);
-app.get('/activity/:id', activity.display);    
+app.get('/activity/:id/', activity.display);    
+app.get('/activity/:id/source', activity.source);
+
+
+app.get('/course/', course.index );
+app.get( '/course', function( req, res ) { res.redirect(req.url + '/'); });
+app.get(/^\/course\/(.+)\/activity\/(.+)\/$/, course.activity );
+app.get( /^\/course\/(.+)\/activity\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
+app.get(/^\/course\/(.+)\/$/, course.landing );
+app.get( /^\/course\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
+
 
 app.get('/auth/google', passport.authenticate('google'));
 app.get('/auth/google/return',
