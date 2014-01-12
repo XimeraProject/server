@@ -22,7 +22,7 @@ exports.display = function(req, res) {
         res.status(500).send('Need to login.');
     }
     else {
-        mdb.Activity.findOne({_id: req.params.id}, function (err, activity) {
+        mdb.Activity.findOne({_id: req.params.id}).exec( function (err, activity) {
             if (activity) {
                 var accum = "";
                 var readStream = mdb.gfs.createReadStream({_id: activity.htmlFileId});
@@ -32,7 +32,7 @@ exports.display = function(req, res) {
                 });
                 readStream.on('end', function () {
                     winston.info("End");
-                    res.render('activity-display', { activityHtml: accum, activityId: activity._id });
+                    res.render('activity-display', { activity: activity, activityHtml: accum, activityId: activity._id });
                 });
                 readStream.on('error', function () {
                     res.send('Error reading activity.');
@@ -43,4 +43,16 @@ exports.display = function(req, res) {
             }
         });        
     }
+};
+
+exports.source = function(req, res) {
+    mdb.Activity.findOne({_id: req.params.id}).populate('repoId').exec( function (err, activity) {
+	console.log( activity );
+        if (activity) {
+            res.render('activity-source', { activity: activity, activityId: activity._id });
+        }
+        else {
+            res.send("Activity not found.");
+        }
+    });        
 };
