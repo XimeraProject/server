@@ -21,12 +21,12 @@ a
 few others, and I at OSU have been running a Calculus One MOOC that we
 call "MOOCulus." Rob Ghrist is doing something similar at the
 University of Pennsylvania, though his MOOC doesn't have a funny
-little name. Ok, I suppose it does--since he is basically teaching out
-of his beautiful book, titled “Funny Little Calculus Text.”
+little name. Ok, I suppose it does&mdash;since he is basically teaching out
+of his beautiful book, titled "Funny Little Calculus Text."
 
 Despite the fact that we are now technically in direct competition,
 since we are both teaching calculus MOOCs, I don’t think we really
-view ourselves as competitors--rather we see each other as vanguards,
+view ourselves as competitors&mdash;rather we see each other as vanguards,
 cheering at each other’s successes. After talking to the people at the
 conference, I think most (if not all) of us honestly see the MOOC
 phenomenon as something of a “force of nature” and rather than fight
@@ -38,7 +38,7 @@ unsure what our roles as teachers would be in a post-MOOC society. I'm
 an optimist. I see MOOCs as a way to enhance education. The practice,
 rote procedures, and tedium of skills one needs can be pushed off on
 to the MOOC. At this point the teacher can get to the good stuff such
-as critical thinking and creativity--things that belong in all
+as critical thinking and creativity&mdash;things that belong in all
 courses including calculus.
 
 Another obstacle we face is that of longevity. Technology changes at
@@ -59,5 +59,5 @@ content. Jim Fowler has been a pioneer in this respect, developing the
 "AutoCutter" software that reduces time consuming video editing to a
 few key strokes.
 
-One thing is certain to me--MOOCs are the future. I am encouraged that
+One thing is certain to me&mdash;MOOCs are the future. I am encouraged that
 with courses like MOOCulus OSU is at the forefront of this revolution.
