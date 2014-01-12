@@ -35,69 +35,6 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
         });
     }]);
 
-    app.factory('answerService', ['stateService', function (stateService) {
-        var answerService = {};
-        var callbacksByAnswerUuid = {};
-
-        answerService.attemptAnswerFor = function(answerElement, answer) {
-            // TODO: Log to MongoDB
-            var success = false;
-            if (answer === $(answerElement).attr('data-answer')) {
-                success = true;
-            }
-            var answerUuid = $(answerElement).attr('data-uuid');
-            if (answerUuid in callbacksByAnswerUuid) {
-                _.each(callbacksByAnswerUuid[answerUuid], function (callback) {
-                    callback(success, answer, answerUuid);
-                });
-            }
-            return success;
-        };
-
-        answerService.registerForAnswers = function(element, callback) {
-            $(element).find('.answer').each(function (index, answerElt) {
-                var answerUuid = $(answerElt).attr('data-uuid');
-                if (answerUuid in callbacksByAnswerUuid) {
-                    callbacksByAnswerUuid[answerUuid].push(callback);
-                }
-                else {
-                    callbacksByAnswerUuid[answerUuid] = [callback];
-                }
-            });
-        };
-
-        return answerService;
-    }]);
-
-    app.factory('questionService', function () {
-        // Question completion callbacks.
-        var callbacksByQuestionUuid = {};
-        var questionService = {};
-
-        questionService.completeQuestion = function(question) {
-            var questionUuid = $(question).attr('data-uuid');
-            if (questionUuid in callbacksByQuestionUuid) {
-                _.each(callbacksByQuestionUuid[questionUuid], function (callback) {
-                    callback(questionUuid);
-                });
-            }
-        };
-
-        questionService.registerForQuestions = function(element, callback) {
-            $(element).find('.question, .exercise, .exploration').each(function (index, questionElt) {
-                var questionUuid = $(questionElt).attr('data-uuid');
-                if (questionUuid in callbacksByQuestionUuid) {
-                    callbacksByQuestionUuid[questionUuid].push(callback);
-                }
-                else {
-                    callbacksByQuestionUuid[questionUuid] = [callback];
-                }
-            });        
-        };
-
-        return questionService;
-    });
-
     app.factory('stateService', function ($timeout, $rootScope, $http) {
         var dataByUuid = {};
         var activityId = $('.activity').attr('data-activityId');
@@ -138,7 +75,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                     }
                 }).error(function(data, status, headers, config) {
                     console.log("Error uploading state: ", status);
-                });       
+                });
         }
 
         var stateService = {};
@@ -155,7 +92,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
             var update = _.debounce( function() {
                 console.log( "Updating ", $scope.db );
                 updateState();
-            }, 1000);        
+            }, 1000);
 
             $scope.$watch("db", update, true);
         }
@@ -193,9 +130,8 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                     $timeout(function () {
                         $scope.db.historyCount = 5;
                         var possibleFirstQuestions = $(element).find('.question, .exercise, .exploration');
-                        
                         if (possibleFirstQuestions.length > 0) {
-                            $scope.db.activeQuestionUuid = $(possibleFirstQuestions[Math.floor(Math.random() * possibleFirstQuestions.length)]).attr('data-uuid');                        
+                            $scope.db.activeQuestionUuid = $(possibleFirstQuestions[Math.floor(Math.random() * possibleFirstQuestions.length)]).attr('data-uuid');
                         }
                         else {
                             $scope.db.activeQuestionUuid = null;
@@ -215,7 +151,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                         var freeUuids = _.difference(uuids, $scope.db.doneUuids);
 
                         if (freeUuids.length > 0) {
-                            $scope.db.activeQuestionUuid = freeUuids[Math.floor(Math.random() * freeUuids.length)];                       
+                            $scope.db.activeQuestionUuid = freeUuids[Math.floor(Math.random() * freeUuids.length)];
                         }
                         else {
                             $scope.db.activeQuestionUuid = null;
@@ -251,61 +187,96 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                         }
                     });
                 }, true);
-
-                
             }
         };
     }]);
 
     // For now, use this as directive function for questions, explorations, and exercises.
-    var questionDirective = ['$rootScope', '$timeout', 'stateService', function ($rootScope, $timeout, stateService) {
+    var questionDirective = ['$compile', '$rootScope', '$timeout', 'stateService', function ($compile, $rootScope, $timeout, stateService) {
         return {
             restrict: 'A',
             scope: {},
-            link: function($scope, element, attrs, controller) {
-                stateService.bindState($scope, $(element).attr('data-uuid'), function () {
-                    $timeout(function () {
-                        var solutions = $(element).find('.solution');
-                        $scope.db.solutionUuids = _.map(solutions, function (solution) {
-                            return $(solution).attr('data-uuid');
-                        })
-                        if (solutions.length > 0) {
-                            $scope.db.currentSolution = $scope.db.solutionUuids[0];
+            template: '<div></div>',
+            replace: true,
+            transclude: true,
+            link: function($scope, element, attrs, controller, transclude) {
+                // We dynamically copy in content so we can introduce ghost "question part" directives for each solution.
+                transclude(function (clone) {
+                    var locals = {};
+                    locals.currentQuestionPartElements = [];
+                    locals.questionParts = [locals.currentQuestionPartElements];
+                    _.each($(clone), function (subElement) {
+                        locals.currentQuestionPartElements.push(subElement);
+                        if ($(subElement).hasClass('solution')) {
+                            locals.currentQuestionPartElements = [];
+                            locals.questionParts.push(locals.currentQuestionPartElements);
                         }
                         else {
-                            $scope.db.currentSolution = "";
                         }
+                    });
+                    locals.count = 0;
+                    _.each(locals.questionParts, function (elementList) {
+                        if (elementList.length === 0) {
+                            return;
+                        }
+
+                        // Create question part directive to contain elements.
+                        // Need to have consistent unique ids across loads.
+                        var uniqueId = 'ximera-question-part-' + $(element).attr('data-uuid') + '-' + locals.count.toString();
+                        locals.count += 1;
+                        var questionPartElement = $('<div class="questionPart" ximera-question-part></div>').attr('data-uuid', uniqueId);
+
+                        _.each(elementList, function (subElement) {
+                            $(questionPartElement).append(subElement);
+                        });
+                        $(element).append($compile(questionPartElement)($scope));
+                    });
+                });
+
+                stateService.bindState($scope, $(element).attr('data-uuid'), function () {
+                    $timeout(function () {
+                        var questionParts = $(element).find('.questionPart');
+                        $scope.db.questionPartUuids = _.map(questionParts, function (questionPart) {
+                            return $(questionPart).attr('data-uuid');
+                        })
+                        if (questionParts.length > 0) {
+                            $scope.db.currentQuestionPart = $scope.db.questionPartUuids[0];
+                        }
+                        else {
+                            $scope.db.currentQuestionPart = "";
+                        }
+                        $scope.db.doneUuids = [];
                         $scope.db.complete = false;
                     });
                 });
 
+
                 // Which part of the question are we up to; only reveal next part after first is complete.
-                $scope.$watch('db.currentSolution', function (uuid) {
-                    var index = _.indexOf($scope.db.solutionUuids, $scope.db.currentSolution);
-                    $(element).find('.solution').each(function (ii, solutionElt) {
+                $scope.$watch('db.currentQuestionPart', function (uuid) {
+                    var index = _.indexOf($scope.db.questionPartUuids, $scope.db.currentQuestionPart);
+                    $(element).find('.questionPart').each(function (ii, questionPartElt) {
                         if ((index === -1) || (ii <= index)) {
-                            $(solutionElt).show();
+                            $(questionPartElt).show();
                         }
                         else {
-                            $(solutionElt).hide();
+                            $(questionPartElt).hide();
                         }
                     });
                 });
 
                 // TODO: Change display when complete?
-                $(element).on('completeSolution', function (event, data) {
-                    if (data.solutionUuid === $scope.db.currentSolution) {
-                        var index = _.indexOf($scope.db.solutionUuids, $scope.db.currentSolution);
-                        if ($scope.db.solutionUuids.length > (index + 1)) {
-                            $scope.db.currentSolution = $scope.db.solutionUuids[index + 1];
-                        }
-                        else {
-                            $scope.db.currentSolution = "";
-                            if (!$scope.db.complete) {
-                                $scope.db.complete = true;
-                                $(element).trigger('completeQuestion', {questionUuid: $(element).attr('data-uuid')});
-                            }
-                        }
+                $(element).on('completeQuestionPart', function (event, data) {
+                    if (!_.contains($scope.db.doneUuids, data.questionPartUuid)) {
+                        $scope.db.doneUuids.push(data.questionPartUuid);
+                    }
+                    var remaining = _.difference($scope.db.questionPartUuids, $scope.db.doneUuids);
+                    if (remaining.length > 0) {
+                        $scope.db.currentQuestionPart = remaining[0];
+                    }
+                    else if (!$scope.db.complete) {
+                        $scope.db.complete = true;
+                        $(element).trigger('completeQuestion', {questionUuid: $(element).attr('data-uuid')});
+                        $scope.db.currentQuestionPart = "";
                     }
                 });
             }
@@ -316,11 +287,11 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
     app.directive('ximeraExercise', questionDirective);
     app.directive('ximeraExploration', questionDirective)
 
-    app.directive('ximeraSolution', ['$rootScope', 'stateService', function ($rootScope, stateService) {
+    app.directive('ximeraQuestionPart', ['$timeout', 'stateService', function ($timeout, stateService) {
         return {
             restrict: 'A',
             scope: {},
-            link: function($scope, element, attrs, controller) {
+            link: function ($scope, element, attrs, controller) {
                 stateService.bindState($scope, $(element).attr('data-uuid'), function () {
                     $scope.db.complete = false;
                 });
@@ -328,10 +299,25 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                 $(element).on('attemptAnswer', function (event, data) {
                     if (data.success && !$scope.db.complete) {
                         $scope.db.complete = true;
-                        $(element).trigger('completeSolution', {solutionUuid: $(element).attr('data-uuid')});                        
+                        $(element).trigger('completeQuestionPart', {questionPartUuid: $(element).attr('data-uuid')});
+                    }
+                });
+
+                // If no solution, immediately mark this question part as complete.
+                $timeout(function () {
+                    if ($(element).find('.solution').length === 0) {
+                        $(element).trigger('completeQuestionPart', {questionPartUuid: $(element).attr('data-uuid')});
                     }
                 });
             }
+        };
+    }]);
+
+    app.directive('ximeraSolution', ['$rootScope', 'stateService', function ($rootScope, stateService) {
+        return {
+            restrict: 'A',
+            scope: {},
+            link: function($scope, element, attrs, controller) {}
         };
     }]);
 
