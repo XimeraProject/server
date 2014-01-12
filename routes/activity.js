@@ -25,7 +25,7 @@ exports.display = function(req, res) {
         mdb.Activity.findOne({_id: req.params.id}, function (err, activity) {
             if (activity) {
                 var accum = "";
-                var readStream = mdb.gfs.createReadStream({_id: activity.htmlFileId});
+                var readStream = mdb.gfs.createReadStream({_id: activity.htmlFile});
                 readStream.on('data', function (data) {
                     winston.info("Data: %s", data.toString());
                     accum += data;
