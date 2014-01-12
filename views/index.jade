@@ -37,7 +37,12 @@ block content
     h3.text-center Convert LaTeX to Interactive Activities
     .row
       .col-md-5
-        some latex code goes here
+        script(type="syntaxhighlighter",class="brush: jscript")
+          :cdata
+            | /* Hello! */
+            | var f = function() {
+            |   console.log( 'whee!' );
+            | };
       .col-md-2
         <i class="fa fa-4x fa-arrow-right"></i>        
       .col-md-5

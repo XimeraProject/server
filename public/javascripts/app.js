@@ -16,10 +16,11 @@ requirejs.config({
 
 	"mathquill": "/components/mathquill/build/mathquill.min",
 
-	'syntaxhighlighter': '/components/syntaxhighlighter/scripts/shCore',
-	'syntaxhighlighter-javascript': '/components/syntaxhighlighter/scripts/shBrushJScript',
-	'syntaxhighlighter-python': '/components/syntaxhighlighter/scripts/shBrushPython',
-	'syntaxhighlighter-latex': '/components/syntaxhighlighter/scripts/shCore',
+	'XRegExp': '/components/syntaxhighlighter/scripts/XRegExp',
+	'shCore': '/components/syntaxhighlighter/scripts/shCore',
+
+	'shBrushJScript': '/components/syntaxhighlighter/scripts/shBrushJScript',
+	'shBrushPython': '/components/syntaxhighlighter/scripts/shBrushPython',
     },
 
     priority: [
@@ -38,19 +39,20 @@ requirejs.config({
 
 	"mathquill": { deps: ['jquery'] },
 
-        'syntaxhighlighter-latex': { deps: ['syntaxhighlighter'] },
-        'syntaxhighlighter-python': { deps: ['syntaxhighlighter'] },
-        'syntaxhighlighter-javascript': { deps: ['syntaxhighlighter'] },
+        'shCore': { deps: ['XRegExp'] },
+        'shBrushJScript': { deps: ['shCore'] },
+        'shBrushPython': { deps: ['shCore'] },
     },
 });
 
 // TODO: Add back in input-math
-require( ["require", "angular", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display"], function(require, angular) {
+require( ["require", "angular", "shCore", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "shBrushJScript"], function(require, angular, shCore) {
     'use strict';
 
     var app = angular.module('ximeraApp', ['ximeraApp.mathJax', 'ximeraApp.activity', 'ximeraApp.inputMath', 'ximeraApp.videoPlayer']);
     $(document).ready(function() {
         angular.bootstrap(document, [app['name']]);
+	shCore.SyntaxHighlighter.highlight();
     });
 });
 
