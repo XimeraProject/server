@@ -46,8 +46,8 @@ exports.display = function(req, res) {
 };
 
 exports.source = function(req, res) {
-    mdb.Activity.findOne({_id: req.params.id}).populate('repoId').exec( function (err, activity) {
-	console.log( activity );
+    mdb.Activity.findOne({_id: req.params.id}).populate('repo').exec( function (err, activity) {
+	console.log( activity.repo );
         if (activity) {
             res.render('activity-source', { activity: activity, activityId: activity._id });
         }

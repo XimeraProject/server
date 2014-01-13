@@ -3,6 +3,16 @@ extends ../layouts/main
 block title
   | #{course.name}
 
+mixin displayTree(course, tree)
+  ul
+    - for node in tree
+      li
+        span #{node.title}
+        | 
+        a(href="/course/#{course.slug}/activity/#{course.normalizeSlug(node.slug)}/") View
+        if node.children.length > 0
+          mixin displayTree(course, node.children)
+
 block content
   .container
      mixin breadcrumbs(['/course/',"/course/#{course.slug}/"],['Courses',course.name])
@@ -10,3 +20,7 @@ block content
        h1 #{course.name}
      p #{course.description}
      p #{course}
+
+     h2 Activities
+     .tree
+       mixin displayTree(course, course.activityTree)

@@ -1,0 +1,7 @@
+mixin courseActivityLink(course,activity)
+  if activity
+    a(href="/course/#{course.slug}/activity/#{course.normalizeSlug(activity.slug)}/")
+      block
+  else
+    a(href="#")
+      block

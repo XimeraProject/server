@@ -1,5 +1,4 @@
 var mdb = require('../mdb');
-var winston = require('winston');
 
 exports.index = function(req, res) {
     mdb.Course.find({}, function (err, courses) {
@@ -23,29 +22,46 @@ exports.activity = function(req, res) {
         res.status(500).send('Need to login.');
     }
     else {
-        res.render('course/activity', { params: req.params });
-	    /*
-        mdb.Activity.findOne({_id: req.params.id}).exec( function (err, activity) {
-            if (activity) {
-                var accum = "";
-                var readStream = mdb.gfs.createReadStream({_id: activity.htmlFileId});
-                readStream.on('data', function (data) {
-                    winston.info("Data: %s", data.toString());
-                    accum += data;
-                });
-                readStream.on('end', function () {
-                    winston.info("End");
-                    res.render('activity-display', { activity: activity, activityHtml: accum, activityId: activity._id });
-                });
-                readStream.on('error', function () {
-                    res.send('Error reading activity.');
-                })
-            }
-            else {
-                res.send("Activity not found.");
-            }
-        });        
-	    */
+	var courseSlug = req.params[0];
+	var activitySlug = req.params[1];
 
+	if (!activitySlug.match( ':' )) {
+	    var repo = courseSlug.split('/').slice(0,2).join( '/' )
+	    activitySlug = repo + ':' + activitySlug;
+	}
+	console.log( activitySlug );
+
+	mdb.Course.findOne({slug: courseSlug}).exec( function(err,course) {
+	    if (course) {
+		mdb.Activity.findOne({recent: true, slug: activitySlug}).exec( function (err, activity) {
+		    if (activity) {
+			console.log( activity );
+			var accum = "";
+			var readStream = mdb.gfs.createReadStream({_id: activity.htmlFile});
+			readStream.on('data', function (data) {
+			    accum += data;
+			});
+			readStream.on('end', function () {
+			    var parentActivity = course.activityParent(activity);
+			    var nextActivity = course.nextActivity(activity);
+			    var previousActivity = course.previousActivity(activity);
+			    res.render('course/activity', 
+				       { activity: activity, activityHtml: accum, 
+					 parentActivity: parentActivity, 
+					 course: course, 
+					 nextActivity: nextActivity, previousActivity: previousActivity }); 
+			});
+			readStream.on('error', function () {
+			    res.send('Error reading activity.');
+			})
+		    } else { 
+			res.send("Activity not found.");
+		    }
+		});
+
+	    } else {
+                res.send("Course not found.");
+	    }
+	});
     }
 };

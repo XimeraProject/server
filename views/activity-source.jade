@@ -5,7 +5,7 @@ block title
 
 block content
     div.container.activity(data-activityId=activityId, style="display: none;", ng-controller="ActivityController")
-      a.pull-right.btn.btn-primary(role="button",href="https://github.com/#{activity.repo.gitIdentifier}/blob/master/#{activity.gitRelativePath}")
+      a.pull-right.btn.btn-primary(role="button",href="https://github.com/#{activity.repo.gitIdentifier}/blob/master/#{activity.relativePath}")
             | <i class="fa fa-github-alt"></i> View on GitHub
 
       .page-header
