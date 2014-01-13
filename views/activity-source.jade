@@ -1,0 +1,18 @@
+extends layouts/main
+
+block title
+  | #{activity.title}
+
+block content
+    div.container.activity(data-activityId=activityId, style="display: none;", ng-controller="ActivityController")
+      a.pull-right.btn.btn-primary(role="button",href="https://github.com/#{activity.repo.gitIdentifier}/blob/master/#{activity.gitRelativePath}")
+            | <i class="fa fa-github-alt"></i> View on GitHub
+
+      .page-header
+         h1 #{activity.title}
+           small &nbsp;source code
+      pre(class="brush: latex")
+        | #{activity.latexSource}
+
+      a.pull-right.btn.btn-info.btn-sm(role="button",href="../")
+            | <i class="fa fa-pencil"></i> Do Activity
