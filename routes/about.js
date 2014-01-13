@@ -6,7 +6,7 @@ exports.contact = function(req, res) {
     res.render('about/contact', { title: 'Contact', user: req.user });
 };
 
-var people = [
+var principal_investigators = [
     {
 	"name": "Bart Snapp",
 	"photo":  "bart-snapp",
@@ -15,17 +15,20 @@ var people = [
 	"email": 'snapp.14@osu.edu'
     },
     {
-	"name": "Corey Staten",
-	"photo": "corey-staten",
-	"description": 'Corey Staten studies mathematics and builds software.  For Ximera, he was hired as an external contractor and built the backend server with mongodb, express, angular, nodejs, and Haskell.',
-	"email": 'corey.staten@gmail.com',
-    },
-    {
 	"name": "Jim Fowler",
 	"photo":  "jim-fowler",
 	"description": 'Jim\'s research broadly includes geometry and topology; specifically, his interests focus on the topology of high-dimensional manifolds and geometric group theory, which means he thinks about highly symmetric (and therefore very beautiful) geometric objects.  He\'s fond of using computational techniques to attack problems in pure mathematics. He received an undergraduate degree from <a href="http://www.harvard.edu/">Harvard University</a> and received a Ph.D. from the <a href="http://www.uchicago.edu/">University of Chicago</a>.  Jim built the adaptive learning platform that powers MOOCulus.',
 	"link":'http://www.math.osu.edu/~fowler/',
 	"email": 'fowler@math.osu.edu'
+    }
+];
+
+var people = [
+    {
+	"name": "Corey Staten",
+	"photo": "corey-staten",
+	"description": 'Corey Staten studies mathematics and builds software.  For Ximera, he was hired as an external contractor and built the backend server with mongodb, express, angular, nodejs, and Haskell.',
+	"email": 'corey.staten@gmail.com',
     },
     {
 	"name": "Steve Gubkin",
@@ -77,7 +80,9 @@ var people = [
 var _ = require('underscore');
 
 exports.team = function(req, res) {
-    res.render('about/team', { title: 'Team', user: req.user, team: _.shuffle(people) });
+    console.log( _.shuffle(principal_investigators) );
+    res.render('about/team', { title: 'Team', user: req.user,
+			       team: _.union(_.shuffle(principal_investigators), _.shuffle(people)) });
 };
 
 exports.faq = function(req, res) {
