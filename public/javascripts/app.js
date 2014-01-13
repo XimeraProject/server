@@ -16,12 +16,12 @@ requirejs.config({
 
 	"mathquill": "/components/mathquill/build/mathquill.min",
 
-	'XRegExp': '/components/syntaxhighlighter/scripts/XRegExp',
-	'shCore': '/components/syntaxhighlighter/scripts/shCore',
+	'XRegExp': '/components/syntaxhighlighter/amd/XRegExp',
+	'shCore': '/components/syntaxhighlighter/amd/shCore',
 
 	'shBrushLatex': 'brushes/shBrushLatex',
-	'shBrushJScript': '/components/syntaxhighlighter/scripts/shBrushJScript',
-	'shBrushPython': '/components/syntaxhighlighter/scripts/shBrushPython',
+	'shBrushJScript': '/components/syntaxhighlighter/amd/shBrushJScript',
+	'shBrushPython': '/components/syntaxhighlighter/amd/shBrushPython',
     },
 
     priority: [

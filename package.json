@@ -1,44 +1,44 @@
 {
-  "name": "ximera",
-  "description": "Ximera interactive textbook server",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "start": "node app.js",
-    "postinstall": "./node_modules/bower/bin/bower install && cd ./components/mathquill && npm install && make && cd ../.. && mkdir -p components/syntaxhighlighter/amd && node node_modules/requirejs/bin/r.js -convert components/syntaxhighlighter/scripts components/syntaxhighlighter/amd && mkdir -p components/brushes-syntaxhighlighter-amd && node node_modules/requirejs/bin/r.js -convert components/brushes-syntaxhighlighter components/brushes-syntaxhighlighter-amd"
-  },
-  "dependencies": {
-    "underscore": "*",
-    "bower": "*",
-    "express": "*",
-    "less-middleware": "*",
-    "connect-mongo": "*",
-    "markdown": "*",
-    "moment": "*",
-    "passport": "*",
-    "mongodb": "*",
-    "mongojs": "*",
-    "jade": "*",
-    "file": "*",
-    "jsdom": "*",
-    "passport-google": "*",
-    "jison": "*",
-    "requirejs": "*",
-    "jasmine-node": "*",
-    "poet": "*",
-    "chai": "*",
-    "karma": "*",
-    "karma-mocha": "*",
-    "karma-chai": "*",
-    "grunt-jison": "*",
-    "grunt-contrib-watch": "*",
-    "gridfs-stream": "*",
-    "mongoose": "*",
-    "fstream": "*",
-    "winston": "*",
-    "less": "*"
-  },
-  "devDependencies": {
-    "load-grunt-tasks": "~0.2.1"
-  }
+    "name": "ximera",
+    "description": "Ximera interactive textbook server",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+	"start": "node app.js",
+	"postinstall": "./node_modules/bower/bin/bower install && cd ./components/mathquill && npm install && make && cd ../.. && mkdir -p components/syntaxhighlighter/amd && node node_modules/requirejs/bin/r.js -convert components/syntaxhighlighter/scripts components/syntaxhighlighter/amd"
+    },
+    "dependencies": {
+	"underscore": "*",
+	"bower": "*",
+	"express": "*",
+	"less-middleware": "*",
+	"connect-mongo": "*",
+	"markdown": "*",
+	"moment": "*",
+	"passport": "*",
+	"mongodb": "*",
+	"mongojs": "*",
+	"jade": "*",
+	"file": "*",
+	"jsdom": "*",
+	"passport-google": "*",
+	"jison": "*",
+	"requirejs": "*",
+	"jasmine-node": "*",
+	"poet": "*",
+	"chai": "*",
+	"karma": "*",
+	"karma-mocha": "*",
+	"karma-chai": "*",
+	"grunt-jison": "*",
+	"grunt-contrib-watch": "*",
+	"gridfs-stream": "*",
+	"mongoose": "*",
+	"fstream": "*",
+	"winston": "*",
+	"less": "*"
+    },
+    "devDependencies": {
+	"load-grunt-tasks": "~0.2.1"
+    }
 }
