@@ -151,9 +151,9 @@
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
 %
-%                    ************************
-%                    ** TITLE AND HEADLINE **
-%                    ************************
+%                    ******************************************
+%                    ** ACTIVITY-TITLE AND SHORT-DESCRIPTION **
+%                    ******************************************
 %
 %
 %
@@ -167,8 +167,8 @@
 
 \newcommand{\activitytitlebreak}{\clearpage}
 
-\newcommand*{\activityheadline}{}
-\newcommand{\headline}[1]{\def\activityheadline{#1}}
+\newcommand*{\activityshortdescription}{}
+\newcommand{\shortdescription}[1]{\def\activityshortdescription{#1}}
 
 \titleclass{\activitytitle}{straight}[\section]
 \newcounter{activitytitle}
@@ -176,7 +176,7 @@
             {\bfseries\LARGE\raggedright}
             {\theactivitytitle}{1em}
             {}
-            [\normalfont\small\itshape\raggedright\activityheadline\setcounter{problem}{0}]
+            [\normalfont\small\itshape\raggedright\activityshortdescription\setcounter{problem}{0}]
 \titlespacing*{\activitytitle}{0pt}{0pt}{2em}
 \renewcommand{\theactivitytitle}{\arabic{activitytitle}}
 
