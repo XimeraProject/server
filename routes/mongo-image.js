@@ -1,10 +1,10 @@
 var winston = require('winston');
 
-exports.tikzpicture = function(req, res) {
+exports.get = function(req, res) {
     winston.info("Image hash", req.params.hash);
-    req.db.tikzPngFiles.findOne({hash: parseInt(req.params.hash)}, function (err, document) {
+    req.db.imageFiles.findOne({hash: parseInt(req.params.hash)}, function (err, document) {
         if (document) {
-            res.set('Content-Type', 'image/png');
+            res.set('Content-Type', document.mimetype);
             res.send(document.content.value(true));
         }
         else {

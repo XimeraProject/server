@@ -21,7 +21,7 @@ var express = require('express')
   , angularState = require('./routes/angular-state')
   , winston = require('winston')
   , template = require('./routes/template')
-  , tikzpicture = require('./routes/tikzpicture')
+  , mongoImage = require('./routes/mongo-image')
   ;
 
 // Some filters for Jade; admittedly, Jade comes with its own Markdown
@@ -34,7 +34,7 @@ jade.filters.ximera = function(str){
 	.replace(/Ximera/g, '<a class="ximera" href="/">Ximera</a>')
 	.replace(/---/g, '&mdash;')
     ;
-}; 
+};
 jade.filters.markdown = function(str){
     return jade.filters.ximera(md.parse(str));
 };
@@ -65,7 +65,7 @@ var MongoStore = require('connect-mongo')(express);
 // the easiest way to use both mongoose for our models and
 // connect-mongo for sessions).
 var databaseUrl = 'mongodb://' + process.env.XIMERA_MONGO_URL + "/" + process.env.XIMERA_MONGO_DATABASE;
-var collections = ['users', 'scopes', 'tikzPngFiles'];
+var collections = ['users', 'scopes', 'imageFiles'];
 var db = require('mongojs').connect(databaseUrl, collections);
 
 // Configure passport for use with Google authentication.
@@ -195,7 +195,7 @@ app.get('/angular-state/:activityId', angularState.get);
 app.put('/angular-state/:activityId', angularState.put);
 
 app.get('/template/:templateFile', template.renderTemplate);
-app.get('/tikzpictures/:hash', tikzpicture.tikzpicture);
+app.get('/image/:hash', mongoImage.get);
 
 app.locals({
 moment: require('moment')

@@ -304,11 +304,12 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                 });
 
                 // If no solution, immediately mark this question part as complete.
+                // NOTE: We need to delay this a bit (500ms timeout) so that state has time to bind.
                 $timeout(function () {
                     if ($(element).find('.solution').length === 0) {
                         $(element).trigger('completeQuestionPart', {questionPartUuid: $(element).attr('data-uuid')});
                     }
-                });
+                }, 500);
             }
         };
     }]);
