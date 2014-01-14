@@ -338,6 +338,21 @@ footer .address a {
 }
 
 ////////////////////////////////////////////////////////////////
+// Trees
+
+@grayLighter: lighten(@gray,90%);
+@grayLight: lighten(@gray,10%);
+@orange: #FFA500;
+@baseBorderRadius: @border-radius-base;
+.border-radius(@width) {
+  border-radius: @width;
+}
+@import "../../components/bootstrap-tree/less/bootstrap-tree.less";
+.tree {
+  border: 0;
+}
+
+////////////////////////////////////////////////////////////////
 // stix fonts
 //@import "fonts.less";
 //@font-family-serif: 'STIXGeneral', Georgia, 'Times New Roman', Times, serif;
