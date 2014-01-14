@@ -5,3 +5,12 @@ mixin courseActivityLink(course,activity)
   else
     a(href="#")
       block
+
+
+mixin courseLink(course)
+  if course
+    a(href="/course/#{course.slug}/")
+      block
+  else
+    a(href="#")
+      block

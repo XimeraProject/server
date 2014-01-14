@@ -21,9 +21,13 @@ block content
       .row
         .col-md-3
           if parentActivity
-            h2
-              +courseActivityLink(course,activity)
+            h4
+              +courseActivityLink(course,parentActivity)
                 | #{parentActivity.title}
+          else
+            h4 
+              +courseLink(course)
+                | #{course.name}
           .list-group
             - for sibling in course.activitySiblings(activity)
               a.list-group-item(href="/course/#{course.slug}/activity/#{course.normalizeSlug(sibling.slug)}/",class=(sibling.slug === activity.slug ? "active" : undefined))
