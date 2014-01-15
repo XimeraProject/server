@@ -50,7 +50,7 @@ app.set('view engine', 'jade');
 app.set('port', process.env.PORT || 3000);
 
 var rootUrl = 'http://localhost:' + app.get('port');
-if (app.get('env') != 'development') {
+if (process.env.DEPLOYMENT === 'production') {
     rootUrl = 'https://ximera.osu.edu';
 }
 
@@ -72,7 +72,6 @@ var db = require('mongojs').connect(databaseUrl, collections);
 // Configure passport for use with Google authentication.
 passport.use(new GoogleStrategy({
 	returnURL: rootUrl + '/auth/google/return',
-        stateless: true,
 	realm: rootUrl
     }, function (identifier, profile, done) {
 	var err = null;
