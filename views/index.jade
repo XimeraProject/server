@@ -38,14 +38,11 @@ block content
     .row
       .col-md-5
         script(type="syntaxhighlighter",class="brush: latex")
-            | \begin{document}
-            |   \begin{question}
-            |   \end{question}
-            | \end{document}
+          include sample.tex
       .col-md-2
-        <i class="fa fa-4x fa-arrow-right"></i>        
+         h4.text-center is transformed into
       .col-md-5
-        some web page goes here
+        img.img-responsive.img-thumbnail(src="/public/images/mockup/sample.png")
 
     hr
     h3.text-center Sign up for the Ximera mailing list
