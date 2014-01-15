@@ -6,9 +6,12 @@ block title
   | #{activity.title}
 
 block activity
-      button.pull-right.btn.btn-danger(type="button",ng-controller="ResetButtonCtrl", ng-click="resetPage()")
+      div.pull-right.btn-toolbar(role="toolbar")
+        .btn-group
+          button.pull-right.btn.btn-sm.btn-danger(type="button",ng-controller="ResetButtonCtrl", ng-click="resetPage()")
             | <i class="fa fa-eraser"></i> Erase Work
-      a.pull-right.btn.btn-info.btn-sm(role="button",href="source/")
+        .btn-group
+          a.pull-right.btn.btn-info.btn-sm(role="button",href="source/")
             | <i class="fa fa-code"></i> View Source
       .page-header
          h1 #{activity.title}

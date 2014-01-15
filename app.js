@@ -23,6 +23,7 @@ var express = require('express')
   , template = require('./routes/template')
   , mongoImage = require('./routes/mongo-image')
   , async = require('async')
+  , fs = require('fs')
   ;
 
 // Some filters for Jade; admittedly, Jade comes with its own Markdown
@@ -249,6 +250,12 @@ app.get('/auth/google/return',
 app.get('/logout', function (req, res) {
 req.logout();
 res.redirect('/');
+});
+
+app.get('/mailing-list', function( req, res ) {
+    console.log( "Email: ", req.query['email'] );
+    fs.appendFile( 'emails.txt', req.query['email'] + "\n", function(err) { return; });
+    res.send(200);
 });
 
 app.get('/about', about.index);

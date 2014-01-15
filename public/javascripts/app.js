@@ -47,7 +47,7 @@ requirejs.config({
 });
 
 // TODO: Add back in input-math
-require( ["require", "angular", "shCore", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "shBrushJScript", "shBrushLatex"], function(require, angular, shCore) {
+require( ["require", "angular", "shCore", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "shBrushJScript", "shBrushLatex", "mailing-list"], function(require, angular, shCore) {
     'use strict';
 
     var app = angular.module('ximeraApp', ['ximeraApp.mathJax', 'ximeraApp.activity', 'ximeraApp.inputMath', 'ximeraApp.videoPlayer']);
