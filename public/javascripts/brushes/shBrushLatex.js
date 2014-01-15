@@ -9,12 +9,13 @@ define(['shCore'], function (shCore) {
 
     function Brush()
     {
-	var keywords =  'if fi then elif else for do done until while break continue case function return in eq ne gt lt ge le';
+	var keywords =  'break continue case return in eq ne gt lt ge le';
 	
 	this.regexList = [
 	    { regex: new RegExp('%.*','gm'),		css: 'comments' },		// one line comments
 	    { regex: SyntaxHighlighter.regexLib.doubleQuotedString,			css: 'string' },		// double quoted strings
 	    { regex: new RegExp('\\\\\\w*','gm'),			css: 'keyword' },		// commands
+	    { regex: new RegExp('\\$[^\\$]+\\$','gm'),			css: 'color2' },		// commands
 	    { regex: new RegExp(this.getKeywords(keywords), 'gm'),			css: 'function' },		// keywords
 	    ];
 	};
