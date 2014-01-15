@@ -72,6 +72,7 @@ var db = require('mongojs').connect(databaseUrl, collections);
 // Configure passport for use with Google authentication.
 passport.use(new GoogleStrategy({
 	returnURL: rootUrl + '/auth/google/return',
+        stateless: true,
 	realm: rootUrl
     }, function (identifier, profile, done) {
 	var err = null;
