@@ -1,13 +1,5 @@
-Ximera: For students
-====================
-
-Ximera brings the classroom to the students--wherever they may be. The
+Ximera brings the classroom to the students---wherever they may be. The
 activities that were once only done in class, are now enhanced allowing
 students to watch videos, repeat exercises, discuss questions via
 online forums, and explore mathematics with a cohort of peers from
 around the world.
-
-<!--When a student completes a Ximera activity, this -->
-
-
-<!--And if the power goes out, students can still work on paper activities.--> 

@@ -6,6 +6,10 @@ exports.contact = function(req, res) {
     res.render('about/contact', { title: 'Contact', user: req.user });
 };
 
+exports.who = function(req, res) {
+    res.render('about/for-various-users', { title: 'Who is this for?', user: req.user });
+};
+
 var principal_investigators = [
     {
 	"name": "Bart Snapp",

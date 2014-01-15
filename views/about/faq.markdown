@@ -9,6 +9,10 @@ A content author uploads classroom activities to GitHub; the Ximera
 backend server downloads these activities and presents them to
 students.
 
+### Who is Ximera for?
+
+Whether you are an instructor or a student, Ximera has [something to offer you](/about/who).
+
 ### Why is it called Ximera?
 
 The X is a capital [chi](http://en.wikipedia.org/wiki/Chi_(letter)),
