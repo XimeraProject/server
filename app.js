@@ -50,7 +50,7 @@ app.set('view engine', 'jade');
 app.set('port', process.env.PORT || 3000);
 
 var rootUrl = 'http://localhost:' + app.get('port');
-if (app.get('env') != 'development') {
+if (process.env.DEPLOYMENT === 'production') {
     rootUrl = 'https://ximera.osu.edu';
 }
 
@@ -152,7 +152,7 @@ app.use(passport.session());
 app.use(function(req, res, next) {
   if (!req.user) {
       if (!req.session.guestUserId) {
-          req.user = new mdb.User({isGuestUser: true, name: "Guest User", email: ""});
+          req.user = new mdb.User({isGuest: true, name: "Guest User", email: ""});
           req.session.guestUserId = req.user._id;
           req.user.save(next);
       }
@@ -249,6 +249,7 @@ app.get('/about', about.index);
 app.get('/about/team', about.team);
 app.get('/about/contact', about.contact);
 app.get('/about/faq', about.faq);
+app.get('/about/who', about.who);
 
 app.get('/angular-state/:activityId', angularState.get);
 app.put('/angular-state/:activityId', angularState.put);
