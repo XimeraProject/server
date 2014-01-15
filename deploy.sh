@@ -10,5 +10,6 @@ else
     ./node_modules/forever/bin/forever stop app.js
     echo start a new copy of app.js...
     source environment.sh
+    export DEPLOYMENT=production
     ./node_modules/forever/bin/forever start -a -l forever.log -o out.log -e err.log app.js &
 fi

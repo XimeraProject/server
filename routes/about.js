@@ -10,6 +10,10 @@ exports.who = function(req, res) {
     res.render('about/for-various-users', { title: 'Who is this for?', user: req.user });
 };
 
+exports.plans = function(req, res) {
+    res.render('about/plans', { title: 'Future Plans', user: req.user });
+};
+
 var principal_investigators = [
     {
 	"name": "Bart Snapp",

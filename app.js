@@ -225,6 +225,12 @@ app.get('/activities', activity.list);
 app.get('/activity/:id/', activity.display);    
 app.get('/activity/:id/source', activity.source);
 
+app.get( '/course/calculus-one/', function( req, res ) { res.redirect('/about/plans'); });
+app.get( '/course/calculus-one', function( req, res ) { res.redirect('/about/plans'); });
+app.get( '/course/calculus-two/', function( req, res ) { res.redirect('/about/plans'); });
+app.get( '/course/calculus-two', function( req, res ) { res.redirect('/about/plans'); });
+app.get( '/course/multivariable/', function( req, res ) { res.redirect('/about/plans'); });
+app.get( '/course/multivariable', function( req, res ) { res.redirect('/about/plans'); });
 
 app.get('/course/', course.index );
 app.get( '/course', function( req, res ) { res.redirect(req.url + '/'); });
@@ -250,6 +256,7 @@ app.get('/about/team', about.team);
 app.get('/about/contact', about.contact);
 app.get('/about/faq', about.faq);
 app.get('/about/who', about.who);
+app.get('/about/plans', about.plans);
 
 app.get('/angular-state/:activityId', angularState.get);
 app.put('/angular-state/:activityId', angularState.put);
