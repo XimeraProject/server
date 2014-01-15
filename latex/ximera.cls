@@ -101,6 +101,7 @@
 \newcommand{\outcomes}[1]{}
 \newcommand{\video}[1]{\footnote{Video link: \url{#1}}}
 \newcommand{\youtube}[1]{\footnote{YouTube link: \url{#1}}}
+\newcommand{\link}[1]{\footnote{Link: \url{#1}}}
 
 
 \newboolean{correct}
