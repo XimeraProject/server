@@ -18,7 +18,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/parser', 'mathquill', 'boots
 		},
 		template: ('<form class="form-inline">' +
 			   '<div class="input-group">' +
-                           '<span class="mathquill-editable"></span>' +
+                           '<span class="mathquill-editable" ></span>' +
                            '<input type="text" class="plain form-control"/>' +
 			   '<span class="input-group-btn">' +
 			   '<button class="wysiwyg btn btn-default" type="button">x<sup>2</sup></button>' +
@@ -26,7 +26,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/parser', 'mathquill', 'boots
 			   '</span>' +
 			   '</div>' +
 			   '</form>'),
-		
+
 		link: function(scope, element, attrs) {
 		    $('button.plain', element).click( function() {
 			$('input.plain',element).show();
@@ -43,7 +43,8 @@ define(['angular', 'jquery', 'underscore', 'algebra/parser', 'mathquill', 'boots
 		    });
 
 		    // Mathquill needs to be started progmatically since it wasn't present in the DOM on documentready
-		    $('span.mathquill-editable', element).mathquill('editable');
+                    // TODO: Do we want inline-block here?
+		    $('span.mathquill-editable', element).mathquill('editable').css('display', 'inline-block');
 
 		    // default to ascii input
 		    //$('button.plain', element).button('toggle');
@@ -63,7 +64,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/parser', 'mathquill', 'boots
 		    }, 30 );
 
 		    //$(document).keyup( update );
-		    
+
 		    $('input.plain',element).keyup( update );
 		    $('input.plain',element).change( update );
 

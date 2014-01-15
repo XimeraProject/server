@@ -196,7 +196,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
         return {
             restrict: 'A',
             scope: {},
-            template: '<div><button class="btn btn-info" ng-show="db.next" ng-click="showHint()">Show Hint</button></div>',
+            template: '<div class="pull-right"><button class="btn btn-success" ng-show="db.next" ng-click="showHint()">Show Hint</button></div>',
             replace: true,
             transclude: true,
             link: function($scope, element, attrs, controller, transclude) {
@@ -458,7 +458,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
         return {
             restrict: 'A',
             scope: {},
-            template: "<mathinput></mathinput><input type='text' ng-model='db.answer' ng-disabled='db.success'><button ng-hide='db.success' ng-click='attemptAnswer()'>Submit</button><span ng-bind='db.message'></span>",
+            template: "<form class='form-inline'><span class='input-group'><input class='form-control' type='text' ng-model='db.answer' ng-disabled='db.success'><span class='input-group-btn'><button class='btn btn-primary' ng-hide='db.success' ng-click='attemptAnswer()'>Submit</button></span></span><span ng-bind='db.message'></span></form>",
             transclude: true,
             link: function($scope, element, attrs, controller) {
                 stateService.bindState($scope, $(element).attr('data-uuid'), function () {

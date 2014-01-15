@@ -22,8 +22,8 @@
   min-width: 206px;
 
   display: inline-block;
-  min-height: @line-height-base;
-  height: @line-height-base;
+  min-height: 2em;
+  height: 2em;
   padding: 4px 6px;
   margin-bottom: @line-height-base / 2;
   color: @gray;
@@ -44,6 +44,7 @@
   }
 }
 
+
 .input-append,
 .input-prepend,
 .input-group {
@@ -59,6 +60,12 @@
     }
   }
 }
+
+
+// TODO: Fix?
+.form-inline .input-group input {
+    min-width:10em;
+} 
 
 /*****************************************************************/
 /* A color scheme from http://colorschemedesigner.com/#4X32Gw0w0w0w0 */
