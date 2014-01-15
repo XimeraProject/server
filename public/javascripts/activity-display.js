@@ -29,45 +29,46 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
     }
 
     app.controller('ActivityController', ["$timeout", function ($timeout) {
-        // Show activity after components have had a chance to load.
-        $timeout(function () {
-            $('.activity').show();
-        });
     }]);
 
     app.factory('stateService', function ($timeout, $rootScope, $http) {
-        var dataByUuid = {};
+        var locals = {dataByUuid: {}};
         var activityId = $('.activity').attr('data-activityId');
 
-        $http.get("/angular-state/" + activityId).
-            success(function (data) {
-                if (data) {
-                    for (var uuid in data) {
-                        if (uuid in dataByUuid) {
-                            // Replace contents.
-                            var oldData = dataByUuid[uuid];
-                            for (var prop in oldData) {
-                                if (oldData.hasOwnProperty(prop)) {
-                                    delete oldData[prop];
+        // Set this at a slight delay so that $timeout in bindstates have time to complete.
+        $timeout(function () {
+            $http.get("/angular-state/" + activityId).
+                success(function (data) {
+                    if (data) {
+                        for (var uuid in data) {
+                            if (uuid in locals.dataByUuid) {
+                                // Replace contents.
+                                var oldData = locals.dataByUuid[uuid];
+                                for (var prop in oldData) {
+                                    if (oldData.hasOwnProperty(prop)) {
+                                        delete oldData[prop];
+                                   }
+                                }
+                                for (var prop in data[uuid]) {
+                                    if (data[uuid].hasOwnProperty(prop)) {
+                                        oldData[prop] = data[uuid][prop]
+                                    }
                                 }
                             }
-                            for (var prop in data[uuid]) {
-                                if (data[uuid].hasOwnProperty(prop)) {
-                                    oldData[prop] = data[uuid][prop]
-                                }
+                            else {
+                                locals.dataByUuid[uuid] = data[uuid];
                             }
                         }
-                        else {
-                            dataByUuid[uuid] = data[uuid];
-                        }
+                        console.log( "Downloaded state ", locals.dataByUuid );
                     }
-                    console.log( "Downloaded state ", dataByUuid );
-                }
-            });
+                    // Show activity after components have had a chance to load.
+                    $('.activity').show();
+                });
+        }, 50);
 
         // TODO: Add activityHash
         var updateState = function (callback) {
-            $http.put("/angular-state/" + activityId, {dataByUuid: dataByUuid})
+            $http.put("/angular-state/" + activityId, {dataByUuid: locals.dataByUuid})
                 .success(function(data, status, headers, config) {
                     console.log("State uploaded.");
                     if (callback) {
@@ -80,12 +81,12 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
 
         var stateService = {};
         stateService.bindState = function ($scope, uuid, initCallback) {
-            if (uuid in dataByUuid) {
-                $scope.db = dataByUuid[uuid];
+            if (uuid in locals.dataByUuid) {
+                $scope.db = locals.dataByUuid[uuid];
             }
             else {
                 $scope.db = {}
-                dataByUuid[uuid] = $scope.db;
+                locals.dataByUuid[uuid] = $scope.db;
                 initCallback();
             }
 
@@ -98,14 +99,14 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
         }
 
         stateService.resetPage = function () {
-            dataByUuid = {};
+            locals.dataByUuid = null;
             updateState(function () {
                 location.reload(true);
             })
         }
 
         stateService.getDataByUuid = function (uuid) {
-            return dataByUuid[uuid];
+            return locals.dataByUuid[uuid];
         }
 
         return stateService;
@@ -129,7 +130,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                 stateService.bindState($scope, $(element).attr('data-uuid'), function () {
                     $timeout(function () {
                         $scope.db.historyCount = 5;
-                        var possibleFirstQuestions = $(element).find('.question, .exercise, .exploration');
+                        var possibleFirstQuestions = $(element).children('.question, .exercise, .exploration');
                         if (possibleFirstQuestions.length > 0) {
                             $scope.db.activeQuestionUuid = $(possibleFirstQuestions[Math.floor(Math.random() * possibleFirstQuestions.length)]).attr('data-uuid');
                         }
@@ -144,7 +145,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                     var questionUuid = data.questionUuid;
                     $scope.db.doneUuids.push(questionUuid);
                     if ($scope.db.activeQuestionUuid === questionUuid) {
-                        var questions = $(element).find('.question, .exercise, .exploration');
+                        var questions = $(element).children('.question, .exercise, .exploration');
                         var uuids = questions.map(function() {
                             return $(this).attr('data-uuid');
                         }).get();
@@ -175,7 +176,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                     sortElements(sortedQuestions);
 
                     // Show number of previous problem given in history count, along with current problem.
-                    $(element).find('.question, .exercise, .exploration').each(function (index, questionElt) {
+                    $(element).children('.question, .exercise, .exploration').each(function (index, questionElt) {
                         var questionUuid = $(questionElt).attr('data-uuid');
                         var totalDone = doneUuids.length;
 
@@ -189,6 +190,58 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                 }, true);
             }
         };
+    }]);
+
+    app.directive('ximeraHint', ['$compile', '$timeout', 'stateService', function($compile, $timeout, stateService) {
+        return {
+            restrict: 'A',
+            scope: {},
+            template: '<div><button class="btn btn-info" ng-show="db.next" ng-click="showHint()">Show Hint</button></div>',
+            replace: true,
+            transclude: true,
+            link: function($scope, element, attrs, controller, transclude) {
+                // Transclude so we can include a ghost question environment inside of hint.
+                transclude(function (clone) {
+                    var questionElement = $('<div class="question" ximera-question></div>');
+                    questionElement.attr('data-uuid', $(element).attr('data-uuid') + '-question');
+                    questionElement.append(clone);
+                    $(element).append($compile(questionElement)($scope));
+                });
+
+                stateService.bindState($scope, $(element).attr('data-uuid'), function () {
+                    $scope.db.next = false;
+                    $scope.db.shown = false;
+                    $timeout(function () {
+                        if ($(element).prevAll('.hint').length == 0) {
+                            $scope.db.next = true;
+                        }
+                    });
+                });
+
+                $scope.showHint = function () {
+                    $scope.db.next = false;
+                    $scope.db.shown = true;
+                    $(element).nextAll('.hint').first().trigger('markAsNext');
+                }
+
+                $(element).on('markAsNext', function () {
+                    $scope.db.next = true;
+                });
+
+                $(element).on('completeQuestion', function (event) {
+                    event.stopPropagation();
+                });
+
+                $scope.$watch('db.shown', function (shown) {
+                    if (shown) {
+                        $(element).children('.question').show();
+                    }
+                    else {
+                        $(element).children('.question').hide();
+                    }
+                });
+            }
+        }
     }]);
 
     // For now, use this as directive function for questions, explorations, and exercises.
@@ -235,7 +288,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
 
                 stateService.bindState($scope, $(element).attr('data-uuid'), function () {
                     $timeout(function () {
-                        var questionParts = $(element).find('.questionPart');
+                        var questionParts = $(element).children('.questionPart');
                         $scope.db.questionPartUuids = _.map(questionParts, function (questionPart) {
                             return $(questionPart).attr('data-uuid');
                         })
@@ -254,7 +307,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                 // Which part of the question are we up to; only reveal next part after first is complete.
                 $scope.$watch('db.currentQuestionPart', function (uuid) {
                     var index = _.indexOf($scope.db.questionPartUuids, $scope.db.currentQuestionPart);
-                    $(element).find('.questionPart').each(function (ii, questionPartElt) {
+                    $(element).children('.questionPart').each(function (ii, questionPartElt) {
                         if ((index === -1) || (ii <= index)) {
                             $(questionPartElt).show();
                         }
@@ -306,7 +359,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                 // If no solution, immediately mark this question part as complete.
                 // NOTE: We need to delay this a bit (500ms timeout) so that state has time to bind.
                 $timeout(function () {
-                    if ($(element).find('.solution').length === 0) {
+                    if ($(element).children('.solution').length === 0) {
                         $(element).trigger('completeQuestionPart', {questionPartUuid: $(element).attr('data-uuid')});
                     }
                 }, 500);

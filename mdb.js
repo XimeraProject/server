@@ -55,11 +55,13 @@ exports.initialize = function initialize() {
                                   });
 
     exports.Scope = mongoose.model("Scope",
-                                   {
+                                   new mongoose.Schema({
                                        activity: ObjectId,
                                        user: ObjectId,
                                        dataByUuid: Mixed
-                                   });
+                                   }, {
+                                       minimize: false
+                                   }));
 
     var CourseSchema = new mongoose.Schema ({
         // Key
