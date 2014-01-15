@@ -56,8 +56,9 @@
 %\RequirePackage{ifmtarg}% http://ctan.org/pkg/ifmtarg
 \RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
 \RequirePackage{multido}% http://ctan.org/pkg/multido
-\RequirePackage{amsmath}
 \RequirePackage{amssymb}
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
 \RequirePackage{pgfplots}
 
 \newif\ifhandout
@@ -67,6 +68,10 @@
 \newif\ifnewpage
 \newpagefalse
 \DeclareOption{newpage}{\newpagetrue}
+
+\newif\ifnonumbers
+\nonumberstrue
+\DeclareOption{nonumbers}{\nonumbersfalse}
 
 \newif\ifhints
 \hintstrue
@@ -174,7 +179,7 @@
 \newcounter{activitytitle}
 \titleformat{\activitytitle}
             {\bfseries\LARGE\raggedright}
-            {\theactivitytitle}{1em}
+            {\ifnonumbers\theactivitytitle\fi}{\ifnonumbers1em\else 0em\fi}
             {}
             [\normalfont\small\itshape\raggedright\activityshortdescription\setcounter{problem}{0}]
 \titlespacing*{\activitytitle}{0pt}{0pt}{2em}
@@ -360,6 +365,48 @@
     \BODY
   \end{enumerate}
 }
+
+
+
+
+
+
+
+
+
+\newtheoremstyle{SlantTheorem}
+	{\topsep}{\topsep}              %%% space between body and thm
+	{\slshape}                      %%% Thm body font
+	{}                              %%% Indent amount (empty = no indent)
+	{\bfseries}            %%% Thm head font
+	{}                              %%% Punctuation after thm head
+	{3ex}                           %%% Space after thm head
+	{\thmname{#1}\thmnumber{ #2}\thmnote{ \bfseries(#3)}}%%% Thm head spec
+\theoremstyle{SlantTheorem}
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{summary}[theorem]{Summary}
+\newtheorem{paradox}[theorem]{Paradox}
+
+\renewenvironment{proof}[1][\proofname]{\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
+{\qed\end{trivlist}}
+
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
 
 
 
