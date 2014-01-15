@@ -51,7 +51,7 @@ app.set('port', process.env.PORT || 3000);
 
 var rootUrl = 'http://localhost:' + app.get('port');
 if (process.env.DEPLOYMENT === 'production') {
-    rootUrl = 'https://ximera.osu.edu';
+    rootUrl = 'http://ximera.osu.edu';
 }
 
 // Common mongodb initializer for the app server and the activity service
