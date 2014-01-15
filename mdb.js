@@ -46,6 +46,21 @@ exports.initialize = function initialize() {
                                           slug: String
                                       });
 
+    exports.User = mongoose.model("User",
+                                  {
+                                      openId: String,
+                                      name: String,
+                                      email: String,
+                                      isGuest: Boolean
+                                  });
+
+    exports.Scope = mongoose.model("Scope",
+                                   {
+                                       activity: ObjectId,
+                                       user: ObjectId,
+                                       dataByUuid: Mixed
+                                   });
+
     var CourseSchema = new mongoose.Schema ({
         // Key
         repo: ObjectId,
@@ -117,7 +132,7 @@ exports.initialize = function initialize() {
 	    for(var i = 0; i < nodes.length; i++) {
 		var result = f(nodes[i]);
 		if (result) return result;
-		
+
 		if (_.where( nodes[i].children, {slug: activity.slug} ).length > 0) {
 		    return nodes[i];
 		}
@@ -125,7 +140,7 @@ exports.initialize = function initialize() {
 
 	    return null;
 	};
-	
+
 	return f(this.activityTree);
     };
 

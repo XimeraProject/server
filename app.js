@@ -22,6 +22,7 @@ var express = require('express')
   , winston = require('winston')
   , template = require('./routes/template')
   , mongoImage = require('./routes/mongo-image')
+  , async = require('async')
   ;
 
 // Some filters for Jade; admittedly, Jade comes with its own Markdown
@@ -73,11 +74,11 @@ passport.use(new GoogleStrategy({
 	returnURL: rootUrl + '/auth/google/return',
 	realm: rootUrl
     }, function (identifier, profile, done) {
-	   var err = null;
-	
+	var err = null;
+
     	// add unique index on openId field
     	db.ensureIndex({openId:1}, {unique: true}, function(err,indexName) {} );
-	
+
     	// Save this to the users collection if we haven't already
     	db.users.findAndModify({
             query: {openId: identifier},
@@ -142,6 +143,62 @@ app.use(express.session({
 app.use(express.session());
 app.use(passport.initialize());
 app.use(passport.session());
+
+
+// Add guest users account if not logged in.
+// If logged in and previously a guest user, copy over activity scopes (non-destructively.)
+// TODO: Clean these out occasionally.
+// TODO: Move this all to a different file.
+app.use(function(req, res, next) {
+  if (!req.user) {
+      if (!req.session.guestUserId) {
+          req.user = new mdb.User({isGuestUser: true, name: "Guest User", email: ""});
+          req.session.guestUserId = req.user._id;
+          req.user.save(next);
+      }
+      else {
+          mdb.User.findOne({_id: req.session.guestUserId}, function (err, user) {
+              req.user = user;
+              next();
+          });
+      }
+  }
+  else {
+      if (req.session.guestUserId) {
+          // Was previously signed in as a guest user.
+          var guestUserId = req.session.guestUserId;
+          req.session.guestUserId = null;
+          copyGuestScopes(guestUserId, req.user._id, next);
+      }
+      else {
+          next();
+      }
+  }
+});
+
+// TODO: Still say sign-in.
+// Copy guest scopes to new user non-destructively; if user has saved work, that wins out.
+function copyGuestScopes(guestUserId, userId, next) {
+    mdb.Scope.find({user: guestUserId}, function (err, scopes) {
+        if (err) next(err);
+        else {
+            async.each(scopes, function (guestScope, callback) {
+                mdb.Scope.findOne({user: userId, activity: guestScope.activityId}, function (err, userScope) {
+                    if (err) callback(err);
+                    else {
+                        if (!userScope) {
+                            guestScope.user = userId;
+                            guestScope.save(callback);
+                        }
+                        else {
+                            callback();
+                        }
+                    }
+                });
+            }, next);
+        }
+    });
+}
 
 app.use(addDatabaseMiddleware);
 
