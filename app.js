@@ -152,7 +152,7 @@ app.use(passport.session());
 app.use(function(req, res, next) {
   if (!req.user) {
       if (!req.session.guestUserId) {
-          req.user = new mdb.User({isGuestUser: true, name: "Guest User", email: ""});
+          req.user = new mdb.User({isGuest: true, name: "Guest User", email: ""});
           req.session.guestUserId = req.user._id;
           req.user.save(next);
       }
