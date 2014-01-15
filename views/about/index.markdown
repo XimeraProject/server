@@ -10,7 +10,7 @@ activities to GitHub.  Key features of our platform include
 * *A content navigator.*  Navigation of a large document is a difficult task.  The platform includes a content navigator to let students move through the various activities within a course.
 * *A JavaScript library.* Having  created quite a few  interactive elements already with JavaScript,  Ximera acts as a repository or library providing common functionality that can be used to produce virtual manipulatives.
 
-You may be interested in watching [a YouTube video](http://www.youtube.com/watch?v=9PEwTtm4SuA) demonstrating the process.
+
 
 ### Support Ximera
 

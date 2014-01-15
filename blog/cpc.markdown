@@ -12,17 +12,17 @@ I've just returned from the Coursera Partners conference. This was a
 chance for people who are teaching massive open online courses (MOOCs)
 and those who are interested in these things to get together and
 share/learn/collaborate.  I got to meet up with my old teacher,
-friend, and competitor Rob Ghrist. You see, Jim Fowler, Steve Gubkin,
-a
+friend, and competitor Rob Ghrist. 
 
 
 <!--more-->
 
-few others, and I at OSU have been running a Calculus One MOOC that we
-call "MOOCulus." Rob Ghrist is doing something similar at the
-University of Pennsylvania, though his MOOC doesn't have a funny
-little name. Ok, I suppose it does&mdash;since he is basically teaching out
-of his beautiful book, titled "Funny Little Calculus Text."
+You see, Jim Fowler, Steve Gubkin, a few others, and I at OSU have been
+running a Calculus One MOOC that we call "MOOCulus." Rob Ghrist is
+doing something similar at the University of Pennsylvania, though his
+MOOC doesn't have a funny little name. Ok, I suppose it
+does&mdash;since he is basically teaching out of his beautiful book,
+titled "Funny Little Calculus Text."
 
 Despite the fact that we are now technically in direct competition,
 since we are both teaching calculus MOOCs, I don’t think we really
