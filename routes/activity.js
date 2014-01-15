@@ -32,7 +32,7 @@ exports.display = function(req, res) {
                 });
                 readStream.on('end', function () {
                     winston.info("End");
-                    res.render('activity-display', { activity: activity, activityHtml: accum, activityId: activity._id });
+                    res.render('activity-display', { activity: activity, activityHtml: accum, activityId: activity._id.toString() });
                 });
                 readStream.on('error', function () {
                     res.send('Error reading activity.');
