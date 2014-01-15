@@ -1,5 +1,6 @@
 var winston = require('winston')
-  , mdb = require('../mdb');
+  , mdb = require('../mdb')
+  , util = require('util');
 
 exports.get = function(req, res) {
     if (!req.user) {
@@ -23,7 +24,7 @@ exports.put = function(req, res) {
         res.status(500).send("");
     }
     else {
-        mdb.Scope.update({activity: new mdb.ObjectId(req.params.activityId), user: req.user._id}, {$set: {dataByUuid: req.body.dataByUuid}}, {upsert: true}, function (err) {
+        mdb.Scope.update({activity: new mdb.ObjectId(req.params.activityId), user: req.user._id}, {$set: {dataByUuid: req.body.dataByUuid}}, {upsert: true}, function (err, affected, raw) {
             res.json({ok: true});
         });
     }
