@@ -49,7 +49,8 @@ exports.activity = function(req, res) {
 				       { activity: activity, activityHtml: accum, 
 					 parentActivity: parentActivity, 
 					 course: course, 
-					 nextActivity: nextActivity, previousActivity: previousActivity }); 
+					 nextActivity: nextActivity, previousActivity: previousActivity,
+					 activityId: activity._id.toString() }); 
 			});
 			readStream.on('error', function () {
 			    res.send('Error reading activity.');
