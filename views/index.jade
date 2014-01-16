@@ -24,13 +24,13 @@ block content
         div.giant-badge
           <i class="fa fa-4x fa-book"></i>
           h3 For Educators
-          p Ximera lets you write activities in LaTeX and post them for your students.
+          p Ximera lets you write documents in LaTeX and post them as interactive activities online for your students.
           p By relying on GitHub to store content, you can easily share activities with your colleagues.
       .col-md-4
         div.giant-badge
           <i class="fa fa-4x fa-pencil"></i>
           h3 For Students
-          p Ximera lets you complete group homeworks online.
+          p Ximera brings the classroom to you, wherever you are.
           p You can use your favorite device to study math anywhere, anytime.
       .col-md-4
         div.giant-badge
@@ -39,8 +39,8 @@ block content
           p Ximera computes statistics on student success, such as point biserials.
           p By creating branches in GitHub, you can quickly run A/B tests on student performance.
 
-    hr
-    h3.text-center Convert LaTeX to Interactive Activities
+    hr.frontpage
+    h3.text-center.frontpage Convert LaTeX to Interactive Activities
     .row
        .col-md-12
          p.text-center Ximera converts LaTeX source into interactive, online activities for your students.
@@ -49,11 +49,20 @@ block content
         script(type="syntaxhighlighter",class="brush: latex")
           include sample.tex
       .col-md-2
-         h4.text-center(style="padding-top: 4em;") is transformed into
+         h4.text-center(style="padding-top: 9em;") is transformed into
       .col-md-5
-        img.img-responsive.img-thumbnail(src="/public/images/mockup/sample.png")
+        div(style="padding-top: 6em;")
+          img.img-responsive.img-thumbnail(src="/public/images/mockup/sample.png")
 
-    hr
-    h3.text-center Sign up for the Ximera mailing list
-    p If you are interested in finding out more about Ximera, or if you are interested in using Ximera in your own classroom, please <a href="/about/contact">contact us</a> at <a href="mailto:ximera@math.osu.edu">ximera@math.osu.edu</a>.
-
+    hr.frontpage
+    h3.text-center.frontpage Sign up for the Ximera mailing list
+    p.text-center If you are interested in finding out more about Ximera, interested in the <a href="/about/workshop">upcoming workshop</a>, or if you are interested in using Ximera in your own classroom, please <a href="/about/contact">contact us</a> at <a href="mailto:ximera@math.osu.edu">ximera@math.osu.edu</a>.
+    form.form-horizontal(role="form")
+      div.form-group
+        label.col-sm-2.col-sm-offset-2.control-label(for="mailingListEmail") Email:
+        div.col-sm-5
+          input.form-control(type="email" id="mailingListEmail" placeholder="Enter email")
+      div.form-group
+        div.col-sm-offset-4.col-sm-10
+          button.btn.btn-default(type="submit",id="mailingListSubmit") Join the list
+    div.col-sm-7.col-sm-offset-3.alert.alert-success(id="mailingListAlert",style="display: none;") <strong>Thank you.</strong> Your email has been added to the Ximera mailing list.

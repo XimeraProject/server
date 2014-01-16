@@ -23,6 +23,7 @@ var express = require('express')
   , template = require('./routes/template')
   , mongoImage = require('./routes/mongo-image')
   , async = require('async')
+  , fs = require('fs')
   ;
 
 // Some filters for Jade; admittedly, Jade comes with its own Markdown
@@ -34,6 +35,7 @@ jade.filters.ximera = function(str){
     return str
 	.replace(/Ximera/g, '<a class="ximera" href="/">Ximera</a>')
 	.replace(/---/g, '&mdash;')
+	.replace(/--/g, '&ndash;')
     ;
 };
 jade.filters.markdown = function(str){
@@ -251,8 +253,15 @@ req.logout();
 res.redirect('/');
 });
 
+app.get('/mailing-list', function( req, res ) {
+    console.log( "Email: ", req.query['email'] );
+    fs.appendFile( 'emails.txt', req.query['email'] + "\n", function(err) { return; });
+    res.send(200);
+});
+
 app.get('/about', about.index);
 app.get('/about/team', about.team);
+app.get('/about/workshop', about.workshop);
 app.get('/about/contact', about.contact);
 app.get('/about/faq', about.faq);
 app.get('/about/who', about.who);

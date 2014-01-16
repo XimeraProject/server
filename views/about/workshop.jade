@@ -1,0 +1,32 @@
+extends ../layouts/main
+
+block content
+ .container
+   mixin breadcrumbs(['/about','/about/workshop'],['About Ximera','Upcoming Workshop'])
+   .page-header
+     h1 Ximera Workshop 1
+   .row
+     div.col-sm-9
+       include workshop.markdown
+
+       h2 Application
+       p If you are interested in participating in the upcoming workshop, please <a href="/about/contact">contact us</a> at <a href="mailto:ximera@math.osu.edu">ximera@math.osu.edu</a> to tell us a bit about yourself and how you would like to contribute.  You can also sign up for our mailing list below, and we will send you an email when the server is live.
+
+     div.col-sm-3
+       div.well
+         h4 Ximera Workshop 1
+         dl
+           dt Date
+           dd July 28--30, 2014
+           dt Place
+           dd Columbus, Ohio
+         p Apply by May 1, 2014 for possible funding.
+   form.form-horizontal(role="form")
+     div.form-group
+       label.col-sm-2.col-sm-offset-2.control-label(for="mailingListEmail") Email:
+       div.col-sm-5
+         input.form-control(type="email" id="mailingListEmail" placeholder="Enter email")
+     div.form-group
+       div.col-sm-offset-4.col-sm-10
+         button.btn.btn-default(type="submit",id="mailingListSubmit") Join the list
+   div.col-sm-7.col-sm-offset-3.alert.alert-success(id="mailingListAlert",style="display: none;") <strong>Thank you.</strong> Your email has been added to the Ximera mailing list.
