@@ -61,11 +61,32 @@
   }
 }
 
-
 // TODO: Fix?
+.form-inline {
+  margin-bottom:-0.8em;
+}
+
 .form-inline .input-group input {
-    min-width:10em;
-} 
+    min-width:8em;
+}
+
+.question.ng-hide-add, .question.ng-hide-remove {
+  -webkit-transition:all linear 0.5s;
+  -moz-transition:all linear 0.5s;
+  -o-transition:all linear 0.5s;
+  transition:all linear 0.5s;
+  display:block!important;
+}
+
+.question.ng-hide-add.ng-hide-add-active,
+.question.ng-hide-remove {
+  opacity:0;
+}
+ 
+.question.ng-hide-add,
+.question.ng-hide-remove.ng-hide-remove-active {
+  opacity:1;
+}
 
 /*****************************************************************/
 /* A color scheme from http://colorschemedesigner.com/#4X32Gw0w0w0w0 */

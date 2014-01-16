@@ -15,7 +15,7 @@
 
 // Script expects data-activityId attribute in activity div.
 define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
-    var app = angular.module('ximeraApp.activity', []);
+    var app = angular.module('ximeraApp.activity', ["ngAnimate"]);
 
     // Make sure a list of DOM elements is sorted in the same order in the DOM itself.
     function sortElements(elements) {
@@ -196,13 +196,13 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
         return {
             restrict: 'A',
             scope: {},
-            template: '<div class="pull-right"><button class="btn btn-success" ng-show="db.next" ng-click="showHint()">Show Hint</button></div>',
+            template: '<div><button class="btn btn-success pull-right" ng-show="db.next" ng-click="showHint()">Show Hint</button></div>',
             replace: true,
             transclude: true,
             link: function($scope, element, attrs, controller, transclude) {
                 // Transclude so we can include a ghost question environment inside of hint.
                 transclude(function (clone) {
-                    var questionElement = $('<div class="question" ximera-question></div>');
+                    var questionElement = $('<div class="question" ximera-question ng-show="db.shown"></div>');
                     questionElement.attr('data-uuid', $(element).attr('data-uuid') + '-question');
                     questionElement.append(clone);
                     $(element).append($compile(questionElement)($scope));
@@ -231,7 +231,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                 $(element).on('completeQuestion', function (event) {
                     event.stopPropagation();
                 });
-
+/*
                 $scope.$watch('db.shown', function (shown) {
                     if (shown) {
                         $(element).children('.question').show();
@@ -239,7 +239,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                     else {
                         $(element).children('.question').hide();
                     }
-                });
+                });*/
             }
         }
     }]);
@@ -458,7 +458,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
         return {
             restrict: 'A',
             scope: {},
-            template: "<form class='form-inline'><span class='input-group'><input class='form-control' type='text' ng-model='db.answer' ng-disabled='db.success'><span class='input-group-btn'><button class='btn btn-primary' ng-hide='db.success' ng-click='attemptAnswer()'>Submit</button></span></span><span ng-bind='db.message'></span></form>",
+            template: " <span><form class='form-inline' style='display: inline-block'><span class='input-group'><input class='form-control' type='text' ng-model='db.answer' ng-disabled='db.success'><span class='input-group-btn'><button class='btn btn-primary' ng-hide='db.success' ng-click='attemptAnswer()'>Submit</button></span></span></form><span ng-bind='db.message'></span></span>",
             transclude: true,
             link: function($scope, element, attrs, controller) {
                 stateService.bindState($scope, $(element).attr('data-uuid'), function () {

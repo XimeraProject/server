@@ -8,6 +8,7 @@
 	"jquery": "*",
         "bootstrap": "*",
         "angular": "*",
+        "angular-animate": "*",
 	"underscore": "*",
         "font-awesome": "*",
 	"x-editable": "*",

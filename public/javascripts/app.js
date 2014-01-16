@@ -3,6 +3,7 @@ requirejs.config({
     paths: {
 	"jquery": "/components/jquery/jquery.min",
 	"angular": "/components/angular/angular",
+        "angular-animate": "/components/angular-animate/angular-animate",
 	"underscore": "/components/underscore/underscore-min",
 	"x-editable": "/components/x-editable/dist/bootstrap-editable/js/bootstrap-editable.min",
 	"threejs": "/components/threejs/build/three.min",
@@ -31,6 +32,7 @@ requirejs.config({
     shim: {
 	underscore: { exports: '_' },
 	angular: { exports: 'angular', deps: ['jquery'] },
+        "angular-animate": { deps: ['angular'] },
 	jquery: { exports: 'jQuery' },
 	"bootstrap": { deps: ['jquery'] },
 
@@ -47,7 +49,7 @@ requirejs.config({
 });
 
 // TODO: Add back in input-math
-require( ["require", "angular", "shCore", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "shBrushJScript", "shBrushLatex"], function(require, angular, shCore) {
+require( ["require", "angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "shBrushJScript", "shBrushLatex"], function(require, angular, shCore) {
     'use strict';
 
     var app = angular.module('ximeraApp', ['ximeraApp.mathJax', 'ximeraApp.activity', 'ximeraApp.inputMath', 'ximeraApp.videoPlayer']);
