@@ -35,6 +35,7 @@ jade.filters.ximera = function(str){
     return str
 	.replace(/Ximera/g, '<a class="ximera" href="/">Ximera</a>')
 	.replace(/---/g, '&mdash;')
+	.replace(/--/g, '&ndash;')
     ;
 };
 jade.filters.markdown = function(str){
@@ -260,6 +261,7 @@ app.get('/mailing-list', function( req, res ) {
 
 app.get('/about', about.index);
 app.get('/about/team', about.team);
+app.get('/about/workshop', about.workshop);
 app.get('/about/contact', about.contact);
 app.get('/about/faq', about.faq);
 app.get('/about/who', about.who);
