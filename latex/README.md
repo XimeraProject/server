@@ -1,3 +1,3 @@
-Here we will have the ximera.cls
+Here we have the Ximera document class. 
 
-It is far from done.
+It currently compiles and can produce worksheets. 
