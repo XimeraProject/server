@@ -25,7 +25,7 @@ Contents of the repository
 * A file named exampleActivityCollection.tex, a file for testing
   purposes.
 
-* Two test directories exampleActivty1 and exampleActivity2 that
+* Two test directories exampleActivity1 and exampleActivity2 that
   contain exampleActivity1.tex, exampleActivity1Source.tex and
   exampleActivity2.tex, exampleActivity2Source.tex. These are example
   files.
