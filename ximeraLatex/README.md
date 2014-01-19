@@ -22,10 +22,13 @@ Contents of the repository
 
 * The Ximera document class, ximera.cls
 
-* A file named activityCollection.tex, a file for testing purposes.
+* A file named exampleActivityCollection.tex, a file for testing
+  purposes.
 
-* A test directory that contains text.tex and testSource.tex. These
-  are files in the Ximera document class that should compile for you.
+* Two test directories exampleActivty1 and exampleActivity2 that
+  contain exampleActivity1.tex, exampleActivity1Source.tex and
+  exampleActivity2.tex, exampleActivity2Source.tex. These are example
+  files.
 
 Directions for download
 -----------------------
@@ -96,9 +99,13 @@ this directory or move it to any location on your computer.
 
 * Compile ximeraLatex/documentation/ximeraInPractice.tex
 
-* Compile ximeraLatex/test.tex
+* Compile ximeraLatex/exampleActivityCollection.tex
 
-Both of these documents should compile at this point. If they do not,
+* Compile ximeraLatex/exampleActivity1/exampleActivity1.tex
+
+* Compile ximeraLatex/exampleActivity2/exampleActivity2.tex
+
+All of these documents should compile at this point. If they do not,
 then you probably need to upgrade your LaTeX distribution.
 
 
@@ -128,7 +135,8 @@ where "/PATH/TO" is actually the path to ximeraLatex.
 * A directory for each individual activity, named the same as the
   activity (without the .tex suffix)
 
-* A master activity .tex file. 
+* A master activity file, one that is similar to
+  exampleActivityCollection.tex
 
 
 Staying up-to-date
