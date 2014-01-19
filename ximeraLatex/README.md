@@ -22,8 +22,10 @@ Contents of the repository
 
 * The Ximera document class, ximera.cls
 
-* A test file, text.tex, in the Ximera document class that should
-  compile for you.
+* A file named activityCollection.tex, a file for testing purposes.
+
+* A test directory that contains text.tex and testSource.tex. These
+  are files in the Ximera document class that should compile for you.
 
 Directions for download
 -----------------------
