@@ -115,7 +115,7 @@ Creating your GitHub repository
 Now that you have the ximera.cls file and can compile test.tex, it is
 time to get started on your own GitHub repo.
 
-To start, make a directory where your activites will live. Give this
+To start, make a directory where your activities will live. Give this
 directory a descriptive name, ximeraUserActivities, or something
 similar. For example purposes, we will use this name, but you should
 use your own. Inside of this directory, you should have
@@ -142,7 +142,7 @@ where "/PATH/TO" is actually the path to ximeraLatex.
 Staying up-to-date
 ------------------
 
-While we hope to solidfy the ximera.cls file, at this point we are
+While we hope to solidify the ximera.cls file, at this point we are
 still in development stages.
 
 To keep your file up-to-date, 
