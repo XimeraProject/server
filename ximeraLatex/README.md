@@ -10,17 +10,19 @@ Contents of the repository
 
 * This README.md file. 
 
-* documentation directory containing the documentation on how to write
+* The GNU License.
+
+* Documentation directory containing the documentation on how to write
   a Ximera activity. You will need to typeset the file
   ximeraInPractice.tex
 
-* inTheClassRoom directory containing ideas on how to use Ximera
+* The directory inTheClassRoom, containing ideas on how to use Ximera
   activities in the classroom. This is surely incomplete at the
   moment, but it is our hope that over time these materials will grow.
 
-* the Ximera document class, ximera.cls
+* The Ximera document class, ximera.cls
 
-* a test file, text.tex, in the Ximera document class that should
+* A test file, text.tex, in the Ximera document class that should
   compile for you.
 
 Directions for download
