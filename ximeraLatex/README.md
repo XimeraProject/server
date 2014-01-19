@@ -10,7 +10,7 @@ Contents of the repository
 
 * This README.md file. 
 
-* The GNU License.
+* The GNU license.
 
 * Documentation directory containing the documentation on how to write
   a Ximera activity. You will need to typeset the file
@@ -84,7 +84,7 @@ NEEDS WORK
 
 #### For Linux
 
-`$ git clone git@github.com:bartsnapp/ximeraAdvancedGeometry.git`
+`$ git clone git@github.com:bartsnapp/ximeraLatex.git`
 
 
 ### Check and organize the ximeraLatex directory
@@ -100,16 +100,41 @@ Both of these documents should compile at this point. If they do not,
 then you probably need to upgrade your LaTeX distribution.
 
 
-Suggested work flow
--------------------
+Creating your GitHub repository
+-------------------------------
+
+Now that you have the ximera.cls file and can compile test.tex, it is
+time to get started on your own GitHub repo.
+
+To start, make a directory where your activites will live. Give this
+directory a descriptive name, ximeraUserActivities, or something
+similar. For example purposes, we will use this name, but you should
+use your own. Inside of this directory, you should have
+
+* A README.md file giving a brief explanation of what these files are.
+
+* A LICENSE, you can simply copy the one from ximeraLatex
+
+* A symbolic-link, or short-cut, called ximera.cls, pointed at the
+  file ximera.cls found in ximeraLatex. In Linux (and Mac) you can
+  produce this via:
+
+`/ximeraUserActivities/$ ln -s /PATH/TO/ximeraLatex/ximera.cls`
+
+where "/PATH/TO" is actually the path to ximeraLatex.
+
+* A directory for each individual activity, named the same as the
+  activity (without the .tex suffix)
+
+* A master activity .tex file. 
 
 
-Staying up to date
+Staying up-to-date
 ------------------
 
 While we hope to solidfy the ximera.cls file, at this point we are
 still in development stages.
 
-To keep your file up to date, 
+To keep your file up-to-date, 
 
 `$ git pull`
