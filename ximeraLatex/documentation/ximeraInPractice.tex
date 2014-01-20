@@ -33,8 +33,9 @@ two files, \code{firstActivity.tex} and \code{firstActivitySource.tex}.
 Here is a schematic of the directory tree:
 \dirtree{%
 .1 ximeraActivities.
-.2 ximera.cls.
+.2 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.
 .2 firstActivity.
+.3 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.. 
 .3 firstActivity.tex.
 .3 firstActivitySource.tex.
 }
@@ -42,7 +43,7 @@ Here is a schematic of the directory tree:
 The file \code{firstActivity.tex} is simply a wrapper for \code{firstActivitySource.tex} and contains the following code:
 
 \begin{Verbatim}
-  \documentclass{../ximera}
+  \documentclass{ximera}
   \begin{document}
   \input{firstActivitySource.tex}
   \end{document}
@@ -112,7 +113,7 @@ Each of these environments (except for hint) can have space after it in via an o
 
 
 \begin{Verbatim}
-  \documentclass+color(red)[space]+color(blue!50!black){../ximera}
+  \documentclass+color(red)[space]+color(blue!50!black){ximera}
   ...
   \begin{exercise}
     An exercise followed by 2 inches of space.
@@ -349,39 +350,45 @@ To add interactive elements, use the \code{interactive} environment.
   +color(red)\end{interactive}
 \end{Verbatim}
 
+\section{Images and videos}
 
-\section{Building a course}\label{S:Course}
-
-The document class allows for some optional arguments:
-\begin{description}
-\item[nohints] Displays all questions with solutions but no hints are shown.
-\item[handout] Displays the first of each question in a shuffle environment, without solutions or hints.
-\item[space] To be used with the \code{handout} option, provides 2
-  inches of blank space below each problem. Note: Each problem
-  environment also has an optional argument where the author can
-  change the amount of space displayed.
-\end{description}
+To include an image, TikZ or otherwise, use 
+\begin{Verbatim}
+  +color(red)\begin{image}
+    A TikZ Image
+  +color(red)\end{image}
+\end{Verbatim}
 
 
-Links to videos can be added with the \code{video} command:
+Links to videos can be added with the \code{youtube} or \code{video}
+command. If the video is a YouTube video, it is best to use the
+\code{youtube} command.
 
 \begin{Verbatim}
   +color(red)\video{some-video-url}
+  +color(red)\youtube{some-video-url}
 \end{Verbatim}
+
+
+\section{Building a course}\label{S:Course}
+
 
 
 
 \dirtree{%
 .1 ximeraActivities.
 .2 course.tex.
-.2 ximera.cls.
+.2 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.
 .2 firstActivity.
+.3 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.
 .3 firstActivity.tex.
 .3 firstActivitySource.tex.
 .2 secondActivity.
+.3 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.
 .3 secondActivity.tex.
 .3 secondActivitySource.tex.
 .2 thirdActivity.
+.3 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.
 .3 thirdActivity.tex.
 .3 thirdActivitySource.tex.
 }
@@ -400,6 +407,21 @@ The file \code{course.tex} contains the following code:
   \input{./thirdActivity/thirdActivitySource.tex}
 \end{document}
 \end{Verbatim}
+
+
+The document class allows for some optional arguments:
+\begin{description}
+\item[nohints] Displays all questions with solutions but no hints are shown.
+\item[handout] Displays the first of each question in a shuffle environment, without solutions or hints.
+\item[space] To be used with the \code{handout} option, provides 2
+  inches of blank space below each problem. Note: Each problem
+  environment also has an optional argument where the author can
+  change the amount of space displayed.
+\item[nonumbers] To be used when producing exactly 1 activity. Here no
+  section numbers are needed.
+\end{description}
+
+
 
 
 \end{document}
