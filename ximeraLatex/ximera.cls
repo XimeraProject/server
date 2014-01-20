@@ -112,6 +112,16 @@
 \everymath{\displaystyle} %makes everymath display style could be optional
 
 
+%% image environment
+\NewEnviron{image}[1]{
+\[
+\BODY
+\]}
+
+
+%% interactive envrironment
+\NewEnviron{interactive}[1][]{\BODY}
+
 
 
 
@@ -340,11 +350,11 @@
                  \par\addvspace{.5ex}\nobreak\noindent%
                  \fi}
 
-
-
-
 \makeatother
 
+
+
+%%% shuffle environment
 \newif\iffirstproblem% Condition for first problem
 \NewEnviron{shuffle}[1][]{
   \shuffletrue
@@ -354,10 +364,7 @@
            
 
 
-
-
-\NewEnviron{interactive}[1][]{\BODY}
-
+%% multiple choice environment
 \renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}
 \renewcommand{\labelenumi}{\theenumi}
 
@@ -366,6 +373,7 @@
     \BODY
   \end{enumerate}
 }
+
 
 
 

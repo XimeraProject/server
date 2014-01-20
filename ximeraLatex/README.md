@@ -92,7 +92,7 @@ NEEDS WORK
 `$ git clone git@github.com:bartsnapp/ximeraLatex.git`
 
 
-### Check and organize the ximeraLatex directory
+### Check the ximeraLatex directory
 
 Now you should have a directory called ximeraLatex. You may rename
 this directory or move it to any location on your computer.
@@ -112,11 +112,19 @@ then you probably need to upgrade your LaTeX distribution.
 Creating your GitHub repository
 -------------------------------
 
-Now that you have the ximera.cls file and can compile test.tex, it is
-time to get started on your own GitHub repo.
+Now that you have the ximera.cls file and can compile
+exampleActivityCollection.tex, /exampleActivity1/exampleActivity1.tex,
+and /exampleActivity2/exampleActivity2.tex it is time to get started
+on your own GitHub repo.
+
+You cannot build your Ximera activities in ximeraLatex. The directory
+ximeraLatex's sole purpose is to give you the most recent version of
+ximera.cls and some examples. Hence you must build your activities in
+a new directory. In fact, you should build them in your own GitHub
+repo.
 
 To start, make a directory where your activities will live. Give this
-directory a descriptive name, ximeraUserActivities, or something
+directory a descriptive name, ximeraActivities, or something
 similar. For example purposes, we will use this name, but you should
 use your own. Inside of this directory, you should have
 
@@ -133,10 +141,27 @@ use your own. Inside of this directory, you should have
 where "/PATH/TO" is actually the path to ximeraLatex.
 
 * A directory for each individual activity, named the same as the
-  activity (without the .tex suffix)
+  activity (without the .tex suffix) with a directory structure
+  similar to the one found in ximeraLatex.
 
 * A master activity file, one that is similar to
   exampleActivityCollection.tex
+
+
+Writing an activity
+-------------------------------
+
+Now it is time to write your first activity. All activities should be
+in their own directory, with all supporting documents also in this
+directory. In particular, you will need a symbolic link to
+ximeraLatex/ximera.cls in each directory. This will provide maximum
+flexibility and modularity of your activity.
+
+If you follow the directory structure suggested in ximeraLatex and in
+ximeraLatex/documentation/ximeraInPractice.pdf (assuming you've
+compiled it!) you will be able to compile each activity on its own, or
+as a collection.
+
 
 
 Staying up-to-date
@@ -145,6 +170,12 @@ Staying up-to-date
 While we hope to solidify the ximera.cls file, at this point we are
 still in development stages.
 
-To keep your file up-to-date, 
+To keep your file up-to-date, you may need to periodically sync or
+pull the the ximera.cls within the ximeraLatex directory.
 
-`$ git pull`
+`ximeraLatex$ git fetch --all`
+`ximeraLatex$ git reset --hard origin/master`
+
+will reset your ximeraLatex directory. Note it will also overwrite
+*any* modifications you have made in this directory. You should not be
+building your activities in this directory.
