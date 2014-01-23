@@ -22,29 +22,43 @@ mixin viewSource()
     | <i class="fa fa-code"></i> View Source
 
 block content
-    div.container.activity(data-activityId=activityId, style="display: none;", ng-controller="ActivityController")
-      .row
-        .col-md-3
-          if parentActivity
-            h4
-              +courseActivityLink(course,parentActivity)
-                | #{parentActivity.title}
-          else
-            h4 
-              +courseLink(course)
-                | #{course.name}
-          .list-group
-            - for sibling in course.activitySiblings(activity)
-              a.list-group-item(href="/course/#{course.slug}/activity/#{course.normalizeSlug(sibling.slug)}/",class=(sibling.slug === activity.slug ? "active" : undefined))
-                h4.list-group-item-heading #{sibling.title}
-                p.list-group-item-text #{sibling.description}
-        .col-md-9
-          block activity
+    div.container
+      mixin breadcrumbs(["/course/"].concat(["/course/" + course.slug + "/"]).concat(_.map( breadcrumbs, function(crumb) { return course.activityURL(crumb); } )), ["Courses"].concat([course.name]).concat(_.map( breadcrumbs, function(crumb) { return crumb.title; } )))
+      div.activity(data-activityId=activityId, style="display: none;", ng-controller="ActivityController")
+        .row
+          .col-md-3
+            if parentActivity
+              h4
+                +courseActivityLink(course,parentActivity)
+                  | #{parentActivity.title}
+            else
+              h4 
+                +courseLink(course)
+                  | #{course.name}
+            .list-group
+              - for sibling in course.activitySiblings(activity)
+                a.list-group-item(href="/course/#{course.slug}/activity/#{course.normalizeSlug(sibling.slug)}/",class=(sibling.slug === activity.slug ? "active" : undefined))
+                  h4.list-group-item-heading #{sibling.title}
+                  p.list-group-item-text #{sibling.description}
+          .col-md-9
+            block activity
 
-          ul.pager
-           li.previous(class=(previousActivity ? undefined : "disabled"))
-             +courseActivityLink(course,previousActivity)
-               | &larr; Previous
-           li.next(class=(nextActivity ? undefined : "disabled"))
-             +courseActivityLink(course,nextActivity)
-               | Next &rarr;
+            .list-group
+              - for child in course.activityChildren(activity)
+                a.list-group-item(href=course.activityURL(child))
+                  h4.list-group-item-heading #{child.title}
+                  p.list-group-item-text #{child.description}           
+
+            ul.pager
+             li.previous(class=(previousActivity ? undefined : "disabled"))
+               +courseActivityLink(course,previousActivity)
+                 | &larr; Previous Activity
+             li.next(class=(nextActivity ? undefined : "disabled"))
+               +courseActivityLink(course,nextActivity)
+                 | Next Activity &rarr;
+
+      #content(style='width: 500px; height: 300px; margin: 0 0 20px 0; border: solid 1px #999; overflow-y: scroll;')
+      .controls
+        input(id="field",style='width:350px;')
+        input(id="send",type='button', value='send')
+

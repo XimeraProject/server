@@ -24,6 +24,7 @@ var express = require('express')
   , mongoImage = require('./routes/mongo-image')
   , async = require('async')
   , fs = require('fs')
+  , io = require('socket.io')
   ;
 
 // Some filters for Jade; admittedly, Jade comes with its own Markdown
@@ -274,7 +275,8 @@ app.get('/template/:templateFile', template.renderTemplate);
 app.get('/image/:hash', mongoImage.get);
 
 app.locals({
-moment: require('moment')
+    moment: require('moment'),
+    _: require('underscore')
 });
 
 // Setup blogs
@@ -302,10 +304,21 @@ routes: {
 app.get( '/blog', function ( req, res ) { res.render( 'blog/index' ); });
 
 poet.init().then( function() {
-// Start HTTP server for fully configured express App.
-http.createServer(app).listen(app.get('port'), function(){
-       console.log('Express server listening on port ' + app.get('port'));
-   });
+    // Start HTTP server for fully configured express App.
+    var server = http.createServer(app);
+
+    server.listen(app.get('port'), function(){
+	console.log('Express server listening on port ' + app.get('port'));
+    });
+
+    var socket = io.listen(server); 
+
+    socket.on('connection', function (client) {
+	client.emit('message', { message: 'welcome to the chat' });
+
+	client.on('send', function (data) {
+            socket.sockets.emit('message', data);
+	});
+    });
+
 });
-
-

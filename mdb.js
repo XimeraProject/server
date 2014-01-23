@@ -84,6 +84,10 @@ exports.initialize = function initialize() {
 	return activitySlug.replace( ":", '/' ).replace( re, '' );
     };
 
+    CourseSchema.methods.activityURL = function activityURL(activity) {
+	return "/course/" + this.slug + "/activity/" + this.normalizeSlug(activity.slug) + "/";
+    };
+    
     CourseSchema.methods.flattenedActivities = function flattenedActivities() {
 	var queue = [];
 
@@ -144,6 +148,16 @@ exports.initialize = function initialize() {
 	};
 
 	return f(this.activityTree);
+    };
+
+    CourseSchema.methods.activityChildren = function activityChildren(activity) {
+	var flattened = this.flattenedActivities();
+
+	activity = _.find( flattened, function(x) { return x.slug === activity.slug } );
+	if (activity === undefined)
+	    return [];
+
+	return activity.children;
     };
 
     CourseSchema.methods.activitySiblings = function activitySiblings(activity) {

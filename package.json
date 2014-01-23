@@ -38,7 +38,8 @@
 	"fstream": "*",
 	"winston": "*",
 	"less": "*",
-        "async": "*"
+        "async": "*",
+	"socket.io": "*"
     },
     "devDependencies": {
 	"load-grunt-tasks": "~0.2.1"

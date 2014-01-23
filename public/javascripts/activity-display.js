@@ -14,7 +14,7 @@
 */
 
 // Script expects data-activityId attribute in activity div.
-define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
+define(['angular', 'jquery', 'underscore', 'confirm-close'], function(angular, $, _, confirmClose) {
     var app = angular.module('ximeraApp.activity', ["ngAnimate"]);
 
     // Make sure a list of DOM elements is sorted in the same order in the DOM itself.
