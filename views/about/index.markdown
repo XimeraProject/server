@@ -22,8 +22,9 @@ technology to the world, please [contact us](/about/contact).
 
 To get involved right away, there are several simple things you can do.
 
-*  Download our source code from [GitHub](https://github.com/kisonecat/ximera).
-*  Write a LaTeX document and try our conversion.
-process. See [INSTALLATION.md](https://github.com/kisonecat/ximera/blob/master/converter/INTSTALLATION.md) for instructions. 
+
+*  Download our LaTeX tools from [GitHub](https://github.com/bartsnapp/ximeraLatex) and
+   use them to write a LaTeX document and try our conversion process.
 *  Write JavaScript interactive elements and share them with the world.
-*  Contribute to the content conversion tool or the content navigator.
+*  Download our source code from [GitHub](https://github.com/kisonecat/ximera) and contribute to the
+   content conversion tool or the content navigator.
