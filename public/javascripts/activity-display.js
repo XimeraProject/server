@@ -394,7 +394,7 @@ define(['angular', 'jquery', 'underscore', 'confirm-close'], function(angular, $
 
                     // Extract choice content from original.
                     transclude(function (clone) {
-                        var choiceElements = $(clone).filter('.choice');
+                        var choiceElements = $(clone).children('.choice');
                         $scope.db.choices = _.map(choiceElements, function (choice) {
                             var value = $(choice).attr('data-value');
                             if (value === "") {
@@ -424,7 +424,7 @@ define(['angular', 'jquery', 'underscore', 'confirm-close'], function(angular, $
                     });
                     sortElements(sortedChoices);
                 }, true);
-                
+
                 $scope.attemptAnswer = function () {
                     if (!$scope.db.success) {
                         var success = false;
