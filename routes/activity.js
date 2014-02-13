@@ -22,7 +22,7 @@ exports.display = function(req, res) {
         res.status(500).send('Need to login.');
     }
     else {
-        mdb.Activity.findOne({_id: req.params.id}).exec( function (err, activity) {
+        mdb.Activity.findOne({_id: req.params.id}).exec(function (err, activity) {
             if (activity) {
                 var accum = "";
                 var readStream = mdb.gfs.createReadStream({_id: activity.htmlFile});
@@ -41,7 +41,7 @@ exports.display = function(req, res) {
             else {
                 res.send("Activity not found.");
             }
-        });        
+        });
     }
 };
 
@@ -54,5 +54,5 @@ exports.source = function(req, res) {
         else {
             res.send("Activity not found.");
         }
-    });        
+    });
 };

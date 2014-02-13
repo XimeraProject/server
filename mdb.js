@@ -43,7 +43,8 @@ exports.initialize = function initialize() {
                                           description: String,
                                           title: String,
                                           recent: Boolean,
-                                          slug: String
+                                          slug: String,
+                                          timeCreated: {type: Date, index: true}
                                       });
 
     exports.User = mongoose.model("User",

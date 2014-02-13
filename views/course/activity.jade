@@ -2,24 +2,28 @@ extends ../layouts/main
 
 include ../links.jade
 
+mixin viewSource()
+  a.pull-right.btn.btn-info.btn-sm(role="button",href="source/")
+    | <i class="fa fa-code"></i> View Source
+
 block title
   | #{activity.title}
 
 block activity
       div.pull-right.btn-toolbar(role="toolbar")
+        if !activity.recent
+          .btn-group
+            a.pull-right.btn.btn-sm.btn-primary(role="button", href="update/")
+              | <i class="fa fa-level-up"></i> Update Activity
         .btn-group
           button.pull-right.btn.btn-sm.btn-danger(type="button",ng-controller="ResetButtonCtrl", ng-click="resetPage()")
             | <i class="fa fa-eraser"></i> Erase Work
         .btn-group
-          a.pull-right.btn.btn-info.btn-sm(role="button",href="source/")
-            | <i class="fa fa-code"></i> View Source
+          mixin viewSource()
       .page-header
          h1 #{activity.title}
       | !{activityHtml}
 
-mixin viewSource()
-  a.pull-right.btn.btn-info.btn-sm(role="button",href="/activity/#{activity.id}/source/")
-    | <i class="fa fa-code"></i> View Source
 
 block content
     div.container

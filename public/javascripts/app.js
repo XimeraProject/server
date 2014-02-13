@@ -4,7 +4,7 @@ requirejs.config({
 	"jquery": "/components/jquery/jquery.min",
 	"angular": "/components/angular/angular",
         "angular-animate": "/components/angular-animate/angular-animate",
-	"underscore": "/components/underscore/underscore-min",
+	"underscore": "/components/underscore/underscore",
 	"x-editable": "/components/x-editable/dist/bootstrap-editable/js/bootstrap-editable.min",
 	"threejs": "/components/threejs/build/three.min",
 	"moment": "/components/moment/min/moment.min",

@@ -239,6 +239,8 @@ app.get('/course/', course.index );
 app.get( '/course', function( req, res ) { res.redirect(req.url + '/'); });
 app.get( '/courses', function( req, res ) { res.redirect('/course/'); });
 app.get( '/courses/', function( req, res ) { res.redirect('/course/'); });
+app.get(/^\/course\/(.+)\/activity\/(.+)\/update\/$/, course.activityUpdate);
+app.get(/^\/course\/(.+)\/activity\/(.+)\/source\/$/, course.activitySource);
 app.get(/^\/course\/(.+)\/activity\/(.+)\/$/, course.activity );
 app.get( /^\/course\/(.+)\/activity\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
 app.get(/^\/course\/(.+)\/$/, course.landing );

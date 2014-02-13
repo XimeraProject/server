@@ -14,7 +14,7 @@
 */
 
 // Script expects data-activityId attribute in activity div.
-define(['angular', 'jquery', 'underscore', 'confirm-close'], function(angular, $, _, confirmClose) {
+define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
     var app = angular.module('ximeraApp.activity', ["ngAnimate"]);
 
     // Make sure a list of DOM elements is sorted in the same order in the DOM itself.
@@ -47,7 +47,7 @@ define(['angular', 'jquery', 'underscore', 'confirm-close'], function(angular, $
                                 for (var prop in oldData) {
                                     if (oldData.hasOwnProperty(prop)) {
                                         delete oldData[prop];
-                                   }
+                                    }
                                 }
                                 for (var prop in data[uuid]) {
                                     if (data[uuid].hasOwnProperty(prop)) {
@@ -102,7 +102,7 @@ define(['angular', 'jquery', 'underscore', 'confirm-close'], function(angular, $
             locals.dataByUuid = null;
             updateState(function () {
                 location.reload(true);
-            })
+            });
         }
 
         stateService.getDataByUuid = function (uuid) {
@@ -354,6 +354,7 @@ define(['angular', 'jquery', 'underscore', 'confirm-close'], function(angular, $
                         $scope.db.complete = true;
                         $(element).trigger('completeQuestionPart', {questionPartUuid: $(element).attr('data-uuid')});
                     }
+                    event.stopPropagation();
                 });
 
                 // If no solution, immediately mark this question part as complete.
