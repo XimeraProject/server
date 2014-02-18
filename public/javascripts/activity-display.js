@@ -380,7 +380,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
         return {
             restrict: 'A',
             scope: {},
-            templateUrl: '/template/ximera-multiple-choice',
+            templateUrl: '/template/multiple-choice',
             transclude: true,
             link: function($scope, element, attrs, controller, transclude) {
                 stateService.bindState($scope, $(element).attr('data-uuid'), function () {
@@ -459,7 +459,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
         return {
             restrict: 'A',
             scope: {},
-            templateUrl: '/template/ximera-answer',
+            templateUrl: '/template/expression-answer',
             transclude: true,
             link: function($scope, element, attrs, controller) {
                 stateService.bindState($scope, $(element).attr('data-uuid'), function () {
