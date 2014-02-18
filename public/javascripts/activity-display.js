@@ -196,7 +196,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
         return {
             restrict: 'A',
             scope: {},
-            template: '<div><button class="btn btn-success pull-right" ng-show="db.next" ng-click="showHint()">Show Hint</button></div>',
+            template: '<div><button class="btn btn-info pull-right" ng-show="db.next" ng-click="showHint()">Show Hint</button></div>',
             replace: true,
             transclude: true,
             link: function($scope, element, attrs, controller, transclude) {
@@ -459,7 +459,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
         return {
             restrict: 'A',
             scope: {},
-            template: " <span><form class='form-inline' style='display: inline-block'><span class='input-group'><input class='form-control' type='text' ng-model='db.answer' ng-disabled='db.success'><span class='input-group-btn'><button class='btn btn-primary' ng-hide='db.success' ng-click='attemptAnswer()'>Submit</button></span></span></form><span ng-bind='db.message'></span></span>",
+            templateUrl: '/template/ximera-answer',
             transclude: true,
             link: function($scope, element, attrs, controller) {
                 stateService.bindState($scope, $(element).attr('data-uuid'), function () {
@@ -468,10 +468,21 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                     $scope.db.correctAnswer = $(element).attr('data-answer');
                     $scope.db.message = "";
                 });
-                
+
+		// If you change the answer, the question is no longer marked wrong
+                $scope.$watch('db.answer', function (answer) {
+		    if ($scope.db.attemptedAnswer != answer)
+			$scope.db.message = "";
+		    else
+			$scope.db.message = $scope.db.recentMessage;
+		});
+
                 $scope.attemptAnswer = function () {
-                    if (!$scope.db.success) {
+                    if ((!$scope.db.success) && ($scope.db.answer != "")) {
                         var success = false;
+			
+			$scope.db.attemptedAnswer = $scope.db.answer;
+
                         if ($scope.db.answer === $scope.db.correctAnswer) {
                             success = true;
                         }
@@ -484,10 +495,12 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                         });                        
 
                         if (success) {
-                            $scope.db.message = 'Correct';
+                            $scope.db.message = 'correct';
+                            $scope.db.recentMessage = 'correct';
                         }
                         else {
-                            $scope.db.message = 'Incorrect';
+                            $scope.db.message = 'incorrect';
+                            $scope.db.recentMessage = 'incorrect';
                         }
                         $scope.db.success = success;
                     }
