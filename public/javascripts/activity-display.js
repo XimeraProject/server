@@ -14,7 +14,7 @@
 */
 
 // Script expects data-activityId attribute in activity div.
-define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
+define(['angular', 'jquery', 'underscore', 'algebra/parser'], function(angular, $, _, parse) {
     var app = angular.module('ximeraApp.activity', ["ngAnimate"]);
 
     // Make sure a list of DOM elements is sorted in the same order in the DOM itself.
@@ -483,6 +483,55 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
 			$scope.db.message = "";
 		    else
 			$scope.db.message = $scope.db.recentMessage;
+		});
+		
+		// The answer includes a live preview inside a popover
+		$(':text',element).focusout( function() {
+		    $(element).popover('hide');
+		});
+
+		$(':text',element).focusin( function() {
+		    $(element).popover('show');
+		    MathJax.Hub.Queue(["Typeset", MathJax.Hub, $(element).children(".popover-content")[0]]);
+		});
+
+                $scope.$watch('db.answer', function (answer) {
+		    // empty answers have no preview
+		    if (answer == "") {
+			$scope.db.latex = "";
+			$(element).popover('destroy');
+		    } else {
+			// sometimes parsing throws errors
+			try {
+			    var latex = parse.text.to.latex(answer);
+
+			    $(element).popover('destroy');
+			    $(element).popover({ 
+				placement: 'right',
+				//animation: false,
+				trigger: 'manual',
+				content: function() {
+				    return '$' + latex + '$';
+				}});
+
+			    if ($(':text',element).is(":focus"))
+				$(element).popover('show');
+
+			    MathJax.Hub.Queue(["Typeset", MathJax.Hub, $(element).children(".popover-content")[0]]);
+			}
+			// display errors as popovers, too
+			catch (err) {
+			    $(element).popover('destroy');
+			    $(element).popover({ 
+				placement: 'right',
+				trigger: 'manual',
+				title: 'Error',
+				content: function() {
+				    return err;
+				}});
+			    $(element).popover('show');
+			}
+		    }
 		});
 
                 $scope.attemptAnswer = function () {
