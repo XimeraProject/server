@@ -419,6 +419,13 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
 		    $scope.db.radioValue = value;
 		};
 
+                $scope.$watch('db.radioValue', function (value) {
+		    if ($scope.db.attemptedAnswer != value)
+			$scope.db.message = "";
+		    else
+			$scope.db.message = $scope.db.recentMessage;
+		});
+
                 $scope.$watch('db.order', function (order) {
                     var sortedChoices = _.map(order, function (uuid) {
                         return $(element).find("[data-uuid=" + uuid + "]");
@@ -431,8 +438,9 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                         var success = false;
                         if ($scope.db.radioValue === $scope.db.correctAnswer) {
                             success = true;
-
                         }
+
+			$scope.db.attemptedAnswer = $scope.db.radioValue;
 
                         $(element).trigger('attemptAnswer', {
                             success: success,
@@ -442,10 +450,10 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                         });
 
                         if (success) {
-                            $scope.db.message = "Correct";
+                            $scope.db.recentMessage = $scope.db.message = "correct";
                         }
                         else {
-                            $scope.db.message = "Incorrect";
+                            $scope.db.recentMessage = $scope.db.message = "incorrect";
                         }
                         $scope.db.success = success;
                     }
