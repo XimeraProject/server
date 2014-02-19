@@ -9,6 +9,10 @@ requirejs.config({
 	"threejs": "/components/threejs/build/three.min",
 	"moment": "/components/moment/min/moment.min",
 
+	"codemirror": "/components/codemirror/lib/codemirror",
+	"codemirror-python": "/components/codemirror/mode/python/python",
+	"ui-codemirror": "/components/angular-ui-codemirror/ui-codemirror",
+
 	"pagedown-converter": "/components/pagedown-bootstrap/Markdown.Converter",
 	"pagedown-sanitizer": "/components/pagedown-bootstrap/Markdown.Sanitizer",
 	"pagedown-editor": "/components/pagedown-bootstrap/Markdown.Editor",
@@ -48,14 +52,19 @@ requirejs.config({
         'shCore': { deps: ['XRegExp'] },
         'shBrushJScript': { deps: ['shCore'] },
         'shBrushPython': { deps: ['shCore'] },
+
+        'codemirror': { exports: 'CodeMirror' },
+        'codemirror-python': { deps: ['codemirror'] },
+        'ui-codemirror': { deps: ['codemirror', 'angular'] },
     },
 });
 
 // TODO: Add back in input-math
-require( ["require", "angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "shBrushJScript", "shBrushLatex", "mailing-list", "confirm-close", "chat"], function(require, angular, shCore) {
+require( ["require", "angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "shBrushJScript", "shBrushLatex", "mailing-list", "confirm-close", "chat", "ui-codemirror", "codemirror-python"], function(require, angular, shCore) {
     'use strict';
 
-    var app = angular.module('ximeraApp', ['ximeraApp.mathJax', 'ximeraApp.activity', 'ximeraApp.inputMath', 'ximeraApp.videoPlayer']);
+    var app = angular.module('ximeraApp', ['ximeraApp.mathJax', 'ximeraApp.activity', 'ximeraApp.codingActivity', 'ximeraApp.inputMath', 'ximeraApp.videoPlayer', 'ui.codemirror']);
+
     $(document).ready(function() {
         angular.bootstrap(document, [app['name']]);
 	shCore.SyntaxHighlighter.highlight();

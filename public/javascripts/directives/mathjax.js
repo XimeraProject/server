@@ -16,7 +16,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
 		scope: {
 		    ngModel: '='
 		},
-		template: ('<span></span>'),
+		template: ('<span id="popover-content"></span>'),
 		
 		link: function(scope, element, attrs) {
 		    scope.$watch( "ngModel", function() {
