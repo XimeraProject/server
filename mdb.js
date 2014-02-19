@@ -66,6 +66,18 @@ exports.initialize = function initialize() {
                                        minimize: false
                                    }));
 
+    exports.Post = mongoose.model("Post",
+                                   new mongoose.Schema({
+                                       room: {type: String, index: true},
+				       content: String,
+				       user: Mixed,
+				       date: Date,
+				       parent: ObjectId,
+				       upvotes: Mixed
+				   }, {
+                                       minimize: false
+                                   }));
+
     var CourseSchema = new mongoose.Schema ({
         // Key
         repo: ObjectId,

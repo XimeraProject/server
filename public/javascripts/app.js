@@ -23,6 +23,8 @@ requirejs.config({
 	'shBrushLatex': 'brushes/shBrushLatex',
 	'shBrushJScript': '/components/syntaxhighlighter/amd/shBrushJScript',
 	'shBrushPython': '/components/syntaxhighlighter/amd/shBrushPython',
+
+	'socketio': '/socket.io/socket.io.js'
     },
 
     priority: [
@@ -30,15 +32,16 @@ requirejs.config({
     ],
 
     shim: {
+	socketio: { exports: 'io' },
 	underscore: { exports: '_' },
 	angular: { exports: 'angular', deps: ['jquery'] },
         "angular-animate": { deps: ['angular'] },
 	jquery: { exports: 'jQuery' },
 	"bootstrap": { deps: ['jquery'] },
 
-	"pagedown-converter": { deps: ['bootstrap'] },
-	"pagedown-sanitizer": { deps: ['bootstrap'] },
-	"pagedown-editor": { deps: ['bootstrap'] },
+	"pagedown-converter": { exports: 'Markdown.Converter', deps: ['bootstrap'] },
+	"pagedown-sanitizer": { exports: 'Markdown.Sanitizer', deps: ['bootstrap'] },
+	"pagedown-editor": { exports: 'Markdown.Editor', deps: ['bootstrap', "pagedown-converter"] },
 
 	"mathquill": { deps: ['jquery'] },
 
@@ -49,7 +52,7 @@ requirejs.config({
 });
 
 // TODO: Add back in input-math
-require( ["require", "angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "shBrushJScript", "shBrushLatex", "mailing-list"], function(require, angular, shCore) {
+require( ["require", "angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "shBrushJScript", "shBrushLatex", "mailing-list", "confirm-close", "chat"], function(require, angular, shCore) {
     'use strict';
 
     var app = angular.module('ximeraApp', ['ximeraApp.mathJax', 'ximeraApp.activity', 'ximeraApp.inputMath', 'ximeraApp.videoPlayer']);

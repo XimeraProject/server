@@ -285,7 +285,6 @@ app.get('/logout', function (req, res) {
 });
 
 app.get('/mailing-list', function( req, res ) {
-    console.log( "Email: ", req.query['email'] );
     fs.appendFile( 'emails.txt', req.query['email'] + "\n", function(err) { return; });
     res.send(200);
 });
@@ -303,6 +302,7 @@ app.put('/angular-state/:activityId', angularState.put);
 
 app.get('/template/:templateFile', template.renderTemplate);
 app.get('/image/:hash', mongoImage.get);
+
 
 app.locals({
     moment: require('moment'),
@@ -343,8 +343,18 @@ poet.init().then( function() {
 
     var socket = io.listen(server); 
 
+    // Setup chat rooms
+    var chat = require('./routes/chat.js')(socket);
+    app.get('/chats', chat.view);
+    app.post('/chats/upvote/:post', chat.upvote);
+    app.get('/chats/:room/:timestamp', chat.get);
+    app.post('/chat/:room', chat.post);
+
     socket.on('connection', function (client) {
-	client.emit('message', { message: 'welcome to the chat' });
+	// join to room and save the room name
+	client.on('join room', function (room) {
+            client.join(room);
+	});
 
 	client.on('send', function (data) {
             socket.sockets.emit('message', data);

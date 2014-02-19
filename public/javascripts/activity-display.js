@@ -14,7 +14,7 @@
 */
 
 // Script expects data-activityId attribute in activity div.
-define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
+define(['angular', 'jquery', 'underscore', 'algebra/parser'], function(angular, $, _, parse) {
     var app = angular.module('ximeraApp.activity', ["ngAnimate"]);
 
     // Make sure a list of DOM elements is sorted in the same order in the DOM itself.
@@ -196,7 +196,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
         return {
             restrict: 'A',
             scope: {},
-            template: '<div><button class="btn btn-success pull-right" ng-show="db.next" ng-click="showHint()">Show Hint</button></div>',
+            template: '<div><button class="btn btn-info pull-right" ng-show="db.next" ng-click="showHint()">Show Hint</button></div>',
             replace: true,
             transclude: true,
             link: function($scope, element, attrs, controller, transclude) {
@@ -380,7 +380,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
         return {
             restrict: 'A',
             scope: {},
-            templateUrl: '/template/ximera-multiple-choice',
+            templateUrl: '/template/multiple-choice',
             transclude: true,
             link: function($scope, element, attrs, controller, transclude) {
                 stateService.bindState($scope, $(element).attr('data-uuid'), function () {
@@ -419,6 +419,13 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
 		    $scope.db.radioValue = value;
 		};
 
+                $scope.$watch('db.radioValue', function (value) {
+		    if ($scope.db.attemptedAnswer != value)
+			$scope.db.message = "";
+		    else
+			$scope.db.message = $scope.db.recentMessage;
+		});
+
                 $scope.$watch('db.order', function (order) {
                     var sortedChoices = _.map(order, function (uuid) {
                         return $(element).find("[data-uuid=" + uuid + "]");
@@ -431,8 +438,9 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                         var success = false;
                         if ($scope.db.radioValue === $scope.db.correctAnswer) {
                             success = true;
-
                         }
+
+			$scope.db.attemptedAnswer = $scope.db.radioValue;
 
                         $(element).trigger('attemptAnswer', {
                             success: success,
@@ -442,10 +450,10 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                         });
 
                         if (success) {
-                            $scope.db.message = "Correct";
+                            $scope.db.recentMessage = $scope.db.message = "correct";
                         }
                         else {
-                            $scope.db.message = "Incorrect";
+                            $scope.db.recentMessage = $scope.db.message = "incorrect";
                         }
                         $scope.db.success = success;
                     }
@@ -459,7 +467,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
         return {
             restrict: 'A',
             scope: {},
-            template: " <span><form class='form-inline' style='display: inline-block'><span class='input-group'><input class='form-control' type='text' ng-model='db.answer' ng-disabled='db.success'><span class='input-group-btn'><button class='btn btn-primary' ng-hide='db.success' ng-click='attemptAnswer()'>Submit</button></span></span></form><span ng-bind='db.message'></span></span>",
+            templateUrl: '/template/expression-answer',
             transclude: true,
             link: function($scope, element, attrs, controller) {
                 stateService.bindState($scope, $(element).attr('data-uuid'), function () {
@@ -468,10 +476,70 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                     $scope.db.correctAnswer = $(element).attr('data-answer');
                     $scope.db.message = "";
                 });
-                
+
+		// If you change the answer, the question is no longer marked wrong
+                $scope.$watch('db.answer', function (answer) {
+		    if ($scope.db.attemptedAnswer != answer)
+			$scope.db.message = "";
+		    else
+			$scope.db.message = $scope.db.recentMessage;
+		});
+		
+		// The answer includes a live preview inside a popover
+		$(':text',element).focusout( function() {
+		    $(element).popover('hide');
+		});
+
+		$(':text',element).focusin( function() {
+		    $(element).popover('show');
+		    MathJax.Hub.Queue(["Typeset", MathJax.Hub, $(element).children(".popover-content")[0]]);
+		});
+
+                $scope.$watch('db.answer', function (answer) {
+		    // empty answers have no preview
+		    if (answer == "") {
+			$scope.db.latex = "";
+			$(element).popover('destroy');
+		    } else {
+			// sometimes parsing throws errors
+			try {
+			    var latex = parse.text.to.latex(answer);
+
+			    $(element).popover('destroy');
+			    $(element).popover({ 
+				placement: 'right',
+				//animation: false,
+				trigger: 'manual',
+				content: function() {
+				    return '$' + latex + '$';
+				}});
+
+			    if ($(':text',element).is(":focus"))
+				$(element).popover('show');
+
+			    MathJax.Hub.Queue(["Typeset", MathJax.Hub, $(element).children(".popover-content")[0]]);
+			}
+			// display errors as popovers, too
+			catch (err) {
+			    $(element).popover('destroy');
+			    $(element).popover({ 
+				placement: 'right',
+				trigger: 'manual',
+				title: 'Error',
+				content: function() {
+				    return err;
+				}});
+			    $(element).popover('show');
+			}
+		    }
+		});
+
                 $scope.attemptAnswer = function () {
-                    if (!$scope.db.success) {
+                    if ((!$scope.db.success) && ($scope.db.answer != "")) {
                         var success = false;
+			
+			$scope.db.attemptedAnswer = $scope.db.answer;
+
                         if ($scope.db.answer === $scope.db.correctAnswer) {
                             success = true;
                         }
@@ -484,10 +552,12 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
                         });                        
 
                         if (success) {
-                            $scope.db.message = 'Correct';
+                            $scope.db.message = 'correct';
+                            $scope.db.recentMessage = 'correct';
                         }
                         else {
-                            $scope.db.message = 'Incorrect';
+                            $scope.db.message = 'incorrect';
+                            $scope.db.recentMessage = 'incorrect';
                         }
                         $scope.db.success = success;
                     }

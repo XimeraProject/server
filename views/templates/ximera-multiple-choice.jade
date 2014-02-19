@@ -1,8 +1,0 @@
-div
-  div.btn-group-vertical(data-toggle="buttons")
-    label.btn.btn-default(ng-repeat='choice in db.choices',ng-click='activate(choice.value)',ng-class='{active: db.radioValue === choice.value}',ng-disabled='db.success && (db.radioValue != choice.value)')
-      input(type='radio',ng-model='db.radioValue',name='{{db.radioGroup}}',value='{{choice.value}}')
-      | {{choice.label}}
-button(ng-hide='db.success' ng-click='attemptAnswer()')
-   | Submit
-div(ng-bind='db.message')
