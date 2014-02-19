@@ -1,0 +1,46 @@
+table
+  tr(ng-repeat='row in matrix')
+    td(ng-if="$first && !$last",style="vertical-align: center; border: 3pt solid black; border-right: none; border-bottom: none;")
+      | &nbsp;
+    td(ng-if="!$first && !$last",style="vertical-align: center; border-left: 3pt solid black;")
+      | &nbsp;
+    td(ng-if="$last && !$first",style="vertical-align: center; border: 3pt solid black; border-right: none; border-top: none;")
+      | &nbsp;
+    td(ng-if="$last && $first",style="vertical-align: center; border: 3pt solid black; border-right: none;")
+      | &nbsp;
+
+    td(ng-repeat='entry in row')
+      input.form-control(placeholder="{{subscriptLabel($parent.$index,$index)}}",ng-model="entry.v",latex-popover="")
+
+    // need to double these to avoid some border issues
+    td(ng-if="$first && !$last",style="vertical-align: center; border-top: 3pt solid black; border-right: 3pt solid black;")
+      | &nbsp;
+    td(ng-if="$first && !$last")
+    td(ng-if="!$first && !$last",style="vertical-align: center; border-right: 3pt solid black;")
+      | &nbsp;
+    td(ng-if="!$first && !$last")
+    td(ng-if="$last && !$first",style="vertical-align: center; border: 3pt solid black; border-left: none; border-top: none;")
+      | &nbsp;
+    td(ng-if="$last && !$first")
+
+    td(ng-if="$last && $first",style="vertical-align: center; border: 3pt solid black; border-left: none;")
+      | &nbsp;
+    td(ng-if="$last && $first")
+
+    td(rowspan="{{matrix.length}}",ng-if="$first",style="vertical-align: center;")
+      div.btn-group-vertical
+        button.btn.btn-sm.btn-default(type="button",ng-click='addRow()',title="Add row")
+          i.fa.fa-plus
+        button.btn.btn-sm.btn-default(type="button",ng-click='removeRow()',ng-disabled="matrix.length <= 1",title="Remove row")
+          i.fa.fa-minus
+
+  // Need two rows to avoid trouble with borders
+  tr
+  tr
+    td(colspan='{{matrix[0].length + 2}}',style="text-align:center;")
+      div.btn-group
+        button.btn.btn-sm.btn-default(type="button",ng-click='addColumn()',title="Add column")
+          i.fa.fa-plus
+        button.btn.btn-sm.btn-default(type="button",ng-click='removeColumn()',ng-disabled="matrix[0].length <= 1",title="Remove column")
+          i.fa.fa-minus
+
