@@ -1,5 +1,5 @@
-define(['angular', 'jquery', 'underscore', 'codemirror', 'activity-display'], function(angular, $, _, CodeMirror) {
-    var app = angular.module('ximeraApp.codingActivity', ["ximeraApp.activity", 'ui.codemirror']);
+define(['angular', 'jquery', 'underscore', 'codemirror', 'skulpt', 'skulpt-stdlib', 'activity-display'], function(angular, $, _, CodeMirror, Sk) {
+    var app = angular.module('ximeraApp.codingActivity', ["ximeraApp.activity"]);
 
     app.directive('ximeraPython', ['$compile', '$rootScope', 'stateService', function ($compile, $rootScope, stateService) {
         return {
@@ -47,6 +47,45 @@ define(['angular', 'jquery', 'underscore', 'codemirror', 'activity-display'], fu
 
 		$scope.activate = function(value) {
 		    $scope.db.radioValue = value;
+		};
+
+                $scope.runCode = function () {
+		    function outf(text) {
+			var mypre = document.getElementById("output");
+			mypre.innerHTML = mypre.innerHTML + text;
+		    }
+
+		    function builtinRead(x) {
+			if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+			    throw "File not found: '" + x + "'";
+			return Sk.builtinFiles["files"][x];
+		    }
+		    
+		    // Here's everything you need to run a python program in skulpt
+		    // grab the code from your textarea
+		    // get a reference to your pre element for output
+		    // configure the output function
+		    // call Sk.importMainWithBody()
+		    var prog = $scope.db.code;
+		    var mypre = document.getElementById("output");
+		    mypre.innerHTML = '';
+		    Sk.canvas = "mycanvas";
+		    Sk.pre = "output";
+		    Sk.configure({output:outf, read:builtinRead});
+		    Sk.execLimit = 5000;
+
+		    try {
+			var module = Sk.importMainWithBody("<stdin>", false, prog);
+			//var obj = module.tp$getattr('a');
+			//var runMethod = obj.tp$getattr('run');
+			//var ret = Sk.misceval.callsim(module, 10);
+			eval(module);
+			//alert(ret.v);
+		    } catch (e) {
+			$(mypre).text( e );
+		    }
+		    
+		    //eval(Sk.importMainWithBody("<stdin>",false,prog));
 		};
 
                 $scope.attemptAnswer = function () {

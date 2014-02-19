@@ -11,7 +11,8 @@ requirejs.config({
 
 	"codemirror": "/components/codemirror/lib/codemirror",
 	"codemirror-python": "/components/codemirror/mode/python/python",
-	"ui-codemirror": "/components/angular-ui-codemirror/ui-codemirror",
+	"skulpt": "/components/skulpt/skulpt.min",
+	"skulpt-stdlib": "/components/skulpt/skulpt-stdlib",
 
 	"pagedown-converter": "/components/pagedown-bootstrap/Markdown.Converter",
 	"pagedown-sanitizer": "/components/pagedown-bootstrap/Markdown.Sanitizer",
@@ -55,7 +56,9 @@ requirejs.config({
 
         'codemirror': { exports: 'CodeMirror' },
         'codemirror-python': { deps: ['codemirror'] },
-        'ui-codemirror': { deps: ['codemirror', 'angular'] },
+
+        'skulpt': { exports: 'Sk' },
+        'skulpt-stdlib': { deps: ['skulpt'] },
     },
 });
 
@@ -63,7 +66,7 @@ requirejs.config({
 require( ["require", "angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "shBrushJScript", "shBrushLatex", "mailing-list", "confirm-close", "chat", "ui-codemirror", "codemirror-python"], function(require, angular, shCore) {
     'use strict';
 
-    var app = angular.module('ximeraApp', ['ximeraApp.mathJax', 'ximeraApp.activity', 'ximeraApp.codingActivity', 'ximeraApp.inputMath', 'ximeraApp.videoPlayer', 'ui.codemirror']);
+    var app = angular.module('ximeraApp', ['ximeraApp.mathJax', 'ximeraApp.activity', 'ximeraApp.codingActivity', 'ximeraApp.inputMath', 'ximeraApp.videoPlayer']);
 
     $(document).ready(function() {
         angular.bootstrap(document, [app['name']]);
