@@ -1,7 +1,7 @@
 define(['angular', 'jquery', 'underscore', 'codemirror', 'skulpt', 'skulpt-stdlib', 'activity-display'], function(angular, $, _, CodeMirror, Sk) {
     var app = angular.module('ximeraApp.codingActivity', ["ximeraApp.activity"]);
 
-    app.directive('ximeraPython', ['$compile', '$rootScope', 'stateService', function ($compile, $rootScope, stateService) {
+    app.directive('ximeraPython', ['$compile', '$rootScope', 'stateService', '$timeout', function ($compile, $rootScope, stateService, $timeout) {
         return {
             restrict: 'A',
             scope: {},
@@ -23,6 +23,7 @@ define(['angular', 'jquery', 'underscore', 'codemirror', 'skulpt', 'skulpt-stdli
 			mode: 'python',
 		    };
 
+		    // ui-codemirror could be used, but it is broken when used inside a directive
       		    var myCodeMirror = CodeMirror.fromTextArea($(element).find('textarea')[0], options);
 
 		    // update model to reflect view
@@ -48,16 +49,17 @@ define(['angular', 'jquery', 'underscore', 'codemirror', 'skulpt', 'skulpt-stdli
 		    $scope.db.success = false;
 		    $scope.db.message = "";
 		    $scope.db.code = $scope.scaffold;
+		    $scope.db.console = "";
                 });
 
 		$scope.activate = function(value) {
-		    $scope.db.radioValue = value;
 		};
 
                 $scope.runCode = function () {
+		    $scope.db.console = "";
+
 		    function outf(text) {
-			var mypre = document.getElementById("output");
-			mypre.innerHTML = mypre.innerHTML + text;
+			$scope.db.console = $scope.db.console + text;
 		    }
 
 		    function builtinRead(x) {
@@ -65,21 +67,27 @@ define(['angular', 'jquery', 'underscore', 'codemirror', 'skulpt', 'skulpt-stdli
 			    throw "File not found: '" + x + "'";
 			return Sk.builtinFiles["files"][x];
 		    }
-		    
-		    var prog = $scope.db.code;
-		    var mypre = document.getElementById("output");
-		    mypre.innerHTML = '';
-		    Sk.canvas = "mycanvas";
-		    Sk.pre = "output";
-		    Sk.configure({output:outf, read:builtinRead});
-		    Sk.execLimit = 5000;
 
-		    try {
-			var module = Sk.importMainWithBody("<stdin>", false, prog);
-			eval(module);
-		    } catch (e) {
-			$(mypre).text( e );
-		    }
+		    $scope.db.running = "running";
+		    
+		    // This way the "running" button will turn into a stop button---which won't do anything yet...
+		    $timeout( function() {
+			var prog = $scope.db.code;
+			Sk.canvas = "mycanvas";
+			Sk.pre = "output";
+			Sk.configure({output:outf, read:builtinRead});
+			Sk.execLimit = 5000;
+
+			try {
+			    var module = Sk.importMainWithBody("<stdin>", false, prog);
+			    eval(module);
+			} catch (err) {
+			    $scope.db.console = $scope.db.console + err;
+			}
+			
+			$scope.db.running = "";
+		    }, 50 );
+
 		};
 
 		$scope.$watch('db.code', function (value) {

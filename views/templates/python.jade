@@ -1,10 +1,10 @@
 div
-  hr
   textarea(ng-model="db.code")
   div.btn-toolbar(role="toolbar")
-    div.btn-group
-      button.btn.btn-default(ng-click='runCode()',type="button") <i class="fa fa-play"></i> Run
-    div.btn-group(ng-switch="",on='db.message',style="vertical-align: bottom; padding-left: 1em;")
+    div.btn-group(ng-switch="",on='db.running')
+      button.btn.btn-default.run(ng-switch-default="",ng-click='runCode()',type="button") <i class="fa fa-play"></i> Run
+      button.btn.btn-default.run(ng-switch-when="running",type="button") <i class="fa fa-stop"></i> Stop
+    div.btn-group(ng-switch="",on='db.message')
       button.btn.btn-success(ng-click='attemptAnswer()',ng-switch-when="correct",data-toggle="tooltip",data-placement="top",title="Correct answer!")
         i.fa.fa-check
         | &nbsp;Correct
@@ -14,5 +14,5 @@ div
       button.btn.btn-primary(ng-click='attemptAnswer()',ng-switch-default,data-toggle="tooltip",data-placement="top",title="Click to check your answer.")
         i.fa.fa-question
         | &nbsp;Check work
-  pre#output
-  hr
+  pre
+    | {{db.console}}
