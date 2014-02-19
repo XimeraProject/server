@@ -49,7 +49,9 @@ exports.initialize = function initialize() {
 
     exports.User = mongoose.model("User",
                                   {
-                                      openId: String,
+                                      openId: {type: String, index: true, unique: true},
+                                      courseraOAuthId: {type: String, index: true, unique: true},
+                                      authType: String,
                                       name: String,
                                       email: String,
                                       isGuest: Boolean

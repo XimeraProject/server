@@ -16,6 +16,7 @@ var express = require('express')
   , mongo = require('mongodb')
   , mongoose = require('mongoose')
   , GoogleStrategy = require('passport-google').Strategy
+  , CourseraOAuthStrategy = require('./passport-coursera-oauth').Strategy
   , http = require('http')
   , path = require('path')
   , angularState = require('./routes/angular-state')
@@ -25,7 +26,10 @@ var express = require('express')
   , async = require('async')
   , fs = require('fs')
   , io = require('socket.io')
+  , util = require('util')
   ;
+
+
 
 // Some filters for Jade; admittedly, Jade comes with its own Markdown
 // filter, but I want to run everything through the a filter to add
@@ -79,12 +83,9 @@ passport.use(new GoogleStrategy({
     }, function (identifier, profile, done) {
 	var err = null;
 
-    	// add unique index on openId field
-    	db.ensureIndex({openId:1}, {unique: true}, function(err,indexName) {} );
-
     	// Save this to the users collection if we haven't already
     	db.users.findAndModify({
-            query: {openId: identifier},
+            query: {openId: identifier, authType: "google-openid"},
             update: {$set: {name: profile.displayName,
 			    emails: [profile.emails[0].value]}
 		    },
@@ -97,6 +98,24 @@ passport.use(new GoogleStrategy({
             done(err, document);
     	});
     }));
+
+passport.use(new CourseraOAuthStrategy({
+    requestTokenURL: 'https://authentication.coursera.org/auth/oauth/api/request_token',
+    accessTokenURL: 'https://authentication.coursera.org/auth/oauth/api/access_token',
+    consumerKey: process.env.COURSERA_CONSUMER_KEY,
+    consumerSecret: process.env.COURSERA_CONSUMER_SECRET,
+    callbackURL: "http://127.0.0.1:3000/auth/coursera/callback"
+},
+function(token, tokenSecret, profile, done) {
+    db.users.findAndModify({
+        query: { courseraOAuthId: profile.id, authType: "coursera-oauth" },
+        update: {$set: {name: profile.full_name}},
+        new: true,
+        upsert: true
+    }, function (err, user) {
+        return done(err, user);
+    });
+}));
 
 // Only store the user _id in the session
 passport.serializeUser(function(user, done) {
@@ -246,14 +265,23 @@ app.get( /^\/course\/(.+)\/activity\/(.+)$/, function( req, res ) { res.redirect
 app.get(/^\/course\/(.+)\/$/, course.landing );
 app.get( /^\/course\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
 
+// Coursera login.
+app.get('/auth/coursera',
+  passport.authenticate('oauth'));
+app.get('/auth/coursera/callback',
+  passport.authenticate('oauth', { successRedirect: '/',
+                                   failureRedirect: '/auth/coursera'}));
 
+// Google login.
 app.get('/auth/google', passport.authenticate('google'));
 app.get('/auth/google/return',
     passport.authenticate('google', { successRedirect: '/',
 				      failureRedirect: '/auth/google'}));
+
+
 app.get('/logout', function (req, res) {
-req.logout();
-res.redirect('/');
+    req.logout();
+    res.redirect('/');
 });
 
 app.get('/mailing-list', function( req, res ) {

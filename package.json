@@ -23,6 +23,7 @@
 	"file": "*",
 	"jsdom": "*",
 	"passport-google": "*",
+        "passport-oauth": "*",
 	"jison": "*",
 	"requirejs": "*",
 	"jasmine-node": "*",
