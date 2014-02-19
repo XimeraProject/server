@@ -1,0 +1,18 @@
+div
+  hr
+  textarea(ng-model="db.code")
+  div.btn-toolbar(role="toolbar")
+    div.btn-group
+      button.btn.btn-default(ng-click='runCode()',type="button") <i class="fa fa-play"></i> Run
+    div.btn-group(ng-switch="",on='db.message',style="vertical-align: bottom; padding-left: 1em;")
+      button.btn.btn-success(ng-click='attemptAnswer()',ng-switch-when="correct",data-toggle="tooltip",data-placement="top",title="Correct answer!")
+        i.fa.fa-check
+        | &nbsp;Correct
+      button.btn.btn-danger(ng-click='attemptAnswer()',ng-switch-when="incorrect",data-toggle="tooltip",data-placement="top",title="Incorrect.  Try again!")
+        i.fa.fa-times
+        | &nbsp;Incorrect
+      button.btn.btn-primary(ng-click='attemptAnswer()',ng-switch-default,data-toggle="tooltip",data-placement="top",title="Click to check your answer.")
+        i.fa.fa-question
+        | &nbsp;Check work
+  pre#output
+  hr

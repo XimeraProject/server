@@ -10,7 +10,12 @@ define(['angular', 'jquery', 'underscore', 'codemirror', 'skulpt', 'skulpt-stdli
             link: function($scope, element, attrs, controller, transclude) {
                 // Extract python code from original.
                 transclude(function (clone) {
-		    $scope.scaffold = $(clone).text();
+		    var source = $(clone).text();
+
+		    $scope.scaffold = source.split("def validator():\n")[0];
+		    $scope.scaffold = $scope.scaffold.replace(/^\n+|\n+$/gm,'') + "\n";
+
+		    $scope.validator = "def validator():\n" + source.split("def validator():\n")[1];
 
 		    var options = {
 			lineWrapping : true,
@@ -61,11 +66,6 @@ define(['angular', 'jquery', 'underscore', 'codemirror', 'skulpt', 'skulpt-stdli
 			return Sk.builtinFiles["files"][x];
 		    }
 		    
-		    // Here's everything you need to run a python program in skulpt
-		    // grab the code from your textarea
-		    // get a reference to your pre element for output
-		    // configure the output function
-		    // call Sk.importMainWithBody()
 		    var prog = $scope.db.code;
 		    var mypre = document.getElementById("output");
 		    mypre.innerHTML = '';
@@ -76,42 +76,59 @@ define(['angular', 'jquery', 'underscore', 'codemirror', 'skulpt', 'skulpt-stdli
 
 		    try {
 			var module = Sk.importMainWithBody("<stdin>", false, prog);
-			//var obj = module.tp$getattr('a');
-			//var runMethod = obj.tp$getattr('run');
-			//var ret = Sk.misceval.callsim(module, 10);
 			eval(module);
-			//alert(ret.v);
 		    } catch (e) {
 			$(mypre).text( e );
 		    }
-		    
-		    //eval(Sk.importMainWithBody("<stdin>",false,prog));
 		};
 
+		$scope.$watch('db.code', function (value) {
+		    if ($scope.db.attemptedAnswer != value)
+			$scope.db.message = "";
+		    else
+			$scope.db.message = $scope.db.recentMessage;
+		});
+
                 $scope.attemptAnswer = function () {
-                    if (!$scope.db.success) {
-                        var success = false;
-                        if ($scope.db.radioValue === $scope.db.correctAnswer) {
-                            success = true;
-                        }
+                    var success = false;
+		    console.log( "attempt" );
 
-			$scope.db.attemptedAnswer = $scope.db.radioValue;
+		    var outf = function(text) {};
 
-                        $(element).trigger('attemptAnswer', {
-                            success: success,
-                            answerUuid: $(element).attr('data-uuid'),
-                            answer: $scope.db.radioValue,
-                            correctAnswer: $scope.db.correctAnswer
-                        });
+		    var builtinRead = function(x) {
+			if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+			    throw "File not found: '" + x + "'";
+			return Sk.builtinFiles["files"][x];
+		    }
 
-                        if (success) {
-                            $scope.db.recentMessage = $scope.db.message = "correct";
-                        }
-                        else {
-                            $scope.db.recentMessage = $scope.db.message = "incorrect";
-                        }
-                        $scope.db.success = success;
+		    Sk.configure({output:outf, read:builtinRead});
+		    Sk.execLimit = 5000;
+		    var prog = $scope.db.code + $scope.validator;
+		    console.log( prog );
+		    var module = Sk.importMainWithBody("<stdin>", false, prog);
+		    var validator = module.tp$getattr('validator');
+		    var ret = Sk.misceval.callsim(validator);
+		    console.log( "ret = ", ret );
+		    $scope.db.attemptedAnswer = $scope.db.code;
+		    
+		    if (ret.v) {
+			success = true;
+		    }
+
+                    $(element).trigger('attemptAnswer', {
+                        success: success,
+                        answerUuid: $(element).attr('data-uuid'),
+                        answer: $scope.db.code,
+                        correctAnswer: ""
+                    });
+		    
+                    if (success) {
+                        $scope.db.recentMessage = $scope.db.message = "correct";
+                    } else {
+                        $scope.db.recentMessage = $scope.db.message = "incorrect";
                     }
+		    
+                    $scope.db.success = success;
                 };
             }
         };
