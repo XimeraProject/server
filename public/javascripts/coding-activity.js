@@ -91,7 +91,6 @@ define(['angular', 'jquery', 'underscore', 'codemirror', 'skulpt', 'skulpt-stdli
 
                 $scope.attemptAnswer = function () {
                     var success = false;
-		    console.log( "attempt" );
 
 		    var outf = function(text) {};
 
@@ -104,17 +103,21 @@ define(['angular', 'jquery', 'underscore', 'codemirror', 'skulpt', 'skulpt-stdli
 		    Sk.configure({output:outf, read:builtinRead});
 		    Sk.execLimit = 5000;
 		    var prog = $scope.db.code + $scope.validator;
-		    console.log( prog );
-		    var module = Sk.importMainWithBody("<stdin>", false, prog);
-		    var validator = module.tp$getattr('validator');
-		    var ret = Sk.misceval.callsim(validator);
-		    console.log( "ret = ", ret );
-		    $scope.db.attemptedAnswer = $scope.db.code;
-		    
-		    if (ret.v) {
-			success = true;
-		    }
 
+		    $scope.db.attemptedAnswer = $scope.db.code;
+
+		    try {
+			var module = Sk.importMainWithBody("<stdin>", false, prog);
+			var validator = module.tp$getattr('validator');
+			var ret = Sk.misceval.callsim(validator);
+		    
+			if (ret.v) {
+			    success = true;
+			}
+		    } catch (err) {
+			success = false;
+		    }
+		    
                     $(element).trigger('attemptAnswer', {
                         success: success,
                         answerUuid: $(element).attr('data-uuid'),
