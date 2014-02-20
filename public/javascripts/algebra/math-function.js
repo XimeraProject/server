@@ -1,4 +1,4 @@
-define(["complex-number", "text-to-ast", "ast-to-text", "ast-to-latex", "latex-to-ast", "underscore"], function(ComplexNumber, textToAst, astToText, astToLatex, latexToAst, _){
+define(["algebra/complex-number", "algebra/text-to-ast", "algebra/ast-to-text", "algebra/ast-to-latex", "algebra/latex-to-ast", "underscore"], function(ComplexNumber, textToAst, astToText, astToLatex, latexToAst, _){
     var my = {};
 
     /****************************************************************/
@@ -989,13 +989,13 @@ define(["complex-number", "text-to-ast", "ast-to-text", "ast-to-latex", "latex-t
 	},
     };
 
-function parse (string) {
-    return new StraightLineProgram( textToAst(string) );
-};
+    var parse = function(string) {
+        return new StraightLineProgram( textToAst(string) );
+    };
 
-function parse_tex (string) {
-    return new StraightLineProgram( latexToAst(string) );
-};
+    var parse_tex = function (string) {
+        return new StraightLineProgram( latexToAst(string) );
+    };
 
     my.parse = parse;
 

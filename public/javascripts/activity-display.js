@@ -14,7 +14,7 @@
 */
 
 // Script expects data-activityId attribute in activity div.
-define(['angular', 'jquery', 'underscore', 'algebra/parser'], function(angular, $, _, parse) {
+define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/parser'], function(angular, $, _, MathFunction, parse) {
     var app = angular.module('ximeraApp.activity', ["ngAnimate"]);
 
     // Make sure a list of DOM elements is sorted in the same order in the DOM itself.
@@ -504,7 +504,6 @@ define(['angular', 'jquery', 'underscore', 'algebra/parser'], function(angular, 
 			// sometimes parsing throws errors
 			try {
 			    var latex = parse.text.to.latex(answer);
-
 			    $(element).popover('destroy');
 			    $(element).popover({ 
 				placement: 'right',
@@ -537,10 +536,13 @@ define(['angular', 'jquery', 'underscore', 'algebra/parser'], function(angular, 
                 $scope.attemptAnswer = function () {
                     if ((!$scope.db.success) && ($scope.db.answer != "")) {
                         var success = false;
-			
 			$scope.db.attemptedAnswer = $scope.db.answer;
 
-                        if ($scope.db.answer === $scope.db.correctAnswer) {
+
+                        var parsedAnswer = MathFunction.parse($scope.db.answer);
+                        var parsedCorrect = MathFunction.parse($scope.db.correctAnswer);
+
+                        if (parsedCorrect.equals(parsedAnswer)) {
                             success = true;
                         }
 
@@ -549,7 +551,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/parser'], function(angular, 
                             answerUuid: $(element).attr('data-uuid'),
                             answer: $scope.db.answer,
                             correctAnswer: $scope.db.correctAnswer
-                        });                        
+                        });
 
                         if (success) {
                             $scope.db.message = 'correct';

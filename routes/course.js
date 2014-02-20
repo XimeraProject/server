@@ -136,12 +136,14 @@ exports.activity = function(req, res) {
                 locals.course = course;
                 locals.activity = activity;
                 if (!course) {
-                    res.send("Course not found.");
+                    callback("Course not found.");
                 }
-                if (!activity) {
-                    res.send("Activity not found.");
+                else if (!activity) {
+                    callback("Activity not found.");
                 }
-                callback();
+                else {
+                    callback();
+                }
             });
         },
         function (callback) {
@@ -150,27 +152,35 @@ exports.activity = function(req, res) {
                 if (!html) {
                     res.send('Error reading activity.');
                 }
-                callback();
+                else {
+                    callback();
+                }
             });
         },
         function (callback) {
 	    var breadcrumbs = [locals.activity];
-	    while( breadcrumbs[0] != null )
+	    while( breadcrumbs[0] != null ) {
 		breadcrumbs.unshift( locals.course.activityParent(breadcrumbs[0]) );
+            }
 	    breadcrumbs.shift();
-	    
+
 	    var parentActivity = locals.course.activityParent(locals.activity);
 	    var nextActivity = locals.course.nextActivity(locals.activity);
 	    var previousActivity = locals.course.previousActivity(locals.activity);
-	    res.render('course/activity', 
+	    res.render('course/activity',
 		       { activity: locals.activity, activityHtml: locals.activityHtml,
-			 parentActivity: parentActivity, 
-			 course: locals.course, 
+			 parentActivity: parentActivity,
+			 course: locals.course,
 			 nextActivity: nextActivity, previousActivity: previousActivity,
 			 activityId: locals.activity._id.toString(),
 			 breadcrumbs: breadcrumbs });
         }
-    ]);
+    ],
+    function (err) {
+        if (err) {
+            res.send(err);
+        }
+    });
 };
 
 exports.activitySource = function(req, res) {
