@@ -45,7 +45,7 @@ requirejs.config({
 	"bootstrap": { deps: ['jquery'] },
 
 	"pagedown-converter": { exports: 'Markdown.Converter', deps: ['bootstrap'] },
-	"pagedown-sanitizer": { exports: 'Markdown.Sanitizer', deps: ['bootstrap'] },
+	"pagedown-sanitizer": { exports: 'Markdown.Sanitizer', deps: ['bootstrap', "pagedown-converter"] },
 	"pagedown-editor": { exports: 'Markdown.Editor', deps: ['bootstrap', "pagedown-converter"] },
 
 	"mathquill": { deps: ['jquery'] },
@@ -63,10 +63,10 @@ requirejs.config({
 });
 
 // TODO: Add back in input-math
-require( ["require", "angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python"], function(require, angular, shCore) {
+require( ["require", "angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "free-response"], function(require, angular, shCore) {
     'use strict';
 
-    var app = angular.module('ximeraApp', ['ximeraApp.mathJax', 'ximeraApp.activity', 'ximeraApp.codingActivity', 'ximeraApp.inputMath', 'ximeraApp.videoPlayer', 'ximeraApp.matrixActivity', 'ximeraApp.mathMatrix']);
+    var app = angular.module('ximeraApp', ['ximeraApp.mathJax', 'ximeraApp.activity', 'ximeraApp.codingActivity', 'ximeraApp.inputMath', 'ximeraApp.videoPlayer', 'ximeraApp.matrixActivity', 'ximeraApp.mathMatrix', 'ximeraApp.freeResponse']);
 
     $(document).ready(function() {
         angular.bootstrap(document, [app['name']]);

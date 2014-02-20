@@ -15,7 +15,7 @@ define(['angular', 'jquery', 'underscore', 'codemirror', 'skulpt', 'skulpt-stdli
 		    $scope.scaffold = source.split("def validator():\n")[0];
 		    $scope.scaffold = $scope.scaffold.replace(/^\n+|\n+$/gm,'') + "\n";
 
-		    $scope.validator = "def validator():\n" + source.split("def validator():\n")[1];
+		    $scope.validator = "\n\ndef validator():\n" + source.split("def validator():\n")[1];
 
 		    var options = {
 			lineWrapping : true,
