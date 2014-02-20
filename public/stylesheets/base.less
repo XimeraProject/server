@@ -193,6 +193,8 @@ div.footer .navbar-static-bottom {
 
 /****************************************************************/
 /* OSU branding guidelines */
+@import "osu_navbar-resp.less";
+
 @font-family-sans-serif: 'proximanova',Arial,sans-serif;
 @font-family-serif: 'capita','Times New Roman',serif;
 
@@ -257,8 +259,8 @@ footer .osu p {
 }
 
 .callout h1 {
-  font-size: 80pt;
-  line-height: 80pt;
+  font-size: 60pt;
+  line-height: 60pt;
   text-transform:uppercase;
 }
 
@@ -289,6 +291,10 @@ body {
 /* Set the fixed height of the footer here */
 div.footer {
   min-height: @footer-height;
+}
+
+footer .row {
+  padding-bottom: 2em;
 }
 
 #wrap > .container {
