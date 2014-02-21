@@ -1,5 +1,10 @@
 @import 'bootstrap';
 
+/* Cloak the {{angular}} stuff */
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
+
 /*****************************************************************/
 /* mathquill AFTER bootstrap */
 @import "../../components/mathquill/build/mathquill.css";
@@ -219,8 +224,9 @@ footer .osu p {
     top: 42px; /* the OSU navbar is 42px high */
 }
 
-.navbar {
-    height: 0;
+.affix {
+    position: fixed;
+    top: none;
 }
 
 /*****************************************************************/

@@ -18,6 +18,14 @@ exports.plans = function(req, res) {
     res.render('about/plans', { title: 'Future Plans', user: req.user });
 };
 
+exports.xarma = function(req, res) {
+    res.render('about/xarma', { title: 'Xarma', user: req.user });
+};
+
+exports.xudos = function(req, res) {
+    res.render('about/xudos', { title: 'Xudos', user: req.user });
+};
+
 var principal_investigators = [
     {
 	"name": "Bart Snapp",

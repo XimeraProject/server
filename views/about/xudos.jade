@@ -1,0 +1,19 @@
+extends ../layouts/main
+
+block content
+  .container
+    mixin breadcrumbs(['/about','/about/xarma'],['About Ximera','Xarma'])
+    .page-header
+       h1 Xudos
+         small  (pronounced kudos)
+    .row
+      .col-sm-9
+        p
+          :markdown
+            **Xudos** are Ximera's reward for personal achievement.  If you succeed on an exercise, receive positive feedback on an assignment, or complete an activity, you may earn Xudos.
+        div(ng-controller="ScoreController")
+          p.ng-cloak(ng-controller="ScoreController",ng-if="scores.xudos > 0")
+            | You have earned {{scores.xudos}} Xudos for your success on Ximera.
+      .col-sm-3
+        div.panel.panel-default
+          include xarma-versus-xudos.jade

@@ -8,6 +8,7 @@ var express = require('express')
   , course = require('./routes/course')
   , user = require('./routes/user')
   , about = require('./routes/about')
+  , score = require('./routes/score')
   , http = require('http')
   , path = require('path')
   , mdb = require("./mdb")
@@ -238,10 +239,20 @@ app.use(express.errorHandler());
 
 // Setup routes.
 // TODO: Move to separate file.
+app.get('/users/xarma', score.getXarma);
+app.get('/users/xudos', score.getXudos);
+app.post('/users/xarma', score.postXarma);
+app.post('/users/xudos', score.postXudos);
+
 app.get('/', routes.index);
 app.get('/users', user.list);
 app.get('/users/:id', user.get);
 app.put('/users/:id', user.put);
+/*
+app.put('/users/xarma', score.xarma);
+app.put('/users/xudos', score.xudos);
+*/
+
 
 app.get('/activities', activity.list);
 app.get('/activity/:id/', activity.display);    
@@ -296,6 +307,8 @@ app.get('/about/contact', about.contact);
 app.get('/about/faq', about.faq);
 app.get('/about/who', about.who);
 app.get('/about/plans', about.plans);
+app.get('/about/xarma', about.xarma);
+app.get('/about/xudos', about.xudos);
 
 app.get('/angular-state/:activityId', angularState.get);
 app.put('/angular-state/:activityId', angularState.put);

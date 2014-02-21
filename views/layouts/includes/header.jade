@@ -1,5 +1,5 @@
 div#scroller-anchor
-nav#scroller.navbar.navbar-default.navbar-fixed-top(role='navigation')
+nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
   .container
     .navbar-header
       button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
@@ -8,11 +8,22 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top(role='navigation')
         span.icon-bar
         span.icon-bar
       a.navbar-brand(href="/")
-        | Ximera
+        | <span style="font-weight: 200;">XIMERA.</span><span style="font-weight: 700;">OSU</span><span style="font-weight: 200;">.EDU</span>
     .navbar-collapse.collapse
       ul.nav.navbar-nav
-
-      ul.nav.navbar-nav.navbar-right
+      ul.nav.navbar-nav.navbar-right(ng-controller="ScoreController")
+         li
+           a(ng-click="$emit( 'Xarma', 17 );") More Xarma!
+         li
+           a(ng-click="$emit( 'Xudos', 12 );") More Xudos!
+         li.ng-cloak(ng-if="scores.xarma > 0")
+           a(href="/about/xarma")
+             i.fa.fa-gift
+             | &nbsp;{{scores.xarma}} Xarma
+         li.ng-cloak(ng-if="scores.xudos > 0")
+           a(href="/about/xudos")
+             i.fa.fa-thumbs-up 
+             | &nbsp;{{scores.xudos}} Xudos
          if (user) && (!user.isGuest)
            li.dropdown
              a.dropdown-toggle(href="#",data-toggle="dropdown")

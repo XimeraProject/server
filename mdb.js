@@ -54,6 +54,8 @@ exports.initialize = function initialize() {
                                       authType: String,
                                       name: String,
                                       email: String,
+				      xudos: Number,
+				      xarma: Number,
                                       isGuest: Boolean
                                   });
 
