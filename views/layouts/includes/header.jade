@@ -17,11 +17,11 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
          li
            a(ng-click="$emit( 'Xudos', 12 );") More Xudos!
          li.ng-cloak(ng-if="scores.xarma > 0")
-           a(href="/about/xarma")
+           a(href="/about/xarma", highlight-on-change="{{scores.xarma}}")
              i.fa.fa-gift
              | &nbsp;{{scores.xarma}} Xarma
          li.ng-cloak(ng-if="scores.xudos > 0")
-           a(href="/about/xudos")
+           a(href="/about/xudos", highlight-on-change="{{scores.xudos}}")
              i.fa.fa-thumbs-up 
              | &nbsp;{{scores.xudos}} Xudos
          if (user) && (!user.isGuest)
