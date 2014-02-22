@@ -29,6 +29,9 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
     }
 
     app.controller('ActivityController', ["$timeout", function ($timeout) {
+        $timeout(function () {
+            MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+        });
     }]);
 
     app.factory('stateService', function ($timeout, $rootScope, $http) {
