@@ -105,7 +105,7 @@ exports.activityUpdate = function(req, res) {
                 mdb.Scope.findOne({activity: locals.activity._id, user: req.user}, function (err, scope) {
                     if (!scope) {
                         // Need to create new scope for most recent version.
-                        var newScope = new mdb.Scope({activity: locals.activity._id, user: req.user, dataByUuid: null});
+                        var newScope = new mdb.Scope({activity: locals.activity._id, user: req.user._id, dataByUuid: null});
                         newScope.save(callback);
                     }
                     else {
