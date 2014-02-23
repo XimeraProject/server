@@ -67,9 +67,14 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
 
         $timeout(registerQuestionParts);
 
-        service.logCompletion = function(questionPartUuid) {
+        service.logCompletion = function(questionPartUuid, hasAnswer) {
             $rootScope.db.logService.completionNeedsUpdate = true;
-            $rootScope.db.logService.qpCompletion[questionPartUuid] = true;
+            if (hasAnswer) {
+                $rootScope.db.logService.qpCompletion[questionPartUuid] = true;
+            }
+            else {
+                delete $rootScope.db.logService.qpCompletion[questionPartUuid];
+            }
         }
 
         service.sendLoggedAnswers = function () {
@@ -418,7 +423,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                         $scope.db.currentQuestionPart = "";
                     }
 
-                    logService.logCompletion(data.questionPartUuid);
+                    logService.logCompletion(data.questionPartUuid, data.hasAnswer);
                 });
             }
         }
@@ -441,7 +446,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                     if (data.success && !$scope.db.complete) {
                         var uuid = $(element).attr('data-uuid')
                         $scope.db.complete = true;
-                        $(element).trigger('completeQuestionPart', {questionPartUuid: uuid})
+                        $(element).trigger('completeQuestionPart', {questionPartUuid: uuid, hasAnswer: true})
                     }
                     logService.logAnswer(uuid, data.answer, data.success);
                     event.stopPropagation();
@@ -451,7 +456,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                 // NOTE: We need to delay this a bit (500ms timeout) so that state has time to bind.
                 $timeout(function () {
                     if ($(element).children('.solution').length === 0) {
-                        $(element).trigger('completeQuestionPart', {questionPartUuid: $(element).attr('data-uuid')});
+                        $(element).trigger('completeQuestionPart', {questionPartUuid: $(element).attr('data-uuid'), hasAnswer: false});
                     }
                 }, 500);
             }
