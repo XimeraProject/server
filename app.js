@@ -254,9 +254,8 @@ app.put('/users/xudos', score.xudos);
 */
 
 
-app.get('/activities', activity.list);
-app.get('/activity/:id/', activity.display);    
-app.get('/activity/:id/source', activity.source);
+app.post('/activity/log-answer', activity.logAnswer);
+app.post('/activity/log-completion', activity.logCompletion);
 
 app.get( '/course/calculus-one/', function( req, res ) { res.redirect('/about/plans'); });
 app.get( '/course/calculus-one', function( req, res ) { res.redirect('/about/plans'); });

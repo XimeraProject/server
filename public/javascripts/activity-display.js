@@ -28,10 +28,93 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
         });
     }
 
-    app.controller('ActivityController', ["$timeout", function ($timeout) {
+    app.controller('ActivityController', ["$rootScope", "$timeout", "logService", "stateService", function ($rootScope, $timeout, logService, stateService) {
+        // Bind the $rootScope for use by services.
+        stateService.bindState($rootScope, $('.activity').attr('data-activityId'), function () {
+            logService.initDb();
+        });
+
         $timeout(function () {
             MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
         });
+    }]);
+
+    app.factory('logService', ["$http", "$rootScope", "$timeout", function ($http, $rootScope, $timeout) {
+        var service = {};
+        var activityId = $('.activity').attr('data-activityId');
+
+        service.initDb = function() {
+            $rootScope.db.logService = {};
+            $rootScope.db.logService.unloggedAnswers = [];
+            $rootScope.db.logService.completionNeedsUpdate = false;
+            $rootScope.db.logService.qpCompletion = {};
+        }
+
+        service.logAnswer = function (questionPartUuid, value, correct) {
+            $rootScope.db.logService.unloggedAnswers.push({
+                activityId: activityId,
+                questionPartUuid: questionPartUuid,
+                value: value,
+                correct: correct
+            });
+        }
+
+        var registerQuestionParts = function () {
+            $(".questionPart").each(function() {
+                $rootScope.db.logService.qpCompletion[$(this).attr("data-uuid")] = false;
+            });
+        }
+
+        $timeout(registerQuestionParts);
+
+        service.logCompletion = function(questionPartUuid) {
+            $rootScope.db.logService.completionNeedsUpdate = true;
+            $rootScope.db.logService.qpCompletion[questionPartUuid] = true;
+        }
+
+        service.sendLoggedAnswers = function () {
+            if ($rootScope.db.logService.completionNeedsUpdate) {
+                var numParts = _.keys($rootScope.db.logService.qpCompletion).length;
+                var numComplete = _.filter(_.values($rootScope.db.logService.qpCompletion), function (x) { return x;}).length;
+                var percentDone;
+                if (numParts === 0) {
+                    percentDone = 100;
+                }
+                else {
+                    percentDone = Math.floor((numComplete / numParts) * 100);
+                }
+                var complete = (numParts === numComplete);
+                $http.post("/activity/log-completion", {
+                    activityId: activityId,
+                    percentDone: percentDone,
+                    complete: complete
+                }).success(function(data, status, headers, config) {
+                    if (data["ok"] === true) {
+                        $rootScope.db.logService.completionNeedsUpdate = false;
+                    }
+                });
+            }
+
+            if ($rootScope.db.logService.unloggedAnswers.length > 0) {
+                $http.post("/activity/log-answer",$rootScope.db.logService.unloggedAnswers[0]).
+                    success(function(data, status, headers, config) {
+                        if (data["ok"] === true) {
+                            $rootScope.db.logService.unloggedAnswers.splice(0, 1);
+                        }
+                        $timeout(service.sendLoggedAnswers);
+                    }).
+                    error(function(data, status, headers, config) {
+                        $timeout(service.sendLoggedAnswers);
+                    });
+            }
+            else {
+                $timeout(service.sendLoggedAnswers, 1000);
+            }
+        }
+        // Begin sending unlogged answers.
+        $timeout(service.sendLoggedAnswers);
+
+        return service;
     }]);
 
     app.factory('stateService', function ($timeout, $rootScope, $http) {
@@ -248,7 +331,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
     }]);
 
     // For now, use this as directive function for questions, explorations, and exercises.
-    var questionDirective = ['$compile', '$rootScope', '$timeout', 'stateService', function ($compile, $rootScope, $timeout, stateService) {
+    var questionDirective = ['$compile', '$rootScope', '$timeout', 'logService', 'stateService', function ($compile, $rootScope, $timeout, logService, stateService) {
         return {
             restrict: 'A',
             scope: {},
@@ -334,6 +417,8 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                         $(element).trigger('completeQuestion', {questionUuid: $(element).attr('data-uuid')});
                         $scope.db.currentQuestionPart = "";
                     }
+
+                    logService.logCompletion(data.questionPartUuid);
                 });
             }
         }
@@ -343,7 +428,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
     app.directive('ximeraExercise', questionDirective);
     app.directive('ximeraExploration', questionDirective)
 
-    app.directive('ximeraQuestionPart', ['$timeout', 'stateService', function ($timeout, stateService) {
+    app.directive('ximeraQuestionPart', ['$timeout', 'logService', 'stateService', function ($timeout, logService, stateService) {
         return {
             restrict: 'A',
             scope: {},
@@ -354,9 +439,11 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
 
                 $(element).on('attemptAnswer', function (event, data) {
                     if (data.success && !$scope.db.complete) {
+                        var uuid = $(element).attr('data-uuid')
                         $scope.db.complete = true;
-                        $(element).trigger('completeQuestionPart', {questionPartUuid: $(element).attr('data-uuid')});
+                        $(element).trigger('completeQuestionPart', {questionPartUuid: uuid})
                     }
+                    logService.logAnswer(uuid, data.answer, data.success);
                     event.stopPropagation();
                 });
 

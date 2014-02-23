@@ -80,6 +80,30 @@ exports.initialize = function initialize() {
                                        minimize: false
                                    }));
 
+
+    activityCompletionSchema = new mongoose.Schema({
+        activitySlug: String,
+        user: ObjectId,
+        activity: ObjectId, // Most recent version.
+        percentDone: Number, // Percent complete of most recent version.
+        complete: Boolean,
+        completeTime: Date
+    });
+    activityCompletionSchema.index({activitySlug: 1, user: 1}, {unique: true});
+    exports.ActivityCompletion = mongoose.model("ActivityCompletion", activityCompletionSchema);
+
+    answerLogSchema = new mongoose.Schema({
+        activity: ObjectId,
+        user: ObjectId,
+        questionPartUuid: String,
+        value: String,
+        correct: Boolean,
+        timestamp: Date
+    });
+    answerLogSchema.index({activity: 1, user: 1});
+    answerLogSchema.index({user: 1, timestamp: 1});
+    exports.AnswerLog = mongoose.model("AnswerLog", answerLogSchema);
+
     var CourseSchema = new mongoose.Schema ({
         // Key
         repo: ObjectId,
