@@ -433,7 +433,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
     app.directive('ximeraExercise', questionDirective);
     app.directive('ximeraExploration', questionDirective)
 
-    app.directive('ximeraQuestionPart', ['$timeout', 'logService', 'stateService', function ($timeout, logService, stateService) {
+    app.directive('ximeraQuestionPart', ['$timeout', 'logService', 'stateService', 'scoreService', function ($timeout, logService, stateService) {
         return {
             restrict: 'A',
             scope: {},
@@ -447,6 +447,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                         var uuid = $(element).attr('data-uuid')
                         $scope.db.complete = true;
                         $(element).trigger('completeQuestionPart', {questionPartUuid: uuid, hasAnswer: true})
+			$scope.$emit( 'Xudos', 1 );
                     }
                     logService.logAnswer(uuid, data.answer, data.success);
                     event.stopPropagation();
