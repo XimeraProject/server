@@ -1,0 +1,66 @@
+extends layouts/main
+
+block title
+    #{title}
+block content
+  .container(ng-init="userId='#{userId}';")
+    div.ng-cloak(ng-controller="UserController")
+      div(ng-switch on="editing")
+        div(ng-switch-when="true")
+          form.form-horizontal(role="form")
+            div.form-group
+              label.control-label.col-sm-2(for="email") Email
+              .col-sm-10
+                input.form-control(type="email", id="email", placeholder="Email", ng-model="user.email")
+            div.form-group
+              label.control-label.col-sm-2(for="homepage") Homepage
+              .col-sm-10
+                input.form-control(type="url", id="homepage", placeholder="http://", ng-model="user.website")
+            div.form-group
+              label.control-label.col-sm-2(for="location") Location
+              .col-sm-10
+                input.form-control(id="location", placeholder="Some City, Some Province, Some Country", ng-model="user.location")
+            div.form-group(ng-class="{'has-error': datepickerForm.date.$invalid}")
+              label.control-label.col-sm-2(for="birthday") Birthday
+              .col-sm-10
+                input.form-control(id="birthday", bs-datepicker="", type="text" placeholder="", ng-model="user.birthday")
+            div.form-group
+              label.control-label.col-sm-2(for="biography") Biography
+              .col-sm-10
+                textarea.form-control(id="biography", rows="5", ng-model="user.biography")
+            div.form-group
+              .col-sm-offset-2.col-sm-10
+                div.btn-toolbar(role="toolbar")
+                  div.btn-group
+                    button.btn.btn-primary(type="submit",ng-click="save()") Save
+                  div.btn-group
+                    button.btn.btn-danger(ng-click="cancel()") Cancel
+            
+        div(ng-switch-default)
+          .btn-group.pull-right
+            a.btn.btn-sm.btn-primary(role="button", ng-click="edit()")
+              | <i class="fa fa-pencil"></i> Edit
+          a.pull-right(href="http://www.gravatar.com/{{user.gravatar}}")
+            img(class="profile-picture",src="https://secure.gravatar.com/avatar/{{user.gravatar}}.jpg?d=retro&s=160")
+          .row
+            h1 {{user.name}}
+                small &nbsp;known as &ldquo;{{user.displayName}}&rdquo;
+ 
+            dl.dl-horizontal
+              dt Email
+              dd 
+                 a(href="mailto:{{user.email}}") {{user.email}}
+              dt Homepage
+              dd 
+                 a(href="{{user.website}}") {{user.website}}
+              dt Location
+              dd {{user.location}}
+              dt Birthday
+              dd {{user.birthday}}
+            p {{user.biography}}
+
+   div(ng-controller="ScoreController")
+     p
+       a(ng-click="$emit( 'Xarma', 17 );") More Xarma!
+     p 
+       a(ng-click="$emit( 'Xudos', 12 );") More Xudos!

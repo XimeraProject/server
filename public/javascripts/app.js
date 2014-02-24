@@ -19,6 +19,7 @@ requirejs.config({
 	"pagedown-editor": "/components/pagedown-bootstrap/Markdown.Editor",
 
 	"bootstrap": "/components/bootstrap/dist/js/bootstrap.min",
+	"bootstrap-datepicker": "/components/bootstrap-datepicker/js/bootstrap-datepicker",
 
 	"mathquill": "/components/mathquill/build/mathquill.min",
 
@@ -29,7 +30,10 @@ requirejs.config({
 	'shBrushJScript': '/components/syntaxhighlighter/amd/shBrushJScript',
 	'shBrushPython': '/components/syntaxhighlighter/amd/shBrushPython',
 
-	'socketio': '/socket.io/socket.io.js'
+	'socketio': '/socket.io/socket.io.js',
+
+	'angular-strap': '/components/angular-strap/dist/angular-strap.min',
+	'angular-strap-tpl': '/components/angular-strap/dist/angular-strap.tpl.min'
     },
 
     priority: [
@@ -41,8 +45,11 @@ requirejs.config({
 	underscore: { exports: '_' },
 	angular: { exports: 'angular', deps: ['jquery'] },
         "angular-animate": { deps: ['angular'] },
+        "angular-strap": { deps: ['angular', 'bootstrap', 'bootstrap-datepicker', "angular-animate"] },
+        "angular-strap-tpl": { deps: ['angular-strap'] },
 	jquery: { exports: 'jQuery' },
 	"bootstrap": { deps: ['jquery'] },
+	"bootstrap-datepicker": { deps: ['jquery'] },
 
 	"pagedown-converter": { exports: 'Markdown.Converter', deps: ['bootstrap'] },
 	"pagedown-sanitizer": { exports: 'Markdown.Sanitizer', deps: ['bootstrap', "pagedown-converter"] },
@@ -63,12 +70,13 @@ requirejs.config({
 });
 
 // TODO: Add back in input-math
-require( ["require", "angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "score", "free-response"], function(require, angular, shCore) {
+require( ["require", "angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "score", "free-response", "user", 'angular-strap-tpl'], function(require, angular, shCore) {
     'use strict';
 
     var app = angular.module('ximeraApp', ['ximeraApp.mathJax', 'ximeraApp.activity', 'ximeraApp.codingActivity', 'ximeraApp.inputMath', 'ximeraApp.videoPlayer', 'ximeraApp.matrixActivity',
 					   'ximeraApp.mathMatrix', 'ximeraApp.freeResponse',
-					   'ximeraApp.score']);
+					   'ximeraApp.score', 'ximeraApp.user',
+					   'mgcrea.ngStrap']);
 
     $(document).ready(function() {
         angular.bootstrap(document, [app['name']]);

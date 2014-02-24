@@ -12,15 +12,11 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
     .navbar-collapse.collapse
       ul.nav.navbar-nav
       ul.nav.navbar-nav.navbar-right(ng-controller="ScoreController")
-         li
-           a(ng-click="$emit( 'Xarma', 17 );") More Xarma!
-         li
-           a(ng-click="$emit( 'Xudos', 12 );") More Xudos!
-         li.ng-cloak(ng-if="scores.xarma > 0")
+         li.ng-cloak(ng-if="scores.xarma >= 0")
            a(href="/about/xarma", highlight-on-change="{{scores.xarma}}")
              i.fa.fa-gift
              | &nbsp;{{scores.xarma}} Xarma
-         li.ng-cloak(ng-if="scores.xudos > 0")
+         li.ng-cloak(ng-if="scores.xudos >= 0")
            a(href="/about/xudos", highlight-on-change="{{scores.xudos}}")
              i.fa.fa-thumbs-up 
              | &nbsp;{{scores.xudos}} Xudos
@@ -31,7 +27,7 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
                b.caret
              ul.dropdown-menu
                li
-                 a(href="/users/#{user._id}") <i class='fa fa-cogs'></i> Profile
+                 a(href="/users/profile") <i class='fa fa-cogs'></i> Profile
                li
                  a(href="/logout") <i class='fa fa-sign-out'></i> Logout
          else

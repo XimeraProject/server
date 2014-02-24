@@ -51,6 +51,7 @@ exports.initialize = function initialize() {
                                   {
                                       openId: {type: String, index: true, unique: true, sparse: true},
                                       courseraOAuthId: {type: String, index: true, unique: true, sparse: true},
+				      superuser: Boolean,
                                       authType: String,
                                       name: String,
                                       email: String,
@@ -58,7 +59,7 @@ exports.initialize = function initialize() {
 				      website: String,
 				      location: String,
 				      birthday: Date,
-				      about: String,
+				      biography: String,
 				      xudos: Number,
 				      xarma: Number,
                                       isGuest: Boolean
