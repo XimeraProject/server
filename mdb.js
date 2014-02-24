@@ -54,6 +54,11 @@ exports.initialize = function initialize() {
                                       authType: String,
                                       name: String,
                                       email: String,
+				      displayName: String,
+				      website: String,
+				      location: String,
+				      birthday: Date,
+				      about: String,
 				      xudos: Number,
 				      xarma: Number,
                                       isGuest: Boolean
