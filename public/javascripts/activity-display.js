@@ -422,7 +422,6 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                         $(element).trigger('completeQuestion', {questionUuid: $(element).attr('data-uuid')});
                         $scope.db.currentQuestionPart = "";
                     }
-
                     logService.logCompletion(data.questionPartUuid, data.hasAnswer);
                 });
             }
@@ -455,7 +454,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                 // If no solution, immediately mark this question part as complete.
                 // NOTE: We need to delay this a bit (500ms timeout) so that state has time to bind.
                 $timeout(function () {
-                    if ($(element).children('.solution').length === 0) {
+                    if ($(element).children('.answer-emitter').length === 0) {
                         $(element).trigger('completeQuestionPart', {questionPartUuid: $(element).attr('data-uuid'), hasAnswer: false});
                     }
                 }, 500);
@@ -558,7 +557,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
     }]);
 
     // For now answer is just a plain text entry.
-    app.directive('ximeraAnswer', ['$rootScope', 'stateService', function ($rootScope, stateService) {
+    app.directive('ximeraAnswer', ['$rootScope', 'stateService', 'popoverService', function ($rootScope, stateService, popoverService) {
         return {
             restrict: 'A',
             scope: {},
@@ -570,62 +569,26 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                     $scope.db.answer = "";
                     $scope.db.correctAnswer = $(element).attr('data-answer');
                     $scope.db.message = "";
+                    $scope.db.focused = false;
                 });
 
-		// If you change the answer, the question is no longer marked wrong
-                $scope.$watch('db.answer', function (answer) {
-		    if ($scope.db.attemptedAnswer != answer)
+                popoverService.watchFocus($scope, $(":text", element), "focused");
+                $scope.$watchCollection('[db.answer, db.focused]', function (coll) {
+                    var answer = coll[0];
+		    // If you change the answer, the question is no longer marked wrong
+		    if ($scope.db.attemptedAnswer != answer) {
 			$scope.db.message = "";
-		    else
+                    }
+		    else {
 			$scope.db.message = $scope.db.recentMessage;
-		});
-		
-		// The answer includes a live preview inside a popover
-		$(':text',element).focusout( function() {
-		    $(element).popover('hide');
-		});
+                    }
 
-		$(':text',element).focusin( function() {
-		    $(element).popover('show');
-		    MathJax.Hub.Queue(["Typeset", MathJax.Hub, $(element).children(".popover-content")[0]]);
-		});
-
-                $scope.$watch('db.answer', function (answer) {
-		    // empty answers have no preview
-		    if (answer == "") {
-			$scope.db.latex = "";
-			$(element).popover('destroy');
-		    } else {
-			// sometimes parsing throws errors
-			try {
-			    var latex = parse.text.to.latex(answer);
-			    $(element).popover('destroy');
-			    $(element).popover({ 
-				placement: 'right',
-				//animation: false,
-				trigger: 'manual',
-				content: function() {
-				    return '$' + latex + '$';
-				}});
-
-			    if ($(':text',element).is(":focus"))
-				$(element).popover('show');
-
-			    MathJax.Hub.Queue(["Typeset", MathJax.Hub, $(element).children(".popover-content")[0]]);
-			}
-			// display errors as popovers, too
-			catch (err) {
-			    $(element).popover('destroy');
-			    $(element).popover({ 
-				placement: 'right',
-				trigger: 'manual',
-				title: 'Error',
-				content: function() {
-				    return err;
-				}});
-			    $(element).popover('show');
-			}
-		    }
+                    if ($scope.db.success || !$scope.db.focused) {
+                        popoverService.destroyPopover(element);
+                    }
+                    else if ($scope.db.focused) {
+                        popoverService.latexPopover(answer, element);
+                    }
 		});
 
                 $scope.attemptAnswer = function () {

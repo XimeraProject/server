@@ -1,63 +1,8 @@
 define(['angular', 'jquery', 'underscore', 'algebra/parser'], function(angular, $, _, parse) {
     var app = angular.module('ximeraApp.mathMatrix', []);
 
-    app.directive('latexPopover', ['$compile', '$rootScope', function ($compile, $rootScope) {
-        return {
-            restrict: 'A',
-            scope: {},
-            transclude: false,
-            link: function($scope, element, attrs, controller) {
-		element.bind('blur', function(event) {
-		    $(element).popover('destroy');
-		});
-
-		var preview = function(event) {
-		    var answer = $(element).val();
-
-		    if (answer.trim().length == 0) {
-			$(element).popover('destroy');
-			return;
-		    }
-
-		    try {
-			var latex = parse.text.to.latex(answer);
-			
-			$(element).popover('destroy');
-			$(element).popover({ 
-			    placement: 'right',
-			    //animation: false,
-			    trigger: 'manual',
-			    content: function() {
-				return '$' + latex + '$';
-			    }});
-			
-			$(element).popover('show');
-			
-			MathJax.Hub.Queue(["Typeset", MathJax.Hub, $(element).children(".popover-content")[0]]);
-		    }
-		    // display errors as popovers, too
-		    catch (err) {
-			$(element).popover('destroy');
-			$(element).popover({ 
-			    placement: 'right',
-			    trigger: 'manual',
-			    title: 'Error',
-			    content: function() {
-				return err;
-			    }});
-			$(element).popover('show');
-		    }
-		};
-
-		element.bind('focus', preview );
-
-		$(element).on('input', preview );
-	    }
-	};
-    }]);
-
     // The funny capitalization results in ximera-matrixanswer in HTML
-    app.directive('mathMatrix', ['$compile', '$rootScope', function ($compile, $rootScope) {
+    app.directive('mathMatrix', 'popoverService', ['$compile', '$rootScope', function ($compile, $rootScope, popoverService) {
         return {
             restrict: 'A',
             scope: {

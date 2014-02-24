@@ -63,12 +63,12 @@ requirejs.config({
 });
 
 // TODO: Add back in input-math
-require( ["require", "angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "score", "free-response"], function(require, angular, shCore) {
+require( ["require", "angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "popover", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "score", "free-response"], function(require, angular, shCore) {
     'use strict';
 
     var app = angular.module('ximeraApp', ['ximeraApp.mathJax', 'ximeraApp.activity', 'ximeraApp.codingActivity', 'ximeraApp.inputMath', 'ximeraApp.videoPlayer', 'ximeraApp.matrixActivity',
 					   'ximeraApp.mathMatrix', 'ximeraApp.freeResponse',
-					   'ximeraApp.score']);
+					   'ximeraApp.score', 'ximeraApp.popover']);
 
     $(document).ready(function() {
         angular.bootstrap(document, [app['name']]);
