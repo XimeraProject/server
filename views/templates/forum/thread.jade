@@ -1,6 +1,5 @@
 div(ng-init="hideChildren = false")
-  p thread under {{parent}} in {{forumName}}
-  button.pull-right.btn.btn-xs(ng-click="hideChildren = !hideChildren", ng-class="{active:hideChildren}")  <i class="fa fa-reply"></i>&nbsp;Hide  
+  button.btn.btn-xs(ng-click="hideChildren = !hideChildren", ng-class="{active:hideChildren}")  <i class="fa fa-reply"></i>&nbsp;Hide  
   ul.media-list(ng-show="!hideChildren")
     li.media(ng-repeat='post in posts', ng-class='{deepest:!post.replies}')
       a.pull-left(href="/users/{{post.user._id}}/profile")

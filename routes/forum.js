@@ -101,13 +101,10 @@ module.exports = function(io) {
 	console.log( post );
 
 	post.save(function(err, document){
-	    console.log( err );
             if (document) {
-		console.log( "saved!" );
 		res.json([document]);
             } else {
-		console.log( "failed." );
-		res.json(false);
+		res.status(500).send(err);
 	    }
 	});
     }

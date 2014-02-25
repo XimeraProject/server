@@ -104,14 +104,45 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 	    }
 	};}]);
 
-    app.directive('forum', ['$compile', '$rootScope', function ($compile, $rootScope) {
+    app.directive('forum', ['$http', function ($http) {
         return {
             restrict: 'A',
             scope: {
 		forum: '@',
             },
             templateUrl: '/template/forum/forum',
-            transclude: true
+            transclude: true,
+
+	    controller: function($scope, $element){
+	     	$scope.toplevel = [];
+		$scope.posts = {};
+		
+		// posts need to be added in chronological order to recreate threads
+		$scope.addPost = function(post) {
+		    $scope.posts[post._id] = post;
+		    
+		    if ('parent' in post) {
+			var parent = $scope.posts[post.parent];
+
+			// Missing parent?  Become a top-level post.
+			if (!parent) 
+			    parent = {};
+
+			if ('replies' in parent) 
+			    parent.replies.push( post );
+			else
+			    parent.replies = [ post ];
+		    }
+		    else {
+			$scope.toplevel.push( post );
+		    }
+		};
+		
+		$http.get( '/forum/' + $scope.forum ).success(function(data){
+		    _.each( data, $scope.addPost );
+		});
+	    }
+
     };}]);
 
     app.directive('reply', ['$http', function ($http) {
@@ -133,38 +164,17 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 
 
 		$scope.newPost.post = function() {
+		    $scope.$emit( 'Xarma', 1 );
+
 		    $http.post( '/forum/' + $scope.forumName, {content: $scope.newPost.content, parent: $scope.parent} ).success(function(data){
 			$scope.replyDone();
-		    });		
+			$scope.errorMessage = undefined;
+		    }).error(function(data, status, headers, config) {
+			$scope.errorMessage = 'Could not post your message.';
+		    })
 		};
 	    }
     };}]);
-
-    app.controller('ForumController', ["$scope", "$http", function ($scope, $http) {
-	$scope.toplevel = [];
-	$scope.posts = {};
-
-	// posts need to be added in chronological order to recreate threads
-	$scope.addPost = function(post) {
-	    $scope.posts[post._id] = post;
-
-	    if ('parent' in post) {
-		var parent = $scope.posts[post.parent];
-
-		if ('replies' in parent) 
-		    parent.replies.push( post );
-		else
-		    parent.replies = [ post ];
-	    }
-	    else {
-		$scope.toplevel.push( post );
-	    }
-	};
-
-	$http.get( '/forum/' + $scope.forum ).success(function(data){
-	    _.each( data, $scope.addPost );
-	});
-    }]);
 
     ////////////////////////////////////////////////////////////////
     // rerun mathjax when the given attribute changes

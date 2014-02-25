@@ -1,5 +1,9 @@
 form.compose
     div(pagedown="", ng-model="newPost.content")
+    div.alert.alert-danger(ng-if="errorMessage")
+      strong Error!&nbsp;
+      | {{errorMessage}}
+
     div.btn-toolbar(role="toolbar")
       div.btn-group
         button.btn.btn-primary(ng-click="newPost.post()") <i class="fa fa-share"></i>&nbsp;Post
