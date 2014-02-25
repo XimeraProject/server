@@ -18,6 +18,7 @@
 	"syntaxhighlighter": "https://github.com/alexgorbatchev/syntaxhighlighter.git",
 	"bootstrap-tree": "https://github.com/jhfrench/bootstrap-tree.git",
 	"codemirror": "*",
-	"skulpt": "*"
+	"skulpt": "*",
+	"angular-strap": "2.0.0-rc.3"
     }
 }

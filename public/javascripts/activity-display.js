@@ -540,8 +540,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                         $(element).trigger('attemptAnswer', {
                             success: success,
                             answerUuid: $(element).attr('data-uuid'),
-                            answer: $scope.db.radioValue,
-                            correctAnswer: $scope.db.correctAnswer
+                            answer: $scope.db.radioValue
                         });
 
                         if (success) {
@@ -557,24 +556,26 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
         };
     }]);
 
-    // For now answer is just a plain text entry.
-    app.directive('ximeraAnswer', ['$rootScope', 'stateService', 'popoverService', function ($rootScope, stateService, popoverService) {
+    app.directive('ximeraExpressionAnswer', ['popoverService', 'stateService', function(popoverService, stateService) {
         return {
             restrict: 'A',
             scope: {},
-            templateUrl: '/template/expression-answer',
+            templateUrl: '/template/math-input',
             transclude: true,
-            link: function($scope, element, attrs, controller) {
+            replace: true,
+            link: function($scope, element, attrs, controller, transclude) {
+                transclude(function (clone) {
+                    $scope.validator = $(clone).text();
+                });
+
                 stateService.bindState($scope, $(element).attr('data-uuid'), function () {
                     $scope.db.success = false;
                     $scope.db.answer = "";
-                    $scope.db.correctAnswer = $(element).attr('data-answer');
                     $scope.db.message = "";
-                    $scope.db.focused = false;
                 });
 
-                popoverService.watchFocus($scope, $(":text", element), "focused");
-                $scope.$watchCollection('[db.answer, db.focused]', function (coll) {
+                popoverService.watchFocus($scope, "focused", $(":text", element));
+                $scope.$watchCollection('[db.answer, focused]', function (coll) {
                     var answer = coll[0];
 		    // If you change the answer, the question is no longer marked wrong
 		    if ($scope.db.attemptedAnswer != answer) {
@@ -584,10 +585,84 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
 			$scope.db.message = $scope.db.recentMessage;
                     }
 
-                    if ($scope.db.success || !$scope.db.focused) {
+                    if ($scope.db.success || !$scope.focused) {
                         popoverService.destroyPopover(element);
                     }
-                    else if ($scope.db.focused) {
+                    else if ($scope.focused) {
+                        popoverService.latexPopover(answer, element);
+                    }
+                });
+
+                $scope.attemptAnswer = function () {
+                    if ((!$scope.db.success) && ($scope.db.answer != "")) {
+                        var success = false;
+			$scope.db.attemptedAnswer = $scope.db.answer;
+                        var parsedAnswer = MathFunction.parse($scope.db.answer);
+                        var validator = function (answer) { return false; }
+                        eval($scope.validator);
+
+                        try {
+                            if (validator(parsedAnswer)) {
+                                success = true;
+                            }
+                        }
+                        catch (err) {
+                            console.log(err);
+                        }
+
+                        $(element).trigger('attemptAnswer', {
+                            success: success,
+                            answerUuid: $(element).attr('data-uuid'),
+                            answer: $scope.db.answer
+                        });
+
+                        if (success) {
+                            $scope.db.message = 'correct';
+                            $scope.db.recentMessage = 'correct';
+                        }
+                        else {
+                            $scope.db.message = 'incorrect';
+                            $scope.db.recentMessage = 'incorrect';
+                        }
+                        $scope.db.success = success;
+                    }
+                };
+
+            }
+        }
+    }]);
+
+    // For now answer is just a plain text entry.
+    app.directive('ximeraAnswer', ['stateService', 'popoverService', function (stateService, popoverService) {
+        return {
+            restrict: 'A',
+            scope: {},
+            templateUrl: '/template/math-input',
+            transclude: true,
+            replace: true,
+            link: function($scope, element, attrs, controller) {
+                stateService.bindState($scope, $(element).attr('data-uuid'), function () {
+                    $scope.db.success = false;
+                    $scope.db.answer = "";
+                    $scope.db.correctAnswer = $(element).attr('data-answer');
+                    $scope.db.message = "";
+                });
+
+                popoverService.watchFocus($scope, "focused", $(":text", element));
+                $scope.$watchCollection('[db.answer, focused]', function (coll) {
+                    var answer = coll[0];
+		    // If you change the answer, the question is no longer marked wrong
+		    if ($scope.db.attemptedAnswer != answer) {
+			$scope.db.message = "";
+                    }
+		    else {
+			$scope.db.message = $scope.db.recentMessage;
+                    }
+
+                    if ($scope.db.success || !$scope.focused) {
+                        popoverService.destroyPopover(element);
+                    }
+                    else if ($scope.focused) {
                         popoverService.latexPopover(answer, element);
                     }
 		});
@@ -608,8 +683,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                         $(element).trigger('attemptAnswer', {
                             success: success,
                             answerUuid: $(element).attr('data-uuid'),
-                            answer: $scope.db.answer,
-                            correctAnswer: $scope.db.correctAnswer
+                            answer: $scope.db.answer
                         });
 
                         if (success) {

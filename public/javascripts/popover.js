@@ -1,20 +1,25 @@
-define(['angular', 'jquery', 'algebra/parser'], function (angular, $, parse) {
+define(['angular', 'jquery', 'underscore', 'algebra/parser'], function (angular, $, _, parse) {
     var app = angular.module('ximeraApp.popover', []);
 
     app.service('popoverService', function () {
         var service = {};
 
-        service.watchFocus = function($scope, element, varName) {
+        service.watchFocus = function(container, varName, element) {
             // Start out unfocused on page load.
-            $scope.db[varName] = false;
+            container[varName] = false;
             $(element).bind('focus', function () {
-                $scope.db[varName] = true;
+                container[varName] = true;
             });
 
             $(element).bind('blur', function () {
-                $scope.db[varName] = false;
+                container[varName] = false;
             });
         }
+
+        var updateMathJax = _.debounce(function () {
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }, 200);
+
 
         // Binds latex popover occur next to element when watched variable changes.
         service.latexPopover = function(answer, element) {
@@ -37,7 +42,7 @@ define(['angular', 'jquery', 'algebra/parser'], function (angular, $, parse) {
                 
 		$(element).popover('show');
                 
-		MathJax.Hub.Queue(["Typeset", MathJax.Hub, $(element).children(".popover-content")[0]]);
+                updateMathJax();
 	    }
 	    // display errors as popovers, too
 	    catch (err) {

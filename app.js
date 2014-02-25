@@ -245,14 +245,12 @@ app.post('/users/xarma', score.postXarma);
 app.post('/users/xudos', score.postXudos);
 
 app.get('/', routes.index);
-app.get('/users', user.list);
-app.get('/users/:id', user.get);
-app.put('/users/:id', user.put);
-/*
-app.put('/users/xarma', score.xarma);
-app.put('/users/xudos', score.xudos);
-*/
 
+app.put('/users/', user.put);
+app.get('/users/', user.getCurrent);
+app.get('/users/profile', user.currentProfile);
+app.get('/users/:id/profile', user.profile);
+app.get('/users/:id', user.get);
 
 app.post('/activity/log-answer', activity.logAnswer);
 app.post('/activity/log-completion', activity.logCompletion);
