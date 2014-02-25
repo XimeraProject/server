@@ -18,7 +18,7 @@ define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
 
 	    return promise;
 	};
-	    
+
 	service.current = function() {
 	    return service.user('');
 	};

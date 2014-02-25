@@ -79,7 +79,7 @@ exports.initialize = function initialize() {
                                        room: {type: String, index: true},
 				       content: String,
 				       user: Mixed,
-				       date: Date,
+				       date: {type: Date, index: true},
 				       parent: ObjectId,
 				       upvotes: Mixed
 				   }, {

@@ -311,6 +311,7 @@ app.get('/angular-state/:activityId', angularState.get);
 app.put('/angular-state/:activityId', angularState.put);
 
 app.get('/template/:templateFile', template.renderTemplate);
+app.get('/template/forum/:templateFile', template.renderForumTemplate);
 app.get('/image/:hash', mongoImage.get);
 
 
@@ -353,12 +354,11 @@ poet.init().then( function() {
 
     var socket = io.listen(server); 
 
-    // Setup chat rooms
-    var chat = require('./routes/chat.js')(socket);
-    app.get('/chats', chat.view);
-    app.post('/chats/upvote/:post', chat.upvote);
-    app.get('/chats/:room/:timestamp', chat.get);
-    app.post('/chat/:room', chat.post);
+    // Setup forum rooms
+    var forum = require('./routes/forum.js')(socket);
+    app.post('/forum/upvote/:post', forum.upvote);
+    app.get('/forum/:room', forum.get);
+    app.post('/forum/:room', forum.post);
 
     socket.on('connection', function (client) {
 	// join to room and save the room name

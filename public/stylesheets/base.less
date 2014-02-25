@@ -104,14 +104,14 @@
 /*****************************************************************/
 /* A color scheme from http://colorschemedesigner.com/#4X32Gw0w0w0w0 */
 
-@primary-color:  #442369;
+@primary-color: #BB0000;
 
 @primary-color-dark: darken(@primary-color,10%);
 @primary-color-darkest: darken(@primary-color,20%);
 @primary-color-light: lighten(@primary-color,20%);
 @primary-color-whiter: mix(@primary-color,@white,50%);
 
-@secondary-color: #BB0000;
+@secondary-color: #442369;
 
 @secondary-color-dark: darken(@secondary-color,15%);
 @secondary-color-darkest: darken(@secondary-color,25%);
@@ -203,6 +203,25 @@ div.footer .navbar-static-bottom {
 
 @footer-height: 14em;
 @navbar-border-radius: 0px;
+
+/****************************************************************/
+// Forum!
+
+/*
+ul.media-list li.deepest:nth-child(even) {
+  background-color:#DDD;
+}
+
+ul.media-list li.deepest:nth-child(odd) {
+  background-color:#FFF;
+}
+*/
+
+// The username is set in h5
+ul.media-list h5 {
+  font-weight: bold;
+  margin-top: 0;
+}
 
 /****************************************************************/
 /* OSU branding guidelines */

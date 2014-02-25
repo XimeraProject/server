@@ -9,6 +9,7 @@
         "bootstrap": "*",
         "angular": "*",
         "angular-animate": "*",
+        "angular-sanitize": "*",
 	"underscore": "*",
         "font-awesome": "*",
 	"x-editable": "*",

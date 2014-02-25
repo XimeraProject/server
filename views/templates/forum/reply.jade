@@ -1,0 +1,7 @@
+form.compose
+    div(pagedown="", ng-model="newPost.content")
+    div.btn-toolbar(role="toolbar")
+      div.btn-group
+        button.btn.btn-primary(ng-click="newPost.post()") <i class="fa fa-share"></i>&nbsp;Post
+      div.btn-group
+        button.btn.btn-danger(ng-confirm-click="Are you sure you want to cancel your post?", ng-click="cancel()") <i class="fa fa-times"></i>&nbsp;Cancel

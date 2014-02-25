@@ -1,0 +1,17 @@
+div(ng-init="hideChildren = false")
+  p thread under {{parent}} in {{forumName}}
+  button.pull-right.btn.btn-xs(ng-click="hideChildren = !hideChildren", ng-class="{active:hideChildren}")  <i class="fa fa-reply"></i>&nbsp;Hide  
+  ul.media-list(ng-show="!hideChildren")
+    li.media(ng-repeat='post in posts', ng-class='{deepest:!post.replies}')
+      a.pull-left(href="/users/{{post.user._id}}/profile")
+        img.media-object(src="https://secure.gravatar.com/avatar/{{post.user.gravatar}}.jpg?d=retro&s=64")
+      div.media-body
+        h5
+          a(href="/users/{{post.user._id}}/profile") {{post.user.name}}
+        div(post="post", forum-name="{{forumName}}")
+        div(ng-if="post.replies")
+          div(thread="", posts="post.replies", parent="post._id", forum-name="{{forumName}}")
+          div.btn-toolbar(role="toolbar")
+            div.btn-group
+              button.btn(ng-click="replying = !replying", ng-class="{active:replying}", ng-hide="replying")  <i class="fa fa-reply"></i>&nbsp;Add Comment
+          div(reply="",ng-if="replying",parent="{{post._id}}", forum-name="{{forumName}}", reply-done="$parent.replying = false;")
