@@ -47,7 +47,7 @@ requirejs.config({
 	angular: { exports: 'angular', deps: ['jquery'] },
         "angular-animate": { deps: ['angular'] },
         "angular-sanitize": { deps: ['angular'] },
-        "angular-strap": { deps: ['angular', 'bootstrap', 'bootstrap-datepicker', "angular-animate"] },
+        "angular-strap": { deps: ['angular', 'bootstrap', "angular-animate"] },
         "angular-strap-tpl": { deps: ['angular-strap'] },
 	jquery: { exports: 'jQuery' },
 	"bootstrap": { deps: ['jquery'] },
@@ -72,22 +72,14 @@ requirejs.config({
 });
 
 // TODO: Add back in input-math
-<<<<<<< HEAD
-require( ["require", "angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "score", "free-response", "user", 'angular-strap-tpl', "forum", "pagedown-directive"], function(require, angular, shCore) {
-=======
-require( ["require", "angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "score", "free-response", "user", 'angular-strap-tpl', 'popover'], function(require, angular, shCore) {
->>>>>>> ad4f50879797c48ef370e0daaf61f7bb19b469ec
+require( ["require", "angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "score", "free-response", "user", 'angular-strap-tpl', 'popover', "forum", "pagedown-directive"], function(require, angular, shCore) {
     'use strict';
 
     var app = angular.module('ximeraApp', ['ximeraApp.mathJax', 'ximeraApp.activity', 'ximeraApp.codingActivity', 'ximeraApp.inputMath', 'ximeraApp.videoPlayer', 'ximeraApp.matrixActivity',
 					   'ximeraApp.mathMatrix', 'ximeraApp.freeResponse',
-<<<<<<< HEAD
-					   'ximeraApp.score', 'ximeraApp.user',
+					   'ximeraApp.score', 'ximeraApp.user', 'ximeraApp.popover',
 					   'ximeraApp.forum',
 					   'ximeraApp.pagedown',
-=======
-					   'ximeraApp.score', 'ximeraApp.user', 'ximeraApp.popover',
->>>>>>> ad4f50879797c48ef370e0daaf61f7bb19b469ec
 					   'mgcrea.ngStrap']);
 
     $(document).ready(function() {
