@@ -16,11 +16,6 @@ define(['angular', 'jquery', 'underscore', 'algebra/parser'], function (angular,
             });
         }
 
-        var updateMathJax = _.debounce(function () {
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-        }, 200);
-
-
         // Binds latex popover occur next to element when watched variable changes.
         service.latexPopover = function(answer, element) {
 	    if (answer.trim().length == 0) {
@@ -37,12 +32,12 @@ define(['angular', 'jquery', 'underscore', 'algebra/parser'], function (angular,
 		    //animation: false,
 		    trigger: 'manual',
 		    content: function() {
-			return '$' + latex + '$';
+			return '\\(' + latex + '\\)';
 		    }});
                 
 		$(element).popover('show');
-                
-                updateMathJax();
+
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub, $(element).children(".popover-content")[0]]);
 	    }
 	    // display errors as popovers, too
 	    catch (err) {
