@@ -104,7 +104,31 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 	    }
 	};}]);
 
-    app.directive('forum', ['$http', function ($http) {
+    app.factory('socket', function ($rootScope) {
+	var socket = io.connect();
+	return {
+	    on: function (eventName, callback) {
+		socket.on(eventName, function () {  
+		    var args = arguments;
+		    $rootScope.$apply(function () {
+			callback.apply(socket, args);
+		    });
+		});
+	    },
+	    emit: function (eventName, data, callback) {
+		socket.emit(eventName, data, function () {
+		    var args = arguments;
+		    $rootScope.$apply(function () {
+			if (callback) {
+			    callback.apply(socket, args);
+			}
+		    });
+		})
+	    }
+	};
+    });
+
+    app.directive('forum', ['$http', 'socket', function ($http, socket) {
         return {
             restrict: 'A',
             scope: {
@@ -137,7 +161,15 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 			$scope.toplevel.push( post );
 		    }
 		};
+
 		
+		//var socket = io.connect('http://localhost:3000/');
+		socket.emit( 'join room', $scope.forum );
+
+		socket.on('post', function (data) {
+		    $scope.addPost( data );
+		});
+
 		$http.get( '/forum/' + $scope.forum ).success(function(data){
 		    _.each( data, $scope.addPost );
 		});
@@ -161,7 +193,6 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 		$scope.cancel = function() {
 		    $scope.replyDone();
 		}
-
 
 		$scope.newPost.post = function() {
 		    $scope.$emit( 'Xarma', 1 );
