@@ -170,6 +170,10 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                 });
         }
 
+        var updateWithoutCallback = _.debounce( function() {
+            updateState();
+        }, 1000);
+
         var stateService = {};
         stateService.bindState = function ($scope, uuid, initCallback) {
             if (uuid in locals.dataByUuid) {
@@ -181,12 +185,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                 initCallback();
             }
 
-            var update = _.debounce( function() {
-                console.log( "Updating ", $scope.db );
-                updateState();
-            }, 1000);
-
-            $scope.$watch("db", update, true);
+            $scope.$watch("db", updateWithoutCallback, true);
         }
 
         stateService.resetPage = function () {
