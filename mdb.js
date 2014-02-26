@@ -62,6 +62,8 @@ exports.initialize = function initialize() {
 				      biography: String,
 				      xudos: Number,
 				      xarma: Number,
+				      userAgent: String,
+				      remoteAddress: String,
                                       isGuest: Boolean
                                   });
 
@@ -81,7 +83,10 @@ exports.initialize = function initialize() {
 				       user: Mixed,
 				       date: {type: Date, index: true},
 				       parent: ObjectId,
-				       upvotes: Mixed
+				       upvoters: Mixed,
+				       upvotes: Number,
+				       flaggers: Mixed,
+				       flags: Number,
 				   }, {
                                        minimize: false
                                    }));
