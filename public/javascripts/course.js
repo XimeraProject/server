@@ -1,4 +1,4 @@
-define(['angular', 'jquery', 'underscore', 'angular-animate'], function(angular, $, _) {
+define(['angular', 'jquery', 'underscore', 'angular-animate', 'activity-display'], function(angular, $, _) {
     var app = angular.module('ximeraApp.course', ['ngAnimate']);
 
     RegExp.escape= function(s) {
@@ -118,7 +118,7 @@ define(['angular', 'jquery', 'underscore', 'angular-animate'], function(angular,
 	};
     };
 
-    app.directive('courseNavigation', [function () {
+    app.directive('courseNavigation', ['completionService', function (completions) {
         return {
             restrict: 'A',
             scope: true,
@@ -127,6 +127,7 @@ define(['angular', 'jquery', 'underscore', 'angular-animate'], function(angular,
 	    controller: function($scope, $element){
 		_.extend( $scope.course, new Course() );
 		//$scope.currentActivity = $scope.$parent.currentActivity;
+		$scope.completions = completions.activities;
 	    }
 	};}]);
 

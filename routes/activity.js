@@ -27,6 +27,30 @@ exports.logAnswer = function(req, res) {
     });
 }
 
+exports.completion = function(req, res) {
+    if (!req.user) {
+	res.json([]);
+	return;
+    }
+    
+    if (req.user.isGuest) {
+	res.json([]);
+	return;
+    }
+
+    mdb.ActivityCompletion.find({ $query: {user: req.user._id} }, {}, function(err,document) {
+        if (document) {
+	    res.json(document);
+        }
+        else {
+	    // If there is nothing in the database, give the client an empty array
+	    res.json([]);
+        }
+    });
+
+    return;
+}
+
 exports.logCompletion = function(req, res) {
     var activityId = req.body.activityId
     var percentDone = req.body.percentDone
@@ -64,7 +88,7 @@ exports.logCompletion = function(req, res) {
                 }
                 else {
                     var completeTime = complete ? curTime : null;
-                    completion = new mdb.ActivityCompletion({
+                    var completion = new mdb.ActivityCompletion({
                         activitySlug: locals.activity.slug,
                         user: req.user._id,
                         activity: activityId,
@@ -72,6 +96,7 @@ exports.logCompletion = function(req, res) {
                         complete: complete,
                         completeTime: completeTime
                     });
+		    console.log( "new completion = ", completion );
                     completion.save(callback);
                 }
             });

@@ -94,7 +94,7 @@ exports.initialize = function initialize() {
 
     activityCompletionSchema = new mongoose.Schema({
         activitySlug: String,
-        user: ObjectId,
+        user: {type: ObjectId, index: true},
         activity: ObjectId, // Most recent version.
         percentDone: Number, // Percent complete of most recent version.
         complete: Boolean,
