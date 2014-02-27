@@ -25,6 +25,50 @@
 }
 
 /*****************************************************************/
+/* course navigation bar */
+
+.course-navigation ul
+{
+  list-style-type:none;
+  margin: 0;
+  padding: 0;
+}
+
+.course-navigation li.active-ancestor > div > .description
+{
+  border-right: 1px solid black;
+}
+
+.course-navigation li.active-ancestor  > div > .description:hover
+{
+  border-right: 5px solid black;
+  transition: border-width 0.2s ease-in;
+}
+
+.course-navigation li.active > div > .description
+{
+  border-right: 5px solid black;
+}
+
+.course-navigation li.active > div > .description a
+{
+  font-weight: bold;
+}
+
+.course-navigation li .description:hover
+{
+  border-right: 5px solid black;
+  transition: border-width 0.2s ease-in;
+}
+
+.course-navigation ul ul
+{
+  margin-left: 0.5em;
+  padding-left: 0.5em;
+  border-left: 1px solid #EEE;
+}
+
+/*****************************************************************/
 /* mathquill AFTER bootstrap */
 @import "../../components/mathquill/build/mathquill.css";
 

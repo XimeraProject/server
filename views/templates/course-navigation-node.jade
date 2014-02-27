@@ -1,10 +1,12 @@
-div(ng-init="invisible=(course.activityAncestors(currentActivity).indexOf(activity) == -1) && (activity.slug != currentActivity.slug);")
-  span
-    span(ng-show="activity.children")
-      i.fa.fa-minus-square(ng-click="invisible = !invisible;", ng-hide="invisible")
-      i.fa.fa-plus-square(ng-click="invisible = !invisible;", ng-hide="!invisible")
-    span &nbsp;{{activity.title}}
-    span {{activity.description}}
-    a(href="/course/{{course.slug}}/activity/{{course.normalizeSlug(activity.slug)}}/") VIEW
-  ul(ng-hide="invisible")
-    li(ng-repeat="activity in activity.children", ng-include="'/template/course-navigation-node'")
+div(ng-init="invisible=(course.activityAncestors(currentActivity).indexOf(course.activity(activity)) == -1)")
+  span.pull-left(ng-show="activity.children")
+    i.fa.fa-minus-square-o(ng-click="invisible = !invisible;", ng-hide="invisible")
+    i.fa.fa-plus-square-o(ng-click="invisible = !invisible;", ng-hide="!invisible")
+    | &nbsp;
+  div.description(location-click="/course/{{course.slug}}/activity/{{course.normalizeSlug(activity.slug)}}/")
+    a(href="/course/{{course.slug}}/activity/{{course.normalizeSlug(activity.slug)}}/") {{activity.title}}
+    div {{activity.description}}
+
+  ul(ng-if="!invisible || override")
+    //li(ng-show="activity.children && invisible", ng-click="invisible = !invisible;") More&hellip;
+    li(ng-repeat="activity in activity.children", ng-include="'/template/course-navigation-node'", highlight-if-active="")
