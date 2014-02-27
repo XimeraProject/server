@@ -9,7 +9,7 @@ requirejs.config({
 	"x-editable": "/components/x-editable/dist/bootstrap-editable/js/bootstrap-editable.min",
 	"threejs": "/components/threejs/build/three.min",
 	"moment": "/components/moment/min/moment.min",
-        "q": "/components/q/q"
+        "q": "/components/q/q",
 
 	"codemirror": "/components/codemirror/lib/codemirror",
 	"codemirror-python": "/components/codemirror/mode/python/python",
@@ -73,7 +73,7 @@ requirejs.config({
 });
 
 // TODO: Add back in input-math
-require( ["require", "angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "score", "free-response", "user", 'angular-strap-tpl', 'popover', "forum", "pagedown-directive", "course", 'q'], function(require, angular, shCore) {
+require( ["require", "angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "score", "free-response", "user", 'angular-strap-tpl', 'popover', "forum", /*"pagedown-directive"*/, "course", 'q'], function(require, angular, shCore) {
     'use strict';
 
     var app = angular.module('ximeraApp', ['ximeraApp.mathJax', 'ximeraApp.activity', 'ximeraApp.codingActivity', 'ximeraApp.inputMath', 'ximeraApp.videoPlayer', 'ximeraApp.matrixActivity',
@@ -81,7 +81,7 @@ require( ["require", "angular", "shCore", "angular-animate", "bootstrap", "direc
 					   'ximeraApp.score', 'ximeraApp.user', 'ximeraApp.popover',
 					   'ximeraApp.forum',
 					   'ximeraApp.course',
-					   'ximeraApp.pagedown',
+					   /*'ximeraApp.pagedown',*/
 					   'mgcrea.ngStrap']);
 
     $(document).ready(function() {

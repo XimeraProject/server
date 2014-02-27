@@ -14,7 +14,7 @@
 */
 
 // Script expects data-activityId attribute in activity div.
-define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/parser'], function(angular, $, _, MathFunction, parse) {
+define(['angular', 'jquery', 'underscore', 'q', 'algebra/math-function', 'algebra/parser'], function(angular, $, _, Q, MathFunction, parse) {
     var app = angular.module('ximeraApp.activity', ["ngAnimate"]);
 
     // Make sure a list of DOM elements is sorted in the same order in the DOM itself.
@@ -48,6 +48,13 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
             $rootScope.db.logService.unloggedAnswers = [];
             $rootScope.db.logService.completionNeedsUpdate = false;
             $rootScope.db.logService.qpCompletion = {};
+
+            $(".questionPart").each(function() {
+                $rootScope.db.logService.qpCompletion[$(this).attr("data-uuid")] = false;
+            });
+
+            // Begin sending unlogged answers.
+            service.sendLoggedAnswers();
         }
 
         service.logAnswer = function (questionPartUuid, value, correct) {
@@ -58,14 +65,6 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                 correct: correct
             });
         }
-
-        var registerQuestionParts = function () {
-            $(".questionPart").each(function() {
-                $rootScope.db.logService.qpCompletion[$(this).attr("data-uuid")] = false;
-            });
-        }
-
-        $timeout(registerQuestionParts);
 
         service.logCompletion = function(questionPartUuid, hasAnswer) {
             $rootScope.db.logService.completionNeedsUpdate = true;
@@ -116,20 +115,20 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                 $timeout(service.sendLoggedAnswers, 1000);
             }
         }
-        // Begin sending unlogged answers.
-        $timeout(service.sendLoggedAnswers);
 
         return service;
     }]);
 
     app.factory('stateService', function ($timeout, $rootScope, $http) {
-        var locals = {dataByUuid: {}};
+        var locals = {dataByUuid: null, needsUpdate: false};
         var activityId = $('.activity').attr('data-activityId');
+        var getStateDeferred = Q.defer();
 
-        // Set this at a slight delay so that $timeout in bindstates have time to complete.
-        $timeout(function () {
+        var getState = function () {
             $http.get("/angular-state/" + activityId).
                 success(function (data) {
+                    locals.dataByUuid = {};
+
                     if (data) {
                         for (var uuid in data) {
                             if (uuid in locals.dataByUuid) {
@@ -152,47 +151,70 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                         }
                         console.log( "Downloaded state ", locals.dataByUuid );
                     }
+                    // Don't resolve promise until Angular has finished compiling.
+                    $timeout(function () {
+                        getStateDeferred.resolve();
+                    });
                     // Show activity after components have had a chance to load.
                     $('.activity').show();
-                });
-        }, 50);
-
-        // TODO: Add activityHash
-        var updateState = function (callback) {
-            $http.put("/angular-state/" + activityId, {dataByUuid: locals.dataByUuid})
-                .success(function(data, status, headers, config) {
-                    console.log("State uploaded.");
-                    if (callback) {
-                        callback();
-                    }
-                }).error(function(data, status, headers, config) {
-                    console.log("Error uploading state: ", status);
+                }).
+                error(function () {
+                    // Retry until successful.
+                    $timeout(getState);
                 });
         }
 
-        var updateWithoutCallback = _.debounce( function() {
-            updateState();
-        }, 1000);
+        getState();
+
+        // TODO: Add activityHash
+        var updateState = function (callback, forceUpload) {
+            if (locals.dataByUuid || forceUpload) {
+                $http.put("/angular-state/" + activityId, {dataByUuid: locals.dataByUuid})
+                    .success(function(data, status, headers, config) {
+                        console.log("State uploaded.");
+                        if (callback) {
+                            callback();
+                        }
+                    }).error(function(data, status, headers, config) {
+                        console.log("Error uploading state: ", status);
+                    });
+            }
+        }
+
+        var updateLoop = function () {
+            if (locals.needsUpdate) {
+                updateState();
+                locals.needsUpdate = false;
+            }
+            $timeout(updateLoop, 1000);
+        };
+
+        updateLoop();
 
         var stateService = {};
         stateService.bindState = function ($scope, uuid, initCallback) {
-            if (uuid in locals.dataByUuid) {
-                $scope.db = locals.dataByUuid[uuid];
-            }
-            else {
-                $scope.db = {}
-                locals.dataByUuid[uuid] = $scope.db;
-                initCallback();
-            }
+            $scope.$watch("db", function () {
+                locals.needsUpdate = true;
+            }, true);
 
-            $scope.$watch("db", updateWithoutCallback, true);
+
+            return getStateDeferred.promise.then(function () {
+                if (uuid in locals.dataByUuid) {
+                    $scope.db = locals.dataByUuid[uuid];
+                }
+                else {
+                    $scope.db = {}
+                    locals.dataByUuid[uuid] = $scope.db;
+                    initCallback();
+                }
+            });
         }
 
         stateService.resetPage = function () {
             locals.dataByUuid = null;
             updateState(function () {
                 location.reload(true);
-            });
+            }, true);
         }
 
         stateService.getDataByUuid = function (uuid) {
@@ -218,66 +240,64 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
             scope: {},
             link: function($scope, element, attrs, controller) {
                 stateService.bindState($scope, $(element).attr('data-uuid'), function () {
-                    $timeout(function () {
-                        $scope.db.historyCount = 5;
-                        var possibleFirstQuestions = $(element).children('.question, .exercise, .exploration');
-                        if (possibleFirstQuestions.length > 0) {
-                            $scope.db.activeQuestionUuid = $(possibleFirstQuestions[Math.floor(Math.random() * possibleFirstQuestions.length)]).attr('data-uuid');
-                        }
-                        else {
-                            $scope.db.activeQuestionUuid = null;
-                        }
-                        $scope.db.doneUuids = [];
-                    });
-                });
-
-                $(element).on("completeQuestion", function (event, data) {
-                    var questionUuid = data.questionUuid;
-                    $scope.db.doneUuids.push(questionUuid);
-                    if ($scope.db.activeQuestionUuid === questionUuid) {
-                        var questions = $(element).children('.question, .exercise, .exploration');
-                        var uuids = questions.map(function() {
-                            return $(this).attr('data-uuid');
-                        }).get();
-                        var freeUuids = _.difference(uuids, $scope.db.doneUuids);
-
-                        if (freeUuids.length > 0) {
-                            $scope.db.activeQuestionUuid = freeUuids[Math.floor(Math.random() * freeUuids.length)];
-                        }
-                        else {
-                            $scope.db.activeQuestionUuid = null;
-                        }
+                    $scope.db.historyCount = 5;
+                    var possibleFirstQuestions = $(element).children('.question, .exercise, .exploration');
+                    if (possibleFirstQuestions.length > 0) {
+                        $scope.db.activeQuestionUuid = $(possibleFirstQuestions[Math.floor(Math.random() * possibleFirstQuestions.length)]).attr('data-uuid');
                     }
-                });
-
-                // Setup watches.
-                $scope.$watchCollection("[db.doneUuids, db.activeQuestionUuid]", function (newVals) {
-                    var doneUuids = newVals[0];
-                    var activeQuestionUuid = newVals[1];
-                    if (!doneUuids) {
-                        return;
+                    else {
+                        $scope.db.activeQuestionUuid = null;
                     }
+                    $scope.db.doneUuids = [];
+                }).then(function () {
+                    $(element).on("completeQuestion", function (event, data) {
+                        var questionUuid = data.questionUuid;
+                        $scope.db.doneUuids.push(questionUuid);
+                        if ($scope.db.activeQuestionUuid === questionUuid) {
+                            var questions = $(element).children('.question, .exercise, .exploration');
+                            var uuids = questions.map(function() {
+                                return $(this).attr('data-uuid');
+                            }).get();
+                            var freeUuids = _.difference(uuids, $scope.db.doneUuids);
 
-                    // Sort by order done.
-                    var sortedQuestions = _.map(doneUuids, function (uuid) {
-                        return $(element).find("[data-uuid=" + uuid + "]");
-                    });
-                    sortedQuestions.push($(element).find("[data-uuid=" + activeQuestionUuid + "]"));
-                    sortElements(sortedQuestions);
-
-                    // Show number of previous problem given in history count, along with current problem.
-                    $(element).children('.question, .exercise, .exploration').each(function (index, questionElt) {
-                        var questionUuid = $(questionElt).attr('data-uuid');
-                        var totalDone = doneUuids.length;
-
-                        if ((_.contains(doneUuids, questionUuid) && ((totalDone - index) <= $scope.db.historyCount)) || (activeQuestionUuid === questionUuid)) {
-                            $(questionElt).show();
+                            if (freeUuids.length > 0) {
+                                $scope.db.activeQuestionUuid = freeUuids[Math.floor(Math.random() * freeUuids.length)];
+                            }
+                            else {
+                                $scope.db.activeQuestionUuid = null;
+                            }
                         }
-                        else {
-                            $(questionElt).hide();
-                        }
                     });
-                }, true);
+
+                    // Setup watches.
+                    $scope.$watchCollection("[db.doneUuids, db.activeQuestionUuid]", function (newVals) {
+                        var doneUuids = newVals[0];
+                        var activeQuestionUuid = newVals[1];
+                        if (!doneUuids) {
+                            return;
+                        }
+
+                        // Sort by order done.
+                        var sortedQuestions = _.map(doneUuids, function (uuid) {
+                            return $(element).find("[data-uuid=" + uuid + "]");
+                        });
+                        sortedQuestions.push($(element).find("[data-uuid=" + activeQuestionUuid + "]"));
+                        sortElements(sortedQuestions);
+
+                        // Show number of previous problem given in history count, along with current problem.
+                        $(element).children('.question, .exercise, .exploration').each(function (index, questionElt) {
+                            var questionUuid = $(questionElt).attr('data-uuid');
+                            var totalDone = doneUuids.length;
+
+                            if ((_.contains(doneUuids, questionUuid) && ((totalDone - index) <= $scope.db.historyCount)) || (activeQuestionUuid === questionUuid)) {
+                                $(questionElt).show();
+                            }
+                            else {
+                                $(questionElt).hide();
+                            }
+                        });
+                    }, true);
+                });
             }
         };
     }]);
@@ -301,25 +321,23 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                 stateService.bindState($scope, $(element).attr('data-uuid'), function () {
                     $scope.db.next = false;
                     $scope.db.shown = false;
-                    $timeout(function () {
-                        if ($(element).prevAll('.hint').length == 0) {
-                            $scope.db.next = true;
-                        }
+                    if ($(element).prevAll('.hint').length == 0) {
+                        $scope.db.next = true;
+                    }
+                }).then(function () {
+                    $scope.showHint = function () {
+                        $scope.db.next = false;
+                        $scope.db.shown = true;
+                        $(element).nextAll('.hint').first().trigger('markAsNext');
+                    }
+
+                    $(element).on('markAsNext', function () {
+                        $scope.db.next = true;
                     });
-                });
 
-                $scope.showHint = function () {
-                    $scope.db.next = false;
-                    $scope.db.shown = true;
-                    $(element).nextAll('.hint').first().trigger('markAsNext');
-                }
-
-                $(element).on('markAsNext', function () {
-                    $scope.db.next = true;
-                });
-
-                $(element).on('completeQuestion', function (event) {
-                    event.stopPropagation();
+                    $(element).on('completeQuestion', function (event) {
+                        event.stopPropagation();
+                    });
                 });
 /*
                 $scope.$watch('db.shown', function (shown) {
@@ -377,51 +395,48 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                 });
 
                 stateService.bindState($scope, $(element).attr('data-uuid'), function () {
-                    $timeout(function () {
-                        var questionParts = $(element).children('.questionPart');
-                        $scope.db.questionPartUuids = _.map(questionParts, function (questionPart) {
-                            return $(questionPart).attr('data-uuid');
-                        })
-                        if (questionParts.length > 0) {
-                            $scope.db.currentQuestionPart = $scope.db.questionPartUuids[0];
-                        }
-                        else {
-                            $scope.db.currentQuestionPart = "";
-                        }
-                        $scope.db.doneUuids = [];
-                        $scope.db.complete = false;
-                    });
-                });
-
-
-                // Which part of the question are we up to; only reveal next part after first is complete.
-                $scope.$watch('db.currentQuestionPart', function (uuid) {
-                    var index = _.indexOf($scope.db.questionPartUuids, $scope.db.currentQuestionPart);
-                    $(element).children('.questionPart').each(function (ii, questionPartElt) {
-                        if ((index === -1) || (ii <= index)) {
-                            $(questionPartElt).show();
-                        }
-                        else {
-                            $(questionPartElt).hide();
-                        }
-                    });
-                });
-
-                // TODO: Change display when complete?
-                $(element).on('completeQuestionPart', function (event, data) {
-                    if (!_.contains($scope.db.doneUuids, data.questionPartUuid)) {
-                        $scope.db.doneUuids.push(data.questionPartUuid);
+                    var questionParts = $(element).children('.questionPart');
+                    $scope.db.questionPartUuids = _.map(questionParts, function (questionPart) {
+                        return $(questionPart).attr('data-uuid');
+                    })
+                    if (questionParts.length > 0) {
+                        $scope.db.currentQuestionPart = $scope.db.questionPartUuids[0];
                     }
-                    var remaining = _.difference($scope.db.questionPartUuids, $scope.db.doneUuids);
-                    if (remaining.length > 0) {
-                        $scope.db.currentQuestionPart = remaining[0];
-                    }
-                    else if (!$scope.db.complete) {
-                        $scope.db.complete = true;
-                        $(element).trigger('completeQuestion', {questionUuid: $(element).attr('data-uuid')});
+                    else {
                         $scope.db.currentQuestionPart = "";
                     }
-                    logService.logCompletion(data.questionPartUuid, data.hasAnswer);
+                    $scope.db.doneUuids = [];
+                    $scope.db.complete = false;
+                }).then(function () {
+                    // Which part of the question are we up to; only reveal next part after first is complete.
+                    $scope.$watch('db.currentQuestionPart', function (uuid) {
+                        var index = _.indexOf($scope.db.questionPartUuids, $scope.db.currentQuestionPart);
+                        $(element).children('.questionPart').each(function (ii, questionPartElt) {
+                            if ((index === -1) || (ii <= index)) {
+                                $(questionPartElt).show();
+                            }
+                            else {
+                                $(questionPartElt).hide();
+                            }
+                        });
+                    });
+
+                    // TODO: Change display when complete?
+                    $(element).on('completeQuestionPart', function (event, data) {
+                        if (!_.contains($scope.db.doneUuids, data.questionPartUuid)) {
+                            $scope.db.doneUuids.push(data.questionPartUuid);
+                        }
+                        var remaining = _.difference($scope.db.questionPartUuids, $scope.db.doneUuids);
+                        if (remaining.length > 0) {
+                            $scope.db.currentQuestionPart = remaining[0];
+                        }
+                        else if (!$scope.db.complete) {
+                            $scope.db.complete = true;
+                            $(element).trigger('completeQuestion', {questionUuid: $(element).attr('data-uuid')});
+                            $scope.db.currentQuestionPart = "";
+                        }
+                        logService.logCompletion(data.questionPartUuid, data.hasAnswer);
+                    });
                 });
             }
         }
@@ -436,28 +451,25 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
             restrict: 'A',
             scope: {},
             link: function ($scope, element, attrs, controller) {
-                stateService.bindState($scope, $(element).attr('data-uuid'), function () {
+                statePromise = stateService.bindState($scope, $(element).attr('data-uuid'), function () {
                     $scope.db.complete = false;
-                });
+                }).then(function () {
+                    $(element).on('attemptAnswer', function (event, data) {
+                        if (data.success && !$scope.db.complete) {
+                            var uuid = $(element).attr('data-uuid')
+                            $scope.db.complete = true;
+                            $(element).trigger('completeQuestionPart', {questionPartUuid: uuid, hasAnswer: true})
+			    $scope.$emit( 'Xudos', 1 );
+                        }
+                        logService.logAnswer(uuid, data.answer, data.success);
+                        event.stopPropagation();
+                    });
 
-                $(element).on('attemptAnswer', function (event, data) {
-                    if (data.success && !$scope.db.complete) {
-                        var uuid = $(element).attr('data-uuid')
-                        $scope.db.complete = true;
-                        $(element).trigger('completeQuestionPart', {questionPartUuid: uuid, hasAnswer: true})
-			$scope.$emit( 'Xudos', 1 );
-                    }
-                    logService.logAnswer(uuid, data.answer, data.success);
-                    event.stopPropagation();
-                });
-
-                // If no solution, immediately mark this question part as complete.
-                // NOTE: We need to delay this a bit (500ms timeout) so that state has time to bind.
-                $timeout(function () {
+                    // If no solution, immediately mark this question part as complete.
                     if ($(element).children('.answer-emitter').length === 0) {
                         $(element).trigger('completeQuestionPart', {questionPartUuid: $(element).attr('data-uuid'), hasAnswer: false});
                     }
-                }, 500);
+                });
             }
         };
     }]);
@@ -507,50 +519,50 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                     });
 
                     $scope.db.radioGroup = $(element).attr('data-uuid');
-                });
+                }).then(function () {
+		    $scope.activate = function(value) {
+		        $scope.db.radioValue = value;
+		    };
 
-		$scope.activate = function(value) {
-		    $scope.db.radioValue = value;
-		};
+                    $scope.$watch('db.radioValue', function (value) {
+		        if ($scope.db.attemptedAnswer != value)
+			    $scope.db.message = "";
+		        else
+			    $scope.db.message = $scope.db.recentMessage;
+		    });
 
-                $scope.$watch('db.radioValue', function (value) {
-		    if ($scope.db.attemptedAnswer != value)
-			$scope.db.message = "";
-		    else
-			$scope.db.message = $scope.db.recentMessage;
-		});
-
-                $scope.$watch('db.order', function (order) {
-                    var sortedChoices = _.map(order, function (uuid) {
-                        return $(element).find("[data-uuid=" + uuid + "]");
-                    });
-                    sortElements(sortedChoices);
-                }, true);
-
-                $scope.attemptAnswer = function () {
-                    if (!$scope.db.success) {
-                        var success = false;
-                        if ($scope.db.radioValue === $scope.db.correctAnswer) {
-                            success = true;
-                        }
-
-			$scope.db.attemptedAnswer = $scope.db.radioValue;
-
-                        $(element).trigger('attemptAnswer', {
-                            success: success,
-                            answerUuid: $(element).attr('data-uuid'),
-                            answer: $scope.db.radioValue
+                    $scope.$watch('db.order', function (order) {
+                        var sortedChoices = _.map(order, function (uuid) {
+                            return $(element).find("[data-uuid=" + uuid + "]");
                         });
+                        sortElements(sortedChoices);
+                    }, true);
 
-                        if (success) {
-                            $scope.db.recentMessage = $scope.db.message = "correct";
+                    $scope.attemptAnswer = function () {
+                        if (!$scope.db.success) {
+                            var success = false;
+                            if ($scope.db.radioValue === $scope.db.correctAnswer) {
+                                success = true;
+                            }
+
+			    $scope.db.attemptedAnswer = $scope.db.radioValue;
+
+                            $(element).trigger('attemptAnswer', {
+                                success: success,
+                                answerUuid: $(element).attr('data-uuid'),
+                                answer: $scope.db.radioValue
+                            });
+
+                            if (success) {
+                                $scope.db.recentMessage = $scope.db.message = "correct";
+                            }
+                            else {
+                                $scope.db.recentMessage = $scope.db.message = "incorrect";
+                            }
+                            $scope.db.success = success;
                         }
-                        else {
-                            $scope.db.recentMessage = $scope.db.message = "incorrect";
-                        }
-                        $scope.db.success = success;
-                    }
-                };
+                    };
+                });
             }
         };
     }]);
@@ -571,62 +583,62 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                     $scope.db.success = false;
                     $scope.db.answer = "";
                     $scope.db.message = "";
-                });
+                }).then(function () {
+                    popoverService.watchFocus($scope, "focused", $(":text", element));
+                    $scope.$watchCollection('[db.answer, focused]', function (coll) {
+                        var answer = coll[0];
+		        // If you change the answer, the question is no longer marked wrong
+		        if ($scope.db.attemptedAnswer != answer) {
+			    $scope.db.message = "";
+                        }
+		        else {
+			    $scope.db.message = $scope.db.recentMessage;
+                        }
 
-                popoverService.watchFocus($scope, "focused", $(":text", element));
-                $scope.$watchCollection('[db.answer, focused]', function (coll) {
-                    var answer = coll[0];
-		    // If you change the answer, the question is no longer marked wrong
-		    if ($scope.db.attemptedAnswer != answer) {
-			$scope.db.message = "";
-                    }
-		    else {
-			$scope.db.message = $scope.db.recentMessage;
-                    }
+                        if ($scope.db.success || !$scope.focused) {
+                            popoverService.destroyPopover(element);
+                        }
+                        else if ($scope.focused) {
+                            popoverService.latexPopover(answer, element);
+                        }
+                    });
 
-                    if ($scope.db.success || !$scope.focused) {
-                        popoverService.destroyPopover(element);
-                    }
-                    else if ($scope.focused) {
-                        popoverService.latexPopover(answer, element);
-                    }
-                });
+                    $scope.attemptAnswer = function () {
+                        if ((!$scope.db.success) && ($scope.db.answer != "")) {
+                            var success = false;
+			    $scope.db.attemptedAnswer = $scope.db.answer;
+                            var parsedAnswer = MathFunction.parse($scope.db.answer);
+                            var validator = function (answer) { return false; }
 
-                $scope.attemptAnswer = function () {
-                    if ((!$scope.db.success) && ($scope.db.answer != "")) {
-                        var success = false;
-			$scope.db.attemptedAnswer = $scope.db.answer;
-                        var parsedAnswer = MathFunction.parse($scope.db.answer);
-                        var validator = function (answer) { return false; }
+                            try {
+                                eval($scope.validator);
 
-                        try {
-                            eval($scope.validator);
-
-                            if (validator(parsedAnswer)) {
-                                success = true;
+                                if (validator(parsedAnswer)) {
+                                    success = true;
+                                }
                             }
-                        }
-                        catch (err) {
-                            console.log(err);
-                        }
+                            catch (err) {
+                                console.log(err);
+                            }
 
-                        $(element).trigger('attemptAnswer', {
-                            success: success,
-                            answerUuid: $(element).attr('data-uuid'),
-                            answer: $scope.db.answer
-                        });
+                            $(element).trigger('attemptAnswer', {
+                                success: success,
+                                answerUuid: $(element).attr('data-uuid'),
+                                answer: $scope.db.answer
+                            });
 
-                        if (success) {
-                            $scope.db.message = 'correct';
-                            $scope.db.recentMessage = 'correct';
+                            if (success) {
+                                $scope.db.message = 'correct';
+                                $scope.db.recentMessage = 'correct';
+                            }
+                            else {
+                                $scope.db.message = 'incorrect';
+                                $scope.db.recentMessage = 'incorrect';
+                            }
+                            $scope.db.success = success;
                         }
-                        else {
-                            $scope.db.message = 'incorrect';
-                            $scope.db.recentMessage = 'incorrect';
-                        }
-                        $scope.db.success = success;
-                    }
-                };
+                    };
+                });
 
             }
         }
@@ -646,57 +658,56 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                     $scope.db.answer = "";
                     $scope.db.correctAnswer = $(element).attr('data-answer');
                     $scope.db.message = "";
+                }).then(function () {
+                    popoverService.watchFocus($scope, "focused", $(":text", element));
+                    $scope.$watchCollection('[db.answer, focused]', function (coll) {
+                        var answer = coll[0];
+		        // If you change the answer, the question is no longer marked wrong
+		        if ($scope.db.attemptedAnswer != answer) {
+			    $scope.db.message = "";
+                        }
+		        else {
+			    $scope.db.message = $scope.db.recentMessage;
+                        }
+
+                        if ($scope.db.success || !$scope.focused) {
+                            popoverService.destroyPopover(element);
+                        }
+                        else if ($scope.focused) {
+                            popoverService.latexPopover(answer, element);
+                        }
+		    });
+
+                    $scope.attemptAnswer = function () {
+                        if ((!$scope.db.success) && ($scope.db.answer != "")) {
+                            var success = false;
+			    $scope.db.attemptedAnswer = $scope.db.answer;
+
+                            var parsedAnswer = MathFunction.parse($scope.db.answer);
+                            var parsedCorrect = MathFunction.parse($scope.db.correctAnswer);
+
+                            if (parsedCorrect.equals(parsedAnswer)) {
+                                success = true;
+                            }
+
+                            $(element).trigger('attemptAnswer', {
+                                success: success,
+                                answerUuid: $(element).attr('data-uuid'),
+                                answer: $scope.db.answer
+                            });
+
+                            if (success) {
+                                $scope.db.message = 'correct';
+                                $scope.db.recentMessage = 'correct';
+                            }
+                            else {
+                                $scope.db.message = 'incorrect';
+                                $scope.db.recentMessage = 'incorrect';
+                            }
+                            $scope.db.success = success;
+                        }
+                    };
                 });
-
-                popoverService.watchFocus($scope, "focused", $(":text", element));
-                $scope.$watchCollection('[db.answer, focused]', function (coll) {
-                    var answer = coll[0];
-		    // If you change the answer, the question is no longer marked wrong
-		    if ($scope.db.attemptedAnswer != answer) {
-			$scope.db.message = "";
-                    }
-		    else {
-			$scope.db.message = $scope.db.recentMessage;
-                    }
-
-                    if ($scope.db.success || !$scope.focused) {
-                        popoverService.destroyPopover(element);
-                    }
-                    else if ($scope.focused) {
-                        popoverService.latexPopover(answer, element);
-                    }
-		});
-
-                $scope.attemptAnswer = function () {
-                    if ((!$scope.db.success) && ($scope.db.answer != "")) {
-                        var success = false;
-			$scope.db.attemptedAnswer = $scope.db.answer;
-
-
-                        var parsedAnswer = MathFunction.parse($scope.db.answer);
-                        var parsedCorrect = MathFunction.parse($scope.db.correctAnswer);
-
-                        if (parsedCorrect.equals(parsedAnswer)) {
-                            success = true;
-                        }
-
-                        $(element).trigger('attemptAnswer', {
-                            success: success,
-                            answerUuid: $(element).attr('data-uuid'),
-                            answer: $scope.db.answer
-                        });
-
-                        if (success) {
-                            $scope.db.message = 'correct';
-                            $scope.db.recentMessage = 'correct';
-                        }
-                        else {
-                            $scope.db.message = 'incorrect';
-                            $scope.db.recentMessage = 'incorrect';
-                        }
-                        $scope.db.success = success;
-                    }
-                };
             }
         };
     }]);
