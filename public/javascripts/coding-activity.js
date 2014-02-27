@@ -16,7 +16,14 @@ define(['angular', 'jquery', 'underscore', 'codemirror', 'skulpt', 'skulpt-stdli
 		    $scope.scaffold = $scope.scaffold.replace(/^\n+|\n+$/gm,'') + "\n";
 
 		    $scope.validator = "\n\ndef validator():\n" + source.split("def validator():\n")[1];
+		});
 
+                stateService.bindState($scope, $(element).attr('data-uuid'), function () {
+		    $scope.db.success = false;
+		    $scope.db.message = "";
+		    $scope.db.code = $scope.scaffold;
+		    $scope.db.console = "";
+                }).then(function () {
 		    var options = {
 			lineWrapping : true,
 			lineNumbers: true,
@@ -43,104 +50,98 @@ define(['angular', 'jquery', 'underscore', 'codemirror', 'skulpt', 'skulpt-stdli
 			    myCodeMirror.refresh();
 			}
 		    });
-		});
 
-                stateService.bindState($scope, $(element).attr('data-uuid'), function () {
-		    $scope.db.success = false;
-		    $scope.db.message = "";
-		    $scope.db.code = $scope.scaffold;
-		    $scope.db.console = "";
-                });
 
-		$scope.activate = function(value) {
-		};
+		    $scope.activate = function(value) {
+		    };
 
-                $scope.runCode = function () {
-		    $scope.db.console = "";
+                    $scope.runCode = function () {
+		        $scope.db.console = "";
 
-		    function outf(text) {
-			$scope.db.console = $scope.db.console + text;
-		    }
+		        function outf(text) {
+			    $scope.db.console = $scope.db.console + text;
+		        }
 
-		    function builtinRead(x) {
-			if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
-			    throw "File not found: '" + x + "'";
-			return Sk.builtinFiles["files"][x];
-		    }
+		        function builtinRead(x) {
+			    if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+			        throw "File not found: '" + x + "'";
+			    return Sk.builtinFiles["files"][x];
+		        }
 
-		    $scope.db.running = "running";
-		    
-		    // This way the "running" button will turn into a stop button---which won't do anything yet...
-		    $timeout( function() {
-			var prog = $scope.db.code;
-			Sk.canvas = "mycanvas";
-			Sk.pre = "output";
-			Sk.configure({output:outf, read:builtinRead});
-			Sk.execLimit = 5000;
+		        $scope.db.running = "running";
 
-			try {
+		        // This way the "running" button will turn into a stop button---which won't do anything yet...
+		        $timeout( function() {
+			    var prog = $scope.db.code;
+			    Sk.canvas = "mycanvas";
+			    Sk.pre = "output";
+			    Sk.configure({output:outf, read:builtinRead});
+			    Sk.execLimit = 5000;
+
+			    try {
+			        var module = Sk.importMainWithBody("<stdin>", false, prog);
+			        eval(module);
+			    } catch (err) {
+			        $scope.db.console = $scope.db.console + err;
+			    }
+
+			    $scope.db.running = "";
+		        }, 50 );
+
+		    };
+
+		    $scope.$watch('db.code', function (value) {
+		        if ($scope.db.attemptedAnswer != value)
+			    $scope.db.message = "";
+		        else
+			    $scope.db.message = $scope.db.recentMessage;
+		    });
+
+                    $scope.attemptAnswer = function () {
+                        var success = false;
+
+		        var outf = function(text) {};
+
+		        var builtinRead = function(x) {
+			    if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+			        throw "File not found: '" + x + "'";
+			    return Sk.builtinFiles["files"][x];
+		        }
+
+		        Sk.configure({output:outf, read:builtinRead});
+		        Sk.execLimit = 5000;
+		        var prog = $scope.db.code + $scope.validator;
+
+		        $scope.db.attemptedAnswer = $scope.db.code;
+
+		        try {
 			    var module = Sk.importMainWithBody("<stdin>", false, prog);
-			    eval(module);
-			} catch (err) {
-			    $scope.db.console = $scope.db.console + err;
-			}
-			
-			$scope.db.running = "";
-		    }, 50 );
+			    var validator = module.tp$getattr('validator');
+			    var ret = Sk.misceval.callsim(validator);
 
-		};
+			    if (ret.v) {
+			        success = true;
+			    }
+		        } catch (err) {
+			    success = false;
+		        }
 
-		$scope.$watch('db.code', function (value) {
-		    if ($scope.db.attemptedAnswer != value)
-			$scope.db.message = "";
-		    else
-			$scope.db.message = $scope.db.recentMessage;
-		});
+                        $(element).trigger('attemptAnswer', {
+                            success: success,
+                            answerUuid: $(element).attr('data-uuid'),
+                            answer: $scope.db.code,
+                            correctAnswer: ""
+                        });
 
-                $scope.attemptAnswer = function () {
-                    var success = false;
+                        if (success) {
+                            $scope.db.recentMessage = $scope.db.message = "correct";
+                        } else {
+                            $scope.db.recentMessage = $scope.db.message = "incorrect";
+                        }
 
-		    var outf = function(text) {};
-
-		    var builtinRead = function(x) {
-			if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
-			    throw "File not found: '" + x + "'";
-			return Sk.builtinFiles["files"][x];
-		    }
-
-		    Sk.configure({output:outf, read:builtinRead});
-		    Sk.execLimit = 5000;
-		    var prog = $scope.db.code + $scope.validator;
-
-		    $scope.db.attemptedAnswer = $scope.db.code;
-
-		    try {
-			var module = Sk.importMainWithBody("<stdin>", false, prog);
-			var validator = module.tp$getattr('validator');
-			var ret = Sk.misceval.callsim(validator);
-		    
-			if (ret.v) {
-			    success = true;
-			}
-		    } catch (err) {
-			success = false;
-		    }
-		    
-                    $(element).trigger('attemptAnswer', {
-                        success: success,
-                        answerUuid: $(element).attr('data-uuid'),
-                        answer: $scope.db.code,
-                        correctAnswer: ""
-                    });
-		    
-                    if (success) {
-                        $scope.db.recentMessage = $scope.db.message = "correct";
-                    } else {
-                        $scope.db.recentMessage = $scope.db.message = "incorrect";
-                    }
-		    
-                    $scope.db.success = success;
-                };
+                        $scope.db.success = success;
+                    };
+                });
             }
         };
     }]);
