@@ -49,7 +49,33 @@ module.exports = function(io) {
 	    return;
 	}
 
-	mdb.Post.update({_id: new mongo.ObjectID(postId)}, {$addToSet: {upvotes: req.user._id}},
+	// The increment fails (?) if the addToSet fails because the user already upvoted?
+	mdb.Post.update({_id: new mongo.ObjectID(postId)}, {$addToSet: {upvoters: req.user._id}, $inc: {upvotes: 1}},
+			function( err, document ) {
+			    if (err)
+				res.json(0);
+			    else
+				res.json(1);
+			});
+
+	return;
+    }
+    
+    routes.flag = function(req, res) {
+	var postId = req.params.post;
+	
+	if (!req.user) {
+	    res.json(0);
+	    return;
+	}
+
+	if (req.user.isGuest) {
+	    res.json(0);
+	    return;
+	}
+
+	// The increment fails (?) if the addToSet fails because the user already flagd?
+	mdb.Post.update({_id: new mongo.ObjectID(postId)}, {$addToSet: {flaggers: req.user._id}, $inc: {flags: 1}},
 			function( err, document ) {
 			    if (err)
 				res.json(0);
@@ -81,7 +107,10 @@ module.exports = function(io) {
 	var post = mdb.Post({ room: room,
 			      date: Date.now(),
 			      content: req.body.content,
-			      upvotes: [],
+			      upvoters: [],
+			      upvotes: 0,
+			      flaggers: [],
+			      flags: 0,
 			      user: { _id: req.user._id,
 				      name: req.user.name },
 			    });

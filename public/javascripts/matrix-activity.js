@@ -25,9 +25,10 @@ define(['angular', 'jquery', 'underscore', 'activity-display', 'math-matrix'], f
                     var success = false;
 
 		    var validator = function(m) { return false; };
-		    eval($scope.validator);
 		    
 		    try {
+			eval($scope.validator);
+
 			if (validator($scope.db.matrix)) {
 			    success = true;
 			}

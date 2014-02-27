@@ -21,8 +21,9 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
              i.fa.fa-thumbs-up 
              | &nbsp;{{scores.xudos}} Xudos
          if (user) && (!user.isGuest)
-           li.dropdown
-             a.dropdown-toggle(href="#",data-toggle="dropdown")
+           // This also, confusingly, manages to send the user object over to Angular
+           li.dropdown(ng-init="user=#{JSON.stringify(user)}")
+             a.dropdown-toggle(href="#",data-toggle="dropdown", ng-controller="LoginController")
                | <i class="fa fa-user"></i> #{user.name} 
                b.caret
              ul.dropdown-menu

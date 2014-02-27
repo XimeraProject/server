@@ -28,17 +28,12 @@ block activity
 
 
 block content
-    div.container
+    div.container(ng-init="course=#{JSON.stringify(course)}; currentActivity=#{JSON.stringify(activity)};")
       mixin breadcrumbs(["/course/"].concat(["/course/" + course.slug + "/"]).concat(_.map( breadcrumbs, function(crumb) { return course.activityURL(crumb); } )), ["Courses"].concat([course.name]).concat(_.map( breadcrumbs, function(crumb) { return crumb.title; } )))
-      div.activity(data-activityId=activityId, style="display: none;", ng-controller="ActivityController")
+      div
         .row
-          .col-md-3
-            .list-group
-              - for sibling in course.activitySiblings(activity)
-                a.list-group-item(href="/course/#{course.slug}/activity/#{course.normalizeSlug(sibling.slug)}/",class=(sibling.slug === activity.slug ? "active" : undefined))
-                  h4.list-group-item-heading #{sibling.title}
-                  p.list-group-item-text #{sibling.description}
-          .col-md-9
+          .col-md-3(course-navigation="")
+          .col-md-9.activity(data-activityId=activityId, style="display: none;", ng-controller="ActivityController")
             block activity
 
             .list-group

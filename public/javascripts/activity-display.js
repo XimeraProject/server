@@ -598,9 +598,10 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
 			$scope.db.attemptedAnswer = $scope.db.answer;
                         var parsedAnswer = MathFunction.parse($scope.db.answer);
                         var validator = function (answer) { return false; }
-                        eval($scope.validator);
 
                         try {
+                            eval($scope.validator);
+
                             if (validator(parsedAnswer)) {
                                 success = true;
                             }

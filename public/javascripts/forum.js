@@ -1,4 +1,4 @@
-define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pagedown-sanitizer", 'angular-sanitize'], function(angular, $, _, io, pagedown, sanitizer) {
+define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pagedown-sanitizer", 'angular-sanitize', 'user'], function(angular, $, _, io, pagedown, sanitizer) {
     var app = angular.module('ximeraApp.forum', ["ngSanitize"]);
 
     // public domain code to handle relative date display
@@ -79,7 +79,7 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
         };
     }]);
 
-    app.directive('post', ["$http", "$sce", function ($http, $sce) {
+    app.directive('post', ["$http", "$sce", "userService", function ($http, $sce, user) {
         return {
             restrict: 'A',
             scope: {
@@ -89,6 +89,8 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
             templateUrl: '/template/forum/post',
 
 	    controller: function($scope, $element){
+		$scope.user = user;
+
 		$scope.$watch('post.content', function (value) {
 		    var safeConverter = Markdown.getSanitizingConverter();
 		    if (!value)
@@ -99,7 +101,18 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 		
 		$scope.upvote = function() {
 		    $http.post( '/forum/upvote/' + $scope.post._id );
-		    $scope.post.upvotes.push( 'myuseridgoeshere' );
+		    if ($scope.post.upvoters.indexOf( $scope.user.current._id ) == -1) {
+			$scope.post.upvoters.push( $scope.user.current._id );
+			$scope.post.upvotes = $scope.post.upvotes + 1;
+		    }
+		};
+
+		$scope.flag = function() {
+		    $http.post( '/forum/flag/' + $scope.post._id );
+		    if ($scope.post.flaggers.indexOf( $scope.user.current._id ) == -1) {
+			$scope.post.flaggers.push( $scope.user.current._id );
+			$scope.post.flags = $scope.post.flags + 1;
+		    }
 		};
 	    }
 	};}]);
@@ -177,7 +190,7 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 
     };}]);
 
-    app.directive('reply', ['$http', function ($http) {
+    app.directive('reply', ['$http', 'userService', function ($http, user) {
         return {
             restrict: 'A',
             scope: {
@@ -188,6 +201,8 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
             templateUrl: '/template/forum/reply',
 
 	    controller: function($scope, $element){
+		$scope.user = user;
+
 		$scope.newPost = {};
 
 		$scope.cancel = function() {

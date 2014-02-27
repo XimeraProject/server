@@ -2,8 +2,10 @@ div
   div(ng-bind-html="htmlContent", mathjax-on-change="{{htmlContent}}")
   div.btn-toolbar(role="toolbar")
     div.btn-group
-      button.btn.btn-xs.btn-success(ng-click="upvote()") <i class="fa fa-thumbs-o-up"></i>&nbsp;Upvote ({{post.upvotes.length}})
-      button.btn.btn-xs.btn-danger(ng-confirm-click="Are you sure you want to report this post?",ng-click="flag()") <i class="fa fa-flag"></i>&nbsp;Flag
+      button.btn.btn-xs.btn-success(ng-click="upvote()", ng-if="post.upvoters.indexOf(user.current._id) == -1") <i class="fa fa-thumbs-o-up"></i>&nbsp;Upvote ({{post.upvotes}})
+      button.btn.btn-xs.btn-success.active(ng-if="post.upvoters.indexOf(user.current._id) != -1") <i class="fa fa-thumbs-up"></i>&nbsp;Upvoted ({{post.upvotes}})
+      button.btn.btn-xs.btn-danger(ng-confirm-click="Are you sure you want to report this post?",ng-click="flag()",ng-if="post.flaggers.indexOf(user.current._id) == -1") <i class="fa fa-flag-o"></i>&nbsp;Flag
+      button.btn.btn-xs.btn-danger(ng-if="post.flaggers.indexOf(user.current._id) != -1") <i class="fa fa-flag"></i>&nbsp;Flagged
     div.btn-group
       button.btn.btn-xs(ng-click="replying = !replying", ng-class="{active:replying}", ng-hide="replying")  <i class="fa fa-reply"></i>&nbsp;Reply
   div(reply="",ng-if="replying",parent="{{post._id}}", forum-name="{{forumName}}", reply-done="$parent.replying = false;")
