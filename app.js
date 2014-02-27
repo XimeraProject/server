@@ -80,15 +80,18 @@ var db = require('mongojs').connect(databaseUrl, collections);
 // Configure passport for use with Google authentication.
 passport.use(new GoogleStrategy({
 	returnURL: rootUrl + '/auth/google/return',
-	realm: rootUrl
-    }, function (identifier, profile, done) {
+	realm: rootUrl,
+        passReqToCallback: true 
+    }, function (req, identifier, profile, done) {
 	var err = null;
 
     	// Save this to the users collection if we haven't already
     	db.users.findAndModify({
             query: {openId: identifier, authType: "google-openid"},
             update: {$set: {name: profile.displayName,
-			    emails: [profile.emails[0].value]}
+			    emails: [profile.emails[0].value],
+			    userAgent: req.headers['user-agent'],
+ 			    remoteAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress}
 		    },
             new: true,
             upsert: true
@@ -100,17 +103,21 @@ passport.use(new GoogleStrategy({
     	});
     }));
 
+
 passport.use(new CourseraOAuthStrategy({
     requestTokenURL: 'https://authentication.coursera.org/auth/oauth/api/request_token',
     accessTokenURL: 'https://authentication.coursera.org/auth/oauth/api/access_token',
     consumerKey: process.env.COURSERA_CONSUMER_KEY,
     consumerSecret: process.env.COURSERA_CONSUMER_SECRET,
-    callbackURL: "http://127.0.0.1:3000/auth/coursera/callback"
-},
-function(token, tokenSecret, profile, done) {
+    callbackURL: "http://127.0.0.1:3000/auth/coursera/callback",
+    passReqToCallback: true 
+},function(req, token, tokenSecret, profile, done) {
     db.users.findAndModify({
         query: { courseraOAuthId: profile.id, authType: "coursera-oauth" },
-        update: {$set: {name: profile.full_name}},
+        update: {$set: {name: profile.full_name,
+		       	userAgent: req.headers['user-agent'],
+ 			remoteAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress
+		       }},
         new: true,
         upsert: true
     }, function (err, user) {
@@ -311,6 +318,7 @@ app.get('/angular-state/:activityId', angularState.get);
 app.put('/angular-state/:activityId', angularState.put);
 
 app.get('/template/:templateFile', template.renderTemplate);
+app.get('/template/forum/:templateFile', template.renderForumTemplate);
 app.get('/image/:hash', mongoImage.get);
 
 
@@ -353,12 +361,12 @@ poet.init().then( function() {
 
     var socket = io.listen(server); 
 
-    // Setup chat rooms
-    var chat = require('./routes/chat.js')(socket);
-    app.get('/chats', chat.view);
-    app.post('/chats/upvote/:post', chat.upvote);
-    app.get('/chats/:room/:timestamp', chat.get);
-    app.post('/chat/:room', chat.post);
+    // Setup forum rooms
+    var forum = require('./routes/forum.js')(socket);
+    app.post('/forum/upvote/:post', forum.upvote);
+    app.post('/forum/flag/:post', forum.flag);
+    app.get('/forum/:room', forum.get);
+    app.post('/forum/:room', forum.post);
 
     socket.on('connection', function (client) {
 	// join to room and save the room name
