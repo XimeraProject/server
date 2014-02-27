@@ -1,9 +1,0 @@
-.profile-picture {
-    float: right;
-}
-
-.developer-email {
-  float: right;
-  font-size: 75%;
-  font-weight: 100;
-}
