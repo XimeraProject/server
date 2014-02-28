@@ -14,7 +14,7 @@
 */
 
 // Script expects data-activityId attribute in activity div.
-define(['angular', 'jquery', 'underscore', 'q', 'algebra/math-function', 'algebra/parser'], function(angular, $, _, Q, MathFunction, parse) {
+define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/parser'], function(angular, $, _, MathFunction, parse) {
     var app = angular.module('ximeraApp.activity', ["ngAnimate"]);
 
     // Make sure a list of DOM elements is sorted in the same order in the DOM itself.
@@ -31,7 +31,9 @@ define(['angular', 'jquery', 'underscore', 'q', 'algebra/math-function', 'algebr
     app.controller('ActivityController', ["$rootScope", "$timeout", "logService", "stateService", function ($rootScope, $timeout, logService, stateService) {
         // Bind the $rootScope for use by services.
         stateService.bindState($rootScope, $('.activity').attr('data-activityId'), function () {
-            logService.initDb();
+            logService.createEmptyDb();
+        }).then(function () {
+            logService.initialize();
         });
 
         $timeout(function () {
@@ -43,7 +45,7 @@ define(['angular', 'jquery', 'underscore', 'q', 'algebra/math-function', 'algebr
         var service = {};
         var activityId = $('.activity').attr('data-activityId');
 
-        service.initDb = function() {
+        service.createEmptyDb = function() {
             $rootScope.db.logService = {};
             $rootScope.db.logService.unloggedAnswers = [];
             $rootScope.db.logService.completionNeedsUpdate = false;
@@ -52,8 +54,9 @@ define(['angular', 'jquery', 'underscore', 'q', 'algebra/math-function', 'algebr
             $(".questionPart").each(function() {
                 $rootScope.db.logService.qpCompletion[$(this).attr("data-uuid")] = false;
             });
+        }
 
-            // Begin sending unlogged answers.
+        service.initialize = function () {
             service.sendLoggedAnswers();
         }
 
@@ -64,6 +67,7 @@ define(['angular', 'jquery', 'underscore', 'q', 'algebra/math-function', 'algebr
                 value: value,
                 correct: correct
             });
+            service.sendLoggedAnswers();
         }
 
         service.logCompletion = function(questionPartUuid, hasAnswer) {
@@ -74,9 +78,10 @@ define(['angular', 'jquery', 'underscore', 'q', 'algebra/math-function', 'algebr
             else {
                 delete $rootScope.db.logService.qpCompletion[questionPartUuid];
             }
+            service.sendLoggedAnswers();
         }
 
-        service.sendLoggedAnswers = function () {
+        service.sendLoggedAnswers = _.debounce(function () {
             if ($rootScope.db.logService.completionNeedsUpdate) {
                 var numParts = _.keys($rootScope.db.logService.qpCompletion).length;
                 var numComplete = _.filter(_.values($rootScope.db.logService.qpCompletion), function (x) { return x;}).length;
@@ -105,24 +110,21 @@ define(['angular', 'jquery', 'underscore', 'q', 'algebra/math-function', 'algebr
                         if (data["ok"] === true) {
                             $rootScope.db.logService.unloggedAnswers.splice(0, 1);
                         }
-                        $timeout(service.sendLoggedAnswers);
                     }).
                     error(function(data, status, headers, config) {
-                        $timeout(service.sendLoggedAnswers);
+                        // Retry
+                        service.sendLoggedAnswers();
                     });
             }
-            else {
-                $timeout(service.sendLoggedAnswers, 1000);
-            }
-        }
+        }, 1000);
 
         return service;
     }]);
 
-    app.factory('stateService', function ($timeout, $rootScope, $http) {
-        var locals = {dataByUuid: null, needsUpdate: false};
+    app.factory('stateService', function ($timeout, $rootScope, $http, $q) {
+        var locals = {dataByUuid: null};
         var activityId = $('.activity').attr('data-activityId');
-        var getStateDeferred = Q.defer();
+        var getStateDeferred = $q.defer();
 
         var getState = function () {
             $http.get("/angular-state/" + activityId).
@@ -177,27 +179,22 @@ define(['angular', 'jquery', 'underscore', 'q', 'algebra/math-function', 'algebr
                         }
                     }).error(function(data, status, headers, config) {
                         console.log("Error uploading state: ", status);
+                        callback(status);
                     });
             }
         }
 
-        var updateLoop = function () {
-            if (locals.needsUpdate) {
-                updateState();
-                locals.needsUpdate = false;
-            }
-            $timeout(updateLoop, 1000);
-        };
-
-        updateLoop();
+        var triggerUpdate = _.debounce(function () {
+            updateState(function (err) {
+                if (err) {
+                    // Retry on error.
+                    triggerUpdate();
+                }
+            });
+        }, 1000);
 
         var stateService = {};
         stateService.bindState = function ($scope, uuid, initCallback) {
-            $scope.$watch("db", function () {
-                locals.needsUpdate = true;
-            }, true);
-
-
             return getStateDeferred.promise.then(function () {
                 if (uuid in locals.dataByUuid) {
                     $scope.db = locals.dataByUuid[uuid];
@@ -207,6 +204,10 @@ define(['angular', 'jquery', 'underscore', 'q', 'algebra/math-function', 'algebr
                     locals.dataByUuid[uuid] = $scope.db;
                     initCallback();
                 }
+
+                $scope.$watch("db", function () {
+                    triggerUpdate();
+                }, true);
             });
         }
 
