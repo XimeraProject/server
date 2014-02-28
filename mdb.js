@@ -44,7 +44,7 @@ exports.initialize = function initialize() {
                                           title: String,
                                           recent: Boolean,
                                           slug: String,
-                                          timeCreated: {type: Date, index: true}
+                                          timeLastUsed: {type: Date, index: true}
                                       });
 
     exports.User = mongoose.model("User",

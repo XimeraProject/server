@@ -68,9 +68,10 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
             $rootScope.db.logService.qpCompletion = {};
 
             $(".questionPart").each(function() {
-		// Only question parts that are actually answerable should be counted
-		if ($(".solution", this).length > 0)
+		// Only question parts that are actually answerable and outside a hint should be counted
+		if ($(".solution", this).length > 0 && $(this).parents('.hint').length == 0) {
                     $rootScope.db.logService.qpCompletion[$(this).attr("data-uuid")] = false;
+                }
             });
         }
 
@@ -98,13 +99,8 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
 
         service.logCompletion = function(questionPartUuid, hasAnswer) {
             $rootScope.db.logService.completionNeedsUpdate = true;
-            if (hasAnswer) {
+            if (hasAnswer && questionPartUuid in $rootScope.db.logService.qpCompletion) {
                 $rootScope.db.logService.qpCompletion[questionPartUuid] = true;
-            }
-            else {
-                if (questionPartUuid in $rootScope.db.logService) {
-                    delete $rootScope.db.logService.qpCompletion[questionPartUuid];
-                }
             }
             service.sendLoggedAnswers();
         }

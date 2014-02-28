@@ -30,7 +30,7 @@ function findCourseAndActivityBySlugs(user, courseSlug, activitySlug, callback) 
         },
         function (callback) {
             // Get activities for slug with most recent first.
-	    mdb.Activity.find({slug: activitySlug}).sort({timeCreated: -1}).exec( function (err, activities) {
+	    mdb.Activity.find({slug: activitySlug}).sort({timeLastUsed: -1}).exec( function (err, activities) {
                 locals.activities = activities;
                 callback();
             });
@@ -113,9 +113,14 @@ exports.activityUpdate = function(req, res) {
                     }
                 });
             }
+            else {
+                res.status(500).send("Could not find activity.");
+                callback("Could not find activity.");
+            }
         },
         function (callback) {
             res.redirect('..');
+            callback();
         }]);
 }
 
