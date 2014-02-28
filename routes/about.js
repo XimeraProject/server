@@ -18,6 +18,10 @@ exports.plans = function(req, res) {
     res.render('about/plans', { title: 'Future Plans', user: req.user });
 };
 
+exports.m2o2c2 = function(req, res) {
+    res.render('about/m2o2c2', { title: 'M2O2C2', user: req.user });
+};
+
 exports.xarma = function(req, res) {
     res.render('about/xarma', { title: 'Xarma', user: req.user });
 };
