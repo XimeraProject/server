@@ -41,7 +41,23 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
         });
     }]);
 
-    app.factory('logService', ["$http", "$rootScope", "$timeout", function ($http, $rootScope, $timeout) {
+    app.factory('completionService', ["$http", function ($http) {
+        var service = {};
+
+	service.activities = {};
+
+	service.update = function() {
+            $http.get("/users/completion").
+		success(function (data) {
+		    service.activities.completions = data;
+		});
+	};
+	service.update();
+
+	return service;
+    }]);
+
+    app.factory('logService', ["$http", "$rootScope", "$timeout", 'completionService', function ($http, $rootScope, $timeout, completions) {
         var service = {};
         var activityId = $('.activity').attr('data-activityId');
 
@@ -52,11 +68,21 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
             $rootScope.db.logService.qpCompletion = {};
 
             $(".questionPart").each(function() {
-                $rootScope.db.logService.qpCompletion[$(this).attr("data-uuid")] = false;
+		// Only question parts that are actually answerable should be counted
+		if ($(".solution", this).length > 0)
+                    $rootScope.db.logService.qpCompletion[$(this).attr("data-uuid")] = false;
             });
         }
 
         service.initialize = function () {
+	    // If this is an activity with no questions, we need to
+	    // update the database to mark this as complete right away
+	    if (_.keys($rootScope.db.logService.qpCompletion).length == 0)
+		$rootScope.db.logService.completionNeedsUpdate = true;
+
+	    console.log( $rootScope.db.logService.qpCompletion );
+
+            // Begin sending unlogged answers.
             service.sendLoggedAnswers();
         }
 
@@ -76,7 +102,9 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                 $rootScope.db.logService.qpCompletion[questionPartUuid] = true;
             }
             else {
-                delete $rootScope.db.logService.qpCompletion[questionPartUuid];
+                if (questionPartUuid in $rootScope.db.logService) {
+                    delete $rootScope.db.logService.qpCompletion[questionPartUuid];
+                }
             }
             service.sendLoggedAnswers();
         }
@@ -100,6 +128,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                 }).success(function(data, status, headers, config) {
                     if (data["ok"] === true) {
                         $rootScope.db.logService.completionNeedsUpdate = false;
+			completions.update();
                     }
                 });
             }

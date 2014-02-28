@@ -1,0 +1,10 @@
+ul.breadcrumb
+  li
+    a(href="/") Home
+  li
+    a(href="/course/") Courses
+  li
+    a(href="/course/{{course.slug}}/") {{course.name}}
+  li(ng-repeat="activity in ancestors", ng-class='{active: $last}')
+    a(ng-if="!$last", href="{{course.activityURL(activity)}}") {{activity.title}}
+    span(ng-if="$last") {{activity.title}}

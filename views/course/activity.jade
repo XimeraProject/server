@@ -29,18 +29,11 @@ block activity
 
 block content
     div.container(ng-init="course=#{JSON.stringify(course)}; currentActivity=#{JSON.stringify(activity)};")
-      mixin breadcrumbs(["/course/"].concat(["/course/" + course.slug + "/"]).concat(_.map( breadcrumbs, function(crumb) { return course.activityURL(crumb); } )), ["Courses"].concat([course.name]).concat(_.map( breadcrumbs, function(crumb) { return crumb.title; } )))
-      div
+        div(course-breadcrumbs="")
         .row
-          .col-md-3(course-navigation="")
+          .col-md-3.course-navigation(course-navigation="")
           .col-md-9.activity(data-activityId=activityId, style="display: none;", ng-controller="ActivityController")
             block activity
-
-            .list-group
-              - for child in course.activityChildren(activity)
-                a.list-group-item(href=course.activityURL(child))
-                  h4.list-group-item-heading #{child.title}
-                  p.list-group-item-text #{child.description}           
 
             ul.pager
              li.previous(class=(previousActivity ? undefined : "disabled"))
@@ -49,9 +42,6 @@ block content
              li.next(class=(nextActivity ? undefined : "disabled"))
                +courseActivityLink(course,nextActivity)
                  | Next Activity &rarr;
-
-      //#content(style='width: 500px; height: 300px; margin: 0 0 20px 0; border: solid 1px #999; overflow-y: scroll;')
-      //.controls
-      //input(id="field",style='width:350px;')
-      //  input(id="send",type='button', value='send')
+            p {{db}}
+            p {{currentActivity}}
       div(class="chat",id="blah")

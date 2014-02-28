@@ -253,14 +253,15 @@ app.post('/users/xudos', score.postXudos);
 
 app.get('/', routes.index);
 
+app.post('/activity/log-answer', activity.logAnswer);
+app.post('/activity/log-completion', activity.logCompletion);
+app.get('/users/completion', activity.completion);
+
 app.put('/users/', user.put);
 app.get('/users/', user.getCurrent);
 app.get('/users/profile', user.currentProfile);
 app.get('/users/:id/profile', user.profile);
 app.get('/users/:id', user.get);
-
-app.post('/activity/log-answer', activity.logAnswer);
-app.post('/activity/log-completion', activity.logCompletion);
 
 app.get( '/course/calculus-one/', function( req, res ) { res.redirect('/about/plans'); });
 app.get( '/course/calculus-one', function( req, res ) { res.redirect('/about/plans'); });

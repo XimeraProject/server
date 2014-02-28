@@ -94,7 +94,7 @@ exports.initialize = function initialize() {
 
     activityCompletionSchema = new mongoose.Schema({
         activitySlug: String,
-        user: ObjectId,
+        user: {type: ObjectId, index: true},
         activity: ObjectId, // Most recent version.
         percentDone: Number, // Percent complete of most recent version.
         complete: Boolean,
@@ -188,7 +188,7 @@ exports.initialize = function initialize() {
     CourseSchema.methods.activityParent = function activityParent(activity) {
 	var f = function(nodes) {
 	    for(var i = 0; i < nodes.length; i++) {
-		var result = f(nodes[i]);
+		var result = f(nodes[i].children);
 		if (result) return result;
 
 		if (_.where( nodes[i].children, {slug: activity.slug} ).length > 0) {

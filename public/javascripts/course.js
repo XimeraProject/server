@@ -1,4 +1,4 @@
-define(['angular', 'jquery', 'underscore', 'angular-animate'], function(angular, $, _) {
+define(['angular', 'jquery', 'underscore', 'angular-animate', 'activity-display'], function(angular, $, _) {
     var app = angular.module('ximeraApp.course', ['ngAnimate']);
 
     RegExp.escape= function(s) {
@@ -30,6 +30,16 @@ define(['angular', 'jquery', 'underscore', 'angular-animate'], function(angular,
 
 	    return queue;
 	};
+
+	this.activity = function activity(incompleteActivity) {
+	    var flattened = this.flattenedActivities();
+
+	    var result = _.find( flattened, function(x) { return x.slug === incompleteActivity.slug } );
+	    if (result === undefined)
+		return null;
+
+	    return result;
+	}
 
 	this.previousActivity = function previousActivities(activity) {
 	    var flattened = this.flattenedActivities();
@@ -64,7 +74,7 @@ define(['angular', 'jquery', 'underscore', 'angular-animate'], function(angular,
 	this.activityParent = function activityParent(activity) {
 	    var f = function(nodes) {
 		for(var i = 0; i < nodes.length; i++) {
-		    var result = f(nodes[i]);
+		    var result = f(nodes[i].children);
 		    if (result) return result;
 
 		    if (_.where( nodes[i].children, {slug: activity.slug} ).length > 0) {
@@ -79,7 +89,7 @@ define(['angular', 'jquery', 'underscore', 'angular-animate'], function(angular,
 	};
 
 	this.activityAncestors = function activityAncestors(activity) {
-	    var breadcrumbs = [activity];
+	    var breadcrumbs = [this.activity(activity)];
 	    while( breadcrumbs[0] != null ) {
 		breadcrumbs.unshift( this.activityParent(breadcrumbs[0]) );
             }
@@ -108,19 +118,67 @@ define(['angular', 'jquery', 'underscore', 'angular-animate'], function(angular,
 	};
     };
 
-    app.directive('courseNavigation', ["$animate", function ($animate) {
+    app.directive('courseNavigation', ['completionService', function (completions) {
         return {
             restrict: 'A',
-            scope: {
-            },
+            scope: true,
             templateUrl: '/template/course-navigation',
 
 	    controller: function($scope, $element){
-		$scope.course = new Course();
-		_.extend( $scope.course, $scope.$parent.course );
-
-		$scope.currentActivity = $scope.$parent.currentActivity;
+		_.extend( $scope.course, new Course() );
+		//$scope.currentActivity = $scope.$parent.currentActivity;
+		$scope.completions = completions.activities;
 	    }
 	};}]);
+
+    app.directive('courseBreadcrumbs', [function () {
+        return {
+            restrict: 'A',
+            scope: true,
+            templateUrl: '/template/course-breadcrumbs',
+
+	    controller: function($scope, $element){
+		_.extend( $scope.course, new Course() );
+		$scope.ancestors = $scope.course.activityAncestors($scope.currentActivity);
+	    }
+	};}]);
+
+    app.directive('highlightIfActive', [function ($animate) {
+        return {
+            restrict: 'A',
+            scope: false,
+
+	    link: function postLink($scope, element, attrs) {
+		var course = _.extend( new Course(), $scope.course );
+
+		var ancestors = course.activityAncestors($scope.currentActivity);
+
+		if (ancestors.indexOf(course.activity($scope.activity)) != -1)
+		    element.addClass('active-ancestor');
+
+		if ($scope.activity.slug == $scope.currentActivity.slug)
+		    element.addClass('active');
+	    }
+	};}]);
+
+
+    app.directive( 'locationClick', ['$window', function ( $window ) {
+	return {
+	    link: function ( scope, element, attrs ) {
+		var path;
+		
+		attrs.$observe( 'locationClick', function (value) {
+		    path = value;
+		});
+		
+		element.bind( 'click', function () {
+		    scope.$apply( function () {
+			console.log( "clicked to", path );
+			$window.location.href = path;
+		    });
+		});
+	    }
+	}
+    }]);
 
 });

@@ -158,22 +158,15 @@ exports.activity = function(req, res) {
             });
         },
         function (callback) {
-	    var breadcrumbs = [locals.activity];
-	    while( breadcrumbs[0] != null ) {
-		breadcrumbs.unshift( locals.course.activityParent(breadcrumbs[0]) );
-            }
-	    breadcrumbs.shift();
-
-	    var parentActivity = locals.course.activityParent(locals.activity);
+	    //var parentActivity = locals.course.activityParent(locals.activity);
 	    var nextActivity = locals.course.nextActivity(locals.activity);
 	    var previousActivity = locals.course.previousActivity(locals.activity);
 	    res.render('course/activity',
 		       { activity: locals.activity, activityHtml: locals.activityHtml,
-			 parentActivity: parentActivity,
 			 course: locals.course,
 			 nextActivity: nextActivity, previousActivity: previousActivity,
-			 activityId: locals.activity._id.toString(),
-			 breadcrumbs: breadcrumbs });
+			 activityId: locals.activity._id.toString()
+		       });
         }
     ],
     function (err) {
