@@ -1,7 +1,7 @@
 requirejs.config({
     baseUrl: "/public/javascripts",
     paths: {
-	"jquery": "../../components/jquery/jquery.min",
+	"jquery": "../../components/jquery/dist/jquery.min",
 	"angular": "../../components/angular/angular",
         "angular-animate": "../../components/angular-animate/angular-animate.min",
         "angular-sanitize": "../../components/angular-sanitize/angular-sanitize.min",
