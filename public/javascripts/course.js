@@ -142,6 +142,22 @@ define(['angular', 'jquery', 'underscore', 'angular-animate', 'activity-display'
 		$scope.ancestors = $scope.course.activityAncestors($scope.currentActivity);
 	    }
 	};}]);
+    
+    // BADBAD: this needs to be fixed
+    app.directive('completionMeter', [function ($animate) {
+        return {
+            restrict: 'A',
+            scope: false,
+
+	    link: function postLink($scope, element, attrs) {
+		console.log( $scope.completions.completions );
+		var completion = _.find( $scope.completions.completions, function(completion) {
+		    return completion.activitySlug == $scope.activity.activitySlug;
+		});
+		
+		console.log( completion );
+	    }
+	};}]);
 
     app.directive('highlightIfActive', [function ($animate) {
         return {

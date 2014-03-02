@@ -15,19 +15,25 @@ html(lang="en")
     meta(name="author", content="The Ximera Project")
     meta(name="keywords", content="mathematics, math, maths, courses, course, education, calculus, complex analysis, algebra, geometry, graphs, plots, MOOC")
 
-    link(href="/public/stylesheets/base.css", rel="stylesheet", media="screen")
+    // development
+    //link(href="/public/stylesheets/base.css", rel="stylesheet", media="screen")
+    link(href=versionPath("/public/static/base.min.css"), rel="stylesheet", media="screen")
     link(rel="stylesheet",href="http://www.osu.edu/assets/fonts/webfonts.css")
 
     script(type="text/javascript",src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
     script(type="text/x-mathjax-config")
       | MathJax.Hub.Config({showProcessingMessages: false, tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] } });
 
+        
     script(src="https://www.youtube.com/iframe_api")
-    script(data-main="/public/javascripts/app",src="/components/requirejs/require.js")
+    script(src="/socket.io/socket.io.js")
+    //development!
+    //script(data-main="/public/javascripts/app",src="/components/requirejs/require.js")
+    script(src=versionPath("/public/javascripts/app.min.js"))
 
-    link(rel="apple-touch-icon",sizes="114x114",href="/public/images/icons/favicon-114x114.png")
-    link(rel="apple-touch-icon",sizes="72x72",href="/public/images/icons/favicon-72x72.png")
-    link(rel="apple-touch-icon",sizes="57x57",href="/public/images/icons/favicon-57x57.png")
+    link(rel="apple-touch-icon",sizes="114x114",href=versionPath("/public/images/icons/favicon-114x114.png"))
+    link(rel="apple-touch-icon",sizes="72x72",href=versionPath("/public/images/icons/favicon-72x72.png"))
+    link(rel="apple-touch-icon",sizes="57x57",href=versionPath("/public/images/icons/favicon-57x57.png"))
     link(rel="shortcut icon",type="image/x-icon",href="/favicon.ico")
     script(type="text/javascript").
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

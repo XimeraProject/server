@@ -3,6 +3,7 @@
     "version": "0.0.1",
     "dependencies": {
 	"requirejs": "*",
+	"almond": "*",
 	"moment": "*",
 	"lex": "https://github.com/aaditmshah/lexer.git",
 	"jquery": "*",

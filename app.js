@@ -30,8 +30,6 @@ var express = require('express')
   , util = require('util')
   ;
 
-
-
 // Some filters for Jade; admittedly, Jade comes with its own Markdown
 // filter, but I want to run everything through the a filter to add
 // links to Ximera
@@ -50,6 +48,9 @@ jade.filters.markdown = function(str){
 
 // Create express app to configure.
 var app = express();
+
+app.version = require('./package.json').version;
+var versionator = require('versionator').create(app.version);
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
@@ -153,6 +154,8 @@ app.use(less({
     dest   : path.join(__dirname, 'public', 'stylesheets'),
     force  : true
 }));
+
+app.use(versionator.middleware);
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/components', express.static(path.join(__dirname, 'components')));
 
@@ -326,7 +329,8 @@ app.get('/image/:hash', mongoImage.get);
 
 app.locals({
     moment: require('moment'),
-    _: require('underscore')
+    _: require('underscore'),
+    versionPath: versionator.versionPath
 });
 
 // Setup blogs

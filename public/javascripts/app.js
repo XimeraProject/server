@@ -1,50 +1,51 @@
 requirejs.config({
     baseUrl: "/public/javascripts",
     paths: {
-	"jquery": "/components/jquery/jquery.min",
-	"angular": "/components/angular/angular",
-        "angular-animate": "/components/angular-animate/angular-animate.min",
-        "angular-sanitize": "/components/angular-sanitize/angular-sanitize.min",
-	"underscore": "/components/underscore/underscore",
-	"x-editable": "/components/x-editable/dist/bootstrap-editable/js/bootstrap-editable.min",
-	"threejs": "/components/threejs/build/three.min",
-	"moment": "/components/moment/min/moment.min",
-        "q": "/components/q/q",
+	"jquery": "../../components/jquery/jquery.min",
+	"angular": "../../components/angular/angular",
+        "angular-animate": "../../components/angular-animate/angular-animate.min",
+        "angular-sanitize": "../../components/angular-sanitize/angular-sanitize.min",
+	"underscore": "../../components/underscore/underscore",
+	"x-editable": "../../components/x-editable/dist/bootstrap-editable/js/bootstrap-editable.min",
+	"threejs": "../../components/threejs/build/three.min",
+	"moment": "../../components/moment/min/moment.min",
+        "q": "../../components/q/q",
 
-	"codemirror": "/components/codemirror/lib/codemirror",
-	"codemirror-python": "/components/codemirror/mode/python/python",
-	"skulpt": "/components/skulpt/skulpt.min",
-	"skulpt-stdlib": "/components/skulpt/skulpt-stdlib",
+	"codemirror": "../../components/codemirror/lib/codemirror",
+	"codemirror-python": "../../components/codemirror/mode/python/python",
+	"skulpt": "../../components/skulpt/skulpt.min",
+	"skulpt-stdlib": "../../components/skulpt/skulpt-stdlib",
 
-	"pagedown-converter": "/components/pagedown-bootstrap/Markdown.Converter",
-	"pagedown-sanitizer": "/components/pagedown-bootstrap/Markdown.Sanitizer",
-	"pagedown-editor": "/components/pagedown-bootstrap/Markdown.Editor",
+	"pagedown-converter": "../../components/pagedown-bootstrap/Markdown.Converter",
+	"pagedown-sanitizer": "../../components/pagedown-bootstrap/Markdown.Sanitizer",
+	"pagedown-editor": "../../components/pagedown-bootstrap/Markdown.Editor",
 
-	"bootstrap": "/components/bootstrap/dist/js/bootstrap.min",
-	"bootstrap-datepicker": "/components/bootstrap-datepicker/js/bootstrap-datepicker",
+	"bootstrap": "../../components/bootstrap/dist/js/bootstrap.min",
+	"bootstrap-datepicker": "../../components/bootstrap-datepicker/js/bootstrap-datepicker",
 
-	"mathquill": "/components/mathquill/build/mathquill.min",
+	"mathquill": "../../components/mathquill/build/mathquill.min",
 
-	'XRegExp': '/components/syntaxhighlighter/amd/XRegExp',
-	'shCore': '/components/syntaxhighlighter/amd/shCore',
+	'XRegExp': '../../components/syntaxhighlighter/amd/XRegExp',
+	'shCore': '../../components/syntaxhighlighter/amd/shCore',
 
 	'shBrushLatex': 'brushes/shBrushLatex',
-	'shBrushJScript': '/components/syntaxhighlighter/amd/shBrushJScript',
-	'shBrushPython': '/components/syntaxhighlighter/amd/shBrushPython',
+	'shBrushJScript': '../../components/syntaxhighlighter/amd/shBrushJScript',
+	'shBrushPython': '../../components/syntaxhighlighter/amd/shBrushPython',
 
-	'socketio': '/socket.io/socket.io.js',
+	'requirejs': '../../components/requirejs/require',
 
-	'angular-strap': '/components/angular-strap/dist/angular-strap.min',
-	'angular-strap-tpl': '/components/angular-strap/dist/angular-strap.tpl.min'
+	'angular-strap': '../../components/angular-strap/dist/angular-strap.min',
+	'angular-strap-tpl': '../../components/angular-strap/dist/angular-strap.tpl.min'
     },
 
     priority: [
-	"angular"
+	"angular",
+	"underscore"
     ],
 
     shim: {
 	socketio: { exports: 'io' },
-	underscore: { exports: '_' },
+
 	angular: { exports: 'angular', deps: ['jquery'] },
         "angular-animate": { deps: ['angular'] },
         "angular-sanitize": { deps: ['angular'] },
@@ -72,16 +73,25 @@ requirejs.config({
     },
 });
 
+
 // TODO: Add back in input-math
-require( ["require", "angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "score", "free-response", "user", 'angular-strap-tpl', 'popover', "forum", "pagedown-directive", "course"], function(require, angular, shCore) {
+require( ["angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "score", "free-response", "user", 'angular-strap-tpl', 'popover', "forum", "pagedown-directive", "course"], function(angular, shCore) {
     'use strict';
 
-    var app = angular.module('ximeraApp', ['ximeraApp.mathJax', 'ximeraApp.activity', 'ximeraApp.codingActivity', 'ximeraApp.inputMath', 'ximeraApp.videoPlayer', 'ximeraApp.matrixActivity',
-					   'ximeraApp.mathMatrix', 'ximeraApp.freeResponse',
-					   'ximeraApp.score', 'ximeraApp.user', 'ximeraApp.popover',
+    var app = angular.module('ximeraApp', ['ximeraApp.mathJax',
+					   'ximeraApp.activity',
+					   'ximeraApp.codingActivity',
+					   'ximeraApp.inputMath',
+					   'ximeraApp.videoPlayer',
+					   'ximeraApp.matrixActivity',
+					   'ximeraApp.mathMatrix',
+					   'ximeraApp.freeResponse',
+					   'ximeraApp.score',
+					   'ximeraApp.user',
+					   'ximeraApp.popover',
 					   'ximeraApp.forum',
 					   'ximeraApp.course',
-					   /*'ximeraApp.pagedown',*/
+					   'ximeraApp.pagedown',
 					   'mgcrea.ngStrap']);
 
     $(document).ready(function() {
