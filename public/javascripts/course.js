@@ -146,7 +146,7 @@ define(['angular', 'jquery', 'underscore', 'angular-animate', 'activity-display'
     app.directive('completionSymbol', [function ($animate) {
         return {
             restrict: 'A',
-            scope: false,
+            scope: true,
 
 	    link: function($scope, element, attrs) {
                 $scope.$watch("completions.completions", function () {
@@ -154,10 +154,8 @@ define(['angular', 'jquery', 'underscore', 'angular-animate', 'activity-display'
 			return completion.activitySlug == $scope.activity.slug;
 		    });
 
-		    $scope.percentDone = 0;
-
 		    if (completion)
-			$scope.percentDone = completion.percentDone;
+			$scope.completion = completion;
 		});
 	    }
 	};}]);
