@@ -12,6 +12,7 @@ if [ $(hostname) = ximera-1.asc.ohio-state.edu ]; then
     echo Starting a new copy of app.js...
     source environment.sh
     export DEPLOYMENT=production
+    export NODE_ENV=production
     ./node_modules/forever/bin/forever start -a -l forever.log -o out.log -e err.log app.js &
 else
     echo not on the deployment machine...
