@@ -149,13 +149,19 @@ define(['angular', 'jquery', 'underscore', 'angular-animate', 'activity-display'
             restrict: 'A',
             scope: false,
 
-	    link: function postLink($scope, element, attrs) {
-		console.log( $scope.completions.completions );
-		var completion = _.find( $scope.completions.completions, function(completion) {
-		    return completion.activitySlug == $scope.activity.activitySlug;
+	    link: function($scope, element, attrs) {
+                $scope.$watch("completions", function () {
+		    var completion = _.find( $scope.completions.completions, function(completion) {
+			return completion.activitySlug == $scope.activity.slug;
+		    });
+
+		    $scope.percentDone = 0;
+
+		    if (completion)
+			$scope.percentDone = completion.percentDone;
+
+		    console.log( $scope.percentDone );
 		});
-		
-		console.log( completion );
 	    }
 	};}]);
 

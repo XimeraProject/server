@@ -7,6 +7,9 @@ div(ng-init="invisible=(course.activityAncestors(currentActivity).indexOf(course
     a(href="/course/{{course.slug}}/activity/{{course.normalizeSlug(activity.slug)}}/") {{activity.title}}
     div {{activity.description}}
     span(completion-meter="")
+      i.fa.fa-circle-o(ng-if="percentDone == 0")
+      i.fa.fa-circle(ng-if="percentDone == 100")
+      i.fa.fa-dot-circle-o(ng-if="(percentDone != 0) && (percentDone != 100)")
 
   ul(ng-if="!invisible || override")
     //li(ng-show="activity.children && invisible", ng-click="invisible = !invisible;") More&hellip;

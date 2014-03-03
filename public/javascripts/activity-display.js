@@ -49,6 +49,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
 	service.update = function() {
             $http.get("/users/completion").
 		success(function (data) {
+		    console.log( data );
 		    service.activities.completions = data;
 		});
 	};
@@ -117,6 +118,13 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                     percentDone = Math.floor((numComplete / numParts) * 100);
                 }
                 var complete = (numParts === numComplete);
+
+		// Some Xudos for fully completing an activity
+		// TODO: should not award xudos if they have already been awarded!
+		if (complete) {
+		    $rootScope.$emit( 'Xudos', 2 );
+		}
+
                 $http.post("/activity/log-completion", {
                     activityId: activityId,
                     percentDone: percentDone,
