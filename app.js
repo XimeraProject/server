@@ -49,9 +49,6 @@ jade.filters.markdown = function(str){
 // Create express app to configure.
 var app = express();
 
-// TODO: Should just use the most recent git commit hash here
-app.version = require('./package.json').version;
-var versionator = require('versionator').create(app.version);
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
@@ -156,9 +153,20 @@ app.use(less({
     force  : true
 }));
 
-app.use(versionator.middleware);
-app.use('/public', express.static(path.join(__dirname, 'public')));
-app.use('/components', express.static(path.join(__dirname, 'components')));
+
+var git = require('git-rev');
+git.long(function (commit) {
+    console.log( commit );
+    app.version = require('./package.json').version;
+    var versionator = require('versionator').create(commit);
+    
+    app.use(versionator.middleware);
+    app.use('/public', express.static(path.join(__dirname, 'public')));
+    app.use('/components', express.static(path.join(__dirname, 'components')));
+
+    app.locals({
+	versionPath: versionator.versionPath,
+    });
 
 app.use(express.favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
 app.use(express.logger('dev'));
@@ -332,7 +340,6 @@ app.get('/image/:hash', mongoImage.get);
 app.locals({
     moment: require('moment'),
     _: require('underscore'),
-    versionPath: versionator.versionPath,
     deployment: process.env.DEPLOYMENT
 });
 
@@ -387,5 +394,7 @@ poet.init().then( function() {
             socket.sockets.emit('message', data);
 	});
     });
+
+});
 
 });

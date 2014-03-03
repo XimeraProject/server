@@ -1,7 +1,7 @@
 {
   "name": "ximera",
   "description": "Ximera interactive textbook server",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "scripts": {
     "start": "node app.js",
@@ -42,7 +42,8 @@
     "less": "*",
     "async": "*",
     "socket.io": "*",
-    "versionator": "*"
+    "versionator": "*",
+    "git-rev": "*"
   },
   "devDependencies": {
     "load-grunt-tasks": "~0.2.1",
