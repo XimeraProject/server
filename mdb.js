@@ -97,6 +97,8 @@ exports.initialize = function initialize() {
         user: {type: ObjectId, index: true},
         activity: ObjectId, // Most recent version.
         percentDone: Number, // Percent complete of most recent version.
+	numParts: Number,
+	numComplete: Number,
         complete: Boolean,
         completeTime: Date
     });

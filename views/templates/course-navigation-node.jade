@@ -6,7 +6,7 @@ div(ng-init="invisible=(course.activityAncestors(currentActivity).indexOf(course
   div.description(location-click="/course/{{course.slug}}/activity/{{course.normalizeSlug(activity.slug)}}/")
     a(href="/course/{{course.slug}}/activity/{{course.normalizeSlug(activity.slug)}}/") {{activity.title}}
     div {{activity.description}}
-    span(completion-meter="")
+    span(completion-symbol="")
       i.fa.fa-circle-o(ng-if="percentDone == 0")
       i.fa.fa-circle(ng-if="percentDone == 100")
       i.fa.fa-dot-circle-o(ng-if="(percentDone != 0) && (percentDone != 100)")

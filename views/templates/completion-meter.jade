@@ -1,0 +1,4 @@
+div(ng-if="completion")
+  div.progress(ng-class="{'progress-striped': completion.complete}")
+    div.progress-bar.progress-bar-success(role="progressbar",aria-valuenow="{{completion.numComplete}}",aria-valuemin="0",aria-valuemax="{{completion.numParts}}",style="width: {{completion.percentDone}}%;")
+      | {{completion.numComplete}} of {{completion.numParts}}

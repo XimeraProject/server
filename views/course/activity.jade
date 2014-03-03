@@ -22,6 +22,7 @@ block activity
           mixin viewSource()
       .page-header
          h1 #{activity.title}
+      div(completion-meter="")
       | !{activityHtml}
       p
         | #{activityHtml}
@@ -39,7 +40,7 @@ block content
              li.previous(class=(previousActivity ? undefined : "disabled"))
                +courseActivityLink(course,previousActivity)
                  | &larr; Previous Activity
-             li.next(class=(nextActivity ? undefined : "disabled"))
+             li.next(class=(nextActivity ? undefined : "disabled"),completion-blink="")
                +courseActivityLink(course,nextActivity)
                  | Next Activity &rarr;
             p {{db}}

@@ -13,6 +13,17 @@
      transition:opacity 1s linear;
 }
 
+@keyframes pulse {
+    0% { box-shadow: 0 0 14px rgba(0,0,0,0); }
+    50% { box-shadow: 0 0 14px rgba(0,0,0,0.5); }
+    100% { box-shadow: 0 0 14px rgba(0,0,0,0);} 
+}
+
+.pager .pulse a {
+    -webkit-animation: pulse 1.5s infinite ease-in-out;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
 /****************************************************************/
 /* popovers */
 

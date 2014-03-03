@@ -53,8 +53,10 @@ exports.completion = function(req, res) {
 
 exports.logCompletion = function(req, res) {
     var activityId = req.body.activityId
-    var percentDone = req.body.percentDone
-    var complete = req.body.complete
+    var percentDone = req.body.percentDone;
+    var complete = req.body.complete;
+    var numParts = req.body.numParts;
+    var numComplete = req.body.numComplete;
     var curTime = new Date();
 
     var locals = {};
@@ -80,6 +82,8 @@ exports.logCompletion = function(req, res) {
                 else if (completion) {
                     completion.activity = locals.activity._id;
                     completion.percentDone = percentDone;
+                    completion.numParts = numParts;
+                    completion.numComplete = numComplete;
                     if (complete && !completion.complete) {
                         completion.complete = true;
                         completion.completeTime = curTime;
@@ -93,10 +97,11 @@ exports.logCompletion = function(req, res) {
                         user: req.user._id,
                         activity: activityId,
                         percentDone: percentDone,
+			numParts: numParts,
+			numComplete: numComplete,
                         complete: complete,
                         completeTime: completeTime
                     });
-		    console.log( "new completion = ", completion );
                     completion.save(callback);
                 }
             });

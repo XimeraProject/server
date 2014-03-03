@@ -128,6 +128,8 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                 $http.post("/activity/log-completion", {
                     activityId: activityId,
                     percentDone: percentDone,
+		    numParts: numParts,
+		    numComplete: numComplete,
                     complete: complete
                 }).success(function(data, status, headers, config) {
                     if (data["ok"] === true) {

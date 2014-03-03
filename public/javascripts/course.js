@@ -143,14 +143,13 @@ define(['angular', 'jquery', 'underscore', 'angular-animate', 'activity-display'
 	    }
 	};}]);
     
-    // BADBAD: this needs to be fixed
-    app.directive('completionMeter', [function ($animate) {
+    app.directive('completionSymbol', [function ($animate) {
         return {
             restrict: 'A',
             scope: false,
 
 	    link: function($scope, element, attrs) {
-                $scope.$watch("completions", function () {
+                $scope.$watch("completions.completions", function () {
 		    var completion = _.find( $scope.completions.completions, function(completion) {
 			return completion.activitySlug == $scope.activity.slug;
 		    });
@@ -159,11 +158,52 @@ define(['angular', 'jquery', 'underscore', 'angular-animate', 'activity-display'
 
 		    if (completion)
 			$scope.percentDone = completion.percentDone;
-
-		    console.log( $scope.percentDone );
 		});
 	    }
 	};}]);
+
+    app.directive('completionMeter', ['completionService', function (completionService) {
+        return {
+            restrict: 'A',
+            scope: true,
+            templateUrl: '/template/completion-meter',
+
+	    link: function($scope, element, attrs) {
+		$scope.completions = completionService.activities;
+
+                $scope.$watch("completions.completions", function () {
+		    var completion = _.find( $scope.completions.completions, function(completion) {
+			return completion.activitySlug == $scope.currentActivity.slug;
+		    });
+
+		    if (completion) {
+			$scope.completion = completion;
+		    }
+		});
+	    }
+	};}]);
+
+    app.directive('completionBlink', ['completionService', '$animate', function (completionService, $animate) {
+        return {
+            restrict: 'A',
+            scope: false,
+
+	    link: function($scope, element, attrs) {
+		$scope.completions = completionService.activities;
+
+                $scope.$watch("completions.completions", function () {
+		    var completion = _.find( $scope.completions.completions, function(completion) {
+			return completion.activitySlug == $scope.currentActivity.slug;
+		    });
+
+		    if (completion) {
+			if (completion.complete) 
+			    $(element).addClass('pulse');
+		    }
+		});
+	    }
+	};}]);
+
 
     app.directive('highlightIfActive', [function ($animate) {
         return {
@@ -195,7 +235,6 @@ define(['angular', 'jquery', 'underscore', 'angular-animate', 'activity-display'
 		
 		element.bind( 'click', function () {
 		    scope.$apply( function () {
-			console.log( "clicked to", path );
 			$window.location.href = path;
 		    });
 		});
