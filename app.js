@@ -168,6 +168,8 @@ git.long(function (commit) {
 	versionPath: versionator.versionPath,
     });
 
+    console.log( versionator.versionPath('/template/test') );
+
 app.use(express.favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
 app.use(express.logger('dev'));
 app.use(express.bodyParser());

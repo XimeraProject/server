@@ -32,6 +32,22 @@ module.exports = function(grunt) {
 	    }
 	},
 
+	revision: {
+	    options: {
+		property: 'meta.revision',
+		ref: 'HEAD',
+		short: false
+	    }
+	},
+
+	sed: {
+	    templates: {
+		path: 'public/javascripts/app.min.js',
+		pattern: "/template/",
+		replacement: "/template/<%= meta.revision %>/",
+	    },
+	},
+
 	less: {
 	    compile: {
 		options: {
@@ -68,5 +84,5 @@ module.exports = function(grunt) {
     require('load-grunt-tasks')(grunt);    
     grunt.registerTask('default', ['jison']);
 
-    grunt.registerTask('production', ['jison', 'requirejs', 'less', 'cssmin']);
+    grunt.registerTask('production', ['jison', 'requirejs', 'revision', 'sed', 'less', 'cssmin']);
 };

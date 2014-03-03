@@ -50,6 +50,8 @@
     "grunt-contrib-requirejs": "^0.4.3",
     "grunt-contrib-less": "^0.9.0",
     "grunt-contrib-cssmin": "^0.8.0",
-    "grunt-contrib-jshint": "^0.8.0"
+    "grunt-contrib-jshint": "^0.8.0",
+    "grunt-sed": "*",
+    "grunt-git-revision": "0.0.1"
   }
 }
