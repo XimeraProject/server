@@ -49,6 +49,7 @@ jade.filters.markdown = function(str){
 // Create express app to configure.
 var app = express();
 
+// TODO: Should just use the most recent git commit hash here
 app.version = require('./package.json').version;
 var versionator = require('versionator').create(app.version);
 
@@ -330,7 +331,8 @@ app.get('/image/:hash', mongoImage.get);
 app.locals({
     moment: require('moment'),
     _: require('underscore'),
-    versionPath: versionator.versionPath
+    versionPath: versionator.versionPath,
+    deployment: process.env.DEPLOYMENT
 });
 
 // Setup blogs
