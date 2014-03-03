@@ -325,6 +325,7 @@ app.put('/angular-state/:activityId', angularState.put);
 
 app.get('/template/:templateFile', template.renderTemplate);
 app.get('/template/forum/:templateFile', template.renderForumTemplate);
+
 app.get('/image/:hash', mongoImage.get);
 
 
