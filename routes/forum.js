@@ -22,7 +22,7 @@ module.exports = function(io) {
     }
     
     routes.get = function(req, res){
-	var room = req.params.room;
+	var room = req.params[0];
 	
 	// BADBAD: It is possible to miss posts this way, since two posts might have the same timestamp
 	mdb.Post.find({ $query: {room: room}, $orderby: { date : 1 } }, function(err,document) {
@@ -88,7 +88,7 @@ module.exports = function(io) {
     
     
     routes.post = function(req, res) {
-	var room = req.params.room;
+	var room = req.params[0];
 	var userName = 'anonymous';
 	var userEmail = '';
 	

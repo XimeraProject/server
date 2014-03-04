@@ -383,8 +383,8 @@ poet.init().then( function() {
     var forum = require('./routes/forum.js')(socket);
     app.post('/forum/upvote/:post', forum.upvote);
     app.post('/forum/flag/:post', forum.flag);
-    app.get('/forum/:room', forum.get);
-    app.post('/forum/:room', forum.post);
+    app.get(/\/forum\/(.+)/, forum.get);
+    app.post(/\/forum\/(.+)/, forum.post);
 
     socket.on('connection', function (client) {
 	// join to room and save the room name
