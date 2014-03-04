@@ -1,18 +1,17 @@
 div(ng-init="invisible=(course.activityAncestors(currentActivity).indexOf(course.activity(activity)) == -1)")
-  span(ng-show="false && activity.children",ng-click="invisible = !invisible;")
-    i.fa.fa-minus-square-o(ng-hide="invisible")
+  span.pull-right(ng-show="activity.children",ng-click="invisible = !invisible;")
+    //i.fa.fa-minus-square-o(ng-hide="invisible")
     i.fa.fa-plus-square-o(ng-hide="!invisible")
-  div.description(location-click="/course/{{course.slug}}/activity/{{course.normalizeSlug(activity.slug)}}/")
-    span.completion-symbol.pull-right(completion-symbol="")
+  span.completion-symbol.pull-right(ng-if="(!invisible) || (activity.children.length == 0)",completion-symbol="")
       span(ng-if="completion")
         i.fa.fa-check-circle(ng-if="completion.percentDone == 100")
         i.fa.fa-dot-circle-o(ng-if="completion.percentDone < 100")
       span(ng-if="!completion")
         i.fa.fa-circle-o
+
+  div.description(location-click="/course/{{course.slug}}/activity/{{course.normalizeSlug(activity.slug)}}/")
     a(href="/course/{{course.slug}}/activity/{{course.normalizeSlug(activity.slug)}}/") {{activity.title}}
     div {{activity.description}}
 
-
   ul(ng-if="!invisible || override")
-    //li(ng-show="activity.children && invisible", ng-click="invisible = !invisible;") More&hellip;
     li(ng-repeat="activity in activity.children", ng-include="'/template/course-navigation-node'", highlight-if-active="")

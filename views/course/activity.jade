@@ -10,22 +10,21 @@ block title
   | #{activity.title}
 
 block activity
-      div.pull-right.btn-toolbar(role="toolbar")
-        if !activity.recent
-          .btn-group
-            a.pull-right.btn.btn-sm.btn-primary(role="button", href="update/")
-              | <i class="fa fa-level-up"></i> Update Activity
-        .btn-group
-          button.pull-right.btn.btn-sm.btn-danger(type="button",ng-controller="ResetButtonCtrl", ng-click="resetPage()")
-            | <i class="fa fa-eraser"></i> Erase Work
-        .btn-group
-          mixin viewSource()
       .page-header
+        div.pull-right.btn-toolbar(role="toolbar")
+          if !activity.recent
+            .btn-group
+              a.pull-right.btn.btn-sm.btn-primary(role="button", href="update/")
+                | <i class="fa fa-level-up"></i> Update Activity
+          .btn-group
+            button.pull-right.btn.btn-sm.btn-danger(type="button",ng-controller="ResetButtonCtrl", ng-confirm-click="Are you sure you want to erase your work?", ng-click="resetPage()")
+              | <i class="fa fa-eraser"></i> Erase Work
+          .btn-group
+            mixin viewSource()
          h1 #{activity.title}
       div(completion-meter="")
       | !{activityHtml}
-      p
-        | #{activityHtml}
+      // p #{activityHtml}
 
 
 block content
@@ -42,7 +41,7 @@ block content
              li.next(class=(nextActivity ? undefined : "disabled"),completion-blink="")
                +courseActivityLink(course,nextActivity)
                  | Next Activity &rarr;
-            p {{db}}
-            p {{currentActivity}}
+            //p {{db}}
+            //p {{currentActivity}}
           .col-md-3.course-navigation(course-navigation="")
       div(class="chat",id="blah")

@@ -1,5 +1,5 @@
-define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pagedown-sanitizer", 'angular-sanitize', 'user'], function(angular, $, _, io, pagedown, sanitizer) {
-    var app = angular.module('ximeraApp.forum', ["ngSanitize"]);
+define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pagedown-sanitizer", 'angular-sanitize', 'user', 'confirm-click'], function(angular, $, _, io, pagedown, sanitizer) {
+    var app = angular.module('ximeraApp.forum', ["ngSanitize", "ximeraApp.confirmClick"]);
 
     // public domain code to handle relative date display
     $.getRelativeTime = function(diff) {
@@ -233,26 +233,5 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 	    }
 	};
     }]);
-
-    ////////////////////////////////////////////////////////////////
-    // present the user a dialog box and optionally stop propagation of ng-click 
-    app.directive('ngConfirmClick', [
-	function(){
-	    return {
-		priority: -100,  
-		restrict: 'A',
-		link: function(scope, element, attrs){
-		    element.bind('click', function(e){
-			var message = attrs.ngConfirmClick;
-			if(message && !confirm(message)){
-			    e.stopImmediatePropagation();
-			    e.preventDefault();
-			}
-		    });
-		}
-	    }
-	}
-    ]);
-
 
 });

@@ -5,7 +5,12 @@ block title
 
 block content
     div.container.activity(data-activityId=activityId, ng-controller="ActivityController")
-      a.pull-right.btn.btn-primary(role="button",href="https://github.com/#{activity.repo.gitIdentifier}/blob/master/#{activity.relativePath}")
+      div.pull-right.btn-toolbar(role="toolbar")
+        .btn-group
+          a.btn.btn-info(role="button",href="../")
+            | <i class="fa fa-pencil"></i> Do Activity
+        .btn-group
+          a.btn.btn-primary(role="button",href="https://github.com/#{activity.repo.gitIdentifier}/blob/master/#{activity.relativePath}")
             | <i class="fa fa-github-alt"></i> View on GitHub
 
       .page-header
@@ -14,5 +19,4 @@ block content
       pre(class="brush: latex; gutter: false;")
         | #{activity.latexSource}
 
-      a.pull-right.btn.btn-info.btn-sm(role="button",href="../")
-            | <i class="fa fa-pencil"></i> Do Activity
+

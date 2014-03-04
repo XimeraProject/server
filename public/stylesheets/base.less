@@ -5,6 +5,35 @@
     display: none !important;
 }
 
+
+@font-face {
+  font-family: 'MJX_Main';
+  src: url('http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Main-Regular.eot'); /* IE9 Compat Modes */
+  src: url('http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Main-Regular.eot?iefix') format('eot'),
+       url('http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_Main-Regular.woff')  format('woff'),
+       url('http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Main-Regular.otf')  format('opentype'),
+       url('http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/svg/MathJax_Main-Regular.svg#MathJax_Main-Regular') format('svg');
+}
+
+.activity p {
+  font-family: MJX_Main;
+  font-size: 110%;
+  //line-height: .8em;
+}
+
+.activity input {
+  font-family: @font-family-sans-serif;
+}
+
+.activity input, .activity .popover {
+  font-family: @font-family-sans-serif;
+}
+
+.activity .multiple-choice .btn-group-vertical {
+  font-family: MJX_Main;
+}
+
+
 /*****************************************************************/
 /* heartbeat to attract the eye to changing values */
 
@@ -37,6 +66,15 @@
 
 /*****************************************************************/
 /* course navigation bar */
+
+@keyframes opacity_sequence {
+  from { opacity:0; }
+  to { opacity:1; }
+}
+
+.course-navigation .ng-enter {
+  animation: opacity_sequence 0.15s ease-in;
+}
 
 .course-navigation ul
 {
@@ -81,6 +119,10 @@
   transition: border-color 0.12s ease-in;
 }
 
+.course-navigation ul li {
+  margin-left: 1px solid blue;
+}
+
 .course-navigation ul li > div > .description
 {
   padding-left: 0.75em;
@@ -94,6 +136,21 @@
 .course-navigation ul li ul li ul li > div > .description
 {
   padding-left: 2.25em;
+}
+
+.course-navigation ul li ul li ul li ul li > div > .description
+{
+  padding-left: 3.0em;
+}
+
+.course-navigation ul li ul li ul li ul li ul li > div > .description
+{
+  padding-left: 3.75em;
+}
+
+.course-navigation ul li ul li ul li ul li ul li ul li > div > .description
+{
+  padding-left: 4.5em;
 }
 
 .course-navigation li.active > div > .description a
