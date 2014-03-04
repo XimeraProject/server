@@ -43,22 +43,57 @@
   list-style-type:none;
   margin: 0;
   padding: 0;
+  color: #555;
 }
 
-.course-navigation li.active-ancestor > div > .description
-{
-  border-right: 1px solid black;
+.course-navigation li > div > .description:hover {
+  color: black;
 }
 
-.course-navigation li.active-ancestor  > div > .description:hover
-{
-  border-right: 5px solid black;
-  transition: border-width 0.12s ease-in;
+.course-navigation li > div > .description:hover a {
+  text-decoration: underline;
+  color: @link-hover-color;
 }
 
-.course-navigation li.active > div > .description
+.course-navigation ul li > div > .description
 {
-  border-right: 5px solid black;
+  margin-left: 2px;
+}
+
+.course-navigation ul li.active-ancestor > div > .description
+{
+  margin-left: 1px;
+  border-left: 1px solid black;
+}
+
+.course-navigation ul li.active > div > .description
+{
+  margin-left: 0;
+  border-left: 2px solid black;
+}
+
+.course-navigation li > div > .description:hover,
+.course-navigation li.active > div > .description:hover,
+.course-navigation li.active-ancestor > div > .description:hover,
+{
+  border-left: 2px solid black;
+  margin-left: 0;
+  transition: border-color 0.12s ease-in;
+}
+
+.course-navigation ul li > div > .description
+{
+  padding-left: 0.75em;
+}
+
+.course-navigation ul li ul li > div > .description
+{
+  padding-left: 1.5em;
+}
+
+.course-navigation ul li ul li ul li > div > .description
+{
+  padding-left: 2.25em;
 }
 
 .course-navigation li.active > div > .description a
@@ -66,18 +101,25 @@
   font-weight: bold;
 }
 
-.course-navigation li .description:hover
-{
-  border-right: 5px solid black;
-  transition: border-width 0.12s ease-in;
+.course-navigation .completion-symbol {
+    color: #AAA;
 }
 
-.course-navigation ul ul
-{
-  margin-left: 0.5em;
-  padding-left: 0.5em;
-  border-left: 1px solid #EEE;
+.course-navigation .completion-symbol .fa-check-circle {
+    color: @brand-success;
+    transition: color 0.15s ease-in;
 }
+
+.course-navigation .completion-symbol .fa-dot-circle-o {
+    color: @brand-warning;
+    transition: color 0.15s ease-in;
+}
+
+.course-navigation .completion-symbol .fa-circle-o {
+    color: @brand-danger;
+    transition: color 0.15s ease-in;
+}
+
 
 /*****************************************************************/
 /* mathquill AFTER bootstrap */

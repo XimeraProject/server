@@ -156,6 +156,8 @@ define(['angular', 'jquery', 'underscore', 'angular-animate', 'activity-display'
 
 		    if (completion)
 			$scope.completion = completion;
+		    else
+			$scope.completion = undefined;
 		});
 	    }
 	};}]);

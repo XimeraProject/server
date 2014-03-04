@@ -32,7 +32,6 @@ block content
     div.container(ng-init="course=#{JSON.stringify(course)}; currentActivity=#{JSON.stringify(activity)};")
         div(course-breadcrumbs="")
         .row
-          .col-md-3.course-navigation(course-navigation="")
           .col-md-9.activity(data-activityId=activityId, style="display: none;", ng-controller="ActivityController")
             block activity
 
@@ -45,4 +44,5 @@ block content
                  | Next Activity &rarr;
             p {{db}}
             p {{currentActivity}}
+          .col-md-3.course-navigation(course-navigation="")
       div(class="chat",id="blah")
