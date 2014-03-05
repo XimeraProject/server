@@ -181,6 +181,8 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 
 		socket.on('post', function (data) {
 		    $scope.addPost( data );
+		    // BADBAD: it'd be better to trigger mathjax from the directive
+		    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
 		});
 
 		$http.get( '/forum/' + $scope.forum ).success(function(data){
@@ -190,6 +192,8 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 
     };}]);
 
+    ////////////////////////////////////////////////////////////////
+    // Reply directive
     app.directive('reply', ['$http', 'userService', function ($http, user) {
         return {
             restrict: 'A',
@@ -216,7 +220,42 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 			$scope.replyDone();
 			$scope.errorMessage = undefined;
 		    }).error(function(data, status, headers, config) {
-			$scope.errorMessage = 'Could not post your message.';
+			$scope.errorMessage = 'Could not post your message.  ' + data;
+		    })
+		};
+	    }
+    };}]);
+
+
+    ////////////////////////////////////////////////////////////////
+    // Edit post
+    app.directive('editPost', ['$http', 'userService', function ($http, user) {
+        return {
+            restrict: 'A',
+            scope: {
+		forumName: '@',
+		postId: '@',
+		editDone: '&'
+            },
+            templateUrl: '/template/forum/reply',
+
+	    controller: function($scope, $element){
+		$scope.user = user;
+
+		$scope.newPost = {};
+
+		$scope.cancel = function() {
+		    $scope.editDone();
+		}
+
+		$scope.newPost.post = function() {
+		    $scope.$emit( 'Xarma', 1 );
+
+		    $http.put( '/forum/' + $scope.postId, {content: $scope.newPost.content} ).success(function(data){
+			$scope.editDone();
+			$scope.errorMessage = undefined;
+		    }).error(function(data, status, headers, config) {
+			$scope.errorMessage = 'Could not edit your message.  ' + data;
 		    })
 		};
 	    }

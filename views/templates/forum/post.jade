@@ -1,5 +1,6 @@
 div
-  div(ng-bind-html="htmlContent", mathjax-on-change="{{htmlContent}}")
+  div(ng-if="!editing",ng-bind-html="htmlContent", mathjax-on-change="{{htmlContent}}")
+  div(edit-post="",ng-if="editing",post-id="{{post._id}}", forum-name="{{forumName}}", edit-done="$parent.editing = false;")
   div.btn-toolbar(role="toolbar")
     div.btn-group
       button.btn.btn-xs.btn-success(ng-click="upvote()", ng-if="post.upvoters.indexOf(user.current._id) == -1") <i class="fa fa-thumbs-o-up"></i>&nbsp;Upvote ({{post.upvotes}})
@@ -8,4 +9,6 @@ div
       button.btn.btn-xs.btn-danger(ng-if="post.flaggers.indexOf(user.current._id) != -1") <i class="fa fa-flag"></i>&nbsp;Flagged
     div.btn-group
       button.btn.btn-xs(ng-click="replying = !replying", ng-class="{active:replying}", ng-hide="replying")  <i class="fa fa-reply"></i>&nbsp;Reply
+    div.btn-group
+      button.btn.btn-xs(ng-click="editing = !editing", ng-class="{active:editing}", ng-hide="editing")  <i class="fa fa-pencil"></i>&nbsp;Edit
   div(reply="",ng-if="replying",parent="{{post._id}}", forum-name="{{forumName}}", reply-done="$parent.replying = false;")

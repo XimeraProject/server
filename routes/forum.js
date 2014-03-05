@@ -5,6 +5,7 @@ module.exports = function(io) {
     var routes = {};
     var mongo = require('mongodb');	
     var mdb = require('../mdb');
+    var _ = require('underscore');
 	
     var crypto = require('crypto');
 
@@ -86,6 +87,55 @@ module.exports = function(io) {
 	return;
     }
     
+    routes.put = function(req, res) {
+	var postId = req.params.post;
+	
+	if (!req.user) {
+            res.status(500).send('Need to login.');
+	    return;
+	}
+
+	if (req.user.isGuest) {
+            res.status(500).send('Need to login.');
+	    return;
+	}
+
+	mdb.Post.findOne({_id: postId} , function(err,post) {
+            if (post) {
+		// BADBAD: why is toString() needed here?
+		if (post.user._id.toString() != req.user._id.toString()) {
+		    res.status(500).send('You are not permitted to edit the posts of other people.');
+		    return;
+		}
+
+		post = _.extend( post, { content: req.body.content, date: Date.now(),
+					user: { _id: req.user._id,
+						name: req.user.name } 
+				      } );
+
+		if ('emails' in req.user) {
+		    var userEmail = req.user.emails[0];
+		    post.user.gravatar = crypto.createHash('md5').update(userEmail).digest("hex");
+		}
+
+		var room = post.room;
+
+		io.sockets.in(room).emit('post', post);
+
+		post.save(function(err, document){
+		    if (document) {
+			res.json([document]);
+		    } else {
+			res.status(500).send(err);
+		    }
+		});
+            }
+            else {
+		res.status(500).send('Could not find post.');
+		return;
+            }
+	});
+    }
     
     routes.post = function(req, res) {
 	var room = req.params[0];
@@ -98,10 +148,12 @@ module.exports = function(io) {
 	
 	if (!req.user) {
             res.status(500).send('Need to login.');
+	    return;
 	}
 
 	if (req.user.isGuest) {
             res.status(500).send('Need to login.');
+	    return;
 	}
 
 	var post = mdb.Post({ room: room,
