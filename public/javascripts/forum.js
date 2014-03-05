@@ -235,14 +235,15 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
             scope: {
 		forumName: '@',
 		postId: '@',
+		previousContent: '@',
 		editDone: '&'
             },
-            templateUrl: '/template/forum/reply',
+            templateUrl: '/template/forum/edit',
 
 	    controller: function($scope, $element){
 		$scope.user = user;
 
-		$scope.newPost = {};
+		$scope.newPost = { content: $scope.previousContent };
 
 		$scope.cancel = function() {
 		    $scope.editDone();

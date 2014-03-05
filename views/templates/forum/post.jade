@@ -1,6 +1,6 @@
 div
   div(ng-if="!editing",ng-bind-html="htmlContent", mathjax-on-change="{{htmlContent}}")
-  div(edit-post="",ng-if="editing",post-id="{{post._id}}", forum-name="{{forumName}}", edit-done="$parent.editing = false;")
+  div(edit-post="",ng-if="editing",post-id="{{post._id}}", previous-content="{{post.content}}", edit-done="$parent.editing = false;")
   div.btn-toolbar(role="toolbar")
     div.btn-group
       button.btn.btn-xs.btn-success(ng-click="upvote()", ng-if="post.upvoters.indexOf(user.current._id) == -1") <i class="fa fa-thumbs-o-up"></i>&nbsp;Upvote ({{post.upvotes}})

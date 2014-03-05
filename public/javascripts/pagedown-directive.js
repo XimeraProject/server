@@ -24,7 +24,7 @@ define(['angular', 'jquery', 'underscore', "pagedown-converter", "pagedown-sanit
 
             link: function($scope, element, attrs, controller, transclude) {
 		$scope.wmd = uuidService();
-		$scope.textarea = {value: ''};
+		$scope.textarea = {value: $scope.ngModel};
 
 		var form = $('<div class="wmd-panel">' +
 			     '<div id="wmd-button-bar' + $scope.wmd + '"></div>' + 
@@ -36,7 +36,7 @@ define(['angular', 'jquery', 'underscore', "pagedown-converter", "pagedown-sanit
 
 		var converter = Markdown.getSanitizingConverter();
 		var editor = new Markdown.Editor(converter, $scope.wmd);
-		
+
 		editor.hooks.chain("onPreviewRefresh", function () {
 		    MathJax.Hub.Queue(
 			["Typeset",MathJax.Hub, $('.wmd-preview' + $scope.wmd).get(0)]
