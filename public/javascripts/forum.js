@@ -12,6 +12,11 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 	return 'Just now';
     };
 
+    var toRelativeTime = function(date) {
+	var x = Math.round(date / 1000);
+	return $.getRelativeTime(Math.round(new Date().getTime() / 1000) - x);
+    };
+
     $.fn.toRelativeTime = function() {
 	var t = $(this), x = Math.round(Date.parse(t.text()) / 1000);
 	if (x) t.text($.getRelativeTime(Math.round(
@@ -157,7 +162,11 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 		// posts need to be added in chronological order to recreate threads
 		$scope.addPost = function(post) {
 		    $scope.posts[post._id] = post;
-		    
+
+		    post.dateRelativeToNow = function() {
+			return toRelativeTime(new Date(post.date));
+		    };
+
 		    if ('parent' in post) {
 			var parent = $scope.posts[post.parent];
 
