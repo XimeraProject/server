@@ -11,13 +11,12 @@ var express = require('express')
   , score = require('./routes/score')
   , http = require('http')
   , path = require('path')
-  , mdb = require("./mdb")
+  , mdb = require('./mdb')
+  , login = require('./login')
   , less = require('less-middleware')
   , passport = require('passport')
   , mongo = require('mongodb')
   , mongoose = require('mongoose')
-  , GoogleStrategy = require('passport-google').Strategy
-  , CourseraOAuthStrategy = require('./passport-coursera-oauth').Strategy
   , http = require('http')
   , path = require('path')
   , angularState = require('./routes/angular-state')
@@ -29,6 +28,16 @@ var express = require('express')
   , io = require('socket.io')
   , util = require('util')
   ;
+
+// Check for presence of appropriate environment variables.
+if (!process.env.XIMERA_COOKIE_SECRET ||
+    !process.env.XIMERA_MONGO_DATABASE ||
+    !process.env.XIMERA_MONGO_URL ||
+    !process.env.COURSERA_CONSUMER_KEY ||
+    !process.env.COURSERA_CONSUMER_SECRET) {
+        throw "Appropriate environment variables not set.";
+    }
+
 
 // Some filters for Jade; admittedly, Jade comes with its own Markdown
 // filter, but I want to run everything through the a filter to add
@@ -56,7 +65,7 @@ app.set('view engine', 'jade');
 // all environments
 app.set('port', process.env.PORT || 3000);
 
-var rootUrl = 'http://localhost:' + app.get('port');
+var rootUrl = 'http://127.0.0.1:' + app.get('port');
 if (process.env.DEPLOYMENT === 'production') {
     rootUrl = 'http://ximera.osu.edu';
 }
@@ -76,61 +85,16 @@ var databaseUrl = 'mongodb://' + process.env.XIMERA_MONGO_URL + "/" + process.en
 var collections = ['users', 'scopes', 'imageFiles'];
 var db = require('mongojs').connect(databaseUrl, collections);
 
-// Configure passport for use with Google authentication.
-passport.use(new GoogleStrategy({
-	returnURL: rootUrl + '/auth/google/return',
-	realm: rootUrl,
-        passReqToCallback: true 
-    }, function (req, identifier, profile, done) {
-	var err = null;
-
-    	// Save this to the users collection if we haven't already
-    	db.users.findAndModify({
-            query: {openId: identifier, authType: "google-openid"},
-            update: {$set: {name: profile.displayName,
-			    emails: [profile.emails[0].value],
-			    userAgent: req.headers['user-agent'],
- 			    remoteAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress}
-		    },
-            new: true,
-            upsert: true
-        }, function(err, document) {
-            console.log("Upserted:");
-            console.log(err);
-            console.log(document);
-            done(err, document);
-    	});
-    }));
 
 
-passport.use(new CourseraOAuthStrategy({
-    requestTokenURL: 'https://authentication.coursera.org/auth/oauth/api/request_token',
-    accessTokenURL: 'https://authentication.coursera.org/auth/oauth/api/access_token',
-    consumerKey: process.env.COURSERA_CONSUMER_KEY,
-    consumerSecret: process.env.COURSERA_CONSUMER_SECRET,
-    callbackURL: "http://127.0.0.1:3000/auth/coursera/callback",
-    passReqToCallback: true 
-},function(req, token, tokenSecret, profile, done) {
-    db.users.findAndModify({
-        query: { courseraOAuthId: profile.id, authType: "coursera-oauth" },
-        update: {$set: {name: profile.full_name,
-		       	userAgent: req.headers['user-agent'],
- 			remoteAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress
-		       }},
-        new: true,
-        upsert: true
-    }, function (err, user) {
-        return done(err, user);
-    });
-}));
-
+passport.use(login.googleStrategy(rootUrl));
+passport.use(login.courseraStrategy(rootUrl));
 // Only store the user _id in the session
 passport.serializeUser(function(user, done) {
    done(null, user._id);
 });
-
 passport.deserializeUser(function(id, done) {
-   db.users.findOne({_id: new mongo.ObjectID(id)}, function(err,document) {
+   mdb.User.findOne({_id: new mongo.ObjectID(id)}, function(err,document) {
        done(err, document);
    });
 });
@@ -159,7 +123,7 @@ git.long(function (commit) {
     console.log( commit );
     app.version = require('./package.json').version;
     var versionator = require('versionator').create(commit);
-    
+
     app.use(versionator.middleware);
     app.use('/public', express.static(path.join(__dirname, 'public')));
     app.use('/components', express.static(path.join(__dirname, 'components')));
@@ -170,234 +134,180 @@ git.long(function (commit) {
 
     console.log( versionator.versionPath('/template/test') );
 
-app.use(express.favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
-app.use(express.logger('dev'));
-app.use(express.bodyParser());
-app.use(express.methodOverride());
+    app.use(express.favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
+    app.use(express.logger('dev'));
+    app.use(express.bodyParser());
+    app.use(express.methodOverride());
 
-cookieSecret = 'BADBAD: Fill in with an actual secret from ENV';
-app.use(express.cookieParser(cookieSecret));
-app.use(express.session({
+    cookieSecret = process.env.XIMERA_COOKIE_SECRET;
+
+    app.use(express.cookieParser(cookieSecret));
+    app.use(express.session({
 	secret: cookieSecret,
 	store: new MongoStore({
 	    db: mongoose.connections[0].db
 	})
-}));
+    }));
 
-app.use(express.session());
-app.use(passport.initialize());
-app.use(passport.session());
+    app.use(express.session());
+    app.use(passport.initialize());
+    app.use(passport.session());
 
 
-// Add guest users account if not logged in.
-// If logged in and previously a guest user, copy over activity scopes (non-destructively.)
-// TODO: Clean these out occasionally.
-// TODO: Move this all to a different file.
-app.use(function(req, res, next) {
-  if (!req.user) {
-      if (!req.session.guestUserId) {
-          req.user = new mdb.User({isGuest: true, name: "Guest User", email: ""});
-          req.session.guestUserId = req.user._id;
-          req.user.save(next);
-      }
-      else {
-          mdb.User.findOne({_id: req.session.guestUserId}, function (err, user) {
-              req.user = user;
-              next();
-          });
-      }
-  }
-  else {
-      if (req.session.guestUserId) {
-          // Was previously signed in as a guest user.
-          var guestUserId = req.session.guestUserId;
-          req.session.guestUserId = null;
-          copyGuestScopes(guestUserId, req.user._id, next);
-      }
-      else {
-          next();
-      }
-  }
-});
+    app.use(login.guestUserMiddleware);
+    app.use(addDatabaseMiddleware);
 
-// TODO: Still say sign-in.
-// Copy guest scopes to new user non-destructively; if user has saved work, that wins out.
-function copyGuestScopes(guestUserId, userId, next) {
-    mdb.Scope.find({user: guestUserId}, function (err, scopes) {
-        if (err) next(err);
-        else {
-            async.each(scopes, function (guestScope, callback) {
-                mdb.Scope.findOne({user: userId, activity: guestScope.activityId}, function (err, userScope) {
-                    if (err) callback(err);
-                    else {
-                        if (!userScope) {
-                            guestScope.user = userId;
-                            guestScope.save(callback);
-                        }
-                        else {
-                            callback();
-                        }
-                    }
-                });
-            }, next);
-        }
+
+    app.use(app.router);
+
+    app.use(function(req, res, next){
+        res.render('404', { status: 404, url: req.url });
     });
-}
 
-app.use(addDatabaseMiddleware);
+    // Middleware for development only
+    if ('development' == app.get('env')) {
+        app.use(express.errorHandler());
+    }
 
+    // Setup routes.
+    // TODO: Move to separate file.
+    app.get('/users/xarma', score.getXarma);
+    app.get('/users/xudos', score.getXudos);
+    app.post('/users/xarma', score.postXarma);
+    app.post('/users/xudos', score.postXudos);
 
-app.use(app.router);
+    app.get('/', routes.index);
 
-app.use(function(req, res, next){
-  res.render('404', { status: 404, url: req.url });
-});
+    app.post('/activity/log-answer', activity.logAnswer);
+    app.post('/activity/log-completion', activity.logCompletion);
+    app.get('/users/completion', activity.completion);
 
-// Middleware for development only
-if ('development' == app.get('env')) {
-app.use(express.errorHandler());
-}
+    app.put('/users/', user.put);
+    app.get('/users/', user.getCurrent);
+    app.get('/users/profile', user.currentProfile);
+    app.get('/users/:id/profile', user.profile);
+    app.get('/users/:id', user.get);
 
-// Setup routes.
-// TODO: Move to separate file.
-app.get('/users/xarma', score.getXarma);
-app.get('/users/xudos', score.getXudos);
-app.post('/users/xarma', score.postXarma);
-app.post('/users/xudos', score.postXudos);
+    app.get( '/course/calculus-one/', function( req, res ) { res.redirect('/about/plans'); });
+    app.get( '/course/calculus-one', function( req, res ) { res.redirect('/about/plans'); });
+    app.get( '/course/calculus-two/', function( req, res ) { res.redirect('/about/plans'); });
+    app.get( '/course/calculus-two', function( req, res ) { res.redirect('/about/plans'); });
+    app.get( '/course/multivariable/', function( req, res ) { res.redirect('/about/m2o2c2'); });
+    app.get( '/course/multivariable', function( req, res ) { res.redirect('/about/m2o2c2'); });
 
-app.get('/', routes.index);
+    app.get('/course/', course.index );
+    app.get( '/course', function( req, res ) { res.redirect(req.url + '/'); });
+    app.get( '/courses', function( req, res ) { res.redirect('/course/'); });
+    app.get( '/courses/', function( req, res ) { res.redirect('/course/'); });
+    app.get(/^\/course\/(.+)\/activity\/(.+)\/update\/$/, course.activityUpdate);
+    app.get(/^\/course\/(.+)\/activity\/(.+)\/source\/$/, course.activitySource);
+    app.get(/^\/course\/(.+)\/activity\/(.+)\/$/, course.activity );
+    app.get( /^\/course\/(.+)\/activity\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
+    app.get(/^\/course\/(.+)\/$/, course.landing );
+    app.get( /^\/course\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
 
-app.post('/activity/log-answer', activity.logAnswer);
-app.post('/activity/log-completion', activity.logCompletion);
-app.get('/users/completion', activity.completion);
-
-app.put('/users/', user.put);
-app.get('/users/', user.getCurrent);
-app.get('/users/profile', user.currentProfile);
-app.get('/users/:id/profile', user.profile);
-app.get('/users/:id', user.get);
-
-app.get( '/course/calculus-one/', function( req, res ) { res.redirect('/about/plans'); });
-app.get( '/course/calculus-one', function( req, res ) { res.redirect('/about/plans'); });
-app.get( '/course/calculus-two/', function( req, res ) { res.redirect('/about/plans'); });
-app.get( '/course/calculus-two', function( req, res ) { res.redirect('/about/plans'); });
-app.get( '/course/multivariable/', function( req, res ) { res.redirect('/about/m2o2c2'); });
-app.get( '/course/multivariable', function( req, res ) { res.redirect('/about/m2o2c2'); });
-
-app.get('/course/', course.index );
-app.get( '/course', function( req, res ) { res.redirect(req.url + '/'); });
-app.get( '/courses', function( req, res ) { res.redirect('/course/'); });
-app.get( '/courses/', function( req, res ) { res.redirect('/course/'); });
-app.get(/^\/course\/(.+)\/activity\/(.+)\/update\/$/, course.activityUpdate);
-app.get(/^\/course\/(.+)\/activity\/(.+)\/source\/$/, course.activitySource);
-app.get(/^\/course\/(.+)\/activity\/(.+)\/$/, course.activity );
-app.get( /^\/course\/(.+)\/activity\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
-app.get(/^\/course\/(.+)\/$/, course.landing );
-app.get( /^\/course\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
-
-// Coursera login.
-app.get('/auth/coursera',
-  passport.authenticate('oauth'));
-app.get('/auth/coursera/callback',
-  passport.authenticate('oauth', { successRedirect: '/',
+    // Coursera login.
+    app.get('/auth/coursera',
+            passport.authenticate('oauth'));
+    app.get('/auth/coursera/callback',
+            passport.authenticate('oauth', { successRedirect: '/',
                                    failureRedirect: '/auth/coursera'}));
 
-// Google login.
-app.get('/auth/google', passport.authenticate('google'));
-app.get('/auth/google/return',
-    passport.authenticate('google', { successRedirect: '/',
-				      failureRedirect: '/auth/google'}));
+    // Google login.
+    app.get('/auth/google', passport.authenticate('google'));
+    app.get('/auth/google/return',
+            passport.authenticate('google', { successRedirect: '/',
+				              failureRedirect: '/auth/google'}));
 
 
-app.get('/logout', function (req, res) {
-    req.logout();
-    res.redirect('/');
-});
+    app.get('/logout', function (req, res) {
+        req.logout();
+        res.redirect('/');
+    });
 
-app.get('/mailing-list', function( req, res ) {
-    fs.appendFile( 'emails.txt', req.query['email'] + "\n", function(err) { return; });
-    res.send(200);
-});
+    app.get('/mailing-list', function( req, res ) {
+        fs.appendFile( 'emails.txt', req.query['email'] + "\n", function(err) { return; });
+        res.send(200);
+    });
 
-app.get('/about', about.index);
-app.get('/about/team', about.team);
-app.get('/about/workshop', about.workshop);
-app.get('/about/contact', about.contact);
-app.get('/about/faq', about.faq);
-app.get('/about/who', about.who);
-app.get('/about/plans', about.plans);
-app.get('/about/xarma', about.xarma);
-app.get('/about/xudos', about.xudos);
-app.get('/about/m2o2c2', about.m2o2c2);
+    app.get('/about', about.index);
+    app.get('/about/team', about.team);
+    app.get('/about/workshop', about.workshop);
+    app.get('/about/contact', about.contact);
+    app.get('/about/faq', about.faq);
+    app.get('/about/who', about.who);
+    app.get('/about/plans', about.plans);
+    app.get('/about/xarma', about.xarma);
+    app.get('/about/xudos', about.xudos);
+    app.get('/about/m2o2c2', about.m2o2c2);
 
-app.get('/angular-state/:activityId', angularState.get);
-app.put('/angular-state/:activityId', angularState.put);
+    app.get('/angular-state/:activityId', angularState.get);
+    app.put('/angular-state/:activityId', angularState.put);
 
-app.get('/template/:templateFile', template.renderTemplate);
-app.get('/template/forum/:templateFile', template.renderForumTemplate);
+    app.get('/template/:templateFile', template.renderTemplate);
+    app.get('/template/forum/:templateFile', template.renderForumTemplate);
 
-app.get('/image/:hash', mongoImage.get);
+    app.get('/image/:hash', mongoImage.get);
 
 
-app.locals({
-    moment: require('moment'),
-    _: require('underscore'),
-    deployment: process.env.DEPLOYMENT
-});
+    app.locals({
+        moment: require('moment'),
+        _: require('underscore'),
+        deployment: process.env.DEPLOYMENT
+    });
 
-// Setup blogs
-var Poet = require('poet')
-var poet = Poet(app, {
-posts: './blog/',  // Directory of posts
-postsPerPage: 5,     // Posts per page in pagination
-readMoreLink: function (post) {
-    // readMoreLink is a function that
-    // takes the post object and formats an anchor
-    // to be used to append to a post's preview blurb
-    // and returns the anchor text string
-    return '<a href="' + post.url + '">Read More &raquo;</a>';
-},
-readMoreTag: '<!--more-->', // tag used to generate the preview. More in 'preview' section
+    // Setup blogs
+    var Poet = require('poet')
+    var poet = Poet(app, {
+        posts: './blog/',  // Directory of posts
+        postsPerPage: 5,     // Posts per page in pagination
+        readMoreLink: function (post) {
+            // readMoreLink is a function that
+            // takes the post object and formats an anchor
+            // to be used to append to a post's preview blurb
+            // and returns the anchor text string
+            return '<a href="' + post.url + '">Read More &raquo;</a>';
+        },
+        readMoreTag: '<!--more-->', // tag used to generate the preview. More in 'preview' section
 
-routes: {
-    '/blog/post/:post': 'blog/post',
-    '/blog/page/:page': 'blog/page',
-    '/blog/tag/:tag': 'blog/tag',
-    '/blog/category/:category': 'blog/category'
-}
-});
+        routes: {
+            '/blog/post/:post': 'blog/post',
+            '/blog/page/:page': 'blog/page',
+            '/blog/tag/:tag': 'blog/tag',
+            '/blog/category/:category': 'blog/category'
+        }
+    });
 
-app.get( '/blog', function ( req, res ) { res.render( 'blog/index' ); });
+    app.get( '/blog', function ( req, res ) { res.render( 'blog/index' ); });
 
-poet.init().then( function() {
+    poet.init().then( function() {
     // Start HTTP server for fully configured express App.
-    var server = http.createServer(app);
+        var server = http.createServer(app);
 
-    server.listen(app.get('port'), function(){
-	console.log('Express server listening on port ' + app.get('port'));
+        server.listen(app.get('port'), function(){
+	    console.log('Express server listening on port ' + app.get('port'));
+        });
+
+        var socket = io.listen(server);
+
+        // Setup forum rooms
+        var forum = require('./routes/forum.js')(socket);
+        app.post('/forum/upvote/:post', forum.upvote);
+        app.post('/forum/flag/:post', forum.flag);
+        app.get(/\/forum\/(.+)/, forum.get);
+        app.post(/\/forum\/(.+)/, forum.post);
+        app.put('/forum/:post', forum.put);
+
+        socket.on('connection', function (client) {
+	    // join to room and save the room name
+	    client.on('join room', function (room) {
+                client.join(room);
+	    });
+
+	    client.on('send', function (data) {
+                socket.sockets.emit('message', data);
+	    });
+        });
+
     });
-
-    var socket = io.listen(server); 
-
-    // Setup forum rooms
-    var forum = require('./routes/forum.js')(socket);
-    app.post('/forum/upvote/:post', forum.upvote);
-    app.post('/forum/flag/:post', forum.flag);
-    app.get(/\/forum\/(.+)/, forum.get);
-    app.post(/\/forum\/(.+)/, forum.post);
-    app.put('/forum/:post', forum.put);
-
-    socket.on('connection', function (client) {
-	// join to room and save the room name
-	client.on('join room', function (room) {
-            client.join(room);
-	});
-
-	client.on('send', function (data) {
-            socket.sockets.emit('message', data);
-	});
-    });
-
-});
-
 });
