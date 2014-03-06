@@ -150,7 +150,7 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 	};
     });
 
-    app.directive('forum', ['$http', 'socket', 'userService', function ($http, socket, userService) {
+    app.directive('forum', ['$http', 'socket', 'userService', '$timeout', function ($http, socket, userService, $timeout) {
         return {
             restrict: 'A',
             scope: {
@@ -201,7 +201,9 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 		socket.on('post', function (data) {
 		    $scope.addPost( data );
 		    // BADBAD: it'd be better to trigger mathjax from the directive
-		    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+		    $timeout(function () {
+			MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+		    });
 		});
 
 		$http.get( '/forum/' + $scope.forum ).success(function(data){
