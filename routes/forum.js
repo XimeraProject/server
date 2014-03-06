@@ -136,6 +136,48 @@ module.exports = function(io) {
             }
 	});
     }
+
+
+    routes.delete = function(req, res) {
+	var postId = req.params.post;
+	
+	if (!req.user) {
+            res.status(500).send('Need to login.');
+	    return;
+	}
+
+	if (req.user.isGuest) {
+            res.status(500).send('Need to login.');
+	    return;
+	}
+
+	mdb.Post.findOne({_id: postId} , function(err,post) {
+            if (post) {
+		// BADBAD: why is toString() needed here?
+		if (post.user._id.toString() != req.user._id.toString()) {
+		    res.status(500).send('You are not permitted to delete the posts of other people.');
+		    return;
+		}
+
+		post.content = 'deleted!';
+
+		post = _.extend( post, { content: '', date: Date.now(),
+					 user: {}
+				       } );
+
+		var room = post.room;
+
+		io.sockets.in(room).emit('post', post);
+
+		mdb.Post.remove({_id: postId}, true);
+		res.status(200).send('Deleting post.');
+            }
+            else {
+		res.status(500).send('Could not find post.');
+		return;
+            }
+	});
+    }
     
     routes.post = function(req, res) {
 	var room = req.params[0];

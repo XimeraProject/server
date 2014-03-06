@@ -112,6 +112,10 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 		    }
 		};
 
+		$scope.delete = function() {
+		    $http.delete( '/forum/' + $scope.post._id );
+		};
+
 		$scope.flag = function() {
 		    $http.post( '/forum/flag/' + $scope.post._id );
 		    if ($scope.post.flaggers.indexOf( $scope.user.current._id ) == -1) {
@@ -158,7 +162,7 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 	    controller: function($scope, $element){
 	     	$scope.toplevel = [];
 		$scope.posts = {};
-		
+
 		// posts need to be added in chronological order to recreate threads
 		$scope.addPost = function(post) {
 		    $scope.posts[post._id] = post;
@@ -167,21 +171,26 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 			return toRelativeTime(new Date(post.date));
 		    };
 
+		    post.localeDate = (new Date(post.date)).toLocaleString();
+
+		    var parent = { replies: $scope.toplevel };
 		    if ('parent' in post) {
-			var parent = $scope.posts[post.parent];
+			var newParent = $scope.posts[post.parent];
 
-			// Missing parent?  Become a top-level post.
-			if (!parent) 
-			    parent = {};
+			if (newParent)
+			    parent = newParent;
 
-			if ('replies' in parent) 
-			    parent.replies.push( post );
-			else
-			    parent.replies = [ post ];
+			if (!('replies' in parent)) 
+			    parent.replies = [];
 		    }
-		    else {
-			$scope.toplevel.push( post );
+
+		    // push the post to the parent.replies array, unless the array already contains a post with that _id
+		    var duplicatePost = _.findWhere( parent.replies, { _id: post._id } );
+		    if (duplicatePost) {
+			parent.replies.splice( parent.replies.indexOf(duplicatePost), 1 );
 		    }
+
+		    parent.replies.push( post );
 		};
 
 		

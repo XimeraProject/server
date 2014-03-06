@@ -288,26 +288,25 @@ git.long(function (commit) {
 	    console.log('Express server listening on port ' + app.get('port'));
         });
 
-        var socket = io.listen(server);
+    var socket = io.listen(server); 
 
-        // Setup forum rooms
-        var forum = require('./routes/forum.js')(socket);
-        app.post('/forum/upvote/:post', forum.upvote);
-        app.post('/forum/flag/:post', forum.flag);
-        app.get(/\/forum\/(.+)/, forum.get);
-        app.post(/\/forum\/(.+)/, forum.post);
-        app.put('/forum/:post', forum.put);
+    // Setup forum rooms
+    var forum = require('./routes/forum.js')(socket);
+    app.post('/forum/upvote/:post', forum.upvote);
+    app.post('/forum/flag/:post', forum.flag);
+    app.get(/\/forum\/(.+)/, forum.get);
+    app.post(/\/forum\/(.+)/, forum.post);
+    app.put('/forum/:post', forum.put);
+    app.delete('/forum/:post', forum.delete);
 
-        socket.on('connection', function (client) {
-	    // join to room and save the room name
-	    client.on('join room', function (room) {
-                client.join(room);
-	    });
+    socket.on('connection', function (client) {
+	// join to room and save the room name
+	client.on('join room', function (room) {
+            client.join(room);
+	});
 
-	    client.on('send', function (data) {
-                socket.sockets.emit('message', data);
-	    });
-        });
-
+	client.on('send', function (data) {
+            socket.sockets.emit('message', data);
+	});
     });
 });

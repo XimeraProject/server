@@ -582,10 +582,27 @@ footer .address a {
 .icon-code,
 .icon-bullet-list,
 .icon-list,
-.icon-header,
-.icon-hr-line,
 .icon-undo {
         background-image: url(/components/pagedown-bootstrap/Markdown.Editor.Icons.png);
+}
+
+/* icon-header is now fa-text-height */
+.icon-header, .icon-hr-line {
+  display: inline-block;
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 19px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-header:before {
+  content: "\f034";
+}
+
+.icon-hr-line:before {
+  content: "\f141";
 }
 
 @import "user.less";
@@ -633,19 +650,6 @@ footer .address a {
 //@font-size-base: 14pt;
 
 .btn:focus {outline: thin dotted black;}
-
-@import "../../components/pagedown-bootstrap/Markdown.Editor.less";
-
-.icon-link,
-.icon-blockquote,
-.icon-code,
-.icon-bullet-list,
-.icon-list,
-.icon-header,
-.icon-hr-line,
-.icon-undo {
-        background-image: url(/components/pagedown-bootstrap/Markdown.Editor.Icons.png);
-}
 
 /*****************************************************************/
 /* x-editable styles */
