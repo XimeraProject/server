@@ -7,11 +7,11 @@ div(ng-init="hideChildren = false")
       div.media-body
         h5
           a(href="/users/{{post.user._id}}/profile") {{post.user.name}}&nbsp;
-          small {{post.dateRelativeToNow()}}
+          small(title="{{post.localeDate}}") {{post.dateRelativeToNow()}}
         div(post="post", forum-name="{{forumName}}")
         div(ng-if="post.replies")
           div(thread="", posts="post.replies", parent="post._id", forum-name="{{forumName}}")
-          div.btn-toolbar(role="toolbar")
+          div.btn-toolbar.media(role="toolbar")
             div.btn-group
               button.btn(ng-click="replying = !replying", ng-class="{active:replying}", ng-hide="replying")  <i class="fa fa-reply"></i>&nbsp;Add Comment
           div(reply="",ng-if="replying",parent="{{post._id}}", forum-name="{{forumName}}", reply-done="$parent.replying = false;")

@@ -11,4 +11,6 @@ div
       button.btn.btn-xs(ng-click="replying = !replying", ng-class="{active:replying}", ng-hide="replying")  <i class="fa fa-reply"></i>&nbsp;Reply
     div.btn-group(ng-show="user.current._id == post.user._id")
       button.btn.btn-xs(ng-click="editing = !editing", ng-class="{active:editing}", ng-hide="editing")  <i class="fa fa-pencil"></i>&nbsp;Edit
+    div.btn-group(ng-show="user.current._id == post.user._id")
+      button.btn.btn-xs(ng-click="delete()", ng-confirm-click="Are you sure you want to delete this post?")  <i class="fa fa-eraser"></i>&nbsp;Delete
   div(reply="",ng-if="replying",parent="{{post._id}}", forum-name="{{forumName}}", reply-done="$parent.replying = false;")

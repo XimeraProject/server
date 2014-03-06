@@ -386,6 +386,7 @@ poet.init().then( function() {
     app.get(/\/forum\/(.+)/, forum.get);
     app.post(/\/forum\/(.+)/, forum.post);
     app.put('/forum/:post', forum.put);
+    app.delete('/forum/:post', forum.delete);
 
     socket.on('connection', function (client) {
 	// join to room and save the room name

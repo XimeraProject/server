@@ -112,6 +112,10 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 		    }
 		};
 
+		$scope.delete = function() {
+		    $http.delete( '/forum/' + $scope.post._id );
+		};
+
 		$scope.flag = function() {
 		    $http.post( '/forum/flag/' + $scope.post._id );
 		    if ($scope.post.flaggers.indexOf( $scope.user.current._id ) == -1) {
@@ -166,6 +170,8 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 		    post.dateRelativeToNow = function() {
 			return toRelativeTime(new Date(post.date));
 		    };
+
+		    post.localeDate = (new Date(post.date)).toLocaleString();
 
 		    var parent = { replies: $scope.toplevel };
 		    if ('parent' in post) {
