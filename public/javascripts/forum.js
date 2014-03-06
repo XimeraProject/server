@@ -150,7 +150,7 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 	};
     });
 
-    app.directive('forum', ['$http', 'socket', function ($http, socket) {
+    app.directive('forum', ['$http', 'socket', 'userService', function ($http, socket, userService) {
         return {
             restrict: 'A',
             scope: {
@@ -162,6 +162,7 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 	    controller: function($scope, $element){
 	     	$scope.toplevel = [];
 		$scope.posts = {};
+		$scope.user = userService;
 
 		// posts need to be added in chronological order to recreate threads
 		$scope.addPost = function(post) {

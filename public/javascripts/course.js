@@ -118,13 +118,15 @@ define(['angular', 'jquery', 'underscore', 'angular-animate', 'activity-display'
 	};
     };
 
-    app.directive('courseNavigation', ['completionService', function (completions) {
+    app.directive('courseNavigation', ['completionService', 'userService', function (completions, userService) {
         return {
             restrict: 'A',
             scope: true,
             templateUrl: '/template/course-navigation',
 
 	    controller: function($scope, $element){
+		$scope.user = userService;
+
 		_.extend( $scope.course, new Course() );
 		//$scope.currentActivity = $scope.$parent.currentActivity;
 		$scope.completions = completions.activities;

@@ -2,7 +2,8 @@ div(ng-init="invisible=(course.activityAncestors(currentActivity).indexOf(course
   span.pull-right(ng-show="activity.children",ng-click="invisible = !invisible;")
     //i.fa.fa-minus-square-o(ng-hide="invisible")
     i.fa.fa-plus-square-o(ng-hide="!invisible")
-  span.completion-symbol.pull-right(ng-if="(!invisible) || (activity.children.length == 0)",completion-symbol="")
+  // only display progress if the user is logged in
+  span.completion-symbol.pull-right(ng-if="((!invisible) || (activity.children.length == 0)) && (user.current)",completion-symbol="")
       span(ng-if="completion")
         i.fa.fa-check-circle(ng-if="completion.percentDone == 100")
         i.fa.fa-dot-circle-o(ng-if="completion.percentDone < 100")
