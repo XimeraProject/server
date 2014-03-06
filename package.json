@@ -12,7 +12,7 @@
     "underscore": "*",
     "bower": "*",
     "express": "*",
-    "less-middleware": "*",
+    "less-middleware": "0.1.15",
     "connect-mongo": "*",
     "markdown": "*",
     "moment": "*",
