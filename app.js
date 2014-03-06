@@ -310,3 +310,5 @@ git.long(function (commit) {
 	});
     });
 });
+
+});
