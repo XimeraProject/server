@@ -113,8 +113,8 @@ module.exports = function(io) {
 						name: req.user.name } 
 				      } );
 
-		if ('emails' in req.user) {
-		    var userEmail = req.user.emails[0];
+		if ('email' in req.user) {
+		    var userEmail = req.user.email;
 		    post.user.gravatar = crypto.createHash('md5').update(userEmail).digest("hex");
 		}
 
@@ -209,8 +209,8 @@ module.exports = function(io) {
 				      name: req.user.name },
 			    });
 	
-	if ('emails' in req.user) {
-	    var userEmail = req.user.emails[0];
+	if ('email' in req.user) {
+	    var userEmail = req.user.email;
 	    post.user.gravatar = crypto.createHash('md5').update(userEmail).digest("hex");
 	}
 
