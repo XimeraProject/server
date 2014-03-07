@@ -640,6 +640,28 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                         }
                     });
 
+                    $scope.$watch('db.transcript', function(transcript) {
+                        var transcriptId = $(element).attr('data-uuid') + '-transcript';
+                        var transcriptElement;
+                        if ($('#' + transcriptId).length === 0) {
+                            // Insert transcript element after the nearest containing paragraph.
+                            transcriptElement = $('<div class="well well-sm" style="display: none; white-space: pre;"></div>');
+                            transcriptElement.attr('id', transcriptId);
+                            $(element).parents('p').first().after(transcriptElement);
+                        }
+                        else {
+                            transcriptElement = $('#' + transcriptId).first();
+                        }
+
+                        if (transcript.length === 0) {
+                            transcriptElement.hide();
+                        }
+                        else {
+                            transcriptElement.text(transcript);
+                            transcriptElement.show();
+                        }
+                    });
+
                     $scope.attemptAnswer = function () {
                         if ((!$scope.db.success) && ($scope.db.answer != "")) {
                             var success = false;
@@ -647,7 +669,6 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                             var parsedAnswer = MathFunction.parse($scope.db.answer);
                             var validator = function (answer) { return false; }
 
-                            // Clear transcript.
                             $scope.db.transcript = ""
                             var feedback = function (text) {
                                 $scope.db.transcript += text + "\n";
