@@ -1,11 +1,14 @@
 span
-  form.form-inline(style='display: inline-block')
-    span.input-group
-      input.form-control(type='text',ng-model='db.answer',ng-disabled='db.success')
-      span.input-group-btn(ng-switch="",on='db.message')
-        button.btn.btn-success(ng-click='attemptAnswer()',ng-switch-when="correct",data-toggle="tooltip",data-placement="top",title="Correct answer!")
-          i.fa.fa-check
-        button.btn.btn-danger(ng-click='attemptAnswer()',ng-switch-when="incorrect",data-toggle="tooltip",data-placement="top",title="Incorrect.  Try again!")
-          i.fa.fa-times
-        button.btn.btn-primary(ng-click='attemptAnswer()',ng-switch-default,data-toggle="tooltip",data-placement="top",title="Click to check your answer.")
-          i.fa.fa-question
+  span
+    form.form-inline(style='display: inline-block')
+      span.input-group
+        input.form-control(type='text',ng-model='db.answer',ng-disabled='db.success')
+        span.input-group-btn(ng-switch="",on='db.message')
+          button.btn.btn-success(ng-click='attemptAnswer()',ng-switch-when="correct",data-toggle="tooltip",data-placement="top",title="Correct answer!")
+            i.fa.fa-check
+          button.btn.btn-danger(ng-click='attemptAnswer()',ng-switch-when="incorrect",data-toggle="tooltip",data-placement="top",title="Incorrect.  Try again!")
+            i.fa.fa-times
+          button.btn.btn-primary(ng-click='attemptAnswer()',ng-switch-default,data-toggle="tooltip",data-placement="top",title="Click to check your answer.")
+            i.fa.fa-question
+  p(ng-show="db.transcript", style='white-space:pre;')
+    | {{db.transcript}}
