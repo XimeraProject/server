@@ -63,7 +63,8 @@ exports.initialize = function initialize() {
 				      xarma: Number,
 				      userAgent: String,
 				      remoteAddress: String,
-                                      isGuest: Boolean
+                                      isGuest: Boolean,
+                                      lastUrlVisited: String
                                   });
 
     exports.Scope = mongoose.model("Scope",
