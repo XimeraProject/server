@@ -619,6 +619,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                     $scope.db.success = false;
                     $scope.db.answer = "";
                     $scope.db.message = "";
+                    $scope.db.transcript = "";
                 }).then(function () {
                     popoverService.watchFocus($scope, "focused", $(":text", element));
                     $scope.$watchCollection('[db.answer, focused]', function (coll) {
@@ -645,6 +646,12 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
 			    $scope.db.attemptedAnswer = $scope.db.answer;
                             var parsedAnswer = MathFunction.parse($scope.db.answer);
                             var validator = function (answer) { return false; }
+
+                            // Clear transcript.
+                            $scope.db.transcript = ""
+                            var feedback = function (text) {
+                                $scope.db.transcript += text + "\n";
+                            }
 
                             try {
                                 eval($scope.validator);
