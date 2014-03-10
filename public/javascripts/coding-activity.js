@@ -1,5 +1,5 @@
-define(['angular', 'jquery', 'underscore', 'codemirror', 'skulpt', 'skulpt-stdlib', 'activity-display'], function(angular, $, _, CodeMirror, Sk) {
-    var app = angular.module('ximeraApp.codingActivity', ["ximeraApp.activity"]);
+define(['angular', 'jquery', 'underscore', 'codemirror', 'skulpt', 'skulpt-stdlib', 'activity-services'], function(angular, $, _, CodeMirror, Sk) {
+    var app = angular.module('ximeraApp.codingActivity', ["ximeraApp.activityServices"]);
 
     app.directive('ximeraPython', ['$compile', '$rootScope', 'stateService', '$timeout', function ($compile, $rootScope, stateService, $timeout) {
         return {

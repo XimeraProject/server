@@ -149,14 +149,12 @@ git.long(function (commit) {
 	})
     }));
 
-    app.use(express.session());
     app.use(passport.initialize());
     app.use(passport.session());
 
 
     app.use(login.guestUserMiddleware);
     app.use(addDatabaseMiddleware);
-
 
     app.use(app.router);
 
@@ -202,6 +200,7 @@ git.long(function (commit) {
     app.get(/^\/course\/(.+)\/activity\/(.+)\/update\/$/, course.activityUpdate);
     app.get(/^\/course\/(.+)\/activity\/(.+)\/source\/$/, course.activitySource);
     app.get(/^\/course\/(.+)\/activity\/(.+)\/$/, course.activity );
+    app.get(/^\/instructor\/course\/(.+)\/activity\/(.+)\/$/, course.instructorActivity );
     app.get( /^\/course\/(.+)\/activity\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
     app.get(/^\/course\/(.+)\/$/, course.landing );
     app.get( /^\/course\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
@@ -210,19 +209,28 @@ git.long(function (commit) {
     app.get('/auth/coursera',
             passport.authenticate('oauth'));
     app.get('/auth/coursera/callback',
-            passport.authenticate('oauth', { successRedirect: '/',
+            passport.authenticate('oauth', { successRedirect: '/just-logged-in',
                                    failureRedirect: '/auth/coursera'}));
 
     // Google login.
     app.get('/auth/google', passport.authenticate('google'));
     app.get('/auth/google/return',
-            passport.authenticate('google', { successRedirect: '/',
+            passport.authenticate('google', { successRedirect: '/just-logged-in',
 				              failureRedirect: '/auth/google'}));
 
 
     app.get('/logout', function (req, res) {
         req.logout();
         res.redirect('/');
+    });
+
+    app.get('/just-logged-in', function (req, res) {
+        if (req.user.lastUrlVisited) {
+            res.redirect(req.user.lastUrlVisited);
+        }
+        else {
+            res.redirect('/');
+        }
     });
 
     app.get('/mailing-list', function( req, res ) {

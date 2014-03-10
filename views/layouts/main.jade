@@ -40,10 +40,13 @@ html(lang="en")
     script(src="https://www.youtube.com/iframe_api")
     script(src="/socket.io/socket.io.js")
 
-    if deployment == 'production'
-      script(src=versionPath("/public/javascripts/app.min.js"))
+    if instructorApp
+      script(data-main="/public/javascripts/instructor-app", src="/components/requirejs/require.js")
     else
-      script(data-main="/public/javascripts/app",src="/components/requirejs/require.js")
+      if deployment == 'production'
+        script(src=versionPath("/public/javascripts/app.min.js"))
+      else
+        script(data-main="/public/javascripts/app",src="/components/requirejs/require.js")
 
     link(rel="apple-touch-icon",sizes="114x114",href=versionPath("/public/images/icons/favicon-114x114.png"))
     link(rel="apple-touch-icon",sizes="72x72",href=versionPath("/public/images/icons/favicon-72x72.png"))

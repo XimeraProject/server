@@ -1,14 +1,17 @@
 var mdb = require('../mdb'),
+    remember = require('../remember'),
     async = require('async'),
     winston = require('winston');
 
 exports.index = function(req, res) {
+    remember(req);
     mdb.Course.find({}, function (err, courses) {
 	res.render('course/index', { courses: courses });
     });
 }
 
 exports.landing = function(req, res) {
+    remember(req);
     var slug = req.params[0];
     mdb.Course.findOne({slug: slug}).exec( function (err, course) {
 	if (course) {
@@ -124,7 +127,13 @@ exports.activityUpdate = function(req, res) {
         }]);
 }
 
+exports.instructorActivity = function(req, res) {
+    res.locals.instructorApp = true;
+    return exports.activity(req, res);
+}
+
 exports.activity = function(req, res) {
+    remember(req);
     var courseSlug = req.params[0];
     var activitySlug = req.params[1];
 
@@ -182,6 +191,8 @@ exports.activity = function(req, res) {
 };
 
 exports.activitySource = function(req, res) {
+    remember(req);
+
     var courseSlug = req.params[0];
     var activitySlug = req.params[1];
 

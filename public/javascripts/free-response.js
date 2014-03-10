@@ -1,5 +1,5 @@
 define(['angular', 'jquery', 'underscore', "pagedown-converter", "pagedown-sanitizer", "pagedown-editor"], function(angular, $, _, converter, sanitizer, editor) {
-    var app = angular.module('ximeraApp.freeResponse', ["ximeraApp.activity"]);
+    var app = angular.module('ximeraApp.freeResponse', ["ximeraApp.activityServices"]);
 
     app.directive('ximeraFreeResponse', ['$compile', '$rootScope', 'stateService', function ($compile, $rootScope, stateService) {
         return {

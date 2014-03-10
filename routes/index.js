@@ -1,8 +1,11 @@
+var remember = require('../remember');
+
 
 /*
  * GET home page.
  */
 
 exports.index = function(req, res){
-  res.render('index', { title: 'Home' });
+    remember(req);
+    res.render('index', { title: 'Home' });
 };
