@@ -300,7 +300,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
         };
     }]);
 
-    app.directive('ximeraMultipleChoice', ['$rootScope', 'stateService', function ($rootScope, stateService) {
+    app.directive('ximeraMultipleChoice', ['$rootScope', '$sce', 'stateService', function ($rootScope, $sce, stateService) {
         return {
             restrict: 'A',
             scope: {},
@@ -328,7 +328,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                             }
                             return {
                                 value: value,
-                                label: $(choice).text(),
+                                label: $sce.trustAsHtml($(choice).html())
                             }
                         });
 
