@@ -300,7 +300,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
         };
     }]);
 
-    app.directive('ximeraMultipleChoice', ['$rootScope', '$sce', 'stateService', function ($rootScope, $sce, stateService) {
+    app.directive('ximeraMultipleChoice', ['$rootScope', '$sce', '$timeout', 'stateService', function ($rootScope, $sce, $timeout, stateService) {
         return {
             restrict: 'A',
             scope: {},
@@ -317,6 +317,8 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                         $scope.db.correctAnswer = "correct";
                     }
 
+                    $scope.db.choices = [];
+
                     // Extract choice content from original.
                     transclude(function (clone) {
                         var choiceElements = $(clone).children('.choice');
@@ -328,7 +330,8 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                             }
                             return {
                                 value: value,
-                                label: $sce.trustAsHtml($(choice).html())
+                                labelHtml: $(choice).html(),
+                                label: ""
                             }
                         });
 
@@ -338,6 +341,15 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
 
                     $scope.db.radioGroup = $(element).attr('data-uuid');
                 }).then(function () {
+                    // Set element labels.
+                    $scope.db.choices = _.map($scope.db.choices, function (choice) {
+                        choice.label = $sce.trustAsHtml(choice.labelHtml);
+                        return choice;
+                    });
+                    $timeout(function () {
+                        MathJax.Hub.Queue(["Typeset", MathJax.Hub, $(element).get(0)]);
+                    });
+
 		    $scope.activate = function(value) {
 		        $scope.db.radioValue = value;
 		    };

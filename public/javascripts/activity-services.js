@@ -189,21 +189,30 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
         }, 1000);
 
         var stateService = {};
+        // Don't bind state for the same data-uuid twice; can happen with some transclusions?
+        var alreadyBound = [];
         stateService.bindState = function ($scope, uuid, initCallback) {
-            return getStateDeferred.promise.then(function () {
-                if (uuid in locals.dataByUuid) {
-                    $scope.db = locals.dataByUuid[uuid];
-                }
-                else {
-                    $scope.db = {}
-                    locals.dataByUuid[uuid] = $scope.db;
-                    initCallback();
-                }
+            if (!_.contains(alreadyBound, uuid)) {
+                alreadyBound.push(uuid);
+                return getStateDeferred.promise.then(function () {
+                    if (uuid in locals.dataByUuid) {
+                        $scope.db = locals.dataByUuid[uuid];
+                    }
+                    else {
+                        $scope.db = {}
+                        locals.dataByUuid[uuid] = $scope.db;
+                        initCallback();
+                    }
 
-                $scope.$watch("db", function () {
-                    triggerUpdate();
-                }, true);
-            });
+                    $scope.$watch("db", function () {
+                        triggerUpdate();
+                    }, true);
+                });
+            }
+            else {
+                // Empty "then"
+                return {then: function () {}};
+            }
         }
 
         stateService.resetPage = function () {
