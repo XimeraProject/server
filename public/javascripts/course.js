@@ -1,4 +1,4 @@
-define(['angular', 'jquery', 'underscore', 'angular-animate', 'activity-display'], function(angular, $, _) {
+define(['angular', 'jquery', 'underscore', 'angular-animate', 'activity-services'], function(angular, $, _) {
     var app = angular.module('ximeraApp.course', ['ngAnimate']);
 
     RegExp.escape= function(s) {

@@ -200,6 +200,7 @@ git.long(function (commit) {
     app.get(/^\/course\/(.+)\/activity\/(.+)\/update\/$/, course.activityUpdate);
     app.get(/^\/course\/(.+)\/activity\/(.+)\/source\/$/, course.activitySource);
     app.get(/^\/course\/(.+)\/activity\/(.+)\/$/, course.activity );
+    app.get(/^\/instructor\/course\/(.+)\/activity\/(.+)\/$/, course.instructorActivity );
     app.get( /^\/course\/(.+)\/activity\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
     app.get(/^\/course\/(.+)\/$/, course.landing );
     app.get( /^\/course\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });

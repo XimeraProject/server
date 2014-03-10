@@ -74,24 +74,24 @@ requirejs.config({
 });
 
 
-require( ["angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "score", "free-response", "user", 'angular-strap-tpl', 'popover', "forum", "pagedown-directive", "course"], function(angular, shCore) {
+require( ["angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "instructor-activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "score", "free-response", "user", 'angular-strap-tpl', 'popover', "forum", "pagedown-directive", "course"], function(angular, shCore) {
     'use strict';
 
-    var app = angular.module('ximeraApp', ['ximeraApp.mathJax',
-					   'ximeraApp.activity',
-					   'ximeraApp.codingActivity',
-					   'ximeraApp.inputMath',
-					   'ximeraApp.videoPlayer',
-					   'ximeraApp.matrixActivity',
-					   'ximeraApp.mathMatrix',
-					   'ximeraApp.freeResponse',
-					   'ximeraApp.score',
-					   'ximeraApp.user',
-					   'ximeraApp.popover',
-					   'ximeraApp.forum',
-					   'ximeraApp.course',
-					   'ximeraApp.pagedown',
-					   'mgcrea.ngStrap']);
+    var app = angular.module('ximeraInstructorApp', ['ximeraApp.mathJax',
+					             'ximeraApp.activity',
+					             'ximeraApp.codingActivity',
+					             'ximeraApp.inputMath',
+					             'ximeraApp.videoPlayer',
+					             'ximeraApp.matrixActivity',
+					             'ximeraApp.mathMatrix',
+					             'ximeraApp.freeResponse',
+					             'ximeraApp.score',
+					             'ximeraApp.user',
+					             'ximeraApp.popover',
+					             'ximeraApp.forum',
+					             'ximeraApp.course',
+					             'ximeraApp.pagedown',
+					             'mgcrea.ngStrap']);
 
     $(document).ready(function() {
         angular.bootstrap(document, [app['name']]);

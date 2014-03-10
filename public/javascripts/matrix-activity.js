@@ -1,5 +1,5 @@
-define(['angular', 'jquery', 'underscore', 'activity-display', 'math-matrix'], function(angular, $, _) {
-    var app = angular.module('ximeraApp.matrixActivity', ["ximeraApp.activity", "ximeraApp.mathMatrix"]);
+define(['angular', 'jquery', 'underscore', 'activity-services', 'math-matrix'], function(angular, $, _) {
+    var app = angular.module('ximeraApp.matrixActivity', ["ximeraApp.activityServices", "ximeraApp.mathMatrix"]);
     
     // The funny capitalization results in ximera-matrixanswer in HTML
     app.directive('ximeraMatrixAnswer', ['$compile', '$rootScope', 'stateService', function ($compile, $rootScope, stateService) {

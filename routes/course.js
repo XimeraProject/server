@@ -127,6 +127,11 @@ exports.activityUpdate = function(req, res) {
         }]);
 }
 
+exports.instructorActivity = function(req, res) {
+    res.locals.instructorApp = true;
+    return exports.activity(req, res);
+}
+
 exports.activity = function(req, res) {
     remember(req);
     var courseSlug = req.params[0];
