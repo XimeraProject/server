@@ -449,7 +449,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                             var success = false;
 			    $scope.db.attemptedAnswer = $scope.db.answer;
                             var parsedAnswer = MathFunction.parse($scope.db.answer);
-                            var validator = function (answer) { return false; }
+			    var correctAnswer = [];
 
                             $scope.db.transcript = ""
                             var feedback = function (text) {
