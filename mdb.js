@@ -92,6 +92,7 @@ exports.initialize = function initialize() {
                                    }));
 
 
+    // Activity completion is updated to most recent version; completion log is write-only.
     activityCompletionSchema = new mongoose.Schema({
         activitySlug: String,
         user: {type: ObjectId, index: true},
@@ -99,11 +100,13 @@ exports.initialize = function initialize() {
         percentDone: Number, // Percent complete of most recent version.
 	numParts: Number,
 	numComplete: Number,
+        completeUuids: [String],
         complete: Boolean,
         completeTime: Date
     });
     activityCompletionSchema.index({activitySlug: 1, user: 1}, {unique: true});
     exports.ActivityCompletion = mongoose.model("ActivityCompletion", activityCompletionSchema);
+    exports.CompletionLog = mongoose.model("CompletionLog", activityCompletionSchema);
 
     answerLogSchema = new mongoose.Schema({
         activity: ObjectId,

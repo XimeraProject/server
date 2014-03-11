@@ -15,7 +15,7 @@
 
 // Script expects data-activityId attribute in activity div.
 define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/parser', 'confirm-click'], function(angular, $, _, MathFunction, parse) {
-    var app = angular.module('ximeraApp.activity', ["ngAnimate", "ximeraApp.confirmClick"]);
+    var app = angular.module('ximeraApp.instructorActivity', ["ngAnimate", "ximeraApp.confirmClick", 'ximeraApp.activityServices']);
 
     // Make sure a list of DOM elements is sorted in the same order in the DOM itself.
     function sortElements(elements) {
@@ -34,11 +34,32 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
         });
     }]);
 
-    app.service('analyticService', function () {
+    app.service('analyticService', ['$http', '$q', '$timeout', function ($http, $q, $timeout) {
         var service = {};
 
+        var getWithDeferred = function(activityId, deferred) {
+            $http.get('/instructor/activity-analytics/' + activityId).
+                success(function (data) {
+                    deferred.resolve(data);
+                }).
+                error(function () {
+                    // Retry until successful.
+                    $timeout(function () {
+                        getWithDeferred(activityId, deferred);
+                    }, 50);
+                });
+        };
+
+        var getAnalyticsForActivity = function (activityId) {
+            var deferred = $q.defer();
+            getWithDeferred(activityId, deferred);
+            return deferred.promise;
+        }
+
+        service.onAnalytics = getAnalyticsForActivity($('.activity').attr('data-activityId'));
+
         return service;
-    });
+    }]);
 
     // TODO: Save complete angular.js state to MongoDB; state is indexed by user and activity hash.
     // If activity hash is updated, for now state is thrown away.
@@ -55,11 +76,8 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
             restrict: 'A',
             scope: {},
             link: function($scope, element, attrs, controller) {
-                stateService.bindState($scope, $(element).attr('data-uuid'), function () {
-                }).then(function () {
-                    $(element).children('.question, .exercise, .exploration').each(function (index, questionElt) {
-                        $(questionElt).show();
-                    });
+                $(element).children('.question, .exercise, .exploration').each(function (index, questionElt) {
+                    $(questionElt).show();
                 });
             }
         };
@@ -77,8 +95,9 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                 transclude(function (clone) {
                     var questionElement = $('<div class="question" ximera-question></div>');
                     questionElement.attr('data-uuid', $(element).attr('data-uuid') + '-question');
+                    questionElement = $compile(questionElement)($scope);
                     questionElement.append(clone);
-                    $(element).append($compile(questionElement)($scope));
+                    $(element).append(questionElement);
                 });
             }
         }
@@ -118,11 +137,12 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                         var uniqueId = 'ximera-question-part-' + $(element).attr('data-uuid') + '-' + locals.count.toString();
                         locals.count += 1;
                         var questionPartElement = $('<div class="questionPart" ximera-question-part></div>').attr('data-uuid', uniqueId);
+                        questionPartElement = $compile(questionPartElement)($scope);
 
                         _.each(elementList, function (subElement) {
                             $(questionPartElement).append(subElement);
                         });
-                        $(element).append($compile(questionPartElement)($scope));
+                        $(element).append(questionPartElement);
                     });
                 });
             }
@@ -138,22 +158,25 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
             restrict: 'A',
             replace: true,
             transclude: true,
-            template: '<div class="row"><div class="col-md-6"></div><div class="col-md-6"></div></div>',
+            template: '<div class="row well"><div class="col-md-6"></div><div class="col-md-6"></div></div>',
             scope: {},
             link: function ($scope, element, attrs, controller, transclude) {
-                transclude(function (clone) {
+                $timeout(function () {
+                    // Move content from end of directive into appropriate column.
                     var answerAnalysisElement = $('<div></div>');
                     answerAnalysisElement.attr('ximera-answer-analysis', 'true');
                     answerAnalysisElement.attr('analysis-uuid', 'db.analysisUuid');
                     var answerAnalysis = $compile(answerAnalysisElement)($scope);
-                    $(element).children('.col-md-6').eq(0).append(clone);
                     $(element).children('.col-md-6').eq(1).append(answerAnalysis);
-                });
 
-                $scope.db = {};
-                if ($(element).children('.answer-emitter').length !== 0) {
-                    $scope.db.analysisUuid = $(element).attr('data-uuid');
-                }
+                    var content = $(element).children('.col-md-6').eq(1).nextAll();
+                    content.detach().appendTo($(element).children('.col-md-6').eq(0));
+
+                    $scope.db = {};
+                    if ($(element).find('.solution').length !== 0) {
+                        $scope.db.analysisUuid = $(element).attr('data-uuid');
+                    }
+                });
             }
         };
     }]);
@@ -161,15 +184,24 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
     app.directive('ximeraAnswerAnalysis', ['$compile', '$timeout', 'analyticService', function ($compile, $timeout, analyticService) {
         return {
             restrict: 'A',
+            replace: true,
+            transclude: true,
+            templateUrl: '/template/answer-analysis',
             scope: {analysisUuid: '=analysisUuid'},
             link: function ($scope, element, attrs, controller) {
                 $timeout(function () {
-                    if ($scope.analysisUuid) {
-                        $(element).text('Analysis goes here.');
-                    }
-                    else {
-                        $(element).text('No analysis uuid.');
-                    }
+                    analyticService.onAnalytics.then(function (analytics) {
+                        $scope.db = {};
+                        if ($scope.analysisUuid) {
+                            if ($scope.analysisUuid in analytics.answerAnalyticsByUuid) {
+                                $scope.db.answerAnalytics = analytics.answerAnalyticsByUuid[$scope.analysisUuid];
+                                $scope.db.shown = true;
+                            }
+                            else {
+                                $(element).text('No analytics found for answer uuid.');
+                            }
+                        }
+                    });
                 });
             }
         };
@@ -183,7 +215,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
         };
     }]);
 
-    app.directive('ximeraMultipleChoice', ['$rootScope', function ($rootScope) {
+    app.directive('ximeraMultipleChoice', ['$rootScope', '$sce', function ($rootScope, $sce) {
         return {
             restrict: 'A',
             scope: {},
@@ -208,7 +240,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                         }
                         return {
                             value: value,
-                            label: $(choice).text(),
+                            label: $sce.trustAsHtml($(choice).html())
                         }
                     });
 
