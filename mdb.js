@@ -104,9 +104,9 @@ exports.initialize = function initialize() {
         complete: Boolean,
         completeTime: Date
     });
+    exports.CompletionLog = mongoose.model("CompletionLog", activityCompletionSchema);
     activityCompletionSchema.index({activitySlug: 1, user: 1}, {unique: true});
     exports.ActivityCompletion = mongoose.model("ActivityCompletion", activityCompletionSchema);
-    exports.CompletionLog = mongoose.model("CompletionLog", activityCompletionSchema);
 
     answerLogSchema = new mongoose.Schema({
         activity: ObjectId,
