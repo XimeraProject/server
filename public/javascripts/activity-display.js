@@ -132,8 +132,10 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                 transclude(function (clone) {
                     var questionElement = $('<div class="question" ximera-question ng-show="db.shown"></div>');
                     questionElement.attr('data-uuid', $(element).attr('data-uuid') + '-question');
+                    questionElement = $compile(questionElement)($scope);
                     questionElement.append(clone);
-                    $(element).append($compile(questionElement)($scope));
+                    $(element).append(questionElement);
+                    //$(element).append($compile(questionElement)($scope));
                 });
 
                 stateService.bindState($scope, $(element).attr('data-uuid'), function () {
@@ -204,11 +206,13 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                         var uniqueId = 'ximera-question-part-' + $(element).attr('data-uuid') + '-' + locals.count.toString();
                         locals.count += 1;
                         var questionPartElement = $('<div class="questionPart" ximera-question-part></div>').attr('data-uuid', uniqueId);
+                        questionPartElement = $compile(questionPartElement)($scope);
 
                         _.each(elementList, function (subElement) {
                             $(questionPartElement).append(subElement);
                         });
-                        $(element).append($compile(questionPartElement)($scope));
+                        $(element).append(questionPartElement);
+                        //$(element).append($compile(questionPartElement)($scope));
                     });
                 });
 
@@ -284,7 +288,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                     });
 
                     // If no solution, immediately mark this question part as complete.
-                    if ($(element).children('.answer-emitter').length === 0) {
+                    if ($(element).children('.solution').length === 0) {
                         $(element).trigger('completeQuestionPart', {questionPartUuid: $(element).attr('data-uuid'), hasAnswer: false});
                     }
                 });
