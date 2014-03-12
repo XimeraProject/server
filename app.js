@@ -9,6 +9,7 @@ var express = require('express')
   , user = require('./routes/user')
   , about = require('./routes/about')
   , score = require('./routes/score')
+  , instructor = require('./routes/instructor')
   , http = require('http')
   , path = require('path')
   , mdb = require('./mdb')
@@ -200,10 +201,13 @@ git.long(function (commit) {
     app.get(/^\/course\/(.+)\/activity\/(.+)\/update\/$/, course.activityUpdate);
     app.get(/^\/course\/(.+)\/activity\/(.+)\/source\/$/, course.activitySource);
     app.get(/^\/course\/(.+)\/activity\/(.+)\/$/, course.activity );
-    app.get(/^\/instructor\/course\/(.+)\/activity\/(.+)\/$/, course.instructorActivity );
     app.get( /^\/course\/(.+)\/activity\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
     app.get(/^\/course\/(.+)\/$/, course.landing );
     app.get( /^\/course\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
+
+    // Instructor paths
+    app.get(/^\/instructor\/course\/(.+)\/activity\/(.+)\/$/, course.instructorActivity );
+    app.get('/instructor/activity-analytics/:id', instructor.activityAnalytics);
 
     // Coursera login.
     app.get('/auth/coursera',

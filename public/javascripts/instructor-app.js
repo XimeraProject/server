@@ -78,13 +78,7 @@ require( ["angular", "shCore", "angular-animate", "bootstrap", "directives/mathj
     'use strict';
 
     var app = angular.module('ximeraInstructorApp', ['ximeraApp.mathJax',
-					             'ximeraApp.activity',
-					             'ximeraApp.codingActivity',
-					             'ximeraApp.inputMath',
-					             'ximeraApp.videoPlayer',
-					             'ximeraApp.matrixActivity',
-					             'ximeraApp.mathMatrix',
-					             'ximeraApp.freeResponse',
+					             'ximeraApp.instructorActivity',
 					             'ximeraApp.score',
 					             'ximeraApp.user',
 					             'ximeraApp.popover',

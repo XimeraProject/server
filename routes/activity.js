@@ -57,6 +57,7 @@ exports.logCompletion = function(req, res) {
     var complete = req.body.complete;
     var numParts = req.body.numParts;
     var numComplete = req.body.numComplete;
+    var completeUuids = req.body.completeUuids;
     var curTime = new Date();
 
     var locals = {};
@@ -74,6 +75,21 @@ exports.logCompletion = function(req, res) {
             });
         },
         function (callback) {
+            var completeTime = complete ? curTime : null;
+            var log = new mdb.CompletionLog({
+                activitySlug: locals.activity.slug,
+                user: req.user._id,
+                activity: activityId,
+                percentDone: percentDone,
+                numParts: numParts,
+                numComplete: numComplete,
+                complete: complete,
+                completeTime: completeTime,
+                completeUuids: completeUuids
+            });
+            log.save(callback);
+        },
+        function (callback) {
             mdb.ActivityCompletion.findOne({
                 activitySlug: locals.activity.slug,
                 user: req.user._id
@@ -84,6 +100,7 @@ exports.logCompletion = function(req, res) {
                     completion.percentDone = percentDone;
                     completion.numParts = numParts;
                     completion.numComplete = numComplete;
+                    completion.completeUuids = completeUuids;
                     if (complete && !completion.complete) {
                         completion.complete = true;
                         completion.completeTime = curTime;
@@ -115,3 +132,4 @@ exports.logCompletion = function(req, res) {
         }
     });
 }
+

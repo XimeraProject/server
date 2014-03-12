@@ -135,7 +135,6 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                     questionElement = $compile(questionElement)($scope);
                     questionElement.append(clone);
                     $(element).append(questionElement);
-                    //$(element).append($compile(questionElement)($scope));
                 });
 
                 stateService.bindState($scope, $(element).attr('data-uuid'), function () {
@@ -212,7 +211,6 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                             $(questionPartElement).append(subElement);
                         });
                         $(element).append(questionPartElement);
-                        //$(element).append($compile(questionPartElement)($scope));
                     });
                 });
 
@@ -288,9 +286,11 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                     });
 
                     // If no solution, immediately mark this question part as complete.
-                    if ($(element).children('.solution').length === 0) {
-                        $(element).trigger('completeQuestionPart', {questionPartUuid: $(element).attr('data-uuid'), hasAnswer: false});
-                    }
+                    $timeout(function () {
+                        if ($(element).children('.solution').length === 0) {
+                            $(element).trigger('completeQuestionPart', {questionPartUuid: $(element).attr('data-uuid'), hasAnswer: false});
+                        }
+                    });
                 });
             }
         };

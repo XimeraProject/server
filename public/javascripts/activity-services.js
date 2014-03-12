@@ -68,7 +68,8 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
 
         service.sendLoggedAnswers = _.debounce(function () {
             if ($rootScope.db.logService.completionNeedsUpdate) {
-                var numParts = _.keys($rootScope.db.logService.qpCompletion).length;
+                var completeUuids = _.keys($rootScope.db.logService.qpCompletion);
+                var numParts = completeUuids.length;
                 var numComplete = _.filter(_.values($rootScope.db.logService.qpCompletion), function (x) { return x;}).length;
                 var percentDone;
                 if (numParts === 0) {
@@ -90,6 +91,7 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
                     percentDone: percentDone,
 		    numParts: numParts,
 		    numComplete: numComplete,
+                    completeUuids: completeUuids,
                     complete: complete
                 }).success(function(data, status, headers, config) {
                     if (data["ok"] === true) {
