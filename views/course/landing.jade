@@ -18,8 +18,10 @@ block content
      mixin breadcrumbs(['/course/',"/course/#{course.slug}/"],['Courses',course.name])
      .page-header
        h1 #{course.name}
-     p #{course.description}
+     p #{course.description}  You can 
+       a(href="/course/#{course.slug}/activity/#{course.normalizeSlug(course.activityTree[0].slug)}/") get started by clicking here.
+       |  The activities include quite a bit of javascript, so you may have to wait a little while for the page to finish rendering.  Please <a href="mailto:fowler@math.osu.edu">let me know</a> if you are having trouble accessing the content.
 
-     h2 Activities
-     .tree
-       mixin displayTree(course, course.activityTree)
+     //h2 Activities
+     //.tree
+     //mixin displayTree(course, course.activityTree)

@@ -673,3 +673,64 @@ h3.frontpage {
     margin-bottom: 0.5em;
     text-transform:uppercase;    
 }
+
+/****************************************************************/
+/* some layout for the math */
+
+.activity p {
+  margin-bottom: 8pt;
+}
+
+.definition p:first-child:before
+{
+    content:"Definition. ";
+    display: inline;
+    font-weight: bold;
+} 
+
+.definition {
+    background-color: #EFE;
+    border-radius: 4pt;
+    padding: 4pt;
+    margin-top: 4pt;
+    margin-bottom: 4pt;
+}
+
+.observation p:first-child:before
+{
+    content:"Observation. ";
+    display: inline;
+    font-weight: bold;
+} 
+
+.observation {
+    background-color: #EEF;
+    border-radius: 4pt;
+    padding: 4pt;
+    margin-top: 4pt;
+    margin-bottom: 4pt;
+}
+
+.warning p:first-child:before
+{
+    content:"Warning. ";
+    display: inline;
+    font-weight: bold;
+} 
+
+.warning {
+    background-color: #FEE;
+    border-radius: 4pt;
+    padding: 4pt;
+    margin-top: 4pt;
+    margin-bottom: 4pt;
+}
+
+.question {
+  margin-bottom: 16pt;
+}
+
+.solution {
+  margin-top: 4pt;
+  margin-bottom: 8pt;
+}
