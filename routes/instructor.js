@@ -1,14 +1,34 @@
 var async = require('async')
   , mdb = require('../mdb')
   , mongoose = require('mongoose')
-  , _ = require('underscore');
+  , _ = require('underscore')
+  , util = require('util')
+  , course = require('./course');
+
+// TODO: Better authorization framework?
+
+exports.instructorActivity = function(req, res) {
+    if (req.user.isInstructor) {
+        res.locals.instructorApp = true;
+        return course.activity(req, res);
+    }
+    else {
+        res.send(403);
+    }
+}
+
 
 exports.activityAnalytics = function(req, res) {
+    if (!req.user.isInstructor) {
+        res.send(403);
+        return;
+    }
+
     var version = req.params.id;
     var locals = {};
     async.series([
         function (callback) {
-            mdb.Activity.find({_id: new mongoose.Types.ObjectId(version)}, function (err, activity) {
+            mdb.Activity.findOne({_id: new mongoose.Types.ObjectId(version)}, function (err, activity) {
                 if (err) callback(err);
                 locals.activity = activity;
                 callback();
@@ -29,7 +49,7 @@ exports.activityAnalytics = function(req, res) {
             });
         },
         function (callback) {
-            mdb.ActivityCompletion.find({activitySlug: locals.activitySlug}, function (err, completions) {
+            mdb.ActivityCompletion.find({activitySlug: locals.activity.slug}, function (err, completions) {
                 if (err) callback(err);
                 locals.completions = completions;
                 callback();
@@ -111,12 +131,12 @@ exports.activityAnalytics = function(req, res) {
                         isCorrect = userAnswerLog.correct || isCorrect;
                     });
                     if (isCorrect) {
-                        totalUsersCorrect += 1
+                        totalUsersCorrect[0] += 1
                         attemptCountUntilCorrectByUser[userId] = attemptCount;
                     }
                 });
 
-                analytics.percentUsersCorrect = totalUsersCorrect[0] / _.keys(answerLogsByUser).length;
+                analytics.percentUsersCorrect = 100 * (totalUsersCorrect[0] / _.keys(answerLogsByUser).length);
                 var totalResponsesBeforeCorrect = [0];
                 _.each(_.values(attemptCountUntilCorrectByUser), function (count) {
                     totalResponsesBeforeCorrect[0] += count;
@@ -127,27 +147,37 @@ exports.activityAnalytics = function(req, res) {
                 var totalAttempts = [0];
                 var totalCorrect = [0];
                 _.each(answerLogs, function (answerLog) {
+                    console.log(util.inspect(answerLog));
+                    console.log(answerLog.correct);
+                    console.log(totalAttempts[0]);
+                    console.log(totalCorrect[0]);
                     totalAttempts[0] += 1;
                     if (!answerLog.correct) {
-                        if (answerLog.answer in wrongAnswerCount) {
-                            wrongAnswerCount[answerLog.answer] = 1;
+                        console.log("Wrong answer");
+                        if (!(answerLog.value in wrongAnswerCount)) {
+                            wrongAnswerCount[answerLog.value] = 1;
                         }
                         else {
-                            wrongAnswerCount[answerLog.answer] += 1;
+                            wrongAnswerCount[answerLog.value] += 1;
                         }
                     }
                     else {
+                        console.log("Right answer");
                         totalCorrect[0] += 1;
                     }
+                    console.log(totalAttempts[0]);
+                    console.log(totalCorrect[0]);
+                    console.log(util.inspect(wrongAnswerCount));
                 });
 
-                analytics.percentAttempting = _.keys(answerLogsByUser).length / locals.completionLogs.length;
+                analytics.percentAttempting = 100 * (_.keys(answerLogsByUser).length / locals.completions.length);
                 analytics.totalAttempts = totalAttempts[0];
                 analytics.totalCorrect = totalCorrect[0];
                 // Return 5 most common wrong answers.
                 analytics.sortedWrongAnswers = _.sortBy(_.pairs(wrongAnswerCount), function (pair) {
                     return -pair[1];
                 }).slice(0, 5);
+                console.log(util.inspect(analytics.sortedWrongAnswers));
 
                 analyticsByUuid[uuid] = analytics;
             });

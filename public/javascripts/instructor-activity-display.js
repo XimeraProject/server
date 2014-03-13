@@ -199,6 +199,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                             }
                             else {
                                 $(element).text('No analytics found for answer uuid.');
+                                $scope.db.shown = true;
                             }
                         }
                     });
@@ -282,12 +283,21 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
             templateUrl: '/template/python',
             transclude: true,
             link: function($scope, element, attrs, controller, transclude) {
+                transclude(function (clone) {
+                    var source = $(clone).text();
+
+		    $scope.scaffold = source.split("def validator():\n")[0];
+		    $scope.scaffold = $scope.scaffold.replace(/^\n+|\n+$/gm,'') + "\n";
+                });
+
 		var options = {
 		    lineWrapping : true,
 		    lineNumbers: true,
-		    mode: 'python',
+		    mode: 'python'
 		};
       		var myCodeMirror = CodeMirror.fromTextArea($(element).find('textarea')[0], options);
+                myCodeMirror.setValue($scope.scaffold);
+                myCodeMirror.refresh();
             }
         };
     }]);
