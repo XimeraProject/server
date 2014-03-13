@@ -2,7 +2,9 @@
 if [ $(hostname) = ximera-1.asc.ohio-state.edu ]; then
     echo On the deployment machine.
     echo Pulling latest version from github...
+    mv -f environment.sh environment.backup
     git pull
+    mv -f environment.backup environment.sh
     echo Updating npm...
     npm install
     echo Running grunt...
