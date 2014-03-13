@@ -27,10 +27,12 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
                | <i class="fa fa-user"></i> #{user.name} 
                b.caret
              ul.dropdown-menu
-               li
-                 a(href="/users/profile") <i class='fa fa-cogs'></i> Profile
+               //li
+               //  a(href="/users/profile") <i class='fa fa-cogs'></i> Profile
                li
                  a(href="/logout") <i class='fa fa-sign-out'></i> Logout
          else
            li
-             a(href="/auth/google") Sign In
+             a(href="/auth/google") Sign In with Google
+           li
+             a(href="/auth/coursera") Sign In with Coursera
