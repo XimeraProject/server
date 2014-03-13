@@ -206,7 +206,7 @@ git.long(function (commit) {
     app.get( /^\/course\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
 
     // Instructor paths
-    app.get(/^\/instructor\/course\/(.+)\/activity\/(.+)\/$/, course.instructorActivity );
+    app.get(/^\/instructor\/course\/(.+)\/activity\/(.+)\/$/, instructor.instructorActivity );
     app.get('/instructor/activity-analytics/:id', instructor.activityAnalytics);
 
     // Coursera login.

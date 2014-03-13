@@ -4,7 +4,7 @@ div(ng-show="db.shown")
   p
     | Average number of responses before a correct answer: {{db.answerAnalytics.averageResponsesBeforeCorrect}}
   p
-    | Percent of viewing users who attempt this part: {{db.answerAnalytics.percentAttempting}}
+    | Percent of viewing users who attempt this part: {{db.answerAnalytics.percentAttempting}}%
   p
     | Total attempts: {{db.answerAnalytics.totalAttempts}}
   p
@@ -12,5 +12,5 @@ div(ng-show="db.shown")
   p
     | Most common wrong answers:
     ul
-      li(ng-repeat="answer in db.analytics.sortedWrongAnswers")
+      li(ng-repeat="answer in db.answerAnalytics.sortedWrongAnswers")
         | {{answer[1]}} attempts: {{answer[0]}}

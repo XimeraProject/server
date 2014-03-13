@@ -64,7 +64,8 @@ exports.initialize = function initialize() {
 				      userAgent: String,
 				      remoteAddress: String,
                                       isGuest: Boolean,
-                                      lastUrlVisited: String
+                                      lastUrlVisited: String,
+                                      isInstructor: Boolean
                                   });
 
     exports.Scope = mongoose.model("Scope",

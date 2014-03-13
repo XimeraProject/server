@@ -275,8 +275,8 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                     $scope.db.complete = false;
                 }).then(function () {
                     $(element).on('attemptAnswer', function (event, data) {
+                        var uuid = $(element).attr('data-uuid');
                         if (data.success && !$scope.db.complete) {
-                            var uuid = $(element).attr('data-uuid')
                             $scope.db.complete = true;
                             $(element).trigger('completeQuestionPart', {questionPartUuid: uuid, hasAnswer: true})
 			    $scope.$emit( 'Xudos', 1 );
