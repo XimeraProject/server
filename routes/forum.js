@@ -113,9 +113,11 @@ module.exports = function(io) {
 						name: req.user.name } 
 				      } );
 
-		if ('email' in req.user) {
+	if (('email' in req.user) && (req.user.email != null)) {
 		    var userEmail = req.user.email;
 		    post.user.gravatar = crypto.createHash('md5').update(userEmail).digest("hex");
+		} else {
+		    post.user.gravatar = crypto.createHash('md5').update(req.user._id.toString()).digest("hex");
 		}
 
 		var room = post.room;
@@ -209,9 +211,11 @@ module.exports = function(io) {
 				      name: req.user.name },
 			    });
 	
-	if ('email' in req.user) {
+	if (('email' in req.user) && (req.user.email != null)) {
 	    var userEmail = req.user.email;
 	    post.user.gravatar = crypto.createHash('md5').update(userEmail).digest("hex");
+	} else {
+	    post.user.gravatar = crypto.createHash('md5').update(req.user._id.toString()).digest("hex");
 	}
 
 	if (('parent' in req.body) && (req.body.parent.length > 0)) {
