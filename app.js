@@ -183,8 +183,8 @@ git.long(function (commit) {
 
     app.put('/users/', user.put);
     app.get('/users/', user.getCurrent);
-    app.get('/users/profile', user.currentProfile);
-    app.get('/users/:id/profile', user.profile);
+    //app.get('/users/profile', user.currentProfile);
+    //app.get('/users/:id/profile', user.profile);
     app.get('/users/:id', user.get);
 
     app.get( '/course/calculus-one/', function( req, res ) { res.redirect('/about/plans'); });
