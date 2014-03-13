@@ -45,6 +45,16 @@ exports.profile = function(req, res){
 exports.get = function(req, res){
     var id = req.params.id;
 
+    if (!req.user) {
+	res.send(401);
+    }
+
+    // BADBAD: should include more nuanced security here
+    if (req.user._id.toString() != user._id.toString()) {
+        res.status(500).send('No permission to access other users.');
+	return;	
+    }
+	
     req.db.users.findOne({_id: new mongo.ObjectID(id)}, function(err,document) {
         if (document) {
 	    if ('emails' in document)
