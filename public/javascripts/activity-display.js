@@ -577,4 +577,8 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
     app.controller('ResetButtonCtrl', ['$scope', 'stateService', function ($scope, stateService) {
         $scope.resetPage = stateService.resetPage;
     }]);
+
+    app.controller('SaveWorkCtrl', ['$scope', 'stateService', function($scope, stateService) {
+        $scope.updateState = stateService.updateState;
+    }]);
 });

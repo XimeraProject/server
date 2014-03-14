@@ -119,7 +119,8 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
     }]);
 
     app.factory('stateService', function ($timeout, $rootScope, $http, $q) {
-        var locals = {dataByUuid: null};
+        var stateService = {};
+        var locals = {dataByUuid: null, saved: true};
         var activityId = $('.activity').attr('data-activityId');
         var getStateDeferred = $q.defer();
 
@@ -166,7 +167,8 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
         getState();
 
         // TODO: Add activityHash
-        var updateState = function (callback, forceUpload) {
+        stateService.updateState = function (callback, forceUpload) {
+            locals.saved = true;
             if (locals.dataByUuid || forceUpload) {
                 $http.put("/angular-state/" + activityId, {dataByUuid: locals.dataByUuid})
                     .success(function(data, status, headers, config) {
@@ -182,7 +184,7 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
         }
 
         var triggerUpdate = _.debounce(function () {
-            updateState(function (err) {
+            stateService.updateState(function (err) {
                 if (err) {
                     // Retry on error.
                     triggerUpdate();
@@ -190,7 +192,6 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
             });
         }, 47*1000);
 
-        var stateService = {};
         // Don't bind state for the same data-uuid twice; can happen with some transclusions?
         var alreadyBound = [];
         stateService.bindState = function ($scope, uuid, initCallback) {
@@ -207,6 +208,7 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
                     }
 
                     $scope.$watch("db", function () {
+                        locals.saved = false;
                         triggerUpdate();
                     }, true);
                 });
@@ -217,9 +219,15 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
             }
         }
 
+        $(window).on('beforeunload', function () {
+            if (!locals.saved) {
+                return "Your work is not yet saved; are you sure you want to leave this page?"
+            }
+        });
+
         stateService.resetPage = function () {
             locals.dataByUuid = null;
-            updateState(function () {
+            stateService.updateState(function () {
                 location.reload(true);
             }, true);
         }
