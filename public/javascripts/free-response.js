@@ -51,7 +51,7 @@ define(['angular', 'jquery', 'underscore', "pagedown-converter", "pagedown-sanit
 		editor.run();
 
 		var toolbar = $('#wmd-button-row' + $scope.wmdName, form);
-		toolbar.append( $('<div class="btn-group"><button class="btn btn-primary"><i class="fa fa-share"></i>&nbsp;Submit to Peers</button><button class="btn btn-warning"><i class="fa fa-thumbs-up"></i>&nbsp;Review Peers</button></div>') );		
+		//toolbar.append( $('<div class="btn-group"><button class="btn btn-primary"><i class="fa fa-share"></i>&nbsp;Submit to Peers</button><button class="btn btn-warning"><i class="fa fa-thumbs-up"></i>&nbsp;Review Peers</button></div>') );		
 
 		// update view from model
 		$scope.$watch('db.response', function (value) {
