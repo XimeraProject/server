@@ -90,7 +90,7 @@
 "exp"                   return 'EXP'
 "sqrt"                  return 'SQRT'
 "abs"                   return 'ABS'
-[A-Za-z]+\b             return 'VAR'
+[A-Za-z]                return 'VAR'
 <<EOF>>                 return 'EOF'
 EOF			return 'EOF'
 .                       return 'INVALID'
