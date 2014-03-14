@@ -119,6 +119,21 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'activity-se
 			    return m;
 		        };
 
+			var unpackMatrix = function(m) {
+			    var result = [];
+
+			    var i;
+			    for( i=0; i<rows(m); i++ ) {
+			        result[i] = [];
+			        var j;
+			        for( j=0; j<columns(m); j++ ) {
+				    result[i][j] = m[i][j].v;			    
+				}
+			    }
+
+			    return result;
+			}
+
 		        var isMatrixCorrect = function(m, answer) {
 			    if (columns(answer) == 1)
 			        if (isNotColumnVector(m, rows(answer))) return false;
@@ -129,11 +144,8 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'activity-se
 			    for( i=0; i<rows(answer); i++ ) {
 			        var j;
 			        for( j=0; j<columns(answer); j++ ) {
-				    console.log( i, j, answer[i][j], m[i][j].v );
 				    var parsedAnswer = MathFunction.parse(answer[i][j]);
-				    var parsedResponse = MathFunction.parse(m[i][j].v);
-				    console.log( parsedAnswer );
-				    console.log( parsedResponse );
+				    var parsedResponse = MathFunction.parse(m[i][j]);
 				    if (!(parsedResponse.equals(parsedAnswer))) {
 				        feedback('The entry in row ' + (i+1).toString() + ' and column ' + (j+1).toString() + ' differs.'); 
 				        return false;
@@ -144,7 +156,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'activity-se
 			    return true;
 		        };
 
-		        var validator = function(m) { return isMatrixCorrect(m, correctMatrix); };
+		        var validator = function(m) { return isMatrixCorrect(unpackMatrix(m), correctMatrix); };
 
 		        try {
 			    eval($scope.validator);
