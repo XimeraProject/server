@@ -129,8 +129,11 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'activity-se
 			    for( i=0; i<rows(answer); i++ ) {
 			        var j;
 			        for( j=0; j<columns(answer); j++ ) {
+				    console.log( i, j, answer[i][j], m[i][j].v );
 				    var parsedAnswer = MathFunction.parse(answer[i][j]);
 				    var parsedResponse = MathFunction.parse(m[i][j].v);
+				    console.log( parsedAnswer );
+				    console.log( parsedResponse );
 				    if (!(parsedResponse.equals(parsedAnswer))) {
 				        feedback('The entry in row ' + (i+1).toString() + ' and column ' + (j+1).toString() + ' differs.'); 
 				        return false;
@@ -145,7 +148,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'activity-se
 
 		        try {
 			    eval($scope.validator);
-
+			    console.log( 'correctMatrix', correctMatrix );
 			    if (validator($scope.db.matrix)) {
 			        success = true;
 			    }

@@ -963,6 +963,8 @@ define(["algebra/complex-number", "algebra/text-to-ast", "algebra/ast-to-text", 
 			/*
 			console.log( "incorrect" );
 			console.log( "x = " + bindings["x"] );
+			console.log( "y = " + bindings["y"] );
+			console.log( "z = " + bindings["z"] );
 			console.log( "this = " + this_evaluated );
 			console.log( "other = " + other_evaluated );
 			console.log( "" );
@@ -972,10 +974,13 @@ define(["algebra/complex-number", "algebra/text-to-ast", "algebra/ast-to-text", 
 		    /*
 		    console.log( "infinite" );
 		    console.log( "x = " + bindings["x"] );
+		    console.log( "y = " + bindings["y"] );
+		    console.log( "z = " + bindings["z"] );
 		    console.log( "this = " + this_evaluated );
 		    console.log( "other = " + other_evaluated );
 		    console.log( "" );
 		    */
+
 		}
 
 		if (actual_trials > 50)
