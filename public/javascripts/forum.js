@@ -198,6 +198,13 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 		//var socket = io.connect('http://localhost:3000/');
 		socket.emit( 'join room', $scope.forum );
 
+		$scope.$on('post', function (event, data) {
+		    $scope.addPost( data );
+		    $timeout(function () {
+			MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+		    });
+		});
+
 		socket.on('post', function (data) {
 		    $scope.addPost( data );
 		    // BADBAD: it'd be better to trigger mathjax from the directive
@@ -240,8 +247,7 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 		    $http.post( '/forum/' + $scope.forumName, {content: $scope.newPost.content, parent: $scope.parent} ).success(function(data){
 			$scope.replyDone();
 			$scope.errorMessage = undefined;
-			// this need not be here if websockets were working
-			$scope.addPost( data[0] );			
+			$scope.$emit( 'post', data[0] );
 		    }).error(function(data, status, headers, config) {
 			$scope.errorMessage = 'Could not post your message.  ' + data;
 		    })
@@ -278,8 +284,7 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 		    $http.put( '/forum/' + $scope.postId, {content: $scope.newPost.content} ).success(function(data){
 			$scope.editDone();
 			$scope.errorMessage = undefined;
-			// this need not be here if websockets were working
-			$scope.addPost( data[0] );			
+			$scope.$emit( 'post', data[0] );
 		    }).error(function(data, status, headers, config) {
 			$scope.errorMessage = 'Could not edit your message.  ' + data;
 		    })
