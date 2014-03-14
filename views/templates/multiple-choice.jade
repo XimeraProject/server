@@ -9,7 +9,7 @@ div
       | &nbsp;Correct
     button.btn.btn-danger(ng-click='attemptAnswer()',ng-switch-when="incorrect",data-toggle="tooltip",data-placement="top",title="Incorrect.  Try again!")
       i.fa.fa-times
-      | &nbsp;Incorrect
+      | &nbsp;Try again
     button.btn.btn-primary(ng-click='attemptAnswer()',ng-switch-default,data-toggle="tooltip",data-placement="top",title="Click to check your answer.",ng-disabled="{{!db.radioValue}}")
       i.fa.fa-question
       | &nbsp;Check work

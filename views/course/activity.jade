@@ -14,7 +14,7 @@ block activity
         div.pull-right.btn-toolbar(role="toolbar")
           if !activity.recent
             .btn-group
-              a.pull-right.btn.btn-sm.btn-primary(role="button", href="update/")
+              a.pull-right.btn.btn-sm.btn-primary(role="button", ng-confirm-click="Updating to the most recent version of this activity will erase your work.  Are you sure you want to update to the new version?", href="update/")
                 | <i class="fa fa-level-up"></i> Update Activity
           .btn-group
             button.pull-right.btn.btn-sm.btn-danger(type="button",ng-controller="ResetButtonCtrl", ng-confirm-click="Are you sure you want to erase your work?", ng-click="resetPage()")
