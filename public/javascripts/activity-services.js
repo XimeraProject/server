@@ -167,10 +167,25 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
         getState();
 
         // TODO: Add activityHash
-        stateService.updateState = function (callback, forceUpload) {
+        stateService.updateState = function (callback, forceUpload, noAsync) {
             locals.saved = true;
             if (locals.dataByUuid || forceUpload) {
-                $http.put("/angular-state/" + activityId, {dataByUuid: locals.dataByUuid})
+                $.ajax("/angular-state/" + activityId, {
+                    data: {dataByUuid: locals.dataByUuid},
+                    method: "PUT",
+                    async: !noAsync,
+                    success: function () {
+                        console.log("State uploaded.");
+                        if (callback) {
+                            callback();
+                        }
+                    },
+                    error: function () {
+                        console.log("Error uploading state: ", status);
+                        callback(status);
+                    }
+                });
+/*                $http.put("/angular-state/" + activityId, {dataByUuid: locals.dataByUuid})
                     .success(function(data, status, headers, config) {
                         console.log("State uploaded.");
                         if (callback) {
@@ -179,7 +194,7 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
                     }).error(function(data, status, headers, config) {
                         console.log("Error uploading state: ", status);
                         callback(status);
-                    });
+                    });*/
             }
         }
 
@@ -190,6 +205,15 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
             locals.warnOnExit = true;
             locals.saved = true;
         }, 3000);
+
+        // TODO: 2000ms timeout here is janky, but it's less than the 3000 above before warnings start.
+        $timeout(function () {
+            $('a').click(function() {
+                // Force synced update before navigating away using link.
+                stateService.updateState(null, null, true);
+                return true;
+            });
+        }, 2000);
 
         var triggerUpdate = _.debounce(function () {
             stateService.updateState(function (err) {
