@@ -120,7 +120,7 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
 
     app.factory('stateService', function ($timeout, $rootScope, $http, $q) {
         var stateService = {};
-        var locals = {dataByUuid: null, saved: true};
+        var locals = {dataByUuid: null, saved: true, warnOnExit: false};
         var activityId = $('.activity').attr('data-activityId');
         var getStateDeferred = $q.defer();
 
@@ -183,6 +183,14 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
             }
         }
 
+        // Don't give message within 3 seconds of loading.
+        // Also don't give message for "work done" in first 3 seconds.
+        // Without these, students get warned sometimes on empty pages.
+        $timeout(function () {
+            locals.warnOnExit = true;
+            locals.saved = true;
+        }, 3000);
+
         var triggerUpdate = _.debounce(function () {
             stateService.updateState(function (err) {
                 if (err) {
@@ -220,7 +228,7 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
         }
 
         $(window).on('beforeunload', function () {
-            if (!locals.saved) {
+            if (!locals.saved && locals.warnOnExit) {
                 return "Your work is not yet saved; are you sure you want to leave this page?"
             }
         });
