@@ -333,6 +333,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                                 value = _.random(0, 1000000000).toString();
                             }
                             return {
+                                uuid: $(choice).attr('data-uuid'),
                                 value: value,
                                 labelHtml: $(choice).html(),
                                 label: ""
@@ -346,9 +347,9 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                     $scope.db.radioGroup = $(element).attr('data-uuid');
                 }).then(function () {
                     // Set element labels.
-                    $scope.db.choices = _.map($scope.db.choices, function (choice) {
-                        choice.label = $sce.trustAsHtml(choice.labelHtml);
-                        return choice;
+                    $scope.choiceLabelsByUuid = {};
+                    _.each($scope.db.choices, function (choice) {
+                        $scope.choiceLabelsByUuid[choice.uuid] = $sce.trustAsHtml(choice.labelHtml);
                     });
                     $timeout(function () {
                         MathJax.Hub.Queue(["Typeset", MathJax.Hub, $(element).get(0)]);

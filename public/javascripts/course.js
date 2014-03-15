@@ -1,5 +1,5 @@
 define(['angular', 'jquery', 'underscore', 'angular-animate', 'activity-services'], function(angular, $, _) {
-    var app = angular.module('ximeraApp.course', ['ngAnimate']);
+    var app = angular.module('ximeraApp.course', ['ngAnimate', 'ximeraApp.activityServices']);
 
     RegExp.escape= function(s) {
 	return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
@@ -226,7 +226,7 @@ define(['angular', 'jquery', 'underscore', 'angular-animate', 'activity-services
 	};}]);
 
 
-    app.directive( 'locationClick', ['$window', function ( $window ) {
+    app.directive( 'locationClick', ['$window', 'stateService', function ( $window, stateService ) {
 	return {
 	    link: function ( scope, element, attrs ) {
 		var path;
@@ -237,7 +237,9 @@ define(['angular', 'jquery', 'underscore', 'angular-animate', 'activity-services
 		
 		element.bind( 'click', function () {
 		    scope.$apply( function () {
-			$window.location.href = path;
+                        stateService.updateState(function () {
+			    $window.location.href = path;
+                        });
 		    });
 		});
 	    }

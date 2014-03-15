@@ -167,25 +167,10 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
         getState();
 
         // TODO: Add activityHash
-        stateService.updateState = function (callback, forceUpload, noAsync) {
+        stateService.updateState = function (callback, forceUpload) {
             locals.saved = true;
             if (locals.dataByUuid || forceUpload) {
-                $.ajax("/angular-state/" + activityId, {
-                    data: {dataByUuid: locals.dataByUuid},
-                    method: "PUT",
-                    async: !noAsync,
-                    success: function () {
-                        console.log("State uploaded.");
-                        if (callback) {
-                            callback();
-                        }
-                    },
-                    error: function () {
-                        console.log("Error uploading state: ", status);
-                        callback(status);
-                    }
-                });
-/*                $http.put("/angular-state/" + activityId, {dataByUuid: locals.dataByUuid})
+                $http.put("/angular-state/" + activityId, {dataByUuid: locals.dataByUuid})
                     .success(function(data, status, headers, config) {
                         console.log("State uploaded.");
                         if (callback) {
@@ -194,7 +179,7 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
                     }).error(function(data, status, headers, config) {
                         console.log("Error uploading state: ", status);
                         callback(status);
-                    });*/
+                    });
             }
         }
 
@@ -206,14 +191,18 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
             locals.saved = true;
         }, 3000);
 
-        // TODO: 2000ms timeout here is janky, but it's less than the 3000 above before warnings start.
+        // TODO: 1000ms timeout here is janky.
         $timeout(function () {
-            $('a').click(function() {
-                // Force synced update before navigating away using link.
-                stateService.updateState(null, null, true);
-                return true;
+            $('a').click(function(event) {
+                // Wait for update before navigating away using link.
+                event.preventDefault();
+                var elt = $(this);
+                stateService.updateState(function () {
+                    window.location.href = elt.attr('href');
+                });
+                return false;
             });
-        }, 2000);
+        }, 1000);
 
         var triggerUpdate = _.debounce(function () {
             stateService.updateState(function (err) {
