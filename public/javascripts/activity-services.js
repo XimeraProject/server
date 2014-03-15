@@ -198,7 +198,7 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
                     triggerUpdate();
                 }
             });
-        }, 47*1000);
+        }, 7*1000);
 
         // Don't bind state for the same data-uuid twice; can happen with some transclusions?
         var alreadyBound = [];
