@@ -1,21 +1,23 @@
-define(['jquery'], function($) {
-  var player = {
-    playVideo: function(container, videoId) {
-      if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
-        window.onYouTubeIframeAPIReady = function() {
-          player.loadPlayer(container, videoId);
-        };
+define(['jquery', 'underscore'], function($, _) {
+    var videosToConstruct = [];
 
-        $.getScript('//www.youtube.com/iframe_api');
-      } else {
-        player.loadPlayer(container, videoId);
-      }
-    },
+    // TODO: Ensure this is only called once?
+    window.onYouTubeIframeAPIReady = function() {
+        _.each(videosToConstruct, function(video) {
+            new YT.Player(video[0], video[1]);
+        });
+    };
 
-    loadPlayer: function(container, options) {
-      new YT.Player(container, options);
-    }
-  };
+    var player = {
+        loadPlayer: function(container, options) {
+            if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
+                videosToConstruct.push([container, options]);
+            }
+            else {
+                new YT.Player(container, options);
+            }
+        }
+    };
 
-  return player;
+    return player;
 });
