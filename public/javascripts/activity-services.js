@@ -159,8 +159,8 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
                     $('.activity').show();
                 }).
                 error(function () {
-                    // Retry until successful.
-                    $timeout(getState);
+                    // Retry every minute until successful.
+                    $timeout(getState, 60000);
                 });
         }
 
