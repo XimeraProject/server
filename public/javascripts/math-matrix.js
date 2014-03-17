@@ -70,6 +70,15 @@ define(['angular', 'jquery', 'underscore', 'algebra/parser'], function(angular, 
 	    controller: function($scope){
 		// check if it was defined.  If not - set a default
 		$scope.matrix = $scope.matrix || [[{v:''}]];
+
+		// Need to reset the matrix if something happens to it
+		if (!($scope.matrix instanceof Array)) {
+		    $scope.matrix = [[{v:''}]];
+		} else {
+		    if (!($scope.matrix[0] instanceof Array)) {
+			$scope.matrix = [[{v:''}]];
+		    }
+		}
 	    },
 
             link: function($scope, element, attrs, controller, transclude) {
