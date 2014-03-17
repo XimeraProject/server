@@ -75,8 +75,16 @@ define(['angular', 'jquery', 'underscore', 'algebra/parser'], function(angular, 
 		if (!($scope.matrix instanceof Array)) {
 		    $scope.matrix = [[{v:''}]];
 		} else {
+		    if ($scope.matrix.length == 0) {
+			$scope.matrix = [[{v:''}]];
+		    }
+
 		    if (!($scope.matrix[0] instanceof Array)) {
 			$scope.matrix = [[{v:''}]];
+		    } else {
+			if ($scope.matrix[0].length == 0) {
+			    $scope.matrix = [[{v:''}]];
+			}
 		    }
 		}
 	    },
