@@ -4,13 +4,13 @@ block title
   | #{activity.title}
 
 block content
-    div.container.activity(data-activityId=activityId, ng-controller="ActivityController")
+    div.container
       div.pull-right.btn-toolbar(role="toolbar")
         .btn-group
-          a.btn.btn-info(role="button",href="../")
+          a.btn.btn-info(href="../")
             | <i class="fa fa-pencil"></i> Do Activity
         .btn-group
-          a.btn.btn-primary(role="button",href="https://github.com/#{activity.repo.gitIdentifier}/blob/master/#{activity.relativePath}")
+          a.btn.btn-primary(href="https://github.com/#{activity.slug.split(':')[0]}/blob/master/#{activity.relativePath}")
             | <i class="fa fa-github-alt"></i> View on GitHub
 
       .page-header
