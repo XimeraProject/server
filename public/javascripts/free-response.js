@@ -1,7 +1,7 @@
 define(['angular', 'jquery', 'underscore', "pagedown-converter", "pagedown-sanitizer", "pagedown-editor"], function(angular, $, _, converter, sanitizer, editor) {
     var app = angular.module('ximeraApp.freeResponse', ["ximeraApp.activityServices"]);
 
-    app.directive('ximeraFreeResponse', ['$compile', '$rootScope', 'stateService', function ($compile, $rootScope, stateService) {
+    app.directive('ximeraFreeResponse', ['$compile', '$rootScope', 'stateService', "$sce", function ($compile, $rootScope, stateService, $sce) {
         return {
             restrict: 'A',
             scope: {},
@@ -10,7 +10,12 @@ define(['angular', 'jquery', 'underscore', "pagedown-converter", "pagedown-sanit
             link: function($scope, element, attrs, controller, transclude) {
                 // Extract python code from original.
                 transclude(function (clone) {
-		    $scope.solution = $(clone).text();
+		    var html = "";
+		    var i;
+		    for (i=0; i<clone.length; i++) {
+			html += "<p>" + (clone[i].innerHTML||'') + "</p>";
+		    }
+		    $scope.htmlSolution = $sce.trustAsHtml(html);
 		});
 
                 stateService.bindState($scope, $(element).attr('data-uuid'), function () {
@@ -20,13 +25,13 @@ define(['angular', 'jquery', 'underscore', "pagedown-converter", "pagedown-sanit
 
 		$scope.wmdName = "-" + $(element).attr('data-uuid');
 
-		var form = $('<form class="compose">' +
-			     '<div class="wmd-panel">' +
-			     '<div id="wmd-button-bar' + $scope.wmdName + '"></div>' + 
-			     '<textarea class="content form-control" ng-model="db.response" rows="5" id="wmd-input' + $scope.wmdName + '" name="content"/>' + 
-			     '<div id="wmd-preview' + $scope.wmdName + '" class="wmd-panel wmd-preview"></div>' +
-			     '</div>' +
-			     '</form>');
+		var formHtml = '<div class="wmd-panel compose">' +
+		    '<div id="wmd-button-bar' + $scope.wmdName + '"></div>' + 
+		    '<textarea class="content form-control" ng-model="db.response" rows="5" id="wmd-input' + $scope.wmdName + '" name="content"/>' + 
+		    '<div id="wmd-preview' + $scope.wmdName + '" class="wmd-panel wmd-preview"></div>' +
+		    '<div class="model-solution" ng-show="db.viewSolution" ng-bind-html="htmlSolution"></div>' +
+		    '</div>';
+		var form = $compile(formHtml)($scope);
 		$(element).append( form );
 
 		var textarea = $('textarea',element);
@@ -52,6 +57,8 @@ define(['angular', 'jquery', 'underscore', "pagedown-converter", "pagedown-sanit
 
 		var toolbar = $('#wmd-button-row' + $scope.wmdName, form);
 		//toolbar.append( $('<div class="btn-group"><button class="btn btn-primary"><i class="fa fa-share"></i>&nbsp;Submit to Peers</button><button class="btn btn-warning"><i class="fa fa-thumbs-up"></i>&nbsp;Review Peers</button></div>') );		
+		var button = '<button class="btn btn-info" ng-click="db.viewSolution = true;" ng-hide="db.viewSolution"><i class="fa fa-eye"></i>&nbsp;View model solution</button><button class="btn btn-info" ng-click="db.viewSolution = false;" ng-show="db.viewSolution"><i class="fa fa-eye-slash"></i>&nbsp;Hide model solution</button>';
+		toolbar.append( $compile(button)($scope) );
 
 		// update view from model
 		$scope.$watch('db.response', function (value) {
