@@ -1,11 +1,5 @@
 extends ../layouts/main
 
-mixin person_photo(person)
-  if person['photo']    
-    img(style="float: left; margin-right: 16pt; margin-left: 16pt; margin-bottom: 16pt;" class="img-rounded" src="/public/images/people/#{person['photo']}-150.jpg")
-  else
-    img(style="float: left; margin-right: 16pt; margin-left: 16pt; margin-bottom: 16pt;" class="img-rounded" src="/public/images/people/silhouette-150.png")
-
 mixin developer(person)
   if person['link']
     a(href=person['link'])
@@ -25,6 +19,12 @@ mixin developer(person)
 
   p
     | !{person['description']}
+
+mixin person_photo(person)
+  if person['photo']    
+    img(style="float: left; margin-right: 16pt; margin-left: 16pt; margin-bottom: 16pt;" class="img-rounded" src="/public/images/people/#{person['photo']}-150.jpg")
+  else
+    img(style="float: left; margin-right: 16pt; margin-left: 16pt; margin-bottom: 16pt;" class="img-rounded" src="/public/images/people/silhouette-150.png")
 
 block content
   .container
