@@ -581,5 +581,9 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
 
     app.controller('SaveWorkCtrl', ['$scope', 'stateService', function($scope, stateService) {
         $scope.updateState = stateService.updateState;
+
+	$scope.$on( 'persisted', function(event, args) {
+	    $scope.saved = args[0];
+	});
     }]);
 });

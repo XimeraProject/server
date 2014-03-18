@@ -23,7 +23,10 @@ block activity
             mixin viewSource()
           .btn-group
             button.pull-right.btn.btn-sm.btn-primary(type="button", ng-controller="SaveWorkCtrl", ng-click="updateState()")
-              | <i class="fa fa-save"></i> Save Work
+              span(ng-if="saved")
+                | <i class="fa fa-save"></i> Work Saved!
+              span(ng-if="!saved")
+                | <i class="fa fa-save"></i> Save Work
          h1 #{activity.title}
       div(completion-meter="")
       | !{activityHtml}

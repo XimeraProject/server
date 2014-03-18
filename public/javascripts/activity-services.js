@@ -169,6 +169,7 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
         // TODO: Add activityHash
         stateService.updateState = function (callback, forceUpload) {
             locals.saved = true;
+	    $rootScope.$broadcast( 'persisted', [locals.saved] );
             if (locals.dataByUuid || forceUpload) {
                 $http.put("/angular-state/" + activityId, {dataByUuid: locals.dataByUuid})
                     .success(function(data, status, headers, config) {
@@ -178,6 +179,8 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
                         }
                     }).error(function(data, status, headers, config) {
                         console.log("Error uploading state: ", status);
+			locals.saved = false;
+			$rootScope.$broadcast( 'persisted', [locals.saved] );
                         callback(status);
                     });
             }
@@ -189,6 +192,7 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
         $timeout(function () {
             locals.warnOnExit = true;
             locals.saved = true;
+	    $rootScope.$broadcast( 'persisted', [locals.saved] );
         }, 3000);
 
         // TODO: 1000ms timeout here is janky.
@@ -230,6 +234,7 @@ define(['angular', 'jquery', 'underscore'], function (angular, $, _) {
 
                     $scope.$watch("db", function () {
                         locals.saved = false;
+			$rootScope.$broadcast( 'persisted', [locals.saved] );
                         triggerUpdate();
                     }, true);
                 });
