@@ -9,9 +9,9 @@ mixin person_photo(person)
 mixin developer(person)
   if person['link']
     a(href=person['link'])
-      mixin person_photo(person)
+      +person_photo(person)
   else
-    mixin person_photo(person)
+    +person_photo(person)
 
   h4 
     if person['email']
@@ -45,5 +45,5 @@ block content
          - }
      - }
 
-     include team.markdown
+     include:md team.markdown
 
