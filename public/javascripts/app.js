@@ -96,12 +96,6 @@ require( ["angular", "shCore", "angular-animate", "bootstrap", "directives/mathj
     $(document).ready(function() {
         angular.bootstrap(document, [app['name']]);
 	shCore.SyntaxHighlighter.highlight();
+	$(".dropdown-toggle").dropdown();
     });
 });
-
-/*
-    script(src="/public/javascripts/setup-editable.js")
-    script(src="/public/javascripts/remote-binding.js")
-    script(src="https://www.youtube.com/iframe_api")
-    script(src="/public/javascripts/video-player.js")
-*/

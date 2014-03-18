@@ -13,7 +13,7 @@ block activity
       .page-header
         div.pull-right.btn-toolbar(role="toolbar")
           .btn-group
-            a.btn.btn-info.btn-sm(type="button",href="https://github.com/#{activity.slug.split(':')[0]}/issues/new")
+            a.btn.btn-warning.btn-sm(type="button",href="https://github.com/#{activity.slug.split(':')[0]}/issues/new")
               | <i class="fa fa-bug"></i> Report Bug
           .btn-group
             button.pull-right.btn.btn-sm.btn-danger(type="button",ng-controller="ResetButtonCtrl", ng-confirm-click="Are you sure you want to erase your work?", ng-click="resetPage()")
