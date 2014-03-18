@@ -13,13 +13,21 @@ block activity
       .page-header
         div.pull-right.btn-toolbar(role="toolbar")
           .btn-group
-            a.btn.btn-warning.btn-sm(type="button",href="https://github.com/#{activity.slug.split(':')[0]}/issues/new")
-              | <i class="fa fa-bug"></i> Report Bug
+            button.btn.btn-warning.btn-sm.dropdown-toggle(type="button",data-toggle="dropdown")
+              | <i class="fa fa-bug"></i> Report Bug <span class="caret"></span>
+            ul.dropdown-menu
+              li
+                a(href="https://github.com/#{activity.slug.split(':')[0]}/issues/new") Report error in content
+              li
+                a(href="https://github.com/kisonecat/ximera/issues/new") Report error with website
           .btn-group
             button.pull-right.btn.btn-sm.btn-danger(type="button",ng-controller="ResetButtonCtrl", ng-confirm-click="Are you sure you want to erase your work?", ng-click="resetPage()")
               | <i class="fa fa-eraser"></i> Erase Work
           .btn-group
             mixin viewSource()
+          .btn-group
+            a.pull-right.btn.btn-default.btn-sm(role="button",href="https://github.com/#{activity.slug.split(':')[0]}/edit/master/#{activity.relativePath}")
+              | <i class="fa fa-pencil"></i> Edit Source
           .btn-group
             button.pull-right.btn.btn-sm.btn-primary(type="button", ng-controller="SaveWorkCtrl", ng-click="updateState()")
               span(ng-if="saved")
