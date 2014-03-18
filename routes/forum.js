@@ -28,6 +28,13 @@ module.exports = function(io) {
 	// BADBAD: It is possible to miss posts this way, since two posts might have the same timestamp
 	mdb.Post.find({ $query: {room: room}, $orderby: { date : 1 } }, function(err,document) {
             if (document) {
+		
+		var i;
+		for( i=0; i<document.length; i++ ) {
+		    if (document[i].user._id.toString() != req.user._id.toString())
+			document[i].user._id = 'notcurrentuser';
+		}
+
 		res.json(document);
             }
             else {
@@ -113,11 +120,17 @@ module.exports = function(io) {
 						name: req.user.name } 
 				      } );
 
-	if (('email' in req.user) && (req.user.email != null)) {
+		if (('email' in req.user) && (req.user.email != null)) {
 		    var userEmail = req.user.email;
 		    post.user.gravatar = crypto.createHash('md5').update(userEmail).digest("hex");
 		} else {
 		    post.user.gravatar = crypto.createHash('md5').update(req.user._id.toString()).digest("hex");
+		}
+
+		if (req.body.anonymously) {
+		    post.user.anonymously = true;
+		    post.user.name = 'Anonymous';
+		    post.user.gravatar = '';
 		}
 
 		var room = post.room;
@@ -208,9 +221,11 @@ module.exports = function(io) {
 			      flaggers: [],
 			      flags: 0,
 			      user: { _id: req.user._id,
-				      name: req.user.name },
+				      name: req.user.name,
+				      },
 			    });
-	
+
+
 	if (('email' in req.user) && (req.user.email != null)) {
 	    var userEmail = req.user.email;
 	    post.user.gravatar = crypto.createHash('md5').update(userEmail).digest("hex");
@@ -218,14 +233,17 @@ module.exports = function(io) {
 	    post.user.gravatar = crypto.createHash('md5').update(req.user._id.toString()).digest("hex");
 	}
 
+	if (req.body.anonymously) {
+	    post.user.anonymously = true;
+	    post.user.name = 'Anonymous';
+	    post.user.gravatar = '';
+	}
+
 	if (('parent' in req.body) && (req.body.parent.length > 0)) {
 	    post.parent = req.body.parent;
 	}
 
-	console.log( "post to", room, "The data", post );
 	io.sockets.in(room).emit('post', post);
-
-	console.log( post );
 
 	post.save(function(err, document){
             if (document) {

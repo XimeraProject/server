@@ -21,6 +21,7 @@
 	"bootstrap-tree": "https://github.com/jhfrench/bootstrap-tree.git",
 	"codemirror": "*",
 	"skulpt": "*",
-	"angular-strap": "2.0.0-rc.3"
+	"angular-strap": "2.0.0-rc.3",
+	"JavaScript-MD5": "*"
     }
 }

@@ -35,7 +35,9 @@ requirejs.config({
 	'requirejs': '../../components/requirejs/require',
 
 	'angular-strap': '../../components/angular-strap/dist/angular-strap.min',
-	'angular-strap-tpl': '../../components/angular-strap/dist/angular-strap.tpl.min'
+	'angular-strap-tpl': '../../components/angular-strap/dist/angular-strap.tpl.min',
+
+	'md5': '../../components/JavaScript-MD5/js/md5.min'
     },
 
     priority: [

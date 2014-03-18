@@ -102,9 +102,10 @@ passport.deserializeUser(function(id, done) {
 
 // Middleware for all environments
 function addDatabaseMiddleware(req, res, next) {
-   req.db = db;
-   res.locals.user = req.user;
-   next();
+    req.db = db;
+    res.locals.user = req.user;
+    
+    next();
 }
 
 ////////////////////////////////////////////////////////////////

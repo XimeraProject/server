@@ -27,7 +27,7 @@ exports.getCurrent = function(req, res){
 	return;
     }
 
-    req.user.gravatar = crypto.createHash('md5').update(req.user.emails[0]).digest("hex");
+    req.user.gravatar = crypto.createHash('md5').update(req.user.email).digest("hex");
     res.json(req.user);
 };
 
@@ -57,8 +57,8 @@ exports.get = function(req, res){
 	
     req.db.users.findOne({_id: new mongo.ObjectID(id)}, function(err,document) {
         if (document) {
-	    if ('emails' in document)
-		document.gravatar = crypto.createHash('md5').update(document.emails[0]).digest("hex");
+	    if ('email' in document)
+		document.gravatar = crypto.createHash('md5').update(document.email).digest("hex");
 
 	    res.json(document);
         }

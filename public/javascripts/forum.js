@@ -1,4 +1,4 @@
-define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pagedown-sanitizer", 'angular-sanitize', 'user', 'confirm-click'], function(angular, $, _, io, pagedown, sanitizer) {
+define(['angular', 'jquery', 'underscore', 'socketio', 'md5', "pagedown-converter", "pagedown-sanitizer", 'angular-sanitize', 'user', 'confirm-click'], function(angular, $, _, io, md5, pagedown, sanitizer) {
     var app = angular.module('ximeraApp.forum', ["ngSanitize", "ximeraApp.confirmClick"]);
 
     // public domain code to handle relative date display
@@ -235,6 +235,10 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 	    controller: function($scope, $element){
 		$scope.user = user;
 
+		if ('email' in user.current) {
+		    $scope.gravatar = md5(user.current.email);
+		}
+
 		$scope.newPost = {};
 
 		$scope.cancel = function() {
@@ -244,7 +248,12 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 		$scope.newPost.post = function() {
 		    $scope.$emit( 'Xarma', 1 );
 
-		    $http.post( '/forum/' + $scope.forumName, {content: $scope.newPost.content, parent: $scope.parent} ).success(function(data){
+		    if ($scope.anonymously)
+			$scope.anonymously = true;
+		    else
+			$scope.anonymously = false;
+
+		    $http.post( '/forum/' + $scope.forumName, {content: $scope.newPost.content, parent: $scope.parent, anonymously: $scope.anonymously} ).success(function(data){
 			$scope.replyDone();
 			$scope.errorMessage = undefined;
 			$scope.$emit( 'post', data[0] );
@@ -272,6 +281,10 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 	    controller: function($scope, $element){
 		$scope.user = user;
 
+		if ('email' in user.current) {
+		    $scope.gravatar = md5(user.current.email);
+		}
+
 		$scope.newPost = { content: $scope.previousContent };
 
 		$scope.cancel = function() {
@@ -281,7 +294,12 @@ define(['angular', 'jquery', 'underscore', 'socketio', "pagedown-converter", "pa
 		$scope.newPost.post = function() {
 		    $scope.$emit( 'Xarma', 1 );
 
-		    $http.put( '/forum/' + $scope.postId, {content: $scope.newPost.content} ).success(function(data){
+		    if ($scope.anonymously)
+			$scope.anonymously = true;
+		    else
+			$scope.anonymously = false;
+
+		    $http.put( '/forum/' + $scope.postId, {content: $scope.newPost.content, anonymously: $scope.anonymously} ).success(function(data){
 			$scope.editDone();
 			$scope.errorMessage = undefined;
 			$scope.$emit( 'post', data[0] );
