@@ -12,6 +12,15 @@ block title
 block activity
       .page-header
         div.pull-right.btn-toolbar(role="toolbar")
+          .btn-group
+            button.btn.btn-inverse.btn-sm.dropdown-toggle(type="button", data-toggle="dropdown")
+              | <i class="fa fa-bug"></i> Report Bug
+              <span class="caret"></span>
+            ul.dropdown-menu
+              li 
+                a(href="https://github.com/#{activity.slug.split(':')[0]}/issues/new") Content or exercise bug
+              li
+                a(href="https://github.com/kisonecat/ximera/issues/new") Website bug
           if !activity.recent
             .btn-group
               a.pull-right.btn.btn-sm.btn-primary(role="button", ng-confirm-click="Updating to the most recent version of this activity will erase your work.  Are you sure you want to update to the new version?", href="update/")
