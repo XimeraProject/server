@@ -785,3 +785,27 @@ h3.frontpage {
   margin-top: 4pt;
   margin-bottom: 8pt;
 }
+
+/****************************************************************/
+/* add completion-meter to navbar */
+
+.navbar-progress-bar {
+  margin-top: ((@navbar-height - @line-height-computed) / 2);
+  margin-bottom: 0;
+  height: @line-height-computed;
+
+  @media (min-width: @grid-float-breakpoint) {
+    float: left;
+    margin-left: @navbar-padding-horizontal;
+    margin-right: @navbar-padding-horizontal;
+
+    // Outdent the form if last child to line up with content down the page
+    &.navbar-right:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.navbar-progress-bar .completion-meter {
+  width: 144pt;
+}
