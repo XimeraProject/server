@@ -38,6 +38,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
 
         $timeout(function () {
             MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+	    MathJax.Hub.Queue(["Rerender",MathJax.Hub]);
         });
     }]);
 
