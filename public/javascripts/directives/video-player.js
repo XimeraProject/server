@@ -12,7 +12,9 @@ define(['angular', 'jquery', 'underscore', 'youtube'], function(angular, $, _, Y
 	.directive('ximeraYoutube', ['$timeout', 'stateService', function($timeout, stateService) {
 	    return {
 		restrict: 'A',
-
+		scope: {
+		    arg1: '@'
+		},
 		// there's a good reason to surround the YouTube by a div?
 		template: ('<div class="youtube" style="height:390px;"><div class="replaced-by-youtube-player"></div></div>'),
 		transclude: true,
@@ -26,7 +28,7 @@ define(['angular', 'jquery', 'underscore', 'youtube'], function(angular, $, _, Y
 
                     // Extract YouTube code from original
                     transclude(function (clone) {
-			code = clone.text().replace( /.*=/, '' );
+			code = $scope.arg1.replace( /.*=/, '' );
                     });
 
 		    // When the player is ready, cue the video at the requested position
