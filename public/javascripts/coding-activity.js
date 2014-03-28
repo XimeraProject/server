@@ -47,6 +47,7 @@ define(['angular', 'jquery', 'underscore', 'codemirror', 'skulpt', 'skulpt-stdli
 		    $scope.$watch('db.code', function (value) {
 			if (value != myCodeMirror.getValue()) {
 			    myCodeMirror.setValue( value );
+			    myCodeMirror.clearHistory();
 			    myCodeMirror.refresh();
 			}
 		    });
