@@ -90,6 +90,9 @@ define(['angular', 'jquery', 'underscore', 'algebra/parser'], function(angular, 
 	    },
 
             link: function($scope, element, attrs, controller, transclude) {
+		// check if it was defined.  If not - set a default
+		$scope.matrix = $scope.matrix || [[{v:''}]];
+
 		$scope.removeRow = function () {
 		    $scope.matrix.pop();
 		    return true;
