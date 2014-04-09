@@ -316,11 +316,11 @@ define(["algebra/complex-number", "algebra/text-to-ast", "algebra/ast-to-text", 
     // evaluation code for our AST's
 
     var math_functions = {
-	"+": function(operands) { var result = 0; _.each(operands,function() { result += this; }); return result; },
-	"-": function(operands) { var result = operands[0]; _.each(operands.slice(1),function() { result -= this; }); return result; },
-	"*": function(operands) { var result = operands[0]; _.each(operands.slice(1),function() { result *= this; }); return result; },
-	"/": function(operands) { var result = operands[0]; _.each(operands.slice(1),function() { result /= this; }); return result; },
-	"~": function(operands) { var result = 0; _.each(operands,function() { result -= this; }); return result; },
+	"+": function(operands) { var result = 0; _.each(operands,function(x) { result += x; }); return result; },
+	"-": function(operands) { var result = operands[0]; _.each(operands.slice(1),function(x) { result -= x; }); return result; },
+	"*": function(operands) { var result = operands[0]; _.each(operands.slice(1),function(x) { result *= x; }); return result; },
+	"/": function(operands) { var result = operands[0]; _.each(operands.slice(1),function(x) { result /= x; }); return result; },
+	"~": function(operands) { var result = 0; _.each(operands,function(x) { result -= x; }); return result; },
 	"sin": function(operands) { return Math.sin(operands[0]); },
 	"cos": function(operands) { return Math.cos(operands[0]); },
 	"tan": function(operands) { return Math.tan(operands[0]); },
