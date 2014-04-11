@@ -1,5 +1,6 @@
 requirejs.config({
     baseUrl: "/public/javascripts",
+    waitSeconds: 200, // seems to fix things, sadly
     paths: {
 	"jquery": "../../components/jquery/dist/jquery.min",
 	"angular": "../../components/angular/angular",
