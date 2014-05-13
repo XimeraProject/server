@@ -477,6 +477,9 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                             try {
                                 eval($scope.validator);
 
+				window.MathFunction = MathFunction;
+				window.validator = validator;
+				
                                 if (validator(parsedAnswer)) {
                                     success = true;
                                 }
@@ -550,9 +553,29 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                             var parsedAnswer = MathFunction.parse($scope.db.answer);
                             var parsedCorrect = MathFunction.parse($scope.db.correctAnswer);
 
-                            if (parsedCorrect.equals(parsedAnswer)) {
-                                success = true;
-                            }
+			    // If the correct answer is just a number...
+			    if (parsedCorrect.variables().length == 0) {
+				// then the student response must also be a number.
+				if (parsedAnswer.variables().length == 0) {
+				    var parsedCorrectValue = parsedCorrect.evaluate({});
+				    var parsedAnswerValue = parsedAnswer.evaluate({});
+				    
+				    // If the correct answer is an integer
+				    if (Math.round(parsedCorrectValue) == parsedCorrectValue) {
+					// and these two numbers must be exactly the same
+					if (parsedCorrectValue == parsedAnswerValue)
+					    success = true;
+				    } else { // but if the correct answer is just some non-integral float
+					// and these two numbers must be pretty close
+					if (Math.abs(parsedCorrectValue - parsedAnswerValue) < 0.000001)
+					    success = true;					
+				    }
+				}
+			    } else { // but if the correct answer involves variables
+				// then the student response must be "equal" as a math expression
+				if (parsedCorrect.equals(parsedAnswer))
+                                    success = true;
+			    }
 
                             $(element).trigger('attemptAnswer', {
                                 success: success,
