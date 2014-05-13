@@ -561,7 +561,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
 				    var parsedAnswerValue = parsedAnswer.evaluate({});
 				    
 				    // If the correct answer is an integer
-				    if (Math.round(parsedCorrectValue) == parsedCorrectValue) {
+				    if (parsedCorrectValue % 1 === 0) {
 					// and these two numbers must be exactly the same
 					if (parsedCorrectValue == parsedAnswerValue)
 					    success = true;
