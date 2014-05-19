@@ -130,14 +130,11 @@ git.long(function (commit) {
 	console.log( req );
 	ltiProvider.valid_request(req, function(err, isValid) {
 	    console.log( "isValid = ", isValid );
-	    next();
-	    /*
 	    if (isValid) {
 		res.render('500', { status: 500, message: 'LTI is valid' });
 	    } else {
 		res.render('500', { status: 500, message: 'LTI error: ' + err });
 	    }
-	    */
 	});
     });
 
