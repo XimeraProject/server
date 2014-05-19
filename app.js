@@ -176,12 +176,11 @@ git.long(function (commit) {
     var ltiProvider = new lti.Provider(ltiKey, ltiSecret);
 
     app.post( '/lti', function(req, res) {
-	console.log( req );
 	ltiProvider.valid_request(req, function(err, isValid) {
 	    if (isValid) {
 		res.render('500', { status: 500, message: 'LTI is valid' });
 	    } else {
-		res.render('500', { status: 500, message: 'LTI error: ' + err + '; ' + JSON.stringify(req) });
+		res.render('500', { status: 500, message: 'LTI error: ' + err + '; ' + JSON.stringify(req.body) });
 	    }
 	});
     });
