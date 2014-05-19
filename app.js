@@ -173,21 +173,9 @@ git.long(function (commit) {
     var oauthorize = require('oauthorize');
     var oauthServer = oauthorize.createServer();
 
-    /*
-    app.post('/request_token',
-	     passport.authenticate('consumer', { session: false }),
-	     server.requestToken(function(client, callbackURL, done) {
-		 var token = utils.uid(8), secret = utils.uid(32)
-		 
-		 var t = new RequestToken(token, secret, client.id, callbackURL);
-		 t.save(function(err) {
-		     if (err) { return done(err); }
-		     return done(null, token, secret);
-		 });
-		 }));
-    */
-
     app.post( '/lti', function(req, res) {
+	console.log( "key = ", req.body.oauth_consumer_key );
+
 	// print to console
 	console.log(req.body);
 
