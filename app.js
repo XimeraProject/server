@@ -176,14 +176,14 @@ git.long(function (commit) {
     var ltiOauthSecret = process.env.LTI_OAUTH_SECRET;
     app.post( '/lti', function(req, res) {
 	console.log( "key = ", req.body.oauth_consumer_key );
-	var signature = oauthSignature.generate('POST', req.url, req.body, ltiOauthSecret);
+	var signature = oauthSignature.generate('POST', 'https://ximera.osu.edu/lti', req.body, ltiOauthSecret);
 
 	if (req.body.oauth_consumer_key != ltiOauthKey) {
 	    // Oauth key is bad
-            res.render('500', { status: 500, message: 'OAuth key is incorrect.' });
+            res.render('500', { status: 500, message: 'OAuth key is incorrect.'});
 	} else {
 	    // Key is good
-            res.render('500', { status: 500, message: 'OAuth key is good!' });
+            res.render('500', { status: 500, message: 'OAuth key is good!' + JSON.stringify(req.body, null, 4)});
 	}
 
 	// print to console
