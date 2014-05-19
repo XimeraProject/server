@@ -170,32 +170,19 @@ git.long(function (commit) {
     }
 
     // Setup routes.
-    var oauthSignature = require("oauth-signature");
+    var lti = require("ims-lti");
+    var ltiKey = process.env.LTI_KEY;
+    var ltiSecret = process.env.LTI_SECRET;
+    var ltiProvider = new lti.Provider(ltiKey, ltiSecret);
 
-    var ltiOauthKey = process.env.LTI_OAUTH_KEY;
-    var ltiOauthSecret = process.env.LTI_OAUTH_SECRET;
     app.post( '/lti', function(req, res) {
-	console.log( "key = ", req.body.oauth_consumer_key );
-	var parameters = req.body;
-	req.body.oauth_token = "";
-	var signature = oauthSignature.generate('POST', 'https://ximera.osu.edu/lti', parameters, ltiOauthSecret);
-
-	parameters.mySignature = signature;
-
-	if (req.body.oauth_consumer_key != ltiOauthKey) {
-	    // Oauth key is bad
-            res.render('500', { status: 500, message: 'OAuth key is incorrect.'});
-	} else {
-	    // Key is good
-            res.render('500', { status: 500, message: 'OAuth key is good!' + JSON.stringify(parameters, null, 4)});
-	}
-
-	// print to console
-	console.log('signature = ', signature);
-	console.log(req.body);
-
-	// just call res.end(), or show as string on web
-	//res.send(JSON.stringify(req.body, null, 4));
+	provider.valid_request(req, function(err, isValid) {
+	    if (isValid) {
+		res.render('500', { status: 500, message: 'LTI is valid' });
+	    } else {
+		res.render('500', { status: 500, message: 'LTI error: ' + err });
+	    }
+	});
     });
 
     // TODO: Move to separate file.
