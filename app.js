@@ -173,8 +173,18 @@ git.long(function (commit) {
     var oauthorize = require('oauthorize');
     var oauthServer = oauthorize.createServer();
 
+    var ltiOauthKey = process.env.LTI_OAUTH_KEY;
+    var ltiOauthSecret = process.env.LTI_OAUTH_SECRET;
     app.post( '/lti', function(req, res) {
 	console.log( "key = ", req.body.oauth_consumer_key );
+	
+	if (req.body.oauth_consumer_key != ltiOauthKey) {
+	    // Oauth key is bad
+	    throw 'OAuth key does not match.';
+	} else {
+	    // Key is good
+	    throw 'OAuth key matches.';	    
+	}
 
 	// print to console
 	console.log(req.body);
