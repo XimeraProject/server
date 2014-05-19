@@ -170,14 +170,14 @@ git.long(function (commit) {
     }
 
     // Setup routes.
-    var oauthorize = require('oauthorize');
-    var oauthServer = oauthorize.createServer();
+    var oauthSignature = require("oauth-signature");
 
     var ltiOauthKey = process.env.LTI_OAUTH_KEY;
     var ltiOauthSecret = process.env.LTI_OAUTH_SECRET;
     app.post( '/lti', function(req, res) {
 	console.log( "key = ", req.body.oauth_consumer_key );
-	
+	var signature = oauthSignature.generate('POST', req.url, req.body, ltiOauthSecret);
+
 	if (req.body.oauth_consumer_key != ltiOauthKey) {
 	    // Oauth key is bad
             res.render('500', { status: 500, message: 'OAuth key is incorrect.' });
@@ -187,10 +187,11 @@ git.long(function (commit) {
 	}
 
 	// print to console
+	console.log('signature = ', signature);
 	console.log(req.body);
 
 	// just call res.end(), or show as string on web
-	res.send(JSON.stringify(req.body, null, 4));
+	//res.send(JSON.stringify(req.body, null, 4));
     });
 
     // TODO: Move to separate file.

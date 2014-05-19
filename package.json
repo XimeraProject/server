@@ -45,7 +45,7 @@
     "versionator": "*",
     "git-rev": "*",
     "crypto": "*",
-    "oauthorize": "*"
+    "oauth-signature": "*"
   },
   "devDependencies": {
     "load-grunt-tasks": "~0.2.1",
