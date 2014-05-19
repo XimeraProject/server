@@ -119,10 +119,26 @@ app.use(less({
     force  : true
 }));
 
-
 var git = require('git-rev');
 git.long(function (commit) {
-    console.log( commit );
+
+    // LTI
+    var lti = require("ims-lti");
+    var ltiKey = process.env.LTI_KEY;
+    var ltiSecret = process.env.LTI_SECRET;
+    var ltiProvider = new lti.Provider(ltiKey, ltiSecret);
+
+    app.post( '/lti', function(req, res) {
+	ltiProvider.valid_request(req, function(err, isValid) {
+	    if (isValid) {
+		res.render('500', { status: 500, message: 'LTI is valid' });
+	    } else {
+		res.render('500', { status: 500, message: 'LTI error: ' + err });
+	    }
+	});
+    });
+
+    // versionator
     app.version = require('./package.json').version;
     var versionator = require('versionator').create(commit);
 
@@ -170,20 +186,6 @@ git.long(function (commit) {
     }
 
     // Setup routes.
-    var lti = require("ims-lti");
-    var ltiKey = process.env.LTI_KEY;
-    var ltiSecret = process.env.LTI_SECRET;
-    var ltiProvider = new lti.Provider(ltiKey, ltiSecret);
-
-    app.post( '/lti', function(req, res) {
-	ltiProvider.valid_request(req, function(err, isValid) {
-	    if (isValid) {
-		res.render('500', { status: 500, message: 'LTI is valid' });
-	    } else {
-		res.render('500', { status: 500, message: 'LTI error: ' + err });
-	    }
-	});
-    });
 
     // TODO: Move to separate file.
     app.get('/users/xarma', score.getXarma);
