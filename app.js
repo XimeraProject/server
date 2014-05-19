@@ -180,10 +180,10 @@ git.long(function (commit) {
 	
 	if (req.body.oauth_consumer_key != ltiOauthKey) {
 	    // Oauth key is bad
-	    throw 'OAuth key does not match.';
+            res.render('500', { status: 500, message: 'OAuth key is incorrect.' });
 	} else {
 	    // Key is good
-	    throw 'OAuth key matches.';	    
+            res.render('500', { status: 500, message: 'OAuth key is good!' });
 	}
 
 	// print to console
