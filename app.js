@@ -28,6 +28,7 @@ var express = require('express')
   , fs = require('fs')
   , io = require('socket.io')
   , util = require('util')
+  , _ = require('underscore')
   ;
 
 // Check for presence of appropriate environment variables.
@@ -175,16 +176,16 @@ git.long(function (commit) {
     var ltiSecret = process.env.LTI_SECRET;
     var ltiProvider = new lti.Provider(ltiKey, ltiSecret);
 
-    app.post( '/lti', function(req, res) {
-	// I'm behind nginx so it looks like I'm serving http, but as far as the rest of the world is concerned, it's https
-	req.protocol = 'https'
-	ltiProvider.valid_request(req, function(err, isValid) {
-	    if (isValid) {
-		res.render('500', { status: 500, message: 'LTI is valid' });
-	    } else {
-		res.render('500', { status: 500, message: 'LTI error: ' + err + '; ' + JSON.stringify(req.body) });
-	    }
-	});
+   app.post( '/lti', function(req, res) {
+       // I'm behind nginx so it looks like I'm serving http, but as far as the rest of the world is concerned, it's https
+       var myRequest = _.extend({}, req, {protocol: 'https'});
+       ltiProvider.valid_request(myRequest, function(err, isValid) {
+	   if (isValid) {
+	       res.render('500', { status: 500, message: 'LTI is valid' });
+	   } else {
+	       res.render('500', { status: 500, message: 'LTI error: ' + err + '; ' + JSON.stringify(req.body) });
+	   }
+       });
     });
 
     // TODO: Move to separate file.
