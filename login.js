@@ -14,7 +14,7 @@ module.exports.courseraStrategy = function (rootUrl) {
         callbackURL: rootUrl + "/auth/coursera/callback",
         passReqToCallback: true
     }, function(req, token, tokenSecret, profile, done) {
-        addUserAccount(req, 'courseraOAuthId', profile.id, profile.full_name, null, done);
+        addUserAccount(req, 'courseraOAuthId', profile.id, profile.full_name, null, null, done);
     });
 }
 
@@ -24,18 +24,19 @@ module.exports.googleStrategy = function (rootUrl) {
         realm: rootUrl,
         passReqToCallback: true
     }, function (req, identifier, profile, done) {
-        addUserAccount(req, 'googleOpenId', identifier, profile.displayName, profile.emails[0].value, done);
+        addUserAccount(req, 'googleOpenId', identifier, profile.displayName, profile.emails[0].value, null, done);
     });
 }
 
 module.exports.ltiStrategy = function (rootUrl) {
     return new LtiStrategy({
+        returnURL: '/just-logged-in',
         consumerKey: process.env.LTI_KEY,
         consumerSecret: process.env.LTI_SECRET,
     }, function (req, identifier, profile, done) {
-	console.log( "lti login identifier =", identifier );
-	console.log( "lti login profile =", profile );
-        //addUserAccount(req, 'ltiId', identifier, profile.displayName, profile.emails[0].value, done);
+	var displayName = profile.lis_person_name_full;
+	var email = profile.lis_person_contact_email_primary;
+        addUserAccount(req, 'ltiId', identifier, displayName, email, profile.custom_ximera, done);
     });
 }
 
@@ -80,7 +81,7 @@ module.exports.guestUserMiddleware = function(req, res, next) {
 };
 
 
-function addUserAccount(req, authField, authId, name, email, done) {
+function addUserAccount(req, authField, authId, name, email, course, done) {
     var searchFields = {};
     searchFields[authField] = authId;
 
@@ -88,7 +89,8 @@ function addUserAccount(req, authField, authId, name, email, done) {
     	// Save this to the users collection if we haven't already
     	mdb.User.findOneAndUpdate(searchFields, {
             name: name,
-	    email: email
+	    email: email,
+	    course: course
         }, {
             new: true
         }, function(err, user) {
@@ -100,6 +102,7 @@ function addUserAccount(req, authField, authId, name, email, done) {
                     // New user, modify current user account instead.
                     req.user.name = name;
                     req.user.email = email;
+                    req.user.course = course;
                     req.user[authField] = authId;
                     req.user.isGuest = false;
                     req.user.save(function (err) {

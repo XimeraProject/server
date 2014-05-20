@@ -51,6 +51,8 @@ exports.initialize = function initialize() {
                                   {
                                       googleOpenId: {type: String, index: true, unique: true, sparse: true},
                                       courseraOAuthId: {type: String, index: true, unique: true, sparse: true},
+                                      ltiId: {type: String, index: true, unique: true, sparse: true},
+				      course: String,
 				      superuser: Boolean,
                                       name: String,
                                       email: String,
