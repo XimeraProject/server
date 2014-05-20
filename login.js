@@ -1,9 +1,9 @@
 var GoogleStrategy = require('passport-google').Strategy
   , CourseraOAuthStrategy = require('./passport-coursera-oauth').Strategy
+  , LtiStrategy = require('./passport-lti').Strategy
   , async = require('async')
   , mdb =  require('./mdb')
   , path = require('path');
-
 
 module.exports.courseraStrategy = function (rootUrl) {
     return new CourseraOAuthStrategy({
@@ -25,6 +25,17 @@ module.exports.googleStrategy = function (rootUrl) {
         passReqToCallback: true
     }, function (req, identifier, profile, done) {
         addUserAccount(req, 'googleOpenId', identifier, profile.displayName, profile.emails[0].value, done);
+    });
+}
+
+module.exports.ltiStrategy = function (rootUrl) {
+    return new LtiStrategy({
+        consumerKey: process.env.LTI_KEY,
+        consumerSecret: process.env.LTI_SECRET,
+    }, function (req, identifier, profile, done) {
+	console.log( "lti login identifier =", identifier );
+	console.log( "lti login profile =", profile );
+        //addUserAccount(req, 'ltiId', identifier, profile.displayName, profile.emails[0].value, done);
     });
 }
 
