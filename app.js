@@ -181,7 +181,7 @@ git.long(function (commit) {
        var myRequest = _.extend({}, req, {protocol: 'https'});
        ltiProvider.valid_request(myRequest, function(err, isValid) {
 	   if (isValid) {
-	       res.render('500', { status: 500, message: 'LTI is valid' });
+	       res.render('500', { status: 500, message: 'LTI is valid' + JSON.stringify(req.body) });
 	   } else {
 	       res.render('500', { status: 500, message: 'LTI error: ' + err + '; ' + JSON.stringify(req.body) });
 	   }
