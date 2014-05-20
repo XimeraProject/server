@@ -23,7 +23,7 @@ LtiStrategy.prototype.authenticate = function(req) {
 	self.success(user, info);
     }
 
-    slf.provider.valid_request(myRequest, function(err, isValid) {
+    self.provider.valid_request(myRequest, function(err, isValid) {
 	if (!isValid) {
 	    return self.error(err);
 	} else {
