@@ -176,6 +176,8 @@ git.long(function (commit) {
     var ltiProvider = new lti.Provider(ltiKey, ltiSecret);
 
     app.post( '/lti', function(req, res) {
+	// I'm behind nginx so it looks like I'm serving http, but as far as the rest of the world is concerned, it's https
+	req.protocol = 'https'
 	ltiProvider.valid_request(req, function(err, isValid) {
 	    if (isValid) {
 		res.render('500', { status: 500, message: 'LTI is valid' });
