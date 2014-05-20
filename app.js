@@ -28,7 +28,6 @@ var express = require('express')
   , fs = require('fs')
   , io = require('socket.io')
   , util = require('util')
-  , _ = require('underscore')
   ;
 
 // Check for presence of appropriate environment variables.
@@ -91,6 +90,7 @@ var db = require('mongojs').connect(databaseUrl, collections);
 
 passport.use(login.googleStrategy(rootUrl));
 passport.use(login.courseraStrategy(rootUrl));
+passport.use(login.ltiStrategy(rootUrl));
 // Only store the user _id in the session
 passport.serializeUser(function(user, done) {
    done(null, user._id);
@@ -171,22 +171,6 @@ git.long(function (commit) {
     }
 
     // Setup routes.
-    var lti = require("ims-lti");
-    var ltiKey = process.env.LTI_KEY;
-    var ltiSecret = process.env.LTI_SECRET;
-    var ltiProvider = new lti.Provider(ltiKey, ltiSecret);
-
-   app.post( '/lti', function(req, res) {
-       // I'm behind nginx so it looks like I'm serving http, but as far as the rest of the world is concerned, it's https
-       var myRequest = _.extend({}, req, {protocol: 'https'});
-       ltiProvider.valid_request(myRequest, function(err, isValid) {
-	   if (isValid) {
-	       res.render('500', { status: 500, message: 'LTI is valid' + JSON.stringify(req.body) });
-	   } else {
-	       res.render('500', { status: 500, message: 'LTI error: ' + err + '; ' + JSON.stringify(req.body) });
-	   }
-       });
-    });
 
     // TODO: Move to separate file.
     app.get('/users/xarma', score.getXarma);
@@ -241,6 +225,8 @@ git.long(function (commit) {
             passport.authenticate('google', { successRedirect: '/just-logged-in',
 				              failureRedirect: '/auth/google'}));
 
+    // LTI login
+    app.post('/lti', passport.authenticate('lti'));
 
     app.get('/logout', function (req, res) {
         req.logout();
