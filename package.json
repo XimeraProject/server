@@ -43,7 +43,9 @@
     "async": "*",
     "socket.io": "*",
     "versionator": "*",
-    "git-rev": "*"
+    "git-rev": "*",
+    "crypto": "*",
+    "ims-lti": "*"
   },
   "devDependencies": {
     "load-grunt-tasks": "~0.2.1",

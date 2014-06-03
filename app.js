@@ -90,6 +90,7 @@ var db = require('mongojs').connect(databaseUrl, collections);
 
 passport.use(login.googleStrategy(rootUrl));
 passport.use(login.courseraStrategy(rootUrl));
+passport.use(login.ltiStrategy(rootUrl));
 // Only store the user _id in the session
 passport.serializeUser(function(user, done) {
    done(null, user._id);
@@ -119,10 +120,10 @@ app.use(less({
     force  : true
 }));
 
-
 var git = require('git-rev');
 git.long(function (commit) {
-    console.log( commit );
+
+    // versionator
     app.version = require('./package.json').version;
     var versionator = require('versionator').create(commit);
 
@@ -170,6 +171,7 @@ git.long(function (commit) {
     }
 
     // Setup routes.
+
     // TODO: Move to separate file.
     app.get('/users/xarma', score.getXarma);
     app.get('/users/xudos', score.getXudos);
@@ -223,6 +225,8 @@ git.long(function (commit) {
             passport.authenticate('google', { successRedirect: '/just-logged-in',
 				              failureRedirect: '/auth/google'}));
 
+    // LTI login
+    app.post('/lti', passport.authenticate('lti'));
 
     app.get('/logout', function (req, res) {
         req.logout();
