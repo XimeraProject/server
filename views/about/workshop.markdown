@@ -10,5 +10,8 @@ The workshop will follow an informal working-group format.  July 27th
 and July 31st should be reserved for travel days.
 
 
-This workshop is funded by [NSF Grant DUE-1245433](http://www.nsf.gov/awardsearch/showAward?AWD_ID=1245433); please apply [here](http://go.osu.edu/xw1) by May 16, 2014 to apply to the workshop and for funding.
+This workshop is funded by
+[NSF Grant DUE-1245433](http://www.nsf.gov/awardsearch/showAward?AWD_ID=1245433);
+while the application deadline has passed, all interested local
+parties are welcome.
 
