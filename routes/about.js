@@ -14,6 +14,10 @@ exports.workshop = function(req, res) {
     res.render('about/workshop', { title: 'Workshop', user: req.user });
 };
 
+exports.support = function(req, res) {
+    res.render('about/support', { title: 'Supporters', user: req.user });
+};
+
 exports.plans = function(req, res) {
     res.render('about/plans', { title: 'Future Plans', user: req.user });
 };

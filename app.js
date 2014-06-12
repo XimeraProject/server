@@ -257,6 +257,8 @@ git.long(function (commit) {
     app.get('/about/xarma', about.xarma);
     app.get('/about/xudos', about.xudos);
     app.get('/about/m2o2c2', about.m2o2c2);
+    app.get('/about/supporters', function( req, res ) { res.redirect('/about/support'); });
+    app.get('/about/support', about.support);
 
     app.get('/angular-state/:activityId', angularState.get);
     app.put('/angular-state/:activityId', angularState.put);
