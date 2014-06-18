@@ -1,0 +1,29 @@
+extends ../layouts/main
+
+block content
+ .container
+   mixin breadcrumbs(['/about','/about/support'],['About Ximera','Supporters'])
+   .page-header
+     h1 Supporters
+   .row
+     div.col-sm-12r
+       p Ximera is proud to be supported by
+       ul
+         li
+           a(href="http://www.osu.edu/") the Ohio State University
+         li
+           a(href="http://www.nsf.gov/awardsearch/showAward?AWD_ID=1245433") the National Science Foundation under NSF Grant DUE-1245433
+         li
+           a(href="https://www.shuttleworthfoundation.org/") the Shuttleworth Foundation
+       p If you would like to support Ximera, please <a href="/about/contact">contact us</a>.
+   hr
+   .row
+     div.col-sm-4
+       a.thumbnail(href="http://www.osu.edu/" style="border: 0 none; box-shadow: none;")
+         img(src="/public/images/sponsors/osu.png")
+     div.col-sm-4
+       a.thumbnail(href="http://www.nsf.gov/awardsearch/showAward?AWD_ID=1245433"  style="border: 0 none; box-shadow: none;")
+         img(src="/public/images/sponsors/nsf.png")
+     div.col-sm-4
+       a.thumbnail(href="https://www.shuttleworthfoundation.org/"  style="border: 0 none; box-shadow: none;")
+         img(src="/public/images/sponsors/shuttleworth.png")
