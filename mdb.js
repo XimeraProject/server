@@ -4,30 +4,41 @@ var fstream = require('fstream');
 var fs = require("fs");
 var winston = require("winston");
 var _ = require("underscore");
+var mubsub = require('mubsub');
 
 exports = module.exports;
 
 var ObjectId = mongoose.Schema.ObjectId;
 var Mixed = mongoose.Schema.Types.Mixed;
 
-mongoose.connect('mongodb://' + process.env.XIMERA_MONGO_URL + "/" +
-                 process.env.XIMERA_MONGO_DATABASE);
-var gfs = Grid(mongoose.connection.db, mongoose.mongo);
+var url = 'mongodb://' + process.env.XIMERA_MONGO_URL + "/" +
+                 process.env.XIMERA_MONGO_DATABASE;
+
+mongoose.connect(url, function (error) {
+    var client = mubsub(mongoose.connection.db);
+    exports.channel = client.channel('github');
+    exports.gfs = Grid(mongoose.connection.db, mongoose.mongo);
+});
 
 // Notice this is different from Schema.ObjectId; Schema.ObjectId if for passing
 // models/schemas, Types.ObjectId is for generating ObjectIds.
 exports.ObjectId = mongoose.Types.ObjectId;
-exports.gfs = gfs;
 
 // TODO: Add appropriate indexes.
 exports.initialize = function initialize() {
     winston.info("Initializing Mongo");
+
+    var client = mubsub(mongoose.connection.db);
+    exports.channel = client.channel('github');
+
     exports.GitRepo = mongoose.model("GitRepo",
                                      {
                                          // Key
                                          gitIdentifier: String,
                                          // Other
                                          file: ObjectId,
+                                         needsUpdate: Boolean,
+					 feedback: String,
                                          currentActivities: [ObjectId]
                                      });
 
@@ -245,7 +256,7 @@ exports.initialize = function initialize() {
 exports.copyLocalFileToGfs = function (path, fileId, callback) {
 	var locals = {pipeErr: false};
 	read = fs.createReadStream(path);
-    write = gfs.createWriteStream({
+    write = exports.gfs.createWriteStream({
         _id: fileId,
         mode: 'w'
     });

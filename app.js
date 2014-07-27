@@ -9,6 +9,7 @@ var express = require('express')
   , user = require('./routes/user')
   , about = require('./routes/about')
   , score = require('./routes/score')
+  , github = require('./routes/github')
   , instructor = require('./routes/instructor')
   , http = require('http')
   , path = require('path')
@@ -35,10 +36,10 @@ if (!process.env.XIMERA_COOKIE_SECRET ||
     !process.env.XIMERA_MONGO_DATABASE ||
     !process.env.XIMERA_MONGO_URL ||
     !process.env.COURSERA_CONSUMER_KEY ||
+    !process.env.GITHUB_WEBHOOK_SECRET ||
     !process.env.COURSERA_CONSUMER_SECRET) {
         throw "Appropriate environment variables not set.";
     }
-
 
 // Some filters for Jade; admittedly, Jade comes with its own Markdown
 // filter, but I want to run everything through the a filter to add
@@ -86,8 +87,6 @@ var databaseUrl = 'mongodb://' + process.env.XIMERA_MONGO_URL + "/" + process.en
 var collections = ['users', 'scopes', 'imageFiles'];
 var db = require('mongojs').connect(databaseUrl, collections);
 
-
-
 passport.use(login.googleStrategy(rootUrl));
 passport.use(login.courseraStrategy(rootUrl));
 passport.use(login.ltiStrategy(rootUrl));
@@ -104,7 +103,12 @@ passport.deserializeUser(function(id, done) {
 // Middleware for all environments
 function addDatabaseMiddleware(req, res, next) {
     req.db = db;
-    res.locals.user = req.user;
+
+    if ('user' in req)
+	res.locals.user = req.user;
+    else {
+	res.locals.user = req.user = {};
+    }
     
     next();
 }
@@ -139,6 +143,17 @@ git.long(function (commit) {
 
     app.use(express.favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
     app.use(express.logger('dev'));
+
+    app.use(function(req, res, next) {
+	req.rawBody = '';
+	
+	req.on('data', function(chunk) { 
+	    req.rawBody += chunk;
+	});
+	
+	next();
+    });
+
     app.use(express.bodyParser());
     app.use(express.methodOverride());
 
@@ -154,7 +169,6 @@ git.long(function (commit) {
 
     app.use(passport.initialize());
     app.use(passport.session());
-
 
     app.use(login.guestUserMiddleware);
     app.use(addDatabaseMiddleware);
@@ -177,6 +191,10 @@ git.long(function (commit) {
     app.get('/users/xudos', score.getXudos);
     app.post('/users/xarma', score.postXarma);
     app.post('/users/xudos', score.postXudos);
+
+    // Requires the rawBody middleware above
+    github.secret = process.env.GITHUB_WEBHOOK_SECRET;
+    app.post('/github', github.github);
 
     app.get('/', routes.index);
 

@@ -12,13 +12,17 @@ exports.index = function(req, res) {
 
 exports.landing = function(req, res) {
     remember(req);
+
     var slug = req.params[0];
+
     mdb.Course.findOne({slug: slug}).exec( function (err, course) {
-	if (course) {
-	    res.render('course/landing', { course: course });
-	} else {
-            res.send("Course not found.");
-	}
+	mdb.GitRepo.findOne({_id: course.repo}).exec( function (err, repo) {
+	    if (course && repo) {
+		res.render('course/landing', { course: course, repo: repo });
+	    } else {
+		res.send("Course not found.");
+	    }
+	});
     });
 }
 
