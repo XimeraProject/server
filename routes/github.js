@@ -21,15 +21,18 @@ exports.github = function(req, res){
     var crypted = 'sha1=' + hmac.digest("hex");
 	
     if(crypted === hash) {
+	console.log( "Valid signature" );
         // Valid signature
 	if (req.header("X-GitHub-Event") == "ping") {
 	    res.send(200);
 	    return;
 	}
 
+	console.log( "Getting repository..." );
+
 	var repository = req.body.repository;
 
-	console.log( req.body );
+	console.log( "Repository = ", repository );
 
 	if (repository && ('full_name' in repository)) {
 	    mdb.GitRepo.findOne({gitIdentifier: repository.full_name}).exec( function (err, repo) {
