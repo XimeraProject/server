@@ -22,9 +22,14 @@ exports.github = function(req, res){
 	
     if(crypted === hash) {
         // Valid signature
+	if (req.header("X-GitHub-Event") == "ping") {
+	    res.send(200);
+	    return;
+	}
+
 	var repository = req.body.repository;
 
-	if ('full_name' in repository) {
+	if (repository && ('full_name' in repository)) {
 	    mdb.GitRepo.findOne({gitIdentifier: repository.full_name}).exec( function (err, repo) {
 		if (repo) {
 		    // Courses linked to repo need to be updated
