@@ -7,6 +7,7 @@ var crypto = require('crypto');
 var mongo = require('mongodb');
 var mdb = require('../mdb');
 var winston = require("winston");
+var mongoose = require('mongoose');
 
 // The GitHub webhook secret must be set in app.js
 exports.secret = '';
@@ -23,8 +24,6 @@ exports.github = function(req, res){
         // Valid signature
 	var repository = req.body.repository;
 
-	console.log( "repository = ", repository );
-	
 	if ('full_name' in repository) {
 	    mdb.GitRepo.findOne({gitIdentifier: repository.full_name}).exec( function (err, repo) {
 		if (repo) {
