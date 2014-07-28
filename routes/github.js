@@ -23,6 +23,7 @@ exports.github = function(req, res){
     var crypted = 'sha1=' + hmac.digest("hex");
 
     console.log( "crypted = ", crypted );
+    console.log( "hash = ", hash );
 
     if(crypted === hash) {
 	console.log( "Valid signature" );
@@ -66,7 +67,10 @@ exports.github = function(req, res){
 	}
     } else {
         // Invalid signature
+	console.log( "Invalid xignagure." );
         res.send("Invalid X-Hub-Signature", { "Content-Type": "text/plain" }, 403);
     }
+
+    console.log( "Exiting github" );
 
 };
