@@ -17,9 +17,13 @@ exports.github = function(req, res){
     var hmac = crypto.createHmac("sha1", exports.secret);
     var content = '';
 
+    console.log( "In github" );
+
     hmac.update(req.rawBody);
     var crypted = 'sha1=' + hmac.digest("hex");
-	
+
+    console.log( "crypted = ", crypted );
+
     if(crypted === hash) {
 	console.log( "Valid signature" );
         // Valid signature
