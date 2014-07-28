@@ -17,27 +17,17 @@ exports.github = function(req, res){
     var hmac = crypto.createHmac("sha1", exports.secret);
     var content = '';
 
-    console.log( "In github" );
-
     hmac.update(req.rawBody);
     var crypted = 'sha1=' + hmac.digest("hex");
 
-    console.log( "crypted = ", crypted );
-    console.log( "hash = ", hash );
-
     if(crypted === hash) {
-	console.log( "Valid signature" );
         // Valid signature
 	if (req.header("X-GitHub-Event") == "ping") {
 	    res.send(200);
 	    return;
 	}
 
-	console.log( "Getting repository..." );
-
 	var repository = req.body.repository;
-
-	console.log( "Repository = ", repository );
 
 	if (repository && ('full_name' in repository)) {
 	    mdb.GitRepo.findOne({gitIdentifier: repository.full_name}).exec( function (err, repo) {
@@ -67,10 +57,6 @@ exports.github = function(req, res){
 	}
     } else {
         // Invalid signature
-	console.log( "Invalid xignagure." );
-        res.send("Invalid X-Hub-Signature", { "Content-Type": "text/plain" }, 403);
+        res.send(403, "Invalid X-Hub-Signature");
     }
-
-    console.log( "Exiting github" );
-
 };
