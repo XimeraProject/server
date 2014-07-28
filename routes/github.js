@@ -22,6 +22,8 @@ exports.github = function(req, res){
     if(crypted === hash) {
         // Valid signature
 	var repository = req.body.repository;
+
+	console.log( "repository = ", repository );
 	
 	if ('full_name' in repository) {
 	    mdb.GitRepo.findOne({gitIdentifier: repository.full_name}).exec( function (err, repo) {
