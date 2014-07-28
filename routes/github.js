@@ -30,6 +30,7 @@ exports.github = function(req, res){
 	var repository = req.body.repository;
 
 	if (repository && ('full_name' in repository)) {
+	    console.log( repository );
 	    mdb.GitRepo.findOne({gitIdentifier: repository.full_name}).exec( function (err, repo) {
 		if (repo) {
 		    // Courses linked to repo need to be updated
