@@ -28,9 +28,6 @@ exports.ObjectId = mongoose.Types.ObjectId;
 exports.initialize = function initialize() {
     winston.info("Initializing Mongo");
 
-    var client = mubsub(mongoose.connection.db);
-    exports.channel = client.channel('github');
-
     exports.GitRepo = mongoose.model("GitRepo",
                                      {
                                          // Key
