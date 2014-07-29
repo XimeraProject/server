@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "postinstall": "./node_modules/bower/bin/bower install && cd ./components/mathquill && npm install && make && cd ../.. && mkdir -p components/syntaxhighlighter/amd && node node_modules/requirejs/bin/r.js -convert components/syntaxhighlighter/scripts components/syntaxhighlighter/amd"
+    "postinstall": "./node_modules/bower/bin/bower install && grunt jison && cd ./components/mathquill && npm install && make && cd ../.. && mkdir -p components/syntaxhighlighter/amd && node node_modules/requirejs/bin/r.js -convert components/syntaxhighlighter/scripts components/syntaxhighlighter/amd"
   },
   "dependencies": {
     "forever": "*",
@@ -25,7 +25,7 @@
     "passport-google": "*",
     "passport-oauth": "*",
     "jison": "*",
-    "requirejs": "*",
+    "requirejs": "2.1.11",
     "jasmine-node": "*",
     "poet": "*",
     "chai": "*",
@@ -46,6 +46,14 @@
     "git-rev": "*",
     "crypto": "*",
     "ims-lti": "*",
+    "express-session": "*",
+    "body-parser": "*",
+    "cookie-parser": "*",
+    "method-override": "*",
+    "serve-static": "*",
+    "serve-favicon": "*",
+    "morgan": "*",
+    "error-handler": "*",
     "mubsub": "*"
   },
   "devDependencies": {
