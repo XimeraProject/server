@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "forever": "*",
-    "underscore": "*",
+    "underscore": "1.6.0",
     "bower": "*",
     "express": "3.4.7",
     "less-middleware": "0.1.15",
