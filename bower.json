@@ -7,7 +7,7 @@
 	"moment": "*",
 	"lex": "https://github.com/aaditmshah/lexer.git",
 	"jquery": "*",
-        "bootstrap": "*",
+        "bootstrap": "1.6.0",
         "angular": "*",
         "angular-animate": "*",
         "angular-sanitize": "*",
