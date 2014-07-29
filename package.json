@@ -25,7 +25,7 @@
     "passport-google": "*",
     "passport-oauth": "*",
     "jison": "*",
-    "requirejs": "*",
+    "requirejs": "2.1.11",
     "jasmine-node": "*",
     "poet": "*",
     "chai": "*",
