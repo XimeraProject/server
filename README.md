@@ -6,7 +6,7 @@ LaTeX to online interactive materials.
 Setting up a server
 ===================
 
-1. Install `nodejs` and `mongodb` on your computer (under Debian, may also need nodejs-legacy package)
+1. Install `nodejs` and `mongodb` on your computer (under Debian, may also need `nodejs-legacy` package)
 2. Run an instance of mongo server:
 
         mongod --dbpath <insert-your-path>
