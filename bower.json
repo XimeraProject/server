@@ -11,7 +11,7 @@
         "angular": "*",
         "angular-animate": "*",
         "angular-sanitize": "*",
-	"underscore": "*",
+	"underscore": "1.6.0",
         "font-awesome": "*",
 	"x-editable": "*",
 	"threejs": "https://github.com/mrdoob/three.js.git",
