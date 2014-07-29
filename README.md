@@ -6,7 +6,7 @@ LaTeX to online interactive materials.
 Setting up a server
 ===================
 
-1. Install `nodejs` and `mongodb` on your computer
+1. Install `nodejs` and `mongodb` on your computer (under Debian, may also need nodejs-legacy package)
 2. Run an instance of mongo server:
 
         mongod --dbpath <insert-your-path>
@@ -58,3 +58,5 @@ You might have to install bower by running the following commands
 8. Run the `ximera` server `apps.js` using:
 
         node app.js
+
+9. View the `ximera` server in your web browser at localhost:3000
