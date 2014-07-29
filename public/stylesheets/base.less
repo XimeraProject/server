@@ -685,41 +685,14 @@ h3.frontpage {
 /****************************************************************/
 /* some layout for the math */
 
+/* The theorem environments live in theorems.less. If
+you add more theorem environments to ximera.cls, you should
+tell theorems.less about it and choose the background color. */
+@import "theorems.less";
+
 .activity p {
   margin-bottom: 8pt;
 }
-
-.definition > p:first-child:before
-{
-    content:"Definition. ";
-    display: inline;
-    font-weight: bold;
-} 
-
-.definition {
-    background-color: #EFE;
-    border-radius: 4pt;
-    padding: 4pt;
-    margin-top: 4pt;
-    margin-bottom: 4pt;
-}
-
-
-.theorem > p:first-child:before
-{
-    content:"Theorem. ";
-    display: inline;
-    font-weight: bold;
-} 
-
-.theorem {
-    background-color: #EFE;
-    border-radius: 4pt;
-    padding: 4pt;
-    margin-top: 4pt;
-    margin-bottom: 4pt;
-}
-
 
 .model-solution > p:first-child:before
 {
@@ -730,51 +703,6 @@ h3.frontpage {
 
 .model-solution {
     background-color: #FFB;
-    border-radius: 4pt;
-    padding: 4pt;
-    margin-top: 4pt;
-    margin-bottom: 4pt;
-}
-
-.example > p:first-child:before
-{
-    content:"Example. ";
-    display: inline;
-    font-weight: bold;
-} 
-
-.example {
-    background-color: #FFB;
-    border-radius: 4pt;
-    padding: 4pt;
-    margin-top: 4pt;
-    margin-bottom: 4pt;
-}
-
-.observation > p:first-child:before
-{
-    content:"Observation. ";
-    display: inline;
-    font-weight: bold;
-} 
-
-.observation {
-    background-color: #EEF;
-    border-radius: 4pt;
-    padding: 4pt;
-    margin-top: 4pt;
-    margin-bottom: 4pt;
-}
-
-.warning > p:first-child:before
-{
-    content:"Warning. ";
-    display: inline;
-    font-weight: bold;
-} 
-
-.warning {
-    background-color: #FEE;
     border-radius: 4pt;
     padding: 4pt;
     margin-top: 4pt;
