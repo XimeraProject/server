@@ -475,6 +475,8 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                             }
 
                             try {
+				// So that js-quantities is available
+				var Qty = Quantities;
 
                                 eval($scope.validator);
 
