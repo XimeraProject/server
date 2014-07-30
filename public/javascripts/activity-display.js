@@ -475,7 +475,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                             }
 
                             try {
-				console.log( Quantities );
+
                                 eval($scope.validator);
 
 				window.MathFunction = MathFunction;
