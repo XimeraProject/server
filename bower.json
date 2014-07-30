@@ -19,6 +19,7 @@
 	"mathquill": "https://github.com/mathquill/mathquill.git",
 	"syntaxhighlighter": "https://github.com/alexgorbatchev/syntaxhighlighter.git",
 	"bootstrap-tree": "https://github.com/jhfrench/bootstrap-tree.git",
+	"js-quantities": "*",
 	"codemirror": "3.22.0",
 	"skulpt": "*",
 	"angular-strap": "2.0.0-rc.3",
