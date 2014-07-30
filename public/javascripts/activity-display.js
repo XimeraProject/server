@@ -483,7 +483,7 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
 				window.MathFunction = MathFunction;
 				window.validator = validator;
 				
-                                if (validator(parsedAnswer)) {
+                                if (validator(parsedAnswer, $scope.db.answer)) {
                                     success = true;
                                 }
                             }
