@@ -1,0 +1,64 @@
+/* Change this value to change the saturation and lightness of the background colors of the theorem environments. 
+The colors that you type below in theoremEnvironments will all get standardized to have the same saturation and lightness. */
+@theoremEnvironmentSaturation: 100%;
+@theoremEnvironmentLightness: 92%;
+
+/*"Array" of names and colors to select from. Be careful that every environment has a color, 
+and don't choose white or black since the "saturation" and "hue" of white and black don't behave well. */
+@theoremEnvironments:
+theorem green
+axiom green
+conjecture green
+corollary green
+proposition green 
+lemma green
+claim green
+condition green
+idea green
+definition green 
+conclusion green
+summary green
+warning red
+paradox red
+example yellow
+observation yellow
+fact yellow
+remark yellow
+acknowledgement yellow
+algorithm yellow
+notation yellow
+criterion yellow;
+
+/* This is a faux loop that doesn't end up in the final css. 
+Writing this does not actually cause the loop to be executed; see below
+for that. @index is the counter variable, but .loop is not a keyword!
+LESS has no idea this is a loop at first.
+We want to stop when the index reaches the end of the list of environments. */
+.loop (@index) when (@index =< length(@theoremEnvironments)){
+
+   /*Extract from arrays the name and color of the class*/
+   @nameOfClass: extract(@theoremEnvironments, @index);
+   @colorOfClass: extract(@theoremEnvironments, @index+1);
+      
+   .@{nameOfClass} { 
+
+      /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+      background-color: hsl(hue(@colorOfClass),@theoremEnvironmentSaturation,@theoremEnvironmentLightness);
+
+      /*These are the things that are common to all environments. */
+      border-radius: 4pt; padding: 4pt; margin-top: 4pt; margin-bottom: 4pt;
+   }
+   .@{nameOfClass} > p:first-child:before
+   {
+      content:"@{nameOfClass}. ";
+      display: inline;
+      text-transform: capitalize;   /* CSS here only applies to one word, like "Theorem." or "Example." */
+      font-weight: bold; 
+   } 
+
+   /* Here we execute loop again, but with @index incremented by 2. */
+   .loop(@index + 2);
+}
+
+/* This calls the loop with @index set to 1, thus starting the loop. Without this, all the code above would never run. */
+.loop(1);

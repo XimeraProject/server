@@ -38,6 +38,8 @@ requirejs.config({
 	'angular-strap': '../../components/angular-strap/dist/angular-strap.min',
 	'angular-strap-tpl': '../../components/angular-strap/dist/angular-strap.tpl.min',
 
+	"js-quantities": "../../components/js-quantities/src/quantities",
+
 	'md5': '../../components/JavaScript-MD5/js/md5.min'
     },
 

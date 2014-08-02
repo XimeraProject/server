@@ -14,7 +14,7 @@
 */
 
 // Script expects data-activityId attribute in activity div.
-define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/parser', 'confirm-click', 'activity-services'], function(angular, $, _, MathFunction, parse) {
+define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/parser', 'js-quantities', 'confirm-click', 'activity-services'], function(angular, $, _, MathFunction, parse, Quantities) {
     var app = angular.module('ximeraApp.activity', ["ngAnimate", "ximeraApp.confirmClick", "ximeraApp.activityServices"]);
 
     // Make sure a list of DOM elements is sorted in the same order in the DOM itself.
@@ -475,12 +475,15 @@ define(['angular', 'jquery', 'underscore', 'algebra/math-function', 'algebra/par
                             }
 
                             try {
+				// So that js-quantities is available
+				var Qty = Quantities;
+
                                 eval($scope.validator);
 
 				window.MathFunction = MathFunction;
 				window.validator = validator;
 				
-                                if (validator(parsedAnswer)) {
+                                if (validator(parsedAnswer, $scope.db.answer)) {
                                     success = true;
                                 }
                             }

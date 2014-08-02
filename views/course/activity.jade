@@ -27,8 +27,8 @@ block activity
           .btn-group
             button.pull-right.btn.btn-sm.btn-danger(type="button",ng-controller="ResetButtonCtrl", ng-confirm-click="Are you sure you want to erase your work?", ng-click="resetPage()")
               | <i class="fa fa-eraser"></i> Erase Work
-          .btn-group
-            mixin viewSource()
+          //.btn-group
+          //  mixin viewSource()
           .btn-group
             a.pull-right.btn.btn-default.btn-sm(role="button",href="https://github.com/#{activity.slug.split(':')[0]}/edit/master/#{activity.relativePath}")
               | <i class="fa fa-pencil"></i> Edit Source
