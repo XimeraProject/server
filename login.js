@@ -34,8 +34,14 @@ module.exports.ltiStrategy = function (rootUrl) {
         consumerKey: process.env.LTI_KEY,
         consumerSecret: process.env.LTI_SECRET,
     }, function (req, identifier, profile, done) {
-	var displayName = profile.lis_person_name_full;
-	var email = profile.lis_person_contact_email_primary;
+	var displayName = 'Remote User';
+	if ('lis_person_name_full' in profile)
+	    displayName = profile.lis_person_name_full;
+	var email = '';
+
+	if ('lis_person_contact_email_primary' in profile)	
+	    email = profile.lis_person_contact_email_primary;
+
         addUserAccount(req, 'ltiId', identifier, displayName, email, profile.custom_ximera, done);
     });
 }
