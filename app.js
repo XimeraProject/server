@@ -254,10 +254,12 @@ git.long(function (commit) {
 
     app.get('/just-logged-in', function (req, res) {
         if (req.user.lastUrlVisited) {
+	    console.log( "lastUrlVisited = ", req.user.lastUrlVisited);
             res.redirect(req.user.lastUrlVisited);
         }
         else {
             if (req.user.course) {
+		console.log( "course = ", req.user.course);
 		res.redirect( '/course/' + req.user.course +  '/course/' );
 	    } else {
 		res.redirect('/');
