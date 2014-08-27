@@ -253,7 +253,7 @@ git.long(function (commit) {
     });
 
     app.get('/just-logged-in', function (req, res) {
-        if (req.user.lastUrlVisited) {
+        if (req.user.lastUrlVisited && (req.user.lastUrlVisited != "/")) {
 	    console.log( "lastUrlVisited = ", req.user.lastUrlVisited);
             res.redirect(req.user.lastUrlVisited);
         }
