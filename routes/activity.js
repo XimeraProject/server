@@ -88,6 +88,7 @@ exports.logCompletion = function(req, res) {
                 completeUuids: completeUuids
             });
             log.save(callback);
+	    mdb.gradebook.publish( 'grade', log );
         },
         function (callback) {
             mdb.ActivityCompletion.findOne({
@@ -106,6 +107,7 @@ exports.logCompletion = function(req, res) {
                         completion.completeTime = curTime;
                     }
                     completion.save(callback);
+		    mdb.gradebook.publish( 'grade', completion );
                 }
                 else {
                     var completeTime = complete ? curTime : null;
@@ -120,6 +122,7 @@ exports.logCompletion = function(req, res) {
                         completeTime: completeTime
                     });
                     completion.save(callback);
+		    mdb.gradebook.publish( 'grade', completion );
                 }
             });
         }

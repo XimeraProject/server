@@ -17,6 +17,7 @@ var url = 'mongodb://' + process.env.XIMERA_MONGO_URL + "/" +
 mongoose.connect(url, function (error) {
     var client = mubsub(mongoose.connection.db);
     exports.channel = client.channel('github');
+    exports.gradebook = client.channel('gradebook');
     exports.gfs = Grid(mongoose.connection.db, mongoose.mongo);
 });
 
