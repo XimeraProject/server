@@ -11,11 +11,12 @@ if [ $(hostname) = ximera-1.asc.ohio-state.edu ]; then
     ./node_modules/grunt-cli/bin/grunt production
     echo Stopping old copies of app.js...
     ./node_modules/forever/bin/forever stop app.js
+    ./node_modules/forever/bin/forever stop ximera
     echo Starting a new copy of app.js...
     source environment.sh
     export DEPLOYMENT=production
     export NODE_ENV=production
-    ./node_modules/forever/bin/forever start -a -l forever.log -o out.log -e err.log app.js &
+    ./node_modules/forever/bin/forever --uid "ximera" start -a -l forever.log -o out.log -e err.log app.js &
 else
     echo not on the deployment machine...
     echo copying environment to deployment machine...
