@@ -88,7 +88,6 @@ exports.logCompletion = function(req, res) {
                 completeUuids: completeUuids
             });
             log.save(callback);
-	    mdb.gradebook.publish( 'grade', log );
         },
         function (callback) {
             mdb.ActivityCompletion.findOne({
@@ -107,7 +106,6 @@ exports.logCompletion = function(req, res) {
                         completion.completeTime = curTime;
                     }
                     completion.save(callback);
-		    mdb.gradebook.publish( 'grade', completion );
                 }
                 else {
                     var completeTime = complete ? curTime : null;
@@ -122,8 +120,11 @@ exports.logCompletion = function(req, res) {
                         completeTime: completeTime
                     });
                     completion.save(callback);
-		    mdb.gradebook.publish( 'grade', completion );
                 }
+
+		console.log( 'Publishing.' );
+		mdb.gradebook.publish( 'grade', {numParts: numParts, numComplete: numComplete, activity: locals.activity._id, activityTitle: locals.activity.title, activitySlug: locals.activity.slug, user: req.user._id, ltiId: req.user.ltiId, course: req.user.course } );
+
             });
         }
     ], function (err) {
