@@ -122,8 +122,12 @@ exports.logCompletion = function(req, res) {
                     completion.save(callback);
                 }
 
-		console.log( 'Publishing.' );
-		mdb.gradebook.publish( 'grade', {numParts: numParts, numComplete: numComplete, activity: locals.activity._id, activityTitle: locals.activity.title, activitySlug: locals.activity.slug, user: req.user._id, ltiId: req.user.ltiId, course: req.user.course } );
+		if (locals.activity) {
+		    console.log( 'Publishing.' );
+		    mdb.gradebook.publish( 'grade', {numParts: numParts, numComplete: numComplete, activity: locals.activity._id, activityTitle: locals.activity.title, activitySlug: locals.activity.slug, user: req.user._id, ltiId: req.user.ltiId, course: req.user.course } );
+		} else {
+		    console.log( 'Missing activity.' );
+		}
 
             });
         }
