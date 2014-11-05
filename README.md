@@ -40,7 +40,7 @@ This creates a directory containing BSON and JSON files
         export LTI_SECRET=myltisecret
         export GITHUB_WEBHOOK_SECRET=githubwebhooksecret
 
-Type source `env.sh` to execute those commands
+Type `source env.sh` to execute those commands
 
 Note that if you used a different database name, you should set XIMERA_MONGO_DATABASE to the name of your database.
 
