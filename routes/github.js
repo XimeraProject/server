@@ -30,13 +30,17 @@ exports.github = function(req, res){
 	var repository = req.body.repository;
 
 	if (repository && ('full_name' in repository)) {
+	    console.log( "repository = " + JSON.stringify(repository) );
+	    var sender = req.body.sender;	    
+	    console.log( "sender = " + JSON.stringify(sender) );
+	    
 	    mdb.GitRepo.findOne({gitIdentifier: repository.full_name}).exec( function (err, repo) {
 		if (repo) {
 		    // Courses linked to repo need to be updated
 		    mdb.GitRepo.update( repo, {$set: { needsUpdate : true }}, {},
 					function( err, document ) {
 					    winston.info( 'Requesting update for repo ' + repository.full_name );
-					    mdb.channel.publish( 'update', repository.full_name );
+					    mdb.channel.publish( 'update', { repository: repository, sender: sender } );
 					    res.send(200);
 					});
 		} else {
@@ -49,7 +53,7 @@ exports.github = function(req, res){
 		    
 		    repo.save(function () {
 			winston.info( 'Requesting creation of repo ' + repository.full_name );
-			mdb.channel.publish( 'create', repository.full_name );
+			mdb.channel.publish( 'create', { repository: repository, sender: sender } );
 			res.send(200);
 		    });
 		}

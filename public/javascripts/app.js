@@ -1,13 +1,22 @@
-requirejs.config({
+require.config({
     baseUrl: "/public/javascripts",
     waitSeconds: 200, // seems to fix things, sadly
+
+    config: {
+        moment: {
+	    // Unfortunately x-editable is expecting a moment global
+            // noGlobal: true
+        }
+    },
+    
     paths: {
 	"jquery": "../../components/jquery/dist/jquery.min",
+	"jquery-ui": "../../components/jquery-ui/jquery-ui.min",
 	"angular": "../../components/angular/angular",
         "angular-animate": "../../components/angular-animate/angular-animate.min",
         "angular-sanitize": "../../components/angular-sanitize/angular-sanitize.min",
 	"underscore": "../../components/underscore/underscore",
-	"x-editable": "../../components/x-editable/dist/bootstrap-editable/js/bootstrap-editable.min",
+	"x-editable": "../../components/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.min",
 	"threejs": "../../components/threejs/build/three.min",
 	"moment": "../../components/moment/min/moment.min",
         "q": "../../components/q/q",
@@ -79,9 +88,15 @@ requirejs.config({
 });
 
 
-require( ["angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "score", "free-response", "user", 'angular-strap-tpl', 'popover', "forum", "pagedown-directive", "course"], function(angular, shCore) {
+require( ["angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "score", "free-response", "user", 'angular-strap-tpl', 'popover', "forum", "pagedown-directive", "course", "jquery-ui"], function(angular, shCore) {
     'use strict';
 
+    var module;
+    
+    if (module = $('script[src$="require.js"]').data('module')) {
+	require([module]);
+    }
+    
     var app = angular.module('ximeraApp', ['ximeraApp.mathJax',
 					   'ximeraApp.activity',
 					   'ximeraApp.codingActivity',

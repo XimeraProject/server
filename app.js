@@ -67,7 +67,7 @@ app.set('view engine', 'jade');
 // all environments
 app.set('port', process.env.PORT || 3000);
 
-var rootUrl = 'http://127.0.0.1:' + app.get('port');
+var rootUrl = 'http://localhost:' + app.get('port');
 if (process.env.DEPLOYMENT === 'production') {
     rootUrl = 'http://ximera.osu.edu';
 }
@@ -85,15 +85,20 @@ var MongoStore = require('connect-mongo')(express);
 // connect-mongo for sessions).
 var databaseUrl = 'mongodb://' + process.env.XIMERA_MONGO_URL + "/" + process.env.XIMERA_MONGO_DATABASE;
 var collections = ['users', 'scopes', 'imageFiles'];
-var db = require('mongojs').connect(databaseUrl, collections);
+var mongojs = require('mongojs');
+var db = mongojs(databaseUrl, collections);
 
 passport.use(login.googleStrategy(rootUrl));
+passport.use(login.twitterStrategy(rootUrl));
 passport.use(login.courseraStrategy(rootUrl));
 passport.use(login.ltiStrategy(rootUrl));
+passport.use(login.githubStrategy(rootUrl));
+
 // Only store the user _id in the session
 passport.serializeUser(function(user, done) {
    done(null, user._id);
 });
+
 passport.deserializeUser(function(id, done) {
    mdb.User.findOne({_id: new mongo.ObjectID(id)}, function(err,document) {
        done(err, document);
@@ -162,9 +167,7 @@ git.long(function (commit) {
     app.use(express.cookieParser(cookieSecret));
     app.use(express.session({
 	secret: cookieSecret,
-	store: new MongoStore({
-	    db: mongoose.connections[0].db
-	})
+	db: new MongoStore({ mongooseConnection: mongoose.connection })
     }));
 
     app.use(passport.initialize());
@@ -202,12 +205,17 @@ git.long(function (commit) {
     app.post('/activity/log-completion', activity.logCompletion);
     app.get('/users/completion', activity.completion);
 
-    app.put('/users/', user.put);
     app.get('/users/', user.getCurrent);
     //app.get('/users/profile', user.currentProfile);
     //app.get('/users/:id/profile', user.profile);
     app.get('/users/:id', user.get);
+    app.put('/users/:id', user.put);
 
+    app.delete('/users/:id/google', function( req, res ) { user.deleteLinkedAccount( req, res, 'google' ); } );
+    app.delete('/users/:id/coursera', function( req, res ) { user.deleteLinkedAccount( req, res, 'coursera' ); } );
+    app.delete('/users/:id/github', function( req, res ) { user.deleteLinkedAccount( req, res, 'github' ); } );
+    app.delete('/users/:id/twitter', function( req, res ) { user.deleteLinkedAccount( req, res, 'twitter' ); } );
+    
     app.get( '/course/calculus-one/', function( req, res ) { res.redirect('/about/plans'); });
     app.get( '/course/calculus-one', function( req, res ) { res.redirect('/about/plans'); });
     app.get( '/course/calculus-two/', function( req, res ) { res.redirect('/about/plans'); });
@@ -238,10 +246,23 @@ git.long(function (commit) {
                                    failureRedirect: '/auth/coursera'}));
 
     // Google login.
-    app.get('/auth/google', passport.authenticate('google'));
-    app.get('/auth/google/return',
-            passport.authenticate('google', { successRedirect: '/just-logged-in',
-				              failureRedirect: '/auth/google'}));
+    app.get('/auth/google', passport.authenticate('google-openidconnect'));
+    app.get('/auth/google/callback',
+            passport.authenticate('google-openidconnect', { successRedirect: '/just-logged-in',
+							    failureRedirect: '/auth/google'}));
+
+    // Twitter login.
+    app.get('/auth/twitter', passport.authenticate('twitter'));
+    app.get('/auth/twitter/callback',
+            passport.authenticate('twitter', { successRedirect: '/just-logged-in',
+					       failureRedirect: '/auth/twitter'}));    
+
+    // GitHub login.
+    app.get('/auth/github', passport.authenticate('oauth2'));
+    app.get('/auth/github/callback',
+            passport.authenticate('oauth2', { successRedirect: '/just-logged-in',
+				              failureRedirect: '/',
+					      failureFlash: true}));
 
     // LTI login
     app.post('/lti', passport.authenticate('lti', { successRedirect: '/just-logged-in',
@@ -328,7 +349,7 @@ git.long(function (commit) {
     // Start HTTP server for fully configured express App.
         var server = http.createServer(app);
 
-        server.listen(app.get('port'), function(){
+        server.listen(app.get('port'), function(stream){
 	    console.log('Express server listening on port ' + app.get('port'));
         });
 

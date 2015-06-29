@@ -28,8 +28,8 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
                | <i class="fa fa-user"></i> #{user.name} 
                b.caret
              ul(id="login-menu").dropdown-menu
-               //li
-               //  a(href="/users/profile") <i class='fa fa-cogs'></i> Profile
+               li
+                 a(href="/users/#{user._id}") <i class='fa fa-cogs'></i> Profile
                li
                  a(href="/logout") <i class='fa fa-sign-out'></i> Logout
          else

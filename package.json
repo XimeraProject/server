@@ -22,8 +22,10 @@
     "jade": "*",
     "file": "*",
     "jsdom": "*",
-    "passport-google": "*",
+    "passport-google-openidconnect": "*",
     "passport-oauth": "*",
+    "passport-oauth2": "*",
+    "passport-twitter": "*",            
     "jison": "*",
     "requirejs": "2.1.11",
     "jasmine-node": "*",
@@ -54,7 +56,8 @@
     "serve-favicon": "*",
     "morgan": "*",
     "error-handler": "*",
-    "mubsub": "*"
+    "mubsub": "*",
+    "github": "*"
   },
   "devDependencies": {
     "load-grunt-tasks": "~0.2.1",

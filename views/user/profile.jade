@@ -1,0 +1,102 @@
+extends ../layouts/main
+
+mixin linked_account(name, icon, shortname, userId, token)
+  div.btn-group
+    button.btn.btn-default.linked-account(type="button",id=shortname,userId=userId,connected=(token != undefined))
+      if icon
+        i(class="fa fa-" + icon)
+        | &nbsp;<span class="connect">Connect</span><span class="disconnect" style="display: none;">Disconnect</span> #{name}
+      else
+        | <span class="connect">Connect</span><span class="disconnect" style="display: none;">Disconnect</span> #{name}      
+
+mixin broken(name, icon, shortname, userId, token)
+    if token
+      a.btn.btn-default.btn-danger(href=url,role="button")
+        if icon
+          i(class="fa fa-" + icon)
+          | &nbsp;Disconnect #{name}
+        else
+          | Disconnect #{name}
+    else
+      button.btn.btn-default(type="button",shortname=shortname)
+        if icon
+          i(class="fa fa-" + icon)
+          | &nbsp;Connect #{name}
+        else
+          | Connect #{name}        
+
+block title
+  #{title}
+  
+block content
+ .container
+    div.row
+      h1 
+        a.x-editable(data-placement="bottom",href="#",id="name",data-type="text",data-pk="#{person._id}",data-title="Enter name") #{person.name}
+        small
+          | &nbsp;known to the public as &ldquo;
+          a.x-editable(data-placement="bottom",href="#",id="displayName",data-type="text",data-pk="#{person._id}",data-title="Enter name",data-emptytext="#{person.name}") #{person.displayName}
+          | &rdquo;
+      div.panel.panel-default
+        div.panel-heading
+          h3.panel-title Biography
+        div.panel-body
+          a.pull-right(href="http://www.gravatar.com/#{person.gravatar}")
+            img(class="profile-picture",src="https://secure.gravatar.com/avatar/#{person.gravatar}.jpg?d=retro&s=160")
+          dl.dl-horizontal
+            dt Public name
+            dd
+              a.x-editable(data-placement="bottom",href="#",id="displayName",data-type="text",data-pk="#{person._id}",data-title="Enter name",data-emptytext="#{person.name}") #{person.displayName}
+            dt Homepage
+            dd 
+              a.x-editable(href="#",id="website",data-type="url",data-pk="#{person._id}",data-title="Enter URL",data-emptytext="http://my.website.com/") #{person.website}
+            dt Location
+            dd
+              a.x-editable(href="#",id="location",data-type="text",data-pk="#{person._id}",data-title="Enter location",data-emptytext="Earth") #{person.location}
+            dt Last seen
+            dd
+              time(class="relative-date", datetime=person.lastSeen)
+                | #{person.lastSeen}
+            dt Profile views
+            dd
+              | #{person.profileViews}
+
+      div.panel.panel-default
+        div.panel-heading
+          h3.panel-title Linked accounts        
+        div.panel-body
+          div.btn-toolbar(role="toolbar")
+            mixin linked_account('Google', 'google', 'google', person._id, person.googleOpenId )
+            mixin linked_account('Coursera', undefined, 'coursera', person._id, person.courseraOAuthId )
+            mixin linked_account('GitHub', 'github-alt', 'github', person._id, person.githubId )
+            mixin linked_account('Twitter', 'twitter', 'twitter', person._id, person.twitterOAuthId )            
+                          
+      p
+        | This profile is visible to 
+        a.x-editable(data-placement="right",href="#",id="privacy",data-type="select",data-pk="#{person._id}",data-source='[{value: "", text:"me and no one else"},{value: "users", text:"other Ximera users and no one else"},{value:"world", text:"everyone in the world"}]')
+          if ! (person.privacy)
+            | me and no one else
+          if person.privacy == "users"
+            | other Ximera users and no one else
+          if person.privacy == "world"
+            | everyone in the world
+          | .
+      dl.dl-horizontal
+        dt Email
+        dd 
+          a.x-editable(href="#",id="email",data-type="email",data-pk="#{person._id}",data-title="Enter email address",data-emptytext="missing@ximera.org") #{person.email}
+        dt Homepage
+        dd 
+          a.x-editable(href="#",id="website",data-type="url",data-pk="#{person._id}",data-title="Enter URL",data-emptytext="http://my.website.com/") #{person.website}
+        dt Location
+        dd
+          a.x-editable(href="#",id="location",data-type="text",data-pk="#{person._id}",data-title="Enter location",data-emptytext="Earth") #{person.location}
+        dt Birthday
+        dd
+          a.x-editable(href="#",id="birthday",data-type="combodate",data-viewformat="MMMM D, YYYY",data-format="YYYY-MM-DD",data-value=person.birthday,data-template="D / MMM / YYYY",data-pk="#{person._id}",data-title="Enter your date of birth",data-emptytext="(no birthday given)")
+      h2 Biography
+      p
+        a.x-editable(href="#",id="biography",data-type="textarea",data-pk="#{person._id}",data-title="Enter biography",data-emptytext="(no biography given)") #{person.biography}
+      p #{JSON.stringify(person)}
+      hr
+      p Connected to other things

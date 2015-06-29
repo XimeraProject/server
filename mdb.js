@@ -4,7 +4,7 @@ var fstream = require('fstream');
 var fs = require("fs");
 var winston = require("winston");
 var _ = require("underscore");
-var mubsub = require('mubsub');
+//var mubsub = require('mubsub');
 
 exports = module.exports;
 
@@ -15,10 +15,11 @@ var url = 'mongodb://' + process.env.XIMERA_MONGO_URL + "/" +
                  process.env.XIMERA_MONGO_DATABASE;
 
 mongoose.connect(url, function (error) {
-    var client = mubsub(mongoose.connection.db);
-    exports.channel = client.channel('github');
-    exports.gradebook = client.channel('gradebook');
-    exports.gfs = Grid(mongoose.connection.db, mongoose.mongo);
+    //var client = mubsub(mongoose.connection.db);
+    //exports.channel = client.channel('github');
+    //exports.gradebook = client.channel('gradebook');
+    //exports.gfs = Grid(mongoose.connection.db, mongoose.mongo);
+    console.log( "Connected." );
 });
 
 // Notice this is different from Schema.ObjectId; Schema.ObjectId if for passing
@@ -60,9 +61,13 @@ exports.initialize = function initialize() {
                                   {
                                       googleOpenId: {type: String, index: true, unique: true, sparse: true},
                                       courseraOAuthId: {type: String, index: true, unique: true, sparse: true},
+                                      twitterOAuthId: {type: String, index: true, unique: true, sparse: true},				      
+                                      githubId: {type: String, index: true, unique: true, sparse: true},
                                       ltiId: {type: String, index: true, unique: true, sparse: true},
+                                      githubAccessToken: {type: String},				      
 				      course: String,
 				      superuser: Boolean,
+				      privacy: String,
                                       name: String,
                                       email: String,
 				      displayName: String,
@@ -76,6 +81,9 @@ exports.initialize = function initialize() {
 				      remoteAddress: String,
                                       isGuest: Boolean,
                                       lastUrlVisited: String,
+				      lastSeen: Date,
+				      memberSince: Date,
+				      profileViews: Number,
                                       isInstructor: Boolean
                                   });
 
