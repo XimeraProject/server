@@ -1,9 +1,42 @@
-var GoogleStrategy = require('passport-google').Strategy
+var GoogleStrategy = require('passport-google-openidconnect').Strategy
   , CourseraOAuthStrategy = require('./passport-coursera-oauth').Strategy
+  , TwitterStrategy = require('passport-twitter').Strategy
   , LtiStrategy = require('./passport-lti').Strategy
+  , OAuth2Strategy = require('passport-oauth2').Strategy
   , async = require('async')
   , mdb =  require('./mdb')
+  , githubApi = require('github')
   , path = require('path');
+
+module.exports.githubStrategy = function(rootUrl) {
+    return new OAuth2Strategy({
+	authorizationURL: 'https://github.com/login/oauth/authorize',
+	tokenURL: 'https://github.com/login/oauth/access_token',
+	clientID: process.env.GITHUB_CLIENT_ID,
+	clientSecret: process.env.GITHUB_CLIENT_SECRET,
+	scope: "repo:status,repo_deployment,write:repo_hook",
+	callbackURL: rootUrl + "/auth/github/callback",
+	passReqToCallback: true
+    }, function(req, accessToken, refreshToken, profile, done) {
+        // Load the github user id				
+	var github = new githubApi({version: "3.0.0"});
+	github.authenticate({
+	    type: "oauth",
+	    token: accessToken
+	});
+
+	github.user.get( {}, function( err, user ) {
+	    // TODO: save the entire user object here?
+
+	    // Login using the github user id
+	    addUserAccount(req, 'githubId', user.id, null, null, null, function() {
+		// Save the github access token
+		req.user.githubAccessToken = accessToken;
+		req.user.save(done);
+	    });
+	});
+    });
+}
 
 module.exports.courseraStrategy = function (rootUrl) {
     return new CourseraOAuthStrategy({
@@ -14,17 +47,33 @@ module.exports.courseraStrategy = function (rootUrl) {
         callbackURL: rootUrl + "/auth/coursera/callback",
         passReqToCallback: true
     }, function(req, token, tokenSecret, profile, done) {
+	console.log( "coursera profile = ", profile );
         addUserAccount(req, 'courseraOAuthId', profile.id, profile.full_name, null, null, done);
     });
 }
 
 module.exports.googleStrategy = function (rootUrl) {
     return new GoogleStrategy({
-        returnURL: rootUrl + '/auth/google/return',
-        realm: rootUrl,
+        callbackURL: rootUrl + '/auth/google/callback',
+	clientID: process.env.GOOGLE_CLIENT_ID,
+	clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+	scope: "email",
         passReqToCallback: true
-    }, function (req, identifier, profile, done) {
-        addUserAccount(req, 'googleOpenId', identifier, profile.displayName, profile.emails[0].value, null, done);
+    }, function(req, iss, sub, profile, accessToken, refreshToken, done) {
+	console.log( "google profile = ", profile );
+        addUserAccount(req, 'googleOpenId', profile.id, profile.displayName, null, null, done);
+	console.log( "user = " + JSON.stringify(req.user) );
+    });
+}
+
+module.exports.twitterStrategy = function(rootUrl) {
+    return new  TwitterStrategy({
+	consumerKey: process.env.TWITTER_CONSUMER_KEY,
+	consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+	callbackURL: rootUrl + "/auth/twitter/callback",
+	passReqToCallback: true
+    }, function(req, token, tokenSecret, profile, done) {
+        addUserAccount(req, 'twitterOAuthId', profile.id_str, profile.name, null, null, done);
     });
 }
 
@@ -46,8 +95,6 @@ module.exports.ltiStrategy = function (rootUrl) {
         addUserAccount(req, 'ltiId', identifier, displayName, email, profile.custom_ximera, done);
     });
 }
-
-// POST&https%3A%2F%2Fximera.osu.edu%2Flti%2F&basiclti_submit%3DLaunch%2520Endpoint%2520with%2520BasicLTI%2520Data%26context_id%3D11395970%26context_label%3Dmath_2162.02_au2014_20577%26context_title%3DAU14%2520MATH%25202162.02%2520-%2520Acc%2520Eng%2520Calc%25202%2520%252820577%2529%26context_type%3D%26custom_ximera%3Dkisonecat%252Fmultivariable-calculus%26ext_d2l_link_id%3D216%26ext_d2l_role%3D.Student%26ext_d2l_token_digest%3DHySPKFZ9SEdVLiThi0Tp2Um3EEI%253D%26ext_d2l_token_id%3D163319336%26ext_d2l_username%3Dfowler.291%26ext_tc_profile_url%3Dhttps%253A%252F%252Fcarmen.osu.edu%252Fd2l%252Fapi%252Fext%252F1.0%252Flti%252Ftcservices%26launch_presentation_locale%3DEN-US__%26lis_outcome_service_url%3Dhttps%253A%252F%252Fcarmen.osu.edu%252Fd2l%252Fle%252Flti%252FOutcome%26lis_person_contact_email_primary%3Dfowler.291%2540osu.edu%26lis_person_name_family%3DFowler%26lis_person_name_full%3DJames%2520Fowler%26lis_person_name_given%3DJames%26lis_result_sourcedid%3D4938ea27-4cd5-4fec-a6f6-3d6e141c1948%26lti_message_type%3Dbasic-lti-launch-request%26lti_version%3DLTI-1p0%26oauth_callback%3Dabout%253Ablank%26oauth_consumer_key%3D8SoyJOxqroPZ1t3CyG%26oauth_nonce%3D283323381%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1409110801%26oauth_version%3D1.0%26resource_link_description%3D%26resource_link_id%3D%26resource_link_title%3DXimera%26roles%3DInstructor%26tool_consumer_info_product_family_code%3Ddesire2learn%26tool_consumer_info_version%3D10.3.0%2520SP4%26tool_consumer_instance_contact_email%3D%26tool_consumer_instance_description%3D%26tool_consumer_instance_guid%3D%26tool_consumer_instance_name%3D%26user_id%3DOSU_Prod_499871
 
 // Add guest users account if not logged in.
 // TODO: Clean these out occasionally.
@@ -123,8 +170,7 @@ function addUserAccount(req, authField, authId, name, email, course, done) {
                 }
             }
     	});
-    }
-    else {
+    } else {
         // Add account to existing user; remove account from other users.
 
         // If user already has account, we're done.

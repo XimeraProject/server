@@ -31,7 +31,7 @@ exports.github = function(req, res){
 
 	if (repository && ('full_name' in repository)) {
 	    console.log( "repository = " + JSON.stringify(repository) );
-	    var sender = req.body.sender;	    
+	    var sender = req.body.sender;
 	    console.log( "sender = " + JSON.stringify(sender) );
 	    
 	    mdb.GitRepo.findOne({gitIdentifier: repository.full_name}).exec( function (err, repo) {
@@ -40,7 +40,6 @@ exports.github = function(req, res){
 		    mdb.GitRepo.update( repo, {$set: { needsUpdate : true }}, {},
 					function( err, document ) {
 					    winston.info( 'Requesting update for repo ' + repository.full_name );
-					    mdb.channel.publish( 'update', { repository: repository, sender: sender } );
 					    res.send(200);
 					});
 		} else {
@@ -53,10 +52,22 @@ exports.github = function(req, res){
 		    
 		    repo.save(function () {
 			winston.info( 'Requesting creation of repo ' + repository.full_name );
-			mdb.channel.publish( 'create', { repository: repository, sender: sender } );
 			res.send(200);
 		    });
 		}
+
+		mdb.User.findOne({githubId: sender.id}).exec( function(err, githubUser) {
+		    var push = mdb.GitPushes({
+			gitIdentifier: repository.full_name,
+			sender: sender,
+			repository: repository,
+			senderAccessToken: githubUser.githubAccessToken,
+			headCommit: req.body.head_commit,
+			finishedProcessing: false
+		    });
+
+		    push.save();
+		});
 	    });
 	}
     } else {

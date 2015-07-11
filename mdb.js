@@ -4,7 +4,6 @@ var fstream = require('fstream');
 var fs = require("fs");
 var winston = require("winston");
 var _ = require("underscore");
-//var mubsub = require('mubsub');
 
 exports = module.exports;
 
@@ -14,13 +13,7 @@ var Mixed = mongoose.Schema.Types.Mixed;
 var url = 'mongodb://' + process.env.XIMERA_MONGO_URL + "/" +
                  process.env.XIMERA_MONGO_DATABASE;
 
-mongoose.connect(url, function (error) {
-    //var client = mubsub(mongoose.connection.db);
-    //exports.channel = client.channel('github');
-    //exports.gradebook = client.channel('gradebook');
-    //exports.gfs = Grid(mongoose.connection.db, mongoose.mongo);
-    console.log( "Connected." );
-});
+mongoose.connect(url, function (error) {});
 
 // Notice this is different from Schema.ObjectId; Schema.ObjectId if for passing
 // models/schemas, Types.ObjectId is for generating ObjectIds.
@@ -30,6 +23,20 @@ exports.ObjectId = mongoose.Types.ObjectId;
 exports.initialize = function initialize() {
     winston.info("Initializing Mongo");
 
+    var GitPushesSchema = new mongoose.Schema(
+	{
+	    gitIdentifier: String,
+	    senderAccessToken: {type: String},
+	    sender: Mixed,
+	    repository: Mixed,
+	    headCommit: Mixed,
+	    finishedProcessing: Boolean	    
+	},
+	{
+	    capped: 1024*1024,
+	});
+    exports.GitPushes = mongoose.model("GitPushes", GitPushesSchema);
+    
     exports.GitRepo = mongoose.model("GitRepo",
                                      {
                                          // Key
@@ -41,6 +48,17 @@ exports.initialize = function initialize() {
                                          currentActivities: [ObjectId]
                                      });
 
+    exports.TexFile = mongoose.model("TexFile",
+                                      {
+                                          // The fileHash is the hash that git uses
+					  fileHash: {type: String, index: true, unique: true, sparse: true},
+					  commitHash: {type: String, index: true},
+                                          path: String,
+                                          sourceCode: String,
+                                          errorList: Mixed,
+					  compileLog: String
+                                      });    
+    
     exports.Activity = mongoose.model("Activity",
                                       {
                                           // Key

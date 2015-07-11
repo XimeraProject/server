@@ -234,3 +234,17 @@ exports.activitySource = function(req, res) {
         }
     ]);
 };
+
+
+exports.source = function(req, res) {
+    remember(req);
+
+    var githubUsername = req.params.username;
+    var githubRepository = req.params.repository;
+    var githubBranch = req.params.branch;    
+    var path = req.params.path;
+    
+    //res.render('activity-source', { activity: locals.activity, activityId: locals.activity._id });
+
+    res.send( "hello" );
+};

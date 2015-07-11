@@ -27,8 +27,15 @@ var express = require('express')
   , mongoImage = require('./routes/mongo-image')
   , async = require('async')
   , fs = require('fs')
+  , favicon = require('serve-favicon' )
   , io = require('socket.io')
   , util = require('util')
+  , session = require('express-session')
+  , bodyParser = require('body-parser')
+  , cookieParser = require('cookie-parser')
+  , logger = require('morgan')
+  , methodOverride = require('method-override')
+  , errorHandler = require('errorhandler')
   ;
 
 // Check for presence of appropriate environment variables.
@@ -57,11 +64,11 @@ jade.filters.markdown = function(str){
     return jade.filters.ximera(md.parse(str));
 };
 
-// Create express app to configure.
+// Create Express 4 app to configure.
 var app = express();
 
-
-app.set('views', __dirname + '/views');
+// Use Jade as our templating engine
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 // all environments
@@ -75,9 +82,37 @@ if (process.env.DEPLOYMENT === 'production') {
 // Common mongodb initializer for the app server and the activity service
 mdb.initialize();
 
+app.use(logger('dev'));
+app.use(favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
+
+app.use(function(req, res, next) {
+    req.rawBody = '';
+    
+    req.on('data', function(chunk) { 
+	req.rawBody += chunk;
+    });
+    
+    next();
+});
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(methodOverride());
+
+cookieSecret = process.env.XIMERA_COOKIE_SECRET;
+
+app.use(cookieParser(cookieSecret));
+
 // Store session data in the mongo database; this is needed if we're
 // going to have multiple web servers sharing a single db
-var MongoStore = require('connect-mongo')(express);
+var MongoStore = require('connect-mongo')(session);
+
+app.use(session({
+    secret: cookieSecret,
+    resave: false,
+    saveUninitialized: false,
+    db: new MongoStore({ mongooseConnection: mongoose.connection })
+}));
 
 // setup ANOTHER connection to the mongo database (maybe you are upset
 // that I have two connections to mongodb, but it seems like this is
@@ -140,35 +175,9 @@ git.long(function (commit) {
     app.use('/public', express.static(path.join(__dirname, 'public')));
     app.use('/components', express.static(path.join(__dirname, 'components')));
 
-    app.locals({
-	versionPath: versionator.versionPath,
-    });
+    app.locals.versionPath = versionator.versionPath;
 
     console.log( versionator.versionPath('/template/test') );
-
-    app.use(express.favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
-    app.use(express.logger('dev'));
-
-    app.use(function(req, res, next) {
-	req.rawBody = '';
-	
-	req.on('data', function(chunk) { 
-	    req.rawBody += chunk;
-	});
-	
-	next();
-    });
-
-    app.use(express.bodyParser());
-    app.use(express.methodOverride());
-
-    cookieSecret = process.env.XIMERA_COOKIE_SECRET;
-
-    app.use(express.cookieParser(cookieSecret));
-    app.use(express.session({
-	secret: cookieSecret,
-	db: new MongoStore({ mongooseConnection: mongoose.connection })
-    }));
 
     app.use(passport.initialize());
     app.use(passport.session());
@@ -176,15 +185,10 @@ git.long(function (commit) {
     app.use(login.guestUserMiddleware);
     app.use(addDatabaseMiddleware);
 
-    app.use(app.router);
-
-    app.use(function(req, res, next){
-        res.render('404', { status: 404, url: req.url });
-    });
-
+    
     // Middleware for development only
     if ('development' == app.get('env')) {
-        app.use(express.errorHandler());
+        app.use(errorHandler());
     }
 
     // Setup routes.
@@ -227,13 +231,15 @@ git.long(function (commit) {
     app.get( '/course', function( req, res ) { res.redirect(req.url + '/'); });
     app.get( '/courses', function( req, res ) { res.redirect('/course/'); });
     app.get( '/courses/', function( req, res ) { res.redirect('/course/'); });
-    app.get(/^\/course\/(.+)\/activity\/(.+)\/update\/$/, course.activityUpdate);
-    app.get(/^\/course\/(.+)\/activity\/(.+)\/source\/$/, course.activitySource);
-    app.get(/^\/course\/(.+)\/activity\/(.+)\/$/, course.activity );
-    app.get( /^\/course\/(.+)\/activity\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
-    app.get(/^\/course\/(.+)\/$/, course.landing );
-    app.get( /^\/course\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
-
+    app.get( '/course/:username/:repository/:branch/:path*.tex', course.source );
+    //app.get( '/course/:username/:repository/:branch/:path.tex', course.source );        
+    //app.get(/^\/course\/(.+)\/activity\/(.+)\/update\/$/, course.activityUpdate);
+    //app.get(/^\/course\/(.+)\/activity\/(.+)\/source\/$/, course.activitySource);
+    //app.get(/^\/course\/(.+)\/activity\/(.+)\/$/, course.activity );
+    //app.get( /^\/course\/(.+)\/activity\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
+    //app.get(/^\/course\/(.+)\/$/, course.landing );
+    //app.get( /^\/course\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
+    
     // Instructor paths
     app.get(/^\/instructor\/course\/(.+)\/activity\/(.+)\/$/, instructor.instructorActivity );
     app.get('/instructor/activity-analytics/:id', instructor.activityAnalytics);
@@ -315,11 +321,9 @@ git.long(function (commit) {
     app.get('/image/:hash', mongoImage.get);
 
 
-    app.locals({
-        moment: require('moment'),
-        _: require('underscore'),
-        deployment: process.env.DEPLOYMENT
-    });
+    app.locals.moment = require('moment');
+    app.locals._ = require('underscore');
+    app.locals.deployment = process.env.DEPLOYMENT;
 
     // Setup blogs
     var Poet = require('poet')
@@ -374,6 +378,12 @@ git.long(function (commit) {
             socket.sockets.emit('message', data);
 	});
     });
+
+    // If nothing else matches, it is a 404
+    app.use(function(req, res, next){
+        res.render('404', { status: 404, url: req.url });
+    });
+	
 });
 
 });
