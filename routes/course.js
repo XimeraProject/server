@@ -1,6 +1,7 @@
 var mdb = require('../mdb'),
     remember = require('../remember'),
     async = require('async'),
+    extname = require('path').extname,
     winston = require('winston');
 
 exports.index = function(req, res) {
@@ -28,6 +29,55 @@ exports.landing = function(req, res) {
 	    res.send("Course not found.");
 	}
     });
+}
+
+function findMostRecentBranch(owner, repository, branchName, callback) {
+    mdb.Branch.find({owner: owner, repository: repository, name: branchName}).sort({lastUpdate: -1}).limit(1).exec( function (err, branches) {
+	var branch = branches[0];
+	callback( err, branch );
+    });
+}
+
+function findMostRecentGitFileContents( owner, repository, branchName, path, callback) {
+    var commit;
+    var hash;    
+    
+    async.waterfall(
+	[
+	    function( callback ) {
+		findMostRecentBranch( owner, repository, branchName, callback );
+	    },
+	    
+	    function( branch, callback ) {
+		if (!branch)
+		    callback( "Missing branch", null );
+		else {
+		    commit = branch.commit;
+		    mdb.GitFile.findOne({commit: branch.commit, path: path}).exec(callback);
+		}
+	    },
+	    
+	    function( gitFile, callback ) {
+		if (!gitFile)
+		    callback( "Missing gitFile", null );
+		else {
+		    hash = gitFile.hash;
+		    console.log( hash );
+		    mdb.Blob.findOne({hash: gitFile.hash}).exec(callback);
+		}
+	    },
+	    
+	], function(err, result) {
+	    if ((!err) && result) {
+		result.commit = commit;
+		result.path = path;
+		result.owner = owner;
+		result.hash = hash;
+		result.repository = repository;
+	    }
+	    
+	    callback(err, result);
+	});
 }
 
 function findCourseAndActivityBySlugs(user, courseSlug, activitySlug, callback) {
@@ -239,12 +289,99 @@ exports.activitySource = function(req, res) {
 exports.source = function(req, res) {
     remember(req);
 
-    var githubUsername = req.params.username;
-    var githubRepository = req.params.repository;
-    var githubBranch = req.params.branch;    
+    var owner = req.params.username;
+    var repository = req.params.repository;
+    var branchName = req.params.branch;
     var path = req.params.path;
     
-    //res.render('activity-source', { activity: locals.activity, activityId: locals.activity._id });
+    findMostRecentGitFileContents( owner, repository, branchName, path, function(err, file) {
+	if (err)
+	    res.send( err );
+	else {
+	    mdb.CompileLog.findOne({hash: file.hash, commit: file.commit}, function(err, compileLog) {
+		res.render('source', { file: file, compileLog: compileLog });
+	    });
+	}
+    });
+};
 
-    res.send( "hello" );
+
+exports.image = function(req, res) {
+    remember(req);
+
+    var owner = req.params.username;
+    var repository = req.params.repository;
+    var branchName = req.params.branch;
+    var path = req.params.path;
+    
+    findMostRecentGitFileContents( owner, repository, branchName, path, function(err, file) {
+	if (err)
+	    res.send( err );
+	else {
+	    if (extname(path) == ".svg")
+		res.contentType( 'image/svg+xml' );
+	    else
+		res.contentType( 'image/' + extname(path).replace('.', '') );
+	    
+	    res.end( file.data, 'binary' );
+	}
+    });
+};
+
+// BADBAD: this will eventually need to look for the most recent SCOPE first instead of just the branch
+exports.activity = function(req, res) {
+    remember(req);
+
+    var owner = req.params.username;
+    var repository = req.params.repository;
+    var branchName = req.params.branch;
+    var path = req.params.path;
+    var commit;
+    var hash;
+    var activity;
+    
+    async.waterfall(
+	[
+	    function( callback ) {
+		findMostRecentBranch( owner, repository, branchName, callback );
+	    },
+	    
+	    function( branch, callback ) {
+		if (!branch)
+		    callback( "Missing branch", null );
+		else {
+		    commit = branch.commit;
+		    mdb.Activity.findOne({commit: branch.commit, path: path}).exec(callback);
+		}
+	    },
+	    
+	    function( anActivity, callback ) {
+		if (!anActivity)
+		    callback( "Missing activity", null );
+		else {
+		    activity = anActivity;
+		    console.log( activity );
+		    hash = activity.hash;
+		    mdb.Blob.findOne({hash: hash}).exec(callback);
+		}
+	    },
+	    
+	], function(err, result) {
+	    if ((err == "Missing branch") && (branchName != "master")) {
+		res.redirect("/course/" + owner + "/" + repository + "/master/" + branchName + "/" + path);
+	    } else {
+		if ((err) || (!result)) {
+		    res.send( err );
+		} else {
+		    result.commit = commit;
+		    result.path = path;
+		    result.owner = owner;
+		    result.hash = hash;
+		    result.repository = repository;
+		    activity.html = result.data;
+		    
+		    res.render('activity', { activity: activity, content: result });
+		}
+	    }
+	});
 };

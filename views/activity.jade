@@ -1,0 +1,37 @@
+extends layouts/main
+
+block title
+  | #{activity.title}
+
+block content
+    div.container
+      .row
+        .col-md-3
+          .list-group
+            a.list-group-item(href="#")
+              h4.list-group-item-heading List group item heading
+              p.list-group-item-text Description of activity goes here!
+            a.list-group-item(href="#")
+              h4.list-group-item-heading List group item heading
+              p.list-group-item-text Description of activity goes here!
+            a.list-group-item(href="#")
+              h4.list-group-item-heading List group item heading
+              p.list-group-item-text Description of activity goes here!
+            a.list-group-item.active(href="#")
+              h4.list-group-item-heading List group item heading
+              p.list-group-item-text Description of activity goes here!
+            a.list-group-item(href="#")
+              h4.list-group-item-heading List group item heading
+              p.list-group-item-text Description of activity goes here!
+            a.list-group-item(href="#")
+              h4.list-group-item-heading List group item heading
+              p.list-group-item-text Description of activity goes here!
+            a.list-group-item(href="#")
+              h4.list-group-item-heading List group item heading
+              p.list-group-item-text Description of activity goes here!
+            a.list-group-item(href="#")
+              h4.list-group-item-heading List group item heading
+              p.list-group-item-text Description of activity goes here!
+        .col-md-9
+          h1 Hello
+          | !{activity.html}

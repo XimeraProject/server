@@ -88,7 +88,9 @@ require.config({
 });
 
 
-require( ["angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "score", "free-response", "user", 'angular-strap-tpl', 'popover', "forum", "pagedown-directive", "course", "jquery-ui"], function(angular, shCore) {
+//require( ["angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "score", "free-response", "user", 'angular-strap-tpl', 'popover', "forum", "pagedown-directive", "course", "jquery-ui"], function(angular, shCore) {
+require( ["shCore", "bootstrap", "moment", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "user", 'popover', "forum"], function(shCore) {
+
     'use strict';
 
     var module;
@@ -96,25 +98,8 @@ require( ["angular", "shCore", "angular-animate", "bootstrap", "directives/mathj
     if (module = $('script[src$="require.js"]').data('module')) {
 	require([module]);
     }
-    
-    var app = angular.module('ximeraApp', ['ximeraApp.mathJax',
-					   'ximeraApp.activity',
-					   'ximeraApp.codingActivity',
-					   'ximeraApp.inputMath',
-					   'ximeraApp.videoPlayer',
-					   'ximeraApp.matrixActivity',
-					   'ximeraApp.mathMatrix',
-					   'ximeraApp.freeResponse',
-					   'ximeraApp.score',
-					   'ximeraApp.user',
-					   'ximeraApp.popover',
-					   'ximeraApp.forum',
-					   'ximeraApp.course',
-					   'ximeraApp.pagedown',
-					   'mgcrea.ngStrap']);
 
     $(document).ready(function() {
-        angular.bootstrap(document, [app['name']]);
 	shCore.SyntaxHighlighter.highlight();
 	$(".dropdown-toggle").dropdown();
     });

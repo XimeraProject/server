@@ -23,12 +23,13 @@ exports.github = function(req, res){
     if(crypted === hash) {
         // Valid signature
 	if (req.header("X-GitHub-Event") == "ping") {
-	    res.send(200);
+	    res.sendStatus(200);
 	    return;
 	}
 
 	var repository = req.body.repository;
-
+	var ref = req.body.ref;	
+	
 	if (repository && ('full_name' in repository)) {
 	    console.log( "repository = " + JSON.stringify(repository) );
 	    var sender = req.body.sender;
@@ -40,7 +41,7 @@ exports.github = function(req, res){
 		    mdb.GitRepo.update( repo, {$set: { needsUpdate : true }}, {},
 					function( err, document ) {
 					    winston.info( 'Requesting update for repo ' + repository.full_name );
-					    res.send(200);
+					    res.sendStatus(200);
 					});
 		} else {
 		    // This is a new repo; we should create it (and wait for the external processor to create the courses therein)
@@ -52,7 +53,7 @@ exports.github = function(req, res){
 		    
 		    repo.save(function () {
 			winston.info( 'Requesting creation of repo ' + repository.full_name );
-			res.send(200);
+			res.sendStatus(200);
 		    });
 		}
 
@@ -61,6 +62,7 @@ exports.github = function(req, res){
 			gitIdentifier: repository.full_name,
 			sender: sender,
 			repository: repository,
+			ref: ref,
 			senderAccessToken: githubUser.githubAccessToken,
 			headCommit: req.body.head_commit,
 			finishedProcessing: false
@@ -72,6 +74,6 @@ exports.github = function(req, res){
 	}
     } else {
         // Invalid signature
-        res.send(403, "Invalid X-Hub-Signature");
+        res.sendStatus(403, "Invalid X-Hub-Signature");
     }
 };

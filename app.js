@@ -80,7 +80,8 @@ if (process.env.DEPLOYMENT === 'production') {
 }
 
 // Common mongodb initializer for the app server and the activity service
-mdb.initialize();
+mdb.initialize(function (err) {
+});
 
 app.use(logger('dev'));
 app.use(favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
@@ -231,8 +232,12 @@ git.long(function (commit) {
     app.get( '/course', function( req, res ) { res.redirect(req.url + '/'); });
     app.get( '/courses', function( req, res ) { res.redirect('/course/'); });
     app.get( '/courses/', function( req, res ) { res.redirect('/course/'); });
-    app.get( '/course/:username/:repository/:branch/:path*.tex', course.source );
-    //app.get( '/course/:username/:repository/:branch/:path.tex', course.source );        
+    app.get( '/course/:username/:repository/:branch/:path(*.tex)', course.source );
+    app.get( '/course/:username/:repository/:branch/:path(*.png)', course.image );
+    app.get( '/course/:username/:repository/:branch/:path(*.pdf)', course.image );
+    app.get( '/course/:username/:repository/:branch/:path(*.svg)', course.image );
+    app.get( '/course/:username/:repository/:branch/:path(*)', course.activity );
+    
     //app.get(/^\/course\/(.+)\/activity\/(.+)\/update\/$/, course.activityUpdate);
     //app.get(/^\/course\/(.+)\/activity\/(.+)\/source\/$/, course.activitySource);
     //app.get(/^\/course\/(.+)\/activity\/(.+)\/$/, course.activity );

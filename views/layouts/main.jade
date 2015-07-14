@@ -37,6 +37,11 @@ html(lang="en")
       |        }
       |      }
       |    });
+      | MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+      |   MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+      |     data.math = data.math.replace(/<!\[CDATA\[\s*((.|\n)*)\s*\]\]>/m,"$1");
+      |   });
+      | });
     script(type="text/javascript",src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
 
     script(src="https://www.youtube.com/iframe_api")
