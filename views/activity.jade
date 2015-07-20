@@ -32,6 +32,6 @@ block content
             a.list-group-item(href="#")
               h4.list-group-item-heading List group item heading
               p.list-group-item-text Description of activity goes here!
-        .col-md-9
+        .col-md-9(data-activity=activity.hash)
           h1 Hello
           | !{activity.html}

@@ -9,9 +9,6 @@
 	"jquery": "*",
 	"jquery-ui": "*",	
         "bootstrap": "3.3.4",
-        "angular": "*",
-        "angular-animate": "*",
-        "angular-sanitize": "*",
 	"underscore": "1.6.0",
         "font-awesome": "*",
 	"x-editable": "*",
@@ -23,7 +20,7 @@
 	"js-quantities": "*",
 	"codemirror": "3.22.0",
 	"skulpt": "*",
-	"angular-strap": "2.0.0-rc.3",
+	"math-expressions": "https://github.com/kisonecat/math-expressions.git",
 	"JavaScript-MD5": "*"
     }
 }

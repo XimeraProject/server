@@ -1,62 +1,65 @@
-define(['angular', 'jquery', 'underscore', 'algebra/parser'], function (angular, $, _, parse) {
-    var app = angular.module('ximeraApp.popover', []);
+define(['jquery', 'underscore', 'math-expressions', 'mathjax'], function ($, _, Expression, MathJax) {
+    var exports = {};
+    
+    exports.bindPopover = function(element) {
+	var update = function() {
+	    var text = $(element).find( "input" ).val();
+	    exports.displayPopover( text, element );
+	};
 
-    app.service('popoverService', function () {
-        var service = {};
+	$(element).popover({
+	    placement: 'right',
+	    container: 'body',		
+	    //animation: false,
+	    trigger: 'manual',
+	    content: function() {
+		return '';
+	    }});
+	
+	var inputBox = $(element).find( "input.form-control" );
+	
+	inputBox.on( 'input', update );
 
-        service.watchFocus = function(container, varName, element) {
-            // Start out unfocused on page load.
-            container[varName] = false;
-            $(element).bind('focus', function () {
-                container[varName] = true;
-            });
+	inputBox.focus( update );
+	
+        inputBox.blur( function () {
+	    $(element).popover('hide');
+        });
+    }
+    
+    // Binds latex popover occur next to element when watched variable changes.
+    exports.displayPopover = function(answer, element) {
+	if (answer.trim().length == 0) {
+	    $(element).popover('hide');
+	    return;
+	}
 
-            $(element).bind('blur', function () {
-                container[varName] = false;
-            });
-        }
+	// Don't need to give a preview for numeric answers
+	if (answer.trim().match( /^-?[0-9\.]+$/ )) {
+	    $(element).popover('hide');
+	    return;
+	}
 
-        // Binds latex popover occur next to element when watched variable changes.
-        service.latexPopover = function(answer, element) {
-	    if (answer.trim().length == 0) {
-		$(element).popover('destroy');
-		return;
-	    }
-
-	    try {
-		var latex = parse.text.to.latex(answer);
-                
-		$(element).popover('destroy');
-		$(element).popover({
-		    placement: 'right',
-		    //animation: false,
-		    trigger: 'manual',
-		    content: function() {
-			return '\\(' + latex + '\\)';
-		    }});
-                
-		$(element).popover('show');
-
-                MathJax.Hub.Queue(["Typeset", MathJax.Hub, $(element).children(".popover-content")[0]]);
-	    }
-	    // display errors as popovers, too
-	    catch (err) {
-		$(element).popover('destroy');
-		$(element).popover({
-		    placement: 'right',
-		    trigger: 'manual',
-		    title: 'Error',
-		    content: function() {
-			return err;
-		    }});
-		$(element).popover('show');
-	    }
-        }
-
-        service.destroyPopover = function(element) {
-            $(element).popover('destroy');
-        }
-
-        return service;
-    });
+	if (answer.trim().length == 0) {
+	    $(element).popover('hide');
+	    return;
+	}
+	
+	try {
+	    var latex = Expression.fromText(answer).tex();
+	    
+	    $(element).data('bs.popover').options.title = '';	    
+	    $(element).data('bs.popover').options.content = '\\(' + latex + '\\)';
+	    $(element).popover('show');
+	    MathJax.Hub.Queue(["Typeset", MathJax.Hub, $(element).data('bs.popover').tip()[0]]);
+	}
+	// display errors as popovers, too
+	catch (err) {
+	    $(element).data('bs.popover').options.title = 'Error';	    
+	    $(element).data('bs.popover').options.content = err;
+	    $(element).popover('show');
+	}
+    }
+    
+    return exports;
 });

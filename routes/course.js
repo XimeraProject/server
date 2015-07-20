@@ -318,8 +318,11 @@ exports.image = function(req, res) {
 	if (err)
 	    res.send( err );
 	else {
+	    // SVG files will only be rendered if they are sent with content type image/svg+xml
 	    if (extname(path) == ".svg")
 		res.contentType( 'image/svg+xml' );
+	    else if (extname(path) == ".jpg")
+		res.contentType( 'image/jpeg' );
 	    else
 		res.contentType( 'image/' + extname(path).replace('.', '') );
 	    
