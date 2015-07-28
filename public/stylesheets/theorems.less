@@ -27,7 +27,10 @@ remark yellow,
 acknowledgement yellow,
 algorithm yellow,
 notation yellow,
-criterion yellow;
+criterion yellow,
+exercise white,
+problem white,
+question white;
 
 
 /* This is a faux loop that doesn't end up in the final css. 
@@ -43,7 +46,8 @@ We want to stop when the index reaches the end of the list of environments. */
    /*Extract from the list the name and color of the class*/
    @nameOfClass: extract(@thisTheoremEnvironment, 1);
    @colorOfClass: extract(@thisTheoremEnvironment, 2);
-   @counterToIncrement: @nameOfClass;   /* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+   @counterToIncrement: @nameOfClass;
+   /* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
 
    body {
       counter-reset: @counterToIncrement;     /* The body needs to initialize all the counters. */
@@ -58,7 +62,7 @@ We want to stop when the index reaches the end of the list of environments. */
       counter-increment: @counterToIncrement;
 
       /*These are the things that are common to all environments. */
-      border-radius: 4pt; padding: 4pt; margin-top: 4pt; margin-bottom: 4pt;
+      border-radius: 4pt; padding: 1em; margin-top: 4pt; margin-bottom: 4pt;
    }
    .@{nameOfClass}::before
    {
@@ -67,7 +71,10 @@ We want to stop when the index reaches the end of the list of environments. */
       text-transform: capitalize;   /* CSS here only applies to one word, like "Theorem." or "Example." */
       font-weight: bold; 
    } 
-
+   .@{nameOfClass} ul{
+       padding-left: 1em;
+   }
+  
    /* Here we execute loop again for the next entry. */
    .loop(@index + 1);
 }
