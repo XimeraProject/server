@@ -18,7 +18,8 @@ require.config({
     ],
     
     paths: {
-	mathjax: "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured",	
+	mathjax: "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured",
+	"async": "../../components/async/lib/async",
 	"jquery": "../../components/jquery/dist/jquery.min",
 	"jquery-ui": "../../components/jquery-ui/jquery-ui.min",
 	"angular": "../../components/angular/angular",
@@ -155,9 +156,7 @@ require.config({
 		    });
 		});
 
-		
-		MathJax.Hub.Startup.onload();
-		
+			
 		return MathJax;
 	    }
 	}
@@ -166,7 +165,7 @@ require.config({
 
 
 //require( ["angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "score", "free-response", "user", 'angular-strap-tpl', 'popover', "forum", "pagedown-directive", "course", "jquery-ui"], function(angular, shCore) {
-require( ["shCore", "multiple-choice", "mathjax", "math-answer", "bootstrap", "moment", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "user", 'popover', "forum"], function(shCore, multipleChoice, mathjax, mathAnswer) {
+require( ["jquery", "shCore", "mathjax", "database", "bootstrap", "moment", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "user", 'popover', "forum", "free-response", "multiple-choice", "math-answer", "problem", "hint"], function($, shCore, MathJax) {
 
     'use strict';
 
@@ -179,15 +178,28 @@ require( ["shCore", "multiple-choice", "mathjax", "math-answer", "bootstrap", "m
     $(document).ready(function() {
 	shCore.SyntaxHighlighter.highlight();
 	$(".dropdown-toggle").dropdown();
-	
-	mathjax.Hub.Register.MessageHook( "End Process", function(message) {
-	    mathAnswer.replaceTemplates();
-	    multipleChoice.replaceTemplates();
+
+	// The "end process" hook is run if we end up reprocessing the math on the page, such as during a live popover
+	var firstTime = true;
+	MathJax.Hub.Register.MessageHook( "End Process", function(message) {
+	    if (firstTime) {
+		$(".mathjax-input").mathAnswer();
+		firstTime = false;
+	    }
 	});
+
+	// This could go in "init" above, but it needs to be after teh end process hook
+	MathJax.Hub.Startup.onload();
+
+	$(".problem-environment").problemEnvironment();
 	
-	mathAnswer.replaceTemplates();
-	multipleChoice.replaceTemplates();	
+	$(".mathjax-input").mathAnswer();	
+	$(".multiple-choice").multipleChoice();
+	$(".hint").hint();
+	$(".free-response").freeResponse();
     });
 
-
+    if (document.location.pathname.match( /^\/course/ ))
+	require([document.location.pathname + '.js']);
+	
 });

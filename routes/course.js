@@ -80,6 +80,57 @@ function findMostRecentGitFileContents( owner, repository, branchName, path, cal
 	});
 }
 
+function regexpForParentDirectories( path, extension ) {
+    var parts = path.split('/');
+    var re = (parts.join('(\/')) + ((new Array(parts.length)).join(')?'));
+    re = '^(' + re + '\/)?\/?[^/]*\.' + extension + '$';
+    return new RegExp(re);
+}
+
+/** Search owner/repository/branchName for all files matching
+ * extension in the directory path and all any parent directories */
+function findParentDirectoryFileContents( owner, repository, branchName, path, extension, callback) {
+    var commit;
+    var hash;    
+    
+    async.waterfall(
+	[
+	    function( callback ) {
+		findMostRecentBranch( owner, repository, branchName, callback );
+	    },
+	    
+	    function( branch, callback ) {
+		if (!branch)
+		    callback( "Missing branch", null );
+		else {
+		    commit = branch.commit;
+		    var re = regexpForParentDirectories( path, extension );
+		    mdb.GitFile.find({commit: branch.commit, path: {$regex: re}}).exec(callback);
+		}
+	    },
+	    
+	    function( gitFiles, callback ) {
+		if (!gitFiles)
+		    callback( "Missing gitFile", null );
+		else {
+		    mdb.Blob.find({hash: { $in: gitFiles.map( function(x) { return x.hash; } ) }}).exec(callback);
+		}
+	    },
+	    
+	], function(err, result) {
+	    if ((!err) && result) {
+		result.commit = commit;
+		result.path = path;
+		result.owner = owner;
+		result.hash = hash;
+		result.repository = repository;
+	    }
+	    
+	    callback(err, result);
+	});
+}
+
+
 function findCourseAndActivityBySlugs(user, courseSlug, activitySlug, callback) {
     var locals = {course: null, activity: null};
     async.series([
@@ -305,6 +356,44 @@ exports.source = function(req, res) {
     });
 };
 
+exports.stylesheet = function(req, res) {
+    remember(req);
+
+    var owner = req.params.username;
+    var repository = req.params.repository;
+    var branchName = req.params.branch;
+    var path = req.params.path.replace( /\.css$/, '' );
+
+    findParentDirectoryFileContents( owner, repository, branchName, path, "css", function(err, files) {
+	if (err)
+	    res.send( err );
+	else {
+	    res.contentType( 'text/css' );
+	    var output = Buffer.concat( files.map( function(f) { return f.data; } ) );
+	    res.end( output, 'binary' );
+	}
+    });
+};
+
+exports.javascript = function(req, res) {
+    remember(req);
+
+    var owner = req.params.username;
+    var repository = req.params.repository;
+    var branchName = req.params.branch;
+    var path = req.params.path.replace( /\.js$/, '' );
+
+    findParentDirectoryFileContents( owner, repository, branchName, path, "js", function(err, files) {
+	if (err)
+	    res.send( err );
+	else {
+	    res.contentType( 'text/javascript' );
+	    var output = Buffer.concat( files.map( function(f) { return f.data; } ) );
+	    res.end( output, 'binary' );
+	}
+    });
+};
+
 
 exports.image = function(req, res) {
     remember(req);
@@ -382,8 +471,15 @@ exports.activity = function(req, res) {
 		    result.hash = hash;
 		    result.repository = repository;
 		    activity.html = result.data;
-		    
-		    res.render('activity', { activity: activity, content: result });
+
+		    activity.repositoryName = result.repository;
+		    activity.ownerName = result.owner;
+		    activity.branchName = branchName;
+		    activity.path = path;	    
+
+		    var stylesheet = '/course/' + owner + '/' + repository + '/' + branchName + '/' + path + '.css';
+		    var javascript = '/course/' + owner + '/' + repository + '/' + branchName + '/' + path + '.js';
+		    res.render('activity', { activity: activity, stylesheet: stylesheet, javascript: javascript });
 		}
 	    }
 	});
