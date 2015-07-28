@@ -3,8 +3,10 @@ The colors that you type below in theoremEnvironments will all get standardized 
 @theoremEnvironmentSaturation: 100%;
 @theoremEnvironmentLightness: 92%;
 
-/*"Array" of names and colors to select from. Be careful that every environment has a color, 
-and don't choose white or black since the "saturation" and "hue" of white and black don't behave well. */
+/*"Array" of names and colors to select from.
+Be careful that every environment has a color, 
+and don't ever choose white, gray, or black, since the "saturation"
+and "hue" of white and black don't behave well. */
 @theoremEnvironments:
 theorem green,
 axiom green,
@@ -31,7 +33,6 @@ criterion yellow,
 exercise white,
 problem white,
 question white;
-
 
 /* This is a faux loop that doesn't end up in the final css. 
 Writing this does not actually cause the loop to be executed; see below
