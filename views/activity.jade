@@ -1,0 +1,81 @@
+extends layouts/main
+
+block title
+  | #{activity.title}
+
+block activity
+      .page-header
+        div.pull-right.btn-toolbar(role="toolbar")
+          if !activity.recent
+            .btn-group
+              a.pull-right.btn.btn-sm.btn-primary(role="button", ng-confirm-click="Updating to the most recent version of this activity will erase your work. Are you sure you want to update to the new version?", href="update/")
+                | <i class="fa fa-level-up"></i> Update Activity
+          .btn-group
+            button.btn.btn-warning.btn-sm.dropdown-toggle(type="button",data-toggle="dropdown")
+              | <i class="fa fa-bug"></i> Report Bug <span class="caret"></span>
+            ul.dropdown-menu
+              li
+                a(href="https://github.com/#{activity.ownerName}/#{activity.repositoryName}/issues/new") Report error in content
+              li
+                a(href="https://github.com/kisonecat/ximera/issues/new") Report error with website
+          .btn-group
+            button.pull-right.btn.btn-sm.btn-danger(type="button",data-toggle="modal", data-target="#resetWarningModal")
+              | <i class="fa fa-eraser"></i> Erase Work
+          .btn-group
+            a.pull-right.btn.btn-default.btn-sm(role="button",href="https://github.com/#{activity.ownerName}/#{activity.repositoryName}/edit/#{activity.branchName}/#{activity.path}.tex")
+              | <i class="fa fa-pencil"></i> Edit Source
+          .btn-group
+            button.pull-right.btn.btn-sm.btn-primary(type="button", id="save-work-button")
+              span(style="display: none;", id="work-saved")
+                | <i class="fa fa-save"></i> Work Saved!
+              span(style="display: none;", id="work-saving")
+                | <i class="fa fa-refresh fa-spinning"></i> Saving Work&hellip;
+              span(id="work-save")
+                | <i class="fa fa-save"></i> Save Work
+         h1 #{activity.title}
+      | !{activity.html}
+
+
+block resetModal
+  div.modal.fade#resetWarningModal(tabindex="-1",role="dialog",aria-labelledby="resetWarningModal")
+      div.modal-dialog(role="document")
+        div.modal-content<div class="modal-content">
+          div.modal-header
+            button(type="button", class="close", data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="true")&times;
+            h4(class="modal-title",id="resetModalLabel") Warning
+          div.modal-body
+            p You are about to <strong>erase your work</strong> on this activity.  Are you sure you want to do this?
+          div.modal-footer
+            button(type="button", class="btn btn-default", data-dismiss="modal") No, keep my work.
+            button#reset-work-button(type="button",class="btn btn-danger", data-dismiss="modal")
+              | <i class="fa fa-eraser"></i>&nbsp;Yes, delete my work.
+  
+block content
+  div.container
+    div(course-breadcrumbs="")
+        .row
+          .col-md-9.activity(data-activity=activity.hash)
+            ul.pager
+             li.previous(class=(previousActivity ? undefined : "disabled"))
+               //+courseActivityLink(course,previousActivity)
+                 | &larr; Previous Activity
+             li.next(class=(nextActivity ? undefined : "disabled"),completion-blink="")
+               //+courseActivityLink(course,nextActivity)
+                 | Next Activity &rarr;
+
+            block activity
+            block resetModal
+
+            ul.pager
+             li.previous(class=(previousActivity ? undefined : "disabled"))
+               //+courseActivityLink(course,previousActivity)
+                 | &larr; Previous Activity
+             li.next(class=(nextActivity ? undefined : "disabled"),completion-blink="")
+               //+courseActivityLink(course,nextActivity)
+                 | Next Activity &rarr;
+            //p {{db}}
+            //p {{currentActivity}}
+            //div(forum="#{activity.slug}")
+          .col-md-3.course-navigation(course-navigation="")
+

@@ -12,4 +12,3 @@ and July 30th should be reserved for travel days.
 This workshop is funded by
 [NSF Grant DUE-1245433](http://www.nsf.gov/awardsearch/showAward?AWD_ID=1245433).
 
-

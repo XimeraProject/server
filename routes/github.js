@@ -1,4 +1,3 @@
-
 /*
  * GET users listing.
  */
@@ -23,21 +22,24 @@ exports.github = function(req, res){
     if(crypted === hash) {
         // Valid signature
 	if (req.header("X-GitHub-Event") == "ping") {
-	    res.send(200);
+	    res.sendStatus(200);
 	    return;
 	}
 
 	var repository = req.body.repository;
-
+	var ref = req.body.ref;	
+	
 	if (repository && ('full_name' in repository)) {
+	    console.log( "repository = " + JSON.stringify(repository) );
+	    var sender = req.body.sender;
+	    console.log( "sender = " + JSON.stringify(sender) );
+	    
 	    mdb.GitRepo.findOne({gitIdentifier: repository.full_name}).exec( function (err, repo) {
 		if (repo) {
 		    // Courses linked to repo need to be updated
 		    mdb.GitRepo.update( repo, {$set: { needsUpdate : true }}, {},
 					function( err, document ) {
 					    winston.info( 'Requesting update for repo ' + repository.full_name );
-					    mdb.channel.publish( 'update', repository.full_name );
-					    res.send(200);
 					});
 		} else {
 		    // This is a new repo; we should create it (and wait for the external processor to create the courses therein)
@@ -49,14 +51,36 @@ exports.github = function(req, res){
 		    
 		    repo.save(function () {
 			winston.info( 'Requesting creation of repo ' + repository.full_name );
-			mdb.channel.publish( 'create', repository.full_name );
-			res.send(200);
 		    });
 		}
+
+		mdb.User.findOne({githubId: sender.id}).exec( function(err, githubUser) {
+		    if (err) {
+			res.sendStatus(400, err);
+		    } else {
+			if (githubUser) {
+			    var push = mdb.GitPushes({
+				gitIdentifier: repository.full_name,
+				sender: sender,
+				repository: repository,
+				ref: ref,
+				senderAccessToken: githubUser.githubAccessToken,
+				headCommit: req.body.head_commit,
+				finishedProcessing: false
+			    });
+			    
+			    push.save();
+			    
+			    res.sendStatus(200);
+			} else {
+			    res.sendStatus(400, 'No GitHub account logged in');
+			}
+		    }
+		});
 	    });
 	}
     } else {
         // Invalid signature
-        res.send(403, "Invalid X-Hub-Signature");
+        res.sendStatus(403, "Invalid X-Hub-Signature");
     }
 };
