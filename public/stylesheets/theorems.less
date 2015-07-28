@@ -60,7 +60,7 @@ We want to stop when the index reaches the end of the list of environments. */
       /*These are the things that are common to all environments. */
       border-radius: 4pt; padding: 4pt; margin-top: 4pt; margin-bottom: 4pt;
    }
-   .@{nameOfClass} > p:first-child:before
+   .@{nameOfClass}::before
    {
       content:"@{nameOfClass} " counter(@counterToIncrement) ". ";          
       display: inline;
