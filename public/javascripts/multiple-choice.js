@@ -33,18 +33,18 @@ define(['jquery', 'underscore', 'database'], function($, _, database){
 	multipleChoice.trigger( 'ximera:answer-needed' );
 	
 	multipleChoice.persistentData(function(event) {
-	    var state = event.data;
-
 	    multipleChoice.find( 'label').removeClass('active');
 	    
-	    if ('chosen' in state) {
-		multipleChoice.find( '#' + state['chosen'] ).addClass('active');
+	    if (multipleChoice.persistentData('chosen')) {
+		multipleChoice.find( '#' + multipleChoice.persistentData('chosen') ).addClass('active');
 		multipleChoice.find( '.btn-group button' ).removeClass('disabled');
+		multipleChoice.find( '.btn-group .btn-ximera-submit' ).addClass('pulsate');
 	    } else {
 		multipleChoice.find( '.btn-group button' ).addClass('disabled');
+		multipleChoice.find( '.btn-group .btn-ximera-submit' ).removeClass('pulsate');		
 	    }
 
-	    if (('correct' in state) && (state['correct'])) {
+	    if (multipleChoice.persistentData('correct')) {
 		multipleChoice.find( '.btn-group button' ).hide();
 		multipleChoice.find( '.btn-group .btn-ximera-correct' ).show();
 		
@@ -61,10 +61,13 @@ define(['jquery', 'underscore', 'database'], function($, _, database){
 		
 		multipleChoice.find( '.btn-group button' ).hide();
 
-		if (('checked' in state) && ('chosen' in state) && (state['checked'] === state['chosen']))
+		if ((multipleChoice.persistentData('checked') === multipleChoice.persistentData('chosen')) &&
+		    (multipleChoice.persistentData('chosen') !== undefined))
 		    multipleChoice.find( '.btn-group .btn-ximera-incorrect' ).show();
-		else
+		else {
 		    multipleChoice.find( '.btn-group .btn-ximera-submit' ).show();
+		    multipleChoice.find( '.btn-group .btn-ximera-submit' ).show();		    
+		}
 	    }
 
 	    multipleChoice.find( '.btn-ximera-submit' ).prop( 'disabled', ! multipleChoice.find( 'label' ).hasClass( 'active' ) );

@@ -22,18 +22,18 @@ define(['jquery', 'underscore', "pagedown-converter", "pagedown-sanitizer", "pag
 	
 	editor.hooks.chain("onPreviewRefresh", function () {
 	    /*
-	      MathJax.Hub.Queue(
-	      ["Typeset",MathJax.Hub, $('.wmd-preview' + wmdName).get(0)]
-    	      );
+	    MathJax.Hub.Queue(
+		["Typeset",MathJax.Hub, $('.wmd-preview' + wmdName).get(0)]
+    	    );
 	    */
 	});
 	
 	// update database from view
 	$(textarea).on("keyup change input propertychange", function (e) {
-	    $(element).database()['response'] = $(textarea).val();
+	    $(element).persistentData( 'response', $(textarea).val() );
 	});
 	
-	$(element).synchronize( function(event) {
+	$(element).persistentData( function(event) {
 	    if ('response' in event.data)		
 		$(textarea).val( event.data['response'] );
 	});

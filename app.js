@@ -21,14 +21,12 @@ var express = require('express')
   , mongoose = require('mongoose')
   , http = require('http')
   , path = require('path')
-  , angularState = require('./routes/angular-state')
   , winston = require('winston')
   , template = require('./routes/template')
   , mongoImage = require('./routes/mongo-image')
   , async = require('async')
   , fs = require('fs')
   , favicon = require('serve-favicon' )
-  , io = require('socket.io')
   , util = require('util')
   , session = require('express-session')
   , bodyParser = require('body-parser')
@@ -79,6 +77,9 @@ if (process.env.DEPLOYMENT === 'production') {
     rootUrl = 'http://ximera.osu.edu';
 }
 
+// Temporarily use NGROK for the server
+rootUrl = 'http://497a6980.ngrok.com';
+
 // Common mongodb initializer for the app server and the activity service
 mdb.initialize(function (err) {
 });
@@ -108,12 +109,14 @@ app.use(cookieParser(cookieSecret));
 // going to have multiple web servers sharing a single db
 var MongoStore = require('connect-mongo')(session);
 
-app.use(session({
+var theSession = session({
     secret: cookieSecret,
     resave: false,
     saveUninitialized: false,
     db: new MongoStore({ mongooseConnection: mongoose.connection })
-}));
+});
+
+app.use(theSession);
 
 // setup ANOTHER connection to the mongo database (maybe you are upset
 // that I have two connections to mongodb, but it seems like this is
@@ -236,6 +239,8 @@ git.long(function (commit) {
     app.get( '/course/:username/:repository/:branch/:path(*.png)', course.image );
     app.get( '/course/:username/:repository/:branch/:path(*.pdf)', course.image );
     app.get( '/course/:username/:repository/:branch/:path(*.svg)', course.image );
+    app.get( '/course/:username/:repository/:branch/:path(*.css)', course.stylesheet );
+    app.get( '/course/:username/:repository/:branch/:path(*.js)', course.javascript );
     app.get( '/course/:username/:repository/:branch/:path(*)', course.activity );
     
     //app.get(/^\/course\/(.+)\/activity\/(.+)\/update\/$/, course.activityUpdate);
@@ -317,12 +322,14 @@ git.long(function (commit) {
     app.get('/about/supporters', function( req, res ) { res.redirect('/about/support'); });
     app.get('/about/support', about.support);
 
-    app.get('/angular-state/:activityId', angularState.get);
-    app.put('/angular-state/:activityId', angularState.put);
-
     app.get('/template/:templateFile', template.renderTemplate);
     app.get('/template/forum/:templateFile', template.renderForumTemplate);
 
+    var state = require('./routes/state.js')(null);    
+    app.get('/state/:activityHash', state.get);
+    app.put('/state/:activityHash', state.put);
+    app.delete('/state/:activityHash', state.remove);    	
+    
     app.get('/image/:hash', mongoImage.get);
 
 
@@ -349,7 +356,7 @@ git.long(function (commit) {
             '/blog/page/:page': 'blog/page',
             '/blog/tag/:tag': 'blog/tag',
             '/blog/category/:category': 'blog/category'
-        }
+         }
     });
 
     app.get( '/blog', function ( req, res ) { res.render( 'blog/index' ); });
@@ -358,37 +365,63 @@ git.long(function (commit) {
     // Start HTTP server for fully configured express App.
         var server = http.createServer(app);
 
+	var ios = require('socket.io-express-session');
+	var io = require('socket.io')(server);
+	io.use(ios(theSession, cookieParser(cookieSecret)));
+	
+	// Setup forum rooms
+	/*
+	var forum = require('./routes/forum.js')(socket);
+	app.post('/forum/upvote/:post', forum.upvote);
+	app.post('/forum/flag/:post', forum.flag);
+	app.get(/\/forum\/(.+)/, forum.get);
+	app.post(/\/forum\/(.+)/, forum.post);
+	app.put('/forum/:post', forum.put);
+	app.delete('/forum/:post', forum.delete);
+	*/
+
         server.listen(app.get('port'), function(stream){
 	    console.log('Express server listening on port ' + app.get('port'));
-        });
-
-    var socket = io.listen(server); 
-
-    // Setup forum rooms
-    var forum = require('./routes/forum.js')(socket);
-    app.post('/forum/upvote/:post', forum.upvote);
-    app.post('/forum/flag/:post', forum.flag);
-    app.get(/\/forum\/(.+)/, forum.get);
-    app.post(/\/forum\/(.+)/, forum.post);
-    app.put('/forum/:post', forum.put);
-    app.delete('/forum/:post', forum.delete);
-
-    socket.on('connection', function (client) {
-	// join to room and save the room name
-	client.on('join room', function (room) {
-            client.join(room);
-	});
-
-	client.on('send', function (data) {
-            socket.sockets.emit('message', data);
-	});
-    });
-
-    // If nothing else matches, it is a 404
-    app.use(function(req, res, next){
-        res.render('404', { status: 404, url: req.url });
-    });
+        });	
 	
-});
+	io.on('connection', function (socket) {
+	    // join to room and save the room name
+	    socket.on('join room', function (room) {
+		socket.join(room);
+	    });
+	    
+	    socket.on('send', function (data) {
+		socket.sockets.emit('message', data);
+	    });
 
+	    socket.on('activity', function (activityHash) {
+		var userId = socket.handshake.session.guestUserId;
+		if (socket.handshake.session.passport) {
+		    userId = socket.handshake.session.passport.userId || userId;
+		}
+		socket.join(activityHash + '/' + userId);
+	    });
+	    
+	    socket.on('persistent-data', function (data) {
+		var userId = socket.handshake.session.guestUserId;
+		if (socket.handshake.session.passport) {
+		    userId = socket.handshake.session.passport.userId || userId;
+		}
+		
+		if (socket.handshake.session.userdata)
+		    socket.handshake.session.userdata = socket.handshake.session.userdata + 1;
+		else
+		    socket.handshake.session.userdata = 0;
+
+		socket.to(data.activityHash + '/' + userId).emit('persistent-data', data);
+	    });
+	});
+	
+	// If nothing else matches, it is a 404
+	app.use(function(req, res, next){
+            res.render('404', { status: 404, url: req.url });
+	});
+	
+    });
+    
 });

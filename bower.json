@@ -7,6 +7,7 @@
 	"moment": "*",
 	"lex": "https://github.com/aaditmshah/lexer.git",
 	"jquery": "*",
+	"less": "*",
 	"jquery-ui": "*",	
         "bootstrap": "3.3.4",
 	"underscore": "1.6.0",
@@ -20,6 +21,7 @@
 	"js-quantities": "*",
 	"codemirror": "3.22.0",
 	"skulpt": "*",
+	"async": "*",
 	"math-expressions": "https://github.com/kisonecat/math-expressions.git",
 	"JavaScript-MD5": "*"
     }
