@@ -1,3 +1,5 @@
+@import 'theorems';
+
 .activitytitle {
   font-size: 16pt;
   font-weight: bold;
@@ -19,3 +21,106 @@ dl.dialogue {
     width: 20px;
 }
 */
+
+.hint {
+      color: gray;
+      margin-left: 1em;
+}
+
+.btn-reveal-hint {
+    float: right;
+    clear: right;
+    margin-bottom: 1em;
+    
+    /* Sometimes mathjax elements cover up the hint collapse button */
+    z-index: 1;
+    position: relative;
+}
+
+.btn-hint-collapse {
+    float: right;
+    clear: right;
+    margin-bottom: 1em;
+    
+    /* Sometimes mathjax elements cover up the hint collapse button */
+    z-index: 1;
+    position: relative;
+}
+
+/****************************************************************
+ Code for making spinning icons 
+*/
+
+.fa-spinning {
+    animation: spin 1s infinite linear;
+    -webkit-animation: spin2 1s infinite linear;
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+/****************************************************************/
+
+.pulsate {
+    -webkit-animation: pusate 1s infinite alternate;
+    -moz-animation: pusate 1s infinite alternate;
+    -animation: pusate 1s infinite alternate;
+    text-shadow: 0 0 8px #ccc;
+}
+@-webkit-keyframes pusate {
+    from { box-shadow: 0 0 10px #333; }
+    to { box-shadow: 0 0 20px #c00; }
+}
+@-moz-keyframes pusate {
+    from { box-shadow: 0 0 10px #333; }
+    to { box-shadow: 0 0 20px #c00; }
+}
+@keyframes pusate {
+    from { box-shadow: 0 0 10px #333; }
+    to { box-shadow: 0 0 20px #c00; }
+}
+
+/****************************************************************/
+
+.activity img {
+    max-width: 100%;
+}
+
+/****************************************************************/
+/* LaTeX logo */
+
+span.LATEX {
+  font-family: Times, "Times New Roman", serif;	
+  letter-spacing: 1px;
+}
+
+span.LATEX .A {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.85em;
+  vertical-align: 0.15em;
+  margin-left: -0.36em;
+  margin-right: -0.15em;
+}
+
+span.LATEX .TEX .E {
+  text-transform: uppercase;
+  vertical-align: -0.5ex;
+  margin-left: -0.1667em;
+  margin-right: -0.125em;
+  font-size: 1em;
+}
+
+/****************************************************************/
+/* More tex4ht css */
+
+.center {
+    text-align: center;
+}
