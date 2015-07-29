@@ -72,6 +72,7 @@ We want to stop when the index reaches the end of the list of environments. */
       text-transform: capitalize;   /* CSS here only applies to one word, like "Theorem." or "Example." */
       font-weight: bold; 
    } 
+
    /* Nested exercises should have empty labels */
    div.@{nameOfClass}>div.@{nameOfClass}::before{
      content:"";
@@ -84,7 +85,6 @@ We want to stop when the index reaches the end of the list of environments. */
 
    div.@{nameOfClass}>div.@{nameOfClass}{
      counter-increment: dummyCounter;
-   }
   
    /* Here we execute loop again for the next entry. */
    .loop(@index + 1);
