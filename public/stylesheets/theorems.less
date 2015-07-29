@@ -65,13 +65,24 @@ We want to stop when the index reaches the end of the list of environments. */
       /*These are the things that are common to all environments. */
       border-radius: 4pt; padding: 1em; margin-top: 4pt; margin-bottom: 4pt;
    }
-   .@{nameOfClass}::before
+   .@{nameOfClass}:before
    {
       content:"@{nameOfClass} " counter(@counterToIncrement) ". ";          
       display: inline;
       text-transform: capitalize;   /* CSS here only applies to one word, like "Theorem." or "Example." */
       font-weight: bold; 
    } 
+   /* Nested exercises should have empty labels */
+   div.@{nameOfClass}>div.@{nameOfClass}:before{
+     content:"";
+   }
+   /* Nested exercises should increment a dummy counter
+   in order to avoid incrementing the real counter.
+   Note that the counter-increment directive is an attribute,
+   not a command. Thus it can be overwritten. */
+   div.@{nameOfClass}>div.@{nameOfClass}{
+     counter-increment:dummyCounter;
+   }
   
    /* Here we execute loop again for the next entry. */
    .loop(@index + 1);
