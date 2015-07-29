@@ -19,6 +19,7 @@ require.config({
     
     paths: {
 	mathjax: "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured",
+	less: "../../components/less/dist/less.min",
 	"async": "../../components/async/lib/async",
 	"jquery": "../../components/jquery/dist/jquery.min",
 	"jquery-ui": "../../components/jquery-ui/jquery-ui.min",
@@ -79,6 +80,8 @@ require.config({
 	"bootstrap": { deps: ['jquery'] },
 	"bootstrap-datepicker": { deps: ['jquery'] },
 
+        "x-editable": { deps: ['jquery', 'jquery-ui'] },
+	
 	"pagedown-converter": { exports: 'Markdown.Converter', deps: ['bootstrap'] },
 	"pagedown-sanitizer": { exports: 'Markdown.Sanitizer', deps: ['bootstrap', "pagedown-converter"] },
 	"pagedown-editor": { exports: 'Markdown.Editor', deps: ['bootstrap', "pagedown-converter"] },
@@ -132,12 +135,17 @@ require.config({
 			    var keys = this.GetBrackets(name);
 			    var text = this.GetArgument(name);
 
-			    var input = HTML.Element("input",{type:"text", className:"mathjax-input", style: {width: "160px", marginBottom: "10px", marginTop: "10px" }});
+			    var input = HTML.Element("input",
+						     {type:"text",
+						      className:"mathjax-input",
+						      style: {width: "160px", marginBottom: "10px", marginTop: "10px" }
+						     });
+			    
 			    input.setAttribute("xmlns","http://www.w3.org/1999/xhtml");
 
 			    // the \answer{contents} get placed in a data-answer attribute
 			    input.setAttribute("data-answer", text);			    
-			    
+
 			    // Parse key=value pairs from optional [bracket] into data- attributes
 			    if (keys !== undefined) {
 				keys.split(",").forEach( function(keyvalue) { 
@@ -149,6 +157,7 @@ require.config({
 				    input.setAttribute("data-" + key, value);
 				});
 			    }
+
 			    
 			    var mml = MML["annotation-xml"](MML.xml(input)).With({encoding:"application/xhtml+xml",isToken:true});
 			    this.Push(MML.semantics(mml));			    
@@ -165,7 +174,7 @@ require.config({
 
 
 //require( ["angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "score", "free-response", "user", 'angular-strap-tpl', 'popover', "forum", "pagedown-directive", "course", "jquery-ui"], function(angular, shCore) {
-require( ["jquery", "shCore", "mathjax", "database", "bootstrap", "moment", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "user", 'popover', "forum", "free-response", "multiple-choice", "math-answer", "problem", "hint"], function($, shCore, MathJax) {
+require( ["jquery", "shCore", "mathjax", "jquery-ui", "less", "database", "bootstrap", "moment", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "user/profile", 'popover', "forum", "free-response", "multiple-choice", "math-answer", "problem", "hint", "shuffle"], function($, shCore, MathJax) {
 
     'use strict';
 
@@ -193,13 +202,12 @@ require( ["jquery", "shCore", "mathjax", "database", "bootstrap", "moment", "shB
 
 	$(".problem-environment").problemEnvironment();
 	
-	$(".mathjax-input").mathAnswer();	
+	$(".mathjax-input").mathAnswer();
 	$(".multiple-choice").multipleChoice();
 	$(".hint").hint();
 	$(".free-response").freeResponse();
+	
+	$(".shuffle").shuffle();	
     });
 
-    if (document.location.pathname.match( /^\/course/ ))
-	require([document.location.pathname + '.js']);
-	
 });

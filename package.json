@@ -43,6 +43,7 @@
 	"less": "*",
 	"async": "*",
 	"socket.io": "*",
+	"socket.io-express-session": "*",
 	"versionator": "*",
 	"git-rev": "*",
 	"crypto": "*",

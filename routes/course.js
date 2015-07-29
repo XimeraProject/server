@@ -381,15 +381,14 @@ exports.javascript = function(req, res) {
     var owner = req.params.username;
     var repository = req.params.repository;
     var branchName = req.params.branch;
-    var path = req.params.path.replace( /\.js$/, '' );
+    var path = req.params.path;
 
-    findParentDirectoryFileContents( owner, repository, branchName, path, "js", function(err, files) {
+    findMostRecentGitFileContents( owner, repository, branchName, path, function(err, file) {    
 	if (err)
 	    res.send( err );
 	else {
 	    res.contentType( 'text/javascript' );
-	    var output = Buffer.concat( files.map( function(f) { return f.data; } ) );
-	    res.end( output, 'binary' );
+	    res.end( file.data, 'binary' );
 	}
     });
 };
