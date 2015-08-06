@@ -1,0 +1,6 @@
+* rss feed for comments
+* making a forum post when selected text
+* edit your own forum posts bug: socketio isn't updating
+* youtube: can I include the youtube javascript code in my requirejs package?
+* forum post relative dates should be triggered to update
+* landing page has horizontal scroller
