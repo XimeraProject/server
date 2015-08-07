@@ -63,7 +63,7 @@ define(['jquery', 'underscore', 'async', 'socketio'], function($, _, async, io){
 		      function( event ) {
 			  console.log( "ximera:database" );
 			  return callback.bind(this)(event);
-		      }); 
+		      });
 	
 	// Because we might register our listener AFTER we download
 	// the database for the first time, let's just let our
@@ -173,10 +173,21 @@ define(['jquery', 'underscore', 'async', 'socketio'], function($, _, async, io){
 		type: 'GET',
 		dataType: 'json',
 		success: function( result ) {
-		    // BADBAD: possibly should try to merge this in with whatever might already be there
-		    DATABASES[activityHash] = result;
+		    // BADBAD: trying to merge this in with whatever might already be there
+		    // DATABASES[activityHash] = result;
 		    REMOTES[activityHash] = JSON.stringify(result);
-
+		    
+		    if (!(activityHash in DATABASES))
+			DATABASES[activityHash] = {};
+		    
+		    _.each( result,
+			    function( database, identifier, list ) {
+				if (identifier in DATABASES[activityHash])
+				    _.extend( DATABASES[activityHash][identifier], database );
+				else
+				    DATABASES[activityHash][identifier] = database;
+			    });
+		    
 		    socket.emit( 'activity', activityHash );
 			
 		    _.each( DATABASES[activityHash],

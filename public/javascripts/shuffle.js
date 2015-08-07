@@ -4,7 +4,7 @@ define(['jquery', 'underscore', 'database'], function($, _){
 	var shuffle = $(this);
 
 	shuffle.persistentData( function() {
-	    
+
 	    if (!(shuffle.persistentData( 'initialized' ))) {
 		shuffle.persistentData( 'initialized', true );
 		
@@ -12,7 +12,7 @@ define(['jquery', 'underscore', 'database'], function($, _){
 		problemIds = $.makeArray( problems.map( function() {
 		    return $(this).attr('id');
 		}));
-		
+
 		// BADBAD: this must be done deterministically, to avoid
 		// a student just clicking over and over to get a new problem
 		shuffle.persistentData( 'shuffle', _.shuffle( problemIds ) );

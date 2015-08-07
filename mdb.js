@@ -57,6 +57,18 @@ exports.initialize = function initialize(callback) {
                                          lastUpdate: {type: Date, index: true},
                                      });
 
+    // BADBAD
+    // http://tincanapi.com/statements-101/
+    exports.LearningRecord = mongoose.model("LearningRecord",
+					    {
+						actor: {type: ObjectId, ref:"User"},
+						verb: Mixed,
+						object: Mixed,
+						result: Mixed,
+						timestamp: Date,
+						stored: Date,						
+					    });    
+    
     // 128 megabytes of compile logs
     var CompileLogSchema = new mongoose.Schema(
 	{

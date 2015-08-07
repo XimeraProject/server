@@ -1,5 +1,5 @@
-define(['jquery', 'underscore', 'database'], function($, _, database){
-    var buttonTemplate = _.template( '<label class="btn btn-default <%= correct %>" id="<%= id %>"><input type="radio"><%= content %></input></label>' );
+define(['jquery', 'underscore', 'database', 'mathjax'], function($, _, database, MathJax){
+    var buttonTemplate = _.template( '<label class="btn btn-default <%= correct %>" id="<%= id %>"></label>' );
 
     var answerHtml = '<div class="btn-group" style="vertical-align: bottom; ">' +
 	'<button class="btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Correct answer!" style="display: none">' +
@@ -18,16 +18,20 @@ define(['jquery', 'underscore', 'database'], function($, _, database){
     var createMultipleChoice = function() {
 	var multipleChoice = $(this);
 
-	multipleChoice.html( '<div><div class="btn-group-vertical" role="group" data-toggle="buttons" style="padding-right: 1em;">' + 
-		      multipleChoice.html() +
-		      '</div>' + answerHtml + '</div>' );
+	multipleChoice.wrapInner( '<div class="ximera-horizontal"><div class="btn-group-vertical" role="group" data-toggle="buttons" style="padding-right: 1em;"></div></div>' );
+	
+	$('.ximera-horizontal', multipleChoice).append( $(answerHtml) );
 
 	multipleChoice.find( ".choice" ).each( function() {
 	    var correct = '';
 	    if ($(this).hasClass( "correct" ))
 		correct = "correct";
 	    
-	    var button = $(this).replaceWith( buttonTemplate({ id: $(this).attr('id'), correct: correct, content: $(this).html() }) );
+	    var identifier = $(this).attr('id');
+	    var label = $(this);
+
+	    label.wrap( buttonTemplate({ id: identifier, correct: correct }) );
+	    label.prepend( '<input type="radio"></input>' );
 	});
 
 	multipleChoice.trigger( 'ximera:answer-needed' );

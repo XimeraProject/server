@@ -18,7 +18,7 @@ require.config({
     ],
     
     paths: {
-	mathjax: "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured",
+	mathjax: "../../components/MathJax/MathJax",
 	less: "../../components/less/dist/less.min",
 	"async": "../../components/async/lib/async",
 	"jquery": "../../components/jquery/dist/jquery.min",
@@ -104,11 +104,13 @@ require.config({
 	    init: function () {
 		MathJax.Hub.Config(
 		    {
+			jax: ["input/TeX","output/SVG"],
+			extensions: ["tex2jax.js","MathMenu.js","MathZoom.js", "CHTML-preview.js"],			
 			showProcessingMessages: false,
 			tex2jax: { inlineMath: [['$', '$'], ['\\(','\\)']],
 				   displayMath: [['$$','$$'], ['\\[','\\]']] },
 			TeX: {
-			    extensions: ["color.js"],
+			    extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js", "color.js"],
 			    Macros: {}
 			}
 		    });
@@ -201,8 +203,9 @@ require( ["jquery", "shCore", "mathjax", "jquery-ui", "less", "database", "boots
 	MathJax.Hub.Startup.onload();
 
 	$(".problem-environment").problemEnvironment();
-	
+
 	$(".mathjax-input").mathAnswer();
+	
 	$(".multiple-choice").multipleChoice();
 	$(".hint").hint();
 	$(".free-response").freeResponse();
