@@ -114,6 +114,7 @@ define(['jquery', 'underscore', 'database'], function($, _){
 	statement.timestamp = (new Date()).toISOString();
 
 	queue.push( statement );
+	
 	uploadQueue();
     };
 

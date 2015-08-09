@@ -18,7 +18,7 @@ require.config({
     ],
     
     paths: {
-	mathjax: "../../components/MathJax/MathJax",
+        mathjax: "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured",
 	less: "../../components/less/dist/less.min",
 	"async": "../../components/async/lib/async",
 	"jquery": "../../components/jquery/dist/jquery.min",
@@ -193,7 +193,6 @@ require( ["jquery", "shCore", "mathjax", "jquery-ui", "less", "database", "boots
 	shCore.SyntaxHighlighter.highlight();
 	
 	$(".dropdown-toggle").dropdown();
-
 	
 	// This could go in "init" above, but it needs to be after teh end process hook
 	MathJax.Hub.Startup.onload();
