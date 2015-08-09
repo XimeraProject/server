@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'mathjax', 'database'], function($, _, MathJax){
+define(['jquery', 'underscore', 'mathjax', 'database', 'tincan'], function($, _, MathJax, database, TinCan){
 
     var hintButtonHtml = '<button class="btn btn-info btn-reveal-hint" type="button" data-toggle="tooltip" data-placement="top" title="Reveal the next hint."><i class="fa fa-life-ring"/>&nbsp; Reveal Hint<span class="counter" style="display: none;"> (<span class="count">1</span>)</span></button>';
 
@@ -11,6 +11,10 @@ define(['jquery', 'underscore', 'mathjax', 'database'], function($, _, MathJax){
 
 	if (!problem.hasClass("hint")) {
 	    problem.persistentData( function(event) {
+		if (problem.persistentData( 'available' ) && !(problem.persistentData( 'experienced' ))) {
+		    TinCan.experience(problem);
+		    problem.persistentData( 'experienced', true );
+		}
 
 		if (!(problem.persistentData( 'available' ))) {
 		    if (problem.parents(".problem-environment").length == 0)
@@ -18,7 +22,8 @@ define(['jquery', 'underscore', 'mathjax', 'database'], function($, _, MathJax){
 		}
 		
 		if ((problem.parents(".problem-environment").length == 0) || (problem.persistentData( 'available' ))) {
-		    problem.show(); //{duration: 'fast', complete: rejax});
+		    // This could be animated?  {duration: 'fast', complete: rejax});
+		    problem.show();
 		} else {
 		    problem.hide();
 		}
@@ -76,6 +81,9 @@ define(['jquery', 'underscore', 'mathjax', 'database'], function($, _, MathJax){
 	    if (_.every(problem.data('answers-needed'), function(answer) {
 		return $(answer).persistentData('correct');
 	    })) {
+		if (!(problem.persistentData( 'complete')))
+		    TinCan.completeProblem(problem);
+		
 		problem.persistentData( 'complete', true );
 		
 		// Uncover the next level of problem-environments

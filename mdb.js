@@ -57,16 +57,19 @@ exports.initialize = function initialize(callback) {
                                          lastUpdate: {type: Date, index: true},
                                      });
 
-    // BADBAD
-    // http://tincanapi.com/statements-101/
+    // These records are designed to conform to the TinCan API 1.0.0
     exports.LearningRecord = mongoose.model("LearningRecord",
 					    {
 						actor: {type: ObjectId, ref:"User"},
-						verb: Mixed,
+						verbId: String,
 						object: Mixed,
 						result: Mixed,
+						context: Mixed,
 						timestamp: Date,
-						stored: Date,						
+						stored: Date,
+						authority: Mixed,
+						version: String,
+						attachments: Mixed
 					    });    
     
     // 128 megabytes of compile logs

@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'database', 'mathjax'], function($, _, database, MathJax){
+define(['jquery', 'underscore', 'database', 'mathjax', 'tincan'], function($, _, database, MathJax, TinCan){
     var buttonTemplate = _.template( '<label class="btn btn-default <%= correct %>" id="<%= id %>"></label>' );
 
     var answerHtml = '<div class="btn-group" style="vertical-align: bottom; ">' +
@@ -84,10 +84,10 @@ define(['jquery', 'underscore', 'database', 'mathjax'], function($, _, database,
 		
 		multipleChoice.persistentData('correct',
 					      multipleChoice.find('#' + multipleChoice.persistentData('chosen')).hasClass( 'correct' ) );
-		
-		if (multipleChoice.persistentData('correct'))
+
+		if (multipleChoice.persistentData('correct')) {
 		    multipleChoice.trigger( 'ximera:correct' );
-		else {
+		} else {
 		    var wrongAnswers = multipleChoice.persistentData('wrong');
 		    
 		    if (!wrongAnswers)
@@ -96,6 +96,9 @@ define(['jquery', 'underscore', 'database', 'mathjax'], function($, _, database,
 		    wrongAnswers[multipleChoice.persistentData('chosen')] = true;
 		    multipleChoice.persistentData('wrong', wrongAnswers);
 		}
+
+		TinCan.answer( multipleChoice, { response: multipleChoice.persistentData('chosen'),
+						 success: multipleChoice.persistentData('correct') } );
 	    }
 	};
 	

@@ -104,7 +104,11 @@ require.config({
 	    init: function () {
 		MathJax.Hub.Config(
 		    {
-			jax: ["input/TeX","output/SVG"],
+			// You might think putput/SVG would be better,
+			// but HTML-CSS is needed in order for the
+			// answer input boxes to appear in the most
+			// appropriate places
+			jax: ["input/TeX","output/HTML-CSS"],
 			extensions: ["tex2jax.js","MathMenu.js","MathZoom.js", "CHTML-preview.js"],			
 			showProcessingMessages: false,
 			tex2jax: { inlineMath: [['$', '$'], ['\\(','\\)']],
@@ -175,8 +179,7 @@ require.config({
 });
 
 
-//require( ["angular", "shCore", "angular-animate", "bootstrap", "directives/mathjax", "directives/video-player", "directives/input-math", "moment", "activity-display", "coding-activity", "matrix-activity", "math-matrix", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "score", "free-response", "user", 'angular-strap-tpl', 'popover', "forum", "pagedown-directive", "course", "jquery-ui"], function(angular, shCore) {
-require( ["jquery", "shCore", "mathjax", "jquery-ui", "less", "database", "bootstrap", "moment", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "user/profile", 'popover', "free-response", "multiple-choice", "math-answer", "problem", "hint", "shuffle"], function($, shCore, MathJax) {
+require( ["jquery", "shCore", "mathjax", "jquery-ui", "less", "database", "bootstrap", "moment", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "user/profile", "math-answer", "activity"], function($, shCore, MathJax) {
 
     'use strict';
 
@@ -188,29 +191,14 @@ require( ["jquery", "shCore", "mathjax", "jquery-ui", "less", "database", "boots
 
     $(document).ready(function() {
 	shCore.SyntaxHighlighter.highlight();
+	
 	$(".dropdown-toggle").dropdown();
 
-	// The "end process" hook is run if we end up reprocessing the math on the page, such as during a live popover
-	var firstTime = true;
-	MathJax.Hub.Register.MessageHook( "End Process", function(message) {
-	    if (firstTime) {
-		$(".mathjax-input").mathAnswer();
-		firstTime = false;
-	    }
-	});
-
+	
 	// This could go in "init" above, but it needs to be after teh end process hook
 	MathJax.Hub.Startup.onload();
 
-	$(".problem-environment").problemEnvironment();
-
-	$(".mathjax-input").mathAnswer();
-	
-	$(".multiple-choice").multipleChoice();
-	$(".hint").hint();
-	$(".free-response").freeResponse();
-	
-	$(".shuffle").shuffle();	
+	$(".activity").activity();
     });
 
 });

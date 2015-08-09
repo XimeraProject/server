@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'popover', 'math-expressions', 'database'], function($, _, popover, Expression){
+define(['jquery', 'underscore', 'popover', 'math-expressions', 'tincan', 'database'], function($, _, popover, Expression, TinCan){
 
     var template = '<form class="form-inline" style="display: inline-block;">' +
 	'<span class="input-group">' +
@@ -120,17 +120,18 @@ define(['jquery', 'underscore', 'popover', 'math-expressions', 'database'], func
 		result.persistentData( 'correct',
 				       (Math.abs(correctAnswerFloat - studentAnswerFloat) <= tolerance) );
 		result.persistentData( 'attempt', inputBox.val() );
-
-		return false;
+	    } else {
+		if (studentAnswer.equals( correctAnswer )) {
+		    result.persistentData( 'correct', true );
+		    result.trigger( 'ximera:correct' );
+		} else {
+		    result.persistentData( 'correct', false );
+		    result.persistentData( 'attempt', inputBox.val() );
+		}
 	    }
 	    
-	    if (studentAnswer.equals( correctAnswer )) {
-		result.persistentData( 'correct', true );
-		result.trigger( 'ximera:correct' );
-	    } else {
-		result.persistentData( 'correct', false );
-		result.persistentData( 'attempt', inputBox.val() );
-	    }
+	    TinCan.answer( result, { response: result.persistentData('response'),
+				     success: result.persistentData('correct') } );
 	    
 	    return false;
 	});

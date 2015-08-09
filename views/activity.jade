@@ -55,7 +55,7 @@ block content
   div.container
     div(course-breadcrumbs="")
         .row
-          .col-md-9.activity(data-activity=activity.hash)
+          .col-md-9.activity(id="theActivity", data-activity=activity.hash)
             ul.pager
              li.previous(class=(previousActivity ? undefined : "disabled"))
                //+courseActivityLink(course,previousActivity)

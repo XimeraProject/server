@@ -474,7 +474,7 @@ exports.activity = function(req, res) {
 		    activity.repositoryName = result.repository;
 		    activity.ownerName = result.owner;
 		    activity.branchName = branchName;
-		    activity.path = path;	    
+		    activity.path = path;
 
 		    var stylesheet = '/course/' + owner + '/' + repository + '/' + branchName + '/' + path + '.css';
 		    var javascript = '/course/' + owner + '/' + repository + '/' + branchName + '/' + path + '.js';

@@ -10,6 +10,7 @@ var express = require('express')
   , about = require('./routes/about')
   , score = require('./routes/score')
   , github = require('./routes/github')
+  , tincan = require('./routes/tincan')
   , instructor = require('./routes/instructor')
   , http = require('http')
   , path = require('path')
@@ -249,6 +250,9 @@ git.long(function (commit) {
     //app.get( /^\/course\/(.+)\/activity\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
     //app.get(/^\/course\/(.+)\/$/, course.landing );
     //app.get( /^\/course\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
+
+    // TinCan (aka Experience) API
+    app.post('/xAPI/statements', tincan.postStatements);
     
     // Instructor paths
     app.get(/^\/instructor\/course\/(.+)\/activity\/(.+)\/$/, instructor.instructorActivity );

@@ -44,7 +44,6 @@ define(['jquery', 'underscore', 'database'], function($, _){
 	    
 	    problem.persistentData( function() {
 		if (problem.persistentData('complete')) {
-		    console.log( "Complete." );
 		    var nextProblem = $(this).next('.problem-environment');
 		    nextProblem.persistentData('available', true);
 		}

@@ -17,23 +17,27 @@ define(['jquery', 'underscore', 'async', 'socketio'], function($, _, async, io){
     var reseting = false;
     
     var findActivityHash = _.memoize( function( element ) {
+	if ($(element).hasClass('activity'))
+	    return $(element).attr( 'data-activity' );
+	
 	return $(element).parents( "[data-activity]" ).attr( 'data-activity' );
     });
-
+    
+    $.fn.extend({ activityHash: function() {
+	return findActivityHash( this );
+    }});
+    
     // Return the database hash associated to the given element; the
     // element must be under a "data-activity" field.  Data-activity
     // combined with the element's ID is used for the key.
     exports.get = function(element) {
 	var activityHash = findActivityHash(element);
-	
-	var database = {};
-	
-	if (activityHash in DATABASES) {
-	    database = DATABASES[activityHash];
-	} else {
-	    DATABASES[activityHash] = database;
+
+	if (!(activityHash in DATABASES)) {
+	    throw "Database not loaded.";
 	}
 	
+	var database = DATABASES[activityHash];	
 	var identifier = $(element).attr('id');
 	
 	if (!(identifier in database))
@@ -160,52 +164,56 @@ define(['jquery', 'underscore', 'async', 'socketio'], function($, _, async, io){
 		});	
     };
 
-    // When the document loads, download the database from the server
+    // activity.js will use this to download the database from the server
+    $.fn.extend({ fetchData: function(callback) {
+	var activity = $(this);
+	var activityHash = activity.attr( 'data-activity' );
+
+	$.ajax({
+	    url: '/state/' + activityHash,
+	    type: 'GET',
+	    dataType: 'json',
+	    success: function( result ) {
+		// I am merge this in with whatever might already be
+		// there, but there SHOULDN'T be anything in there
+		REMOTES[activityHash] = JSON.stringify(result);
+		
+		if (!(activityHash in DATABASES))
+		    DATABASES[activityHash] = {};
+		
+		_.each( result,
+			function( database, identifier, list ) {
+			    if (identifier in DATABASES[activityHash])
+				_.extend( DATABASES[activityHash][identifier], database );
+			    else
+				DATABASES[activityHash][identifier] = database;
+			});
+		
+		socket.emit( 'activity', activityHash );
+		
+		_.each( DATABASES[activityHash],
+			function( database, identifier, list ) {
+			    $( "#" + identifier, activity ).trigger( 'ximera:database' );
+			});
+
+		callback( DATABASES[activityHash] );
+	    },
+	});
+    }});
+
     $(document).ready(function() {
 	socket = io.connect();
 	
-	$( "[data-activity]" ).each( function() {
-	    var activity = $(this);
-	    var activityHash = activity.attr( 'data-activity' );
-
-	    $.ajax({
-		url: '/state/' + activityHash,
-		type: 'GET',
-		dataType: 'json',
-		success: function( result ) {
-		    // BADBAD: trying to merge this in with whatever might already be there
-		    // DATABASES[activityHash] = result;
-		    REMOTES[activityHash] = JSON.stringify(result);
-		    
-		    if (!(activityHash in DATABASES))
-			DATABASES[activityHash] = {};
-		    
-		    _.each( result,
-			    function( database, identifier, list ) {
-				if (identifier in DATABASES[activityHash])
-				    _.extend( DATABASES[activityHash][identifier], database );
-				else
-				    DATABASES[activityHash][identifier] = database;
-			    });
-		    
-		    socket.emit( 'activity', activityHash );
-			
-		    _.each( DATABASES[activityHash],
-			    function( database, identifier, list ) {
-				$( "#" + identifier, activity ).trigger( 'ximera:database' );
-			    });
-		},
-	    });
-	});
-	
 	socket.on( 'persistent-data', function(data) {
 	    var activity = $( "[data-activity=" + data.activityHash + "]" );
-	    DATABASES[data.activityHash][data.identifier][data.key] = data.value;
-	    $( "#" + data.identifier, activity ).trigger( 'ximera:database' );
+	    
+	    if (data.activityHash in DATABASES) {
+		DATABASES[data.activityHash][data.identifier][data.key] = data.value;
+		$( "#" + data.identifier, activity ).trigger( 'ximera:database' );
+	    }
 	});
-	
-    });
-    
+    });		
+		
     ////////////////////////////////////////////////////////////////
     // Code for the "save button" is below
 
@@ -288,8 +296,7 @@ define(['jquery', 'underscore', 'async', 'socketio'], function($, _, async, io){
 	$(SAVE_WORK_BUTTON_ID).click( clickSaveWorkButton );
 	$(RESET_WORK_BUTTON_ID).click( clickResetWorkButton );
     });
-
-
+		
     ////////////////////////////////////////////////////////////////
     return exports;
 });
