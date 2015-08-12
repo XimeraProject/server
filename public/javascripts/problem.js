@@ -13,7 +13,7 @@ define(['jquery', 'underscore', 'mathjax', 'database', 'tincan'], function($, _,
 	    problem.persistentData( function(event) {
 		if (problem.persistentData( 'available' ) && !(problem.persistentData( 'experienced' ))) {
 		    TinCan.experience(problem);
-		    MathJax.Hub.Queue(["Rerender", MathJax.Hub, problem]);
+		    MathJax.Hub.Queue(["Rerender", MathJax.Hub, problem.get()]);
 		    problem.persistentData( 'experienced', true );
 		}
 
