@@ -65,7 +65,8 @@ define(['jquery', 'underscore', 'async', 'socketio'], function($, _, async, io){
 
 	$(element).on('ximera:database', $(element).database(),
 		      function( event ) {
-			  console.log( "ximera:database" );
+			  // BADBAD: How should I be logging this?
+			  //console.log( "ximera:database" );
 			  return callback.bind(this)(event);
 		      });
 	
