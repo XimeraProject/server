@@ -14,8 +14,6 @@ define(['jquery', 'underscore'], function($, _) {
 		if (xarma.text().length > 0)
 		    $(".xarma").effect("highlight", {}, 3000);
 		
-		console.log( "update xarma" );	    
-		
 		xarma.text( scoreXarma.toString() );
 	    }
 	}
@@ -28,8 +26,6 @@ define(['jquery', 'underscore'], function($, _) {
 	    if (xudos.text() != scoreXudos.toString()) {
 		if (xudos.text().length > 0)
 		    $(".xudos").effect("highlight", {}, 3000);
-		
-		console.log( "update xudos" );	    	    
 		
 		xudos.text( scoreXudos.toString() );
 	    }
