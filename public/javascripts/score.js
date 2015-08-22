@@ -6,6 +6,8 @@ define(['jquery', 'underscore'], function($, _) {
 
     var update = function() {
 	if (scoreXarma) {
+	    $('.xarma').toggle(scoreXarma != 0);
+		
 	    var xarma = $('#score-xarma');
 
 	    if (xarma.text() != scoreXarma.toString()) {
@@ -19,6 +21,8 @@ define(['jquery', 'underscore'], function($, _) {
 	}
 
 	if (scoreXudos) {
+	    $('.xudos').toggle(scoreXudos != 0);
+	    
 	    var xudos = $('#score-xudos');
 	    
 	    if (xudos.text() != scoreXudos.toString()) {

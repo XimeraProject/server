@@ -1,11 +1,6 @@
 
 @import 'bootstrap';
 
-/* Cloak the {{angular}} stuff */
-[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-    display: none !important;
-}
-
 /*****************************************************************/
 /* Use mathjax fonts for body text... or not, since it is so ugly. */
 
@@ -762,4 +757,15 @@ tell theorems.less about it and choose the background color. */
   margin-right:10%;
   font-style:italic;
   margin-bottom:2em;
+}
+
+/****************************************************************/
+/* Xarma and xudos are hidden by default */
+
+li.xarma {
+    display: none;
+}
+
+li.xudos {
+    display: none;
 }
