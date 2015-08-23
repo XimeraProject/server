@@ -13,7 +13,6 @@ define(['jquery', 'underscore', 'mathjax', 'database', 'tincan'], function($, _,
 	    problem.persistentData( function(event) {
 		if (problem.persistentData( 'available' ) && !(problem.persistentData( 'experienced' ))) {
 		    TinCan.experience(problem);
-		    MathJax.Hub.Queue(["Rerender", MathJax.Hub, problem.get(0)]);
 		    problem.persistentData( 'experienced', true );
 		}
 
@@ -21,12 +20,24 @@ define(['jquery', 'underscore', 'mathjax', 'database', 'tincan'], function($, _,
 		    if (problem.parents(".problem-environment").length == 0)
 			problem.persistentData( 'available', true );
 		}
-		
-		if ((problem.parents(".problem-environment").length == 0) || (problem.persistentData( 'available' ))) {
-		    // This could be animated?  {duration: 'fast', complete: rejax});
-		    problem.show();
+
+		// You'd think you might want to call MathJax Rerender
+		// to update things when you're messing around with
+		// visibility, but NO!  MathJax seems to be removing
+		// things from the DOM (like our problem divs) and
+		// replacing them with identical copies---except that
+		// our event handlers weren't attached to the copies.
+		// So instead of hiding and showing things, we have to
+		// do this CSS visibility thing, which lets MathJax
+		// size everything appropriately even while it is
+		// hidden,
+
+		if (problem.persistentData( 'available' )) {
+		    problem.css({visibility: 'visible', position:'relative'});
+		    problem.fadeTo('slow', 1);
 		} else {
-		    problem.hide();
+		    problem.css({visibility: 'hidden', position:'absolute'});
+		    problem.css({opacity: 0});
 		}
 
 		return false;
@@ -41,6 +52,17 @@ define(['jquery', 'underscore', 'mathjax', 'database', 'tincan'], function($, _,
 		answersNeeded = problem.data( 'answers-needed' );
 	    
 	    answersNeeded.unshift( event.target );
+
+	    // Sometimes I end up recreating answers, and when those
+	    // answers are recreated they again emit
+	    // ximera:answer-needed, but without the following lines,
+	    // I would then have extraneous entries in answersNeeded
+	    // which would be, worse, unanswerable since the are no
+	    // longer in the DOM.
+	    
+	    var inDom = function(e) { return $.contains( document.documentElement, e ); };
+	    answersNeeded = _.filter( answersNeeded, inDom );
+	    
 	    problem.data( 'answers-needed', answersNeeded  );
 	    
 	    return false;
@@ -84,9 +106,12 @@ define(['jquery', 'underscore', 'mathjax', 'database', 'tincan'], function($, _,
 	    })) {
 		if (!(problem.persistentData( 'complete')))
 		    TinCan.completeProblem(problem);
-		
+
 		problem.persistentData( 'complete', true );
 		
+		// When a problem is complete, we announce it to the world
+		problem.trigger( 'ximera:complete' );
+
 		// Uncover the next level of problem-environments
 		problem.find('.problem-environment').not('.hint').each( function() {
 		    if ($(this).parent('.problem-environment').first().is(problem)) {

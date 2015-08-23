@@ -40,6 +40,8 @@
 	"gridfs-stream": "*",
 	"mongoose": "*",
 	"fstream": "*",
+	"domino": "*",
+	"csv": "*",
 	"winston": "*",
 	"less": "*",
 	"async": "*",

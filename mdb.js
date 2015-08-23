@@ -99,6 +99,16 @@ exports.initialize = function initialize(callback) {
 				      data: Buffer
 				  });
 
+    exports.Xourse = mongoose.model("Xourse",
+				    {
+                                        timeLastUsed: {type: Date, index: true},
+					commit: {type: String, index: true},
+					path: String,
+					hash: {type: String, index: true},
+                                        title: String,
+				    }
+				   );
+    
     exports.Activity = mongoose.model("Activity",
                                       {
 					  // deprecated

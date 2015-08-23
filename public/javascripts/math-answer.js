@@ -1,6 +1,6 @@
 define(['jquery', 'underscore', 'popover', 'math-expressions', 'tincan', 'database'], function($, _, popover, Expression, TinCan){
 
-    var template = '<form class="form-inline" style="display: inline-block;">' +
+    var template = '<form class="form-inline mathjaxed-input" style="display: inline-block;">' +
 	'<span class="input-group">' +
    	  '<input class="form-control" type="text"/>' +
 	  '<span class="input-group-btn">' +
@@ -66,7 +66,7 @@ define(['jquery', 'underscore', 'popover', 'math-expressions', 'tincan', 'databa
 		$(inputBox).val( '' );
 	    }
 
-	    if (result.persistentData('correct')) {		
+	    if (result.persistentData('correct')) {
 		result.find('.btn-ximera-correct').show();
 		result.find('.btn-ximera-incorrect').hide();
 		result.find('.btn-ximera-submit').hide();
@@ -120,6 +120,9 @@ define(['jquery', 'underscore', 'popover', 'math-expressions', 'tincan', 'databa
 		result.persistentData( 'correct',
 				       (Math.abs(correctAnswerFloat - studentAnswerFloat) <= tolerance) );
 		result.persistentData( 'attempt', inputBox.val() );
+
+		if (result.persistentData( 'correct' ))
+		    result.trigger( 'ximera:correct' );
 	    } else {
 		if (studentAnswer.equals( correctAnswer )) {
 		    result.persistentData( 'correct', true );
@@ -129,7 +132,7 @@ define(['jquery', 'underscore', 'popover', 'math-expressions', 'tincan', 'databa
 		    result.persistentData( 'attempt', inputBox.val() );
 		}
 	    }
-	    
+
 	    TinCan.answer( result, { response: result.persistentData('response'),
 				     success: result.persistentData('correct') } );
 	    

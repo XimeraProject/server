@@ -79,7 +79,7 @@ if (process.env.DEPLOYMENT === 'production') {
 }
 
 // Temporarily use NGROK for the server
-rootUrl = 'http://497a6980.ngrok.com';
+rootUrl = 'http://62b61327.ngrok.com';
 
 // Common mongodb initializer for the app server and the activity service
 mdb.initialize(function (err) {
@@ -238,6 +238,7 @@ git.long(function (commit) {
     app.get( '/courses/', function( req, res ) { res.redirect('/course/'); });
     app.get( '/course/:username/:repository/:branch/:path(*.tex)', course.source );
     app.get( '/course/:username/:repository/:branch/:path(*.png)', course.image );
+    app.get( '/course/:username/:repository/:branch/:path(*.jpg)', course.image );    
     app.get( '/course/:username/:repository/:branch/:path(*.pdf)', course.image );
     app.get( '/course/:username/:repository/:branch/:path(*.svg)', course.image );
     app.get( '/course/:username/:repository/:branch/:path(*.css)', course.stylesheet );
