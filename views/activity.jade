@@ -50,7 +50,10 @@ block resetModal
             button(type="button", class="btn btn-default", data-dismiss="modal") No, keep my work.
             button#reset-work-button(type="button",class="btn btn-danger", data-dismiss="modal")
               | <i class="fa fa-eraser"></i>&nbsp;Yes, delete my work.
-  
+
+block modals
+  block resetModal
+                
 block content
   div.container
     div(course-breadcrumbs="")
@@ -65,7 +68,6 @@ block content
                  | Next Activity &rarr;
 
             block activity
-            block resetModal
 
             ul.pager
              li.previous(class=(previousActivity ? undefined : "disabled"))

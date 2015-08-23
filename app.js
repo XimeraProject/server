@@ -236,6 +236,12 @@ git.long(function (commit) {
     app.get( '/course', function( req, res ) { res.redirect(req.url + '/'); });
     app.get( '/courses', function( req, res ) { res.redirect('/course/'); });
     app.get( '/courses/', function( req, res ) { res.redirect('/course/'); });
+
+    app.get( '/course/:username/:repository/', course.tableOfContents );
+    app.get( '/course/:username/:repository', function( req, res ) { res.redirect(req.url + '/'); });    
+    app.get( '/course/:username/:repository/:branch/', course.tableOfContents );
+    app.get( '/course/:username/:repository/:branch', function( req, res ) { res.redirect(req.url + '/'); });
+    
     app.get( '/course/:username/:repository/:branch/:path(*.tex)', course.source );
     app.get( '/course/:username/:repository/:branch/:path(*.png)', course.image );
     app.get( '/course/:username/:repository/:branch/:path(*.jpg)', course.image );    

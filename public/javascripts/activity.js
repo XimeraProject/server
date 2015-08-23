@@ -11,23 +11,18 @@ define(['jquery', 'underscore', 'mathjax', 'tincan', 'progress-bar', 'database',
 		}
 	    });
 
-	    MathJax.Hub.Register.MessageHook( "End Rerender", function(message) {
-		console.log( "Rerender: ", message );
-		$(".mathjax-input", message[1]).mathAnswer();
-	    });
-
 	    var firstTime = true;
 	    
 	    MathJax.Hub.Register.MessageHook( "End Process", function(message) {
 		if (firstTime) {
-		    console.log("End Process (!st time)");
+		    console.log("End Process (1st time)");
 		    $(".mathjax-input", activity).mathAnswer();
 		    firstTime = false;
 		}
 	    });
 	    
 	    $(".problem-environment", activity).problemEnvironment();
-	    //$(".mathjax-input", activity).mathAnswer();
+	    $(".mathjax-input", activity).mathAnswer();	    
 	    $(".multiple-choice", activity).multipleChoice();
 	    $(".hint", activity).hint();
 	    $(".free-response", activity).freeResponse();

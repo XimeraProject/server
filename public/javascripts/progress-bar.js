@@ -46,7 +46,8 @@ define(['jquery', 'underscore'], function($, _){
 	var children = $(problem).find('.problem-environment').not('.hint').filter( function() {
 	    var parents = $(this).parent('.problem-environment');
 	    return (parents.length == 0) || (parents.first().is(problem)); } );
-	
+
+	// Non-root nodes also contribute to their value via their 'completion' flag
 	var nodeValue = 0;
 	var nodeMaxValue = 0;
 	
@@ -55,8 +56,8 @@ define(['jquery', 'underscore'], function($, _){
 	    nodeMaxValue = 1;
 	}
 
+	// Each node's value is the average of its children's values and its own completion flag
 	var total = 0;
-
 	children.each( function() {
 	    total = total + calculateProgress( this, depth + 1 );
 	});
@@ -68,7 +69,11 @@ define(['jquery', 'underscore'], function($, _){
     var activityToMonitor = undefined;
     
     var update = _.debounce( function() {
-	exports.progressProportion( calculateProgress( activityToMonitor ) );
+	var value = calculateProgress( activityToMonitor );
+	exports.progressProportion( value );
+	
+	// Store the progress as the "score" in the database
+	$(activityToMonitor).persistentData( 'score', value );
     }, 300 );
        
     exports.monitorActivity = function( activity ) {

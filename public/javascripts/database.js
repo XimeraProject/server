@@ -65,15 +65,9 @@ define(['jquery', 'underscore', 'async', 'socketio'], function($, _, async, io){
 	
 	$(element).on('ximera:database', $(element).database(),
 		      function( event ) {
-			  // BADBAD: How should I be logging this?
-			  //console.log( "ximera:database" );
-
-			  //console.log( "Calling ", element.get(0) );
-			  //console.log( $(element).database() );
-			  callback.bind(this)(event);
+			  return callback.bind(this)(event);
 			  
-			  // BADBAD: I need to return true, so I don't prevent this from bubbling?
-			  return true;
+			  // BADBAD: Do I need to return true, so I don't prevent this from bubbling?
 		      });
 	
 	// Because we might register our listener AFTER we download
