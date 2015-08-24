@@ -40,10 +40,11 @@ block content
           .col-md-12
             div.course-navigation
               div.frame
-                ul.items
+                ul.items.pagination
                   for activityUrl in activity.xourse.activityList
-                    li(href="/course/#{activity.ownerName}/#{activity.repositoryName}/#{activity.branchName}/#{activityUrl}")
-                      h4 #{activityUrl}
+                    li(class=( activityUrl == activity.path ) ? "active" : undefined)
+                      a(href="/course/#{activity.ownerName}/#{activity.repositoryName}/#{activity.branchName}/#{activityUrl}")
+                        | #{activityUrl}
               div.scrollbar
                 div.handle
         .row                      

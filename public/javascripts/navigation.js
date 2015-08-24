@@ -10,7 +10,7 @@ define(['jquery', 'underscore', 'sly'], function($, _, Sly) {
 	    smart: 1,
 	    activateOn: 'click',
 	    speed: 300,
-	    startAt: 1,
+	    startAt: $('.frame li').index( $('.frame li.active') ),
 	    scrollHijack: 300,
 	    scrollBar: '.scrollbar',
 	    scrollBy: 1,
@@ -29,11 +29,6 @@ define(['jquery', 'underscore', 'sly'], function($, _, Sly) {
 	}, 100 );
 	
 	$(window).resize(resize);
-
-	frame.on("active", function( e, itemIndex ) {
-	    var item = $('.frame li').eq(itemIndex);
-	    window.location.href = item.attr('href');
-	});
 	
 	return;
     });
