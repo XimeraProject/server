@@ -238,6 +238,7 @@ exports.activityUpdate = function(req, res) {
 
 exports.activity = function(req, res) {
     remember(req);
+
     var courseSlug = req.params[0];
     var activitySlug = req.params[1];
 
@@ -419,7 +420,6 @@ exports.image = function(req, res) {
     });
 };
 
-// BADBAD: this will eventually need to look for the most recent SCOPE first instead of just the branch
 exports.activity = function(req, res) {
     remember(req);
 
@@ -433,10 +433,12 @@ exports.activity = function(req, res) {
     
     async.waterfall(
 	[
+	    // BADBAD: this will eventually need to look for the most recent SCOPE first instead of just the branch
 	    function( callback ) {
 		findMostRecentBranch( owner, repository, branchName, callback );
 	    },
-	    
+
+	    // Get the activity data
 	    function( branch, callback ) {
 		if (!branch)
 		    callback( "Missing branch", null );
@@ -445,7 +447,8 @@ exports.activity = function(req, res) {
 		    mdb.Activity.findOne({commit: branch.commit, path: path}).exec(callback);
 		}
 	    },
-	    
+
+	    // Get the HTML content
 	    function( anActivity, callback ) {
 		if (!anActivity)
 		    callback( "Missing activity", null );
@@ -456,29 +459,113 @@ exports.activity = function(req, res) {
 		    mdb.Blob.findOne({hash: hash}).exec(callback);
 		}
 	    },
+
+	    // Attach HTML and previous data to the activity
+	    function( result, callback ) {
+		if (result) {
+		    activity.html = result.data;	    
+		}
+
+		activity.repositoryName = repository;
+		activity.ownerName = owner;
+
+		callback( null, commit );
+	    },	    	    
+
+	    // Get the xourse
+	    function( commit, callback ) {
+		if (!commit)
+		    callback( "Missing xourse", null );
+		else {
+		    mdb.Xourse.findOne({commit: commit}).exec(callback);
+		}
+	    },
+
+	    // Attach the xourse to the activity
+	    function( result, callback ) {
+		if (result) {
+		    activity.xourse = result;
+		}
+
+		callback(null);
+	    },
 	    
 	], function(err, result) {
 	    if ((err == "Missing branch") && (branchName != "master")) {
 		res.redirect("/course/" + owner + "/" + repository + "/master/" + branchName + "/" + path);
 	    } else {
-		if ((err) || (!result)) {
+		if (err) {
 		    res.send( err );
 		} else {
-		    result.commit = commit;
-		    result.path = path;
-		    result.owner = owner;
-		    result.hash = hash;
-		    result.repository = repository;
-		    activity.html = result.data;
-
-		    activity.repositoryName = result.repository;
-		    activity.ownerName = result.owner;
 		    activity.branchName = branchName;
 		    activity.path = path;
 
 		    var stylesheet = '/course/' + owner + '/' + repository + '/' + branchName + '/' + path + '.css';
 		    var javascript = '/course/' + owner + '/' + repository + '/' + branchName + '/' + path + '.js';
 		    res.render('activity', { activity: activity, stylesheet: stylesheet, javascript: javascript });
+		}
+	    }
+	});
+};
+
+exports.tableOfContents = function(req, res) {
+    remember(req);
+    
+    var owner = req.params.username;
+    var repository = req.params.repository;
+    var branchName = req.params.branch;
+
+    if (branchName === undefined)
+	branchName = 'master';
+
+    var commit;
+    var hash;
+    var xourse;    
+    
+    async.waterfall(
+	[
+	    function( callback ) {
+		findMostRecentBranch( owner, repository, branchName, callback );
+	    },
+	    
+	    function( branch, callback ) {
+		if (!branch)
+		    callback( "Missing branch", null );
+		else {
+		    commit = branch.commit;
+		    mdb.Xourse.findOne({commit: branch.commit}).exec(callback);
+		}
+	    },
+	    
+	    function( aXourse, callback ) {
+		if (!aXourse)
+		    callback( "Missing Xourse", null );
+		else {
+		    xourse = aXourse;
+		    console.log( xourse );
+		    hash = xourse.hash;
+		    mdb.Blob.findOne({hash: hash}).exec(callback);
+		}
+	    },
+	    
+	], function(err, result) {
+	    if ((err == "Missing branch") && (branchName != "master")) {
+		res.redirect("/course/" + owner + "/" + repository + "/master/" + branchName + "/");
+	    } else {
+		if ((err) || (!result)) {
+		    res.send( err );
+		} else {
+		    result.commit = commit;
+		    result.owner = owner;
+		    result.hash = hash;
+		    result.repository = repository;
+		    
+		    xourse.html = result.data;
+		    xourse.repositoryName = result.repository;
+		    xourse.ownerName = result.owner;
+		    xourse.branchName = branchName;
+
+		    res.render('xourse', { xourse: xourse });
 		}
 	    }
 	});

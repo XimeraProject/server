@@ -106,6 +106,8 @@ exports.initialize = function initialize(callback) {
 					path: String,
 					hash: {type: String, index: true},
                                         title: String,
+                                        activityList: Mixed,
+                                        activities: Mixed,
 				    }
 				   );
     

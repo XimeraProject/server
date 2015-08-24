@@ -1,7 +1,7 @@
 extends layouts/main
 
 block title
-  | #{activity.title}
+  | #{xourse.title}
 
 block activity
       .page-header
@@ -10,8 +10,29 @@ block activity
             .btn-group
               a.pull-right.btn.btn-sm.btn-primary(role="button", ng-confirm-click="Updating to the most recent version of this activity will erase your work. Are you sure you want to update to the new version?", href="update/")
                 | <i class="fa fa-level-up"></i> Update Activity
+          .btn-group
+            button.btn.btn-warning.btn-sm.dropdown-toggle(type="button",data-toggle="dropdown")
+              | <i class="fa fa-bug"></i> Report Bug <span class="caret"></span>
+            ul.dropdown-menu
+              li
+                a(href="https://github.com/#{activity.ownerName}/#{activity.repositoryName}/issues/new") Report error in content
+              li
+                a(href="https://github.com/kisonecat/ximera/issues/new") Report error with website
+          .btn-group
+            button.pull-right.btn.btn-sm.btn-danger(type="button",data-toggle="modal", data-target="#resetWarningModal")
+              | <i class="fa fa-eraser"></i> Erase Work
+          .btn-group
+            a.pull-right.btn.btn-default.btn-sm(role="button",href="https://github.com/#{activity.ownerName}/#{activity.repositoryName}/edit/#{activity.branchName}/#{activity.path}.tex")
+              | <i class="fa fa-pencil"></i> Edit Source
+          .btn-group
+            button.pull-right.btn.btn-sm.btn-primary(type="button", id="save-work-button")
+              span(style="display: none;", id="work-saved")
+                | <i class="fa fa-save"></i> Work Saved!
+              span(style="display: none;", id="work-saving")
+                | <i class="fa fa-refresh fa-spinning"></i> Saving Work&hellip;
+              span(id="work-save")
+                | <i class="fa fa-save"></i> Save Work
          h1 #{activity.title}
-         h1 #{activity.xourse.title}
       | !{activity.html}
 
 
@@ -21,7 +42,7 @@ block resetModal
         div.modal-content<div class="modal-content">
           div.modal-header
             button(type="button", class="close", data-dismiss="modal", aria-label="Close")
-              span(aria-hidden="true") &times;
+              span(aria-hidden="true")&times;
             h4(class="modal-title",id="resetModalLabel") Warning
           div.modal-body
             p You are about to <strong>erase your work</strong> on this activity.  Are you sure you want to do this?
@@ -35,19 +56,12 @@ block modals
                 
 block content
   div.container
-    div(course-breadcrumbs="")
+    div(class="xourse-contents", style="display: none;")
+      | !{xourse.html}
+      
+block ba
         .row
-          .col-md-12
-            div.course-navigation
-              div.frame
-                ul.items
-                  for activityUrl in activity.xourse.activityList
-                    li(href="/course/#{activity.ownerName}/#{activity.repositoryName}/#{activity.branchName}/#{activityUrl}")
-                      h4 #{activityUrl}
-              div.scrollbar
-                div.handle
-        .row                      
-          .col-md-12.activity(id="theActivity", data-activity=activity.hash)
+          .col-md-9.activity(id="theActivity", data-activity=activity.hash)
             ul.pager
              li.previous(class=(previousActivity ? undefined : "disabled"))
                //+courseActivityLink(course,previousActivity)
@@ -68,3 +82,5 @@ block content
             //p {{db}}
             //p {{currentActivity}}
             //div(forum="#{activity.slug}")
+          .col-md-3.course-navigation(course-navigation="")
+

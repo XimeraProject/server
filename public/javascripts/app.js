@@ -21,6 +21,7 @@ require.config({
         mathjax: "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured",
 	less: "../../components/less/dist/less.min",
 	"async": "../../components/async/lib/async",
+	"sly": "../../components/sly/dist/sly.min",	
 	"jquery": "../../components/jquery/dist/jquery.min",
 	"jquery-ui": "../../components/jquery-ui/jquery-ui.min",
 	"angular": "../../components/angular/angular",
@@ -70,6 +71,8 @@ require.config({
 
     shim: {
 	socketio: { exports: 'io' },
+
+	sly: { exports: 'Sly' },
 
 	angular: { exports: 'angular', deps: ['jquery'] },
         "angular-animate": { deps: ['angular'] },
@@ -179,7 +182,7 @@ require.config({
 });
 
 
-require( ["jquery", "shCore", "mathjax", "jquery-ui", "less", "database", "bootstrap", "moment", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "user/profile", "math-answer", "activity", "score", "progress-bar"], function($, shCore, MathJax) {
+require( ["jquery", "shCore", "mathjax", "jquery-ui", "less", "database", "bootstrap", "moment", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "user/profile", "math-answer", "activity", "score", "progress-bar", "xourse", "navigation"], function($, shCore, MathJax) {
 
     'use strict';
 

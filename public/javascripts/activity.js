@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'mathjax', 'tincan', 'progress-bar', 'database', 'problem', 'math-answer', 'multiple-choice', 'hint', 'free-response', 'shuffle'], function($, shCore, MathJax, TinCan, ProgressBar) {
+define(['jquery', 'underscore', 'mathjax', 'tincan', 'progress-bar', 'database', 'problem', 'math-answer', 'multiple-choice', 'hint', 'free-response', 'shuffle'], function($, _, MathJax, TinCan, ProgressBar) {
 
     var createActivity = function() {
 	var activity = $(this);

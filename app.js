@@ -66,6 +66,9 @@ jade.filters.markdown = function(str){
 // Create Express 4 app to configure.
 var app = express();
 
+// Because I care about trailing slashes
+app.enable('strict routing');
+
 // Use Jade as our templating engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -238,9 +241,10 @@ git.long(function (commit) {
     app.get( '/courses/', function( req, res ) { res.redirect('/course/'); });
 
     app.get( '/course/:username/:repository/', course.tableOfContents );
-    app.get( '/course/:username/:repository', function( req, res ) { res.redirect(req.url + '/'); });    
+    app.get( '/course/:username/:repository$', function( req, res ) { res.redirect(req.url + '/'); });    
     app.get( '/course/:username/:repository/:branch/', course.tableOfContents );
-    app.get( '/course/:username/:repository/:branch', function( req, res ) { res.redirect(req.url + '/'); });
+    app.get( '/course/:username/:repository/:branch$', function( req, res ) { res.redirect(req.url + '/'); });
+    
     
     app.get( '/course/:username/:repository/:branch/:path(*.tex)', course.source );
     app.get( '/course/:username/:repository/:branch/:path(*.png)', course.image );
