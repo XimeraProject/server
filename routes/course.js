@@ -358,8 +358,6 @@ exports.source = function(req, res) {
 };
 
 exports.stylesheet = function(req, res) {
-    remember(req);
-
     var owner = req.params.username;
     var repository = req.params.repository;
     var branchName = req.params.branch;
@@ -377,8 +375,6 @@ exports.stylesheet = function(req, res) {
 };
 
 exports.javascript = function(req, res) {
-    remember(req);
-
     var owner = req.params.username;
     var repository = req.params.repository;
     var branchName = req.params.branch;
