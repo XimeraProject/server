@@ -1,7 +1,5 @@
 define(['jquery', 'underscore', 'sly'], function($, _, Sly) {
 
-    console.log( "THIS IS ONLY A DEMO OF NAVIGATIN" );
-    
     $(function() {
 	var options = {
 	    horizontal: 1,
@@ -22,13 +20,17 @@ define(['jquery', 'underscore', 'sly'], function($, _, Sly) {
 	    dragHandle: 1,
 	};
 	
-	var frame = new Sly('.course-navigation .frame', options).init();
+	// Calling sly when there is no frame div causes a bunch of errors
+	var frameSelector = '.course-navigation .frame';
+	if ($(frameSelector).length > 0) {
+	    var frame = new Sly('.course-navigation .frame', options).init();
 
-	var resize = _.throttle( function() {
-	    frame.reload();
-	}, 100 );
-	
-	$(window).resize(resize);
+	    var resize = _.throttle( function() {
+		frame.reload();
+	    }, 100 );
+	    
+	    $(window).resize(resize);
+	}
 	
 	return;
     });

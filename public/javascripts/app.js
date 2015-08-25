@@ -20,7 +20,7 @@ require.config({
     paths: {
         mathjax: "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured",
 	less: "../../components/less/dist/less.min",
-	socketio: '../../socket.io/socket.io',
+	socketio: '../../socket.io/socket.io',	
 	youtube: '//www.youtube.com/iframe_api',
 	"async": "../../components/async/lib/async",
 	"sly": "../../components/sly/dist/sly.min",
@@ -185,17 +185,25 @@ require.config({
 });
 
 
-require( ["jquery", "shCore", "mathjax", "jquery-ui", "less", "database", "bootstrap", "moment", "shBrushJScript", "shBrushLatex", "mailing-list", "codemirror-python", "sticky-scroll", "user/profile", "math-answer", "activity", "score", "progress-bar", "xourse", "navigation"], function($, shCore, MathJax) {
+require( ["jquery", "shCore", "mathjax", "jquery-ui", "shBrushJScript", "shBrushLatex", 
+	  "less", "database", "bootstrap", "moment", "mailing-list", "codemirror-python", "sticky-scroll", "user/profile", "math-answer", "activity", "score", "progress-bar", "xourse", "navigation"],
+	  function($, shCore, MathJax) {
 
     'use strict';
 
+    /*
     var module;
-    
+
     if (module = $('script[src$="require.js"]').data('module')) {
 	require([module]);
     }
+    */
 
+    console.log( "here" );
+    console.log( document );
+    
     $(document).ready(function() {
+	console.log( "ready" );
 	shCore.SyntaxHighlighter.highlight();
 	
 	$(".dropdown-toggle").dropdown();
