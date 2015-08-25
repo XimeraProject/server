@@ -30,7 +30,9 @@ html(lang="en")
     script(src="/socket.io/socket.io.js")
 
     if deployment == 'production'
-      script(data-module=script,src=versionPath("/public/javascripts/app.min.js"))
+      script(data-module=script,data-main="/public/javascripts/app.min",src="/components/requirejs/require.js")
+      // I'd like to actually compile this with almond, but loading mathjax is so hard      
+      //script(data-module=script,src=versionPath("/public/javascripts/app.min.js"))
     else
       script(data-module=script,data-main="/public/javascripts/app",src="/components/requirejs/require.js")
 

@@ -1,6 +1,6 @@
 require.config({
     baseUrl: "/public/javascripts",
-    waitSeconds: 200, // seems to fix things, sadly
+    //waitSeconds: 200, // seems to fix things, sadly
 
     config: {
         moment: {
@@ -18,7 +18,7 @@ require.config({
     ],
     
     paths: {
-        //mathjax: "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured",
+        mathjax: "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured",
 	mathjax: "../../components/MathJax/MathJax",
 	less: "../../components/less/dist/less.min",
 	"async": "../../components/async/lib/async",
@@ -114,7 +114,7 @@ require.config({
 			// answer input boxes to appear in the most
 			// appropriate places
 			jax: ["input/TeX","output/HTML-CSS"],
-			extensions: ["tex2jax.js","MathMenu.js","MathZoom.js", "CHTML-preview.js"],			
+			extensions: ["tex2jax.js","MathMenu.js","CHTML-preview.js"],			
 			showProcessingMessages: false,
 			tex2jax: { inlineMath: [['$', '$'], ['\\(','\\)']],
 				   displayMath: [['$$','$$'], ['\\[','\\]']] },

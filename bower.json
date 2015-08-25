@@ -14,7 +14,6 @@
         "font-awesome": "*",
         "sly": "*",
         "isotope": "*",		
-	"MathJax": "*",
 	"x-editable": "*",
 	"threejs": "https://github.com/mrdoob/three.js.git",
 	"pagedown-bootstrap": "https://github.com/tchapi/pagedown-bootstrap.git",

@@ -5,7 +5,8 @@ module.exports = function(grunt) {
 	requirejs: {
 	    compile: {
 		options: {
-                    name: "../../components/almond/almond",
+		    // Don't use almond -- I need to use the full power of requirejs in order to dynamically load things like MathJax
+                    //name: "../../components/almond/almond",
 		    include: "app",
 		    baseUrl: "public/javascripts",
 		    mainConfigFile: "public/javascripts/app.js",
@@ -13,8 +14,8 @@ module.exports = function(grunt) {
 		    // necessary to keep angular working
 		    optimize: "uglify2",
 		    uglify2: {
-			// do not mangle functions parameters names---angular needs them!
-			mangle: false
+			// do not mangle functions parameters names---angular needs them!  But now I'm not sure angular, so let's mangle.
+			//mangle: false
 		    },
 		}
 	    }
