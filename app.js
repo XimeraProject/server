@@ -79,10 +79,11 @@ app.set('port', process.env.PORT || 3000);
 var rootUrl = 'http://localhost:' + app.get('port');
 if (process.env.DEPLOYMENT === 'production') {
     rootUrl = 'http://ximera.osu.edu';
+} else {
+    // Temporarily use NGROK for the server    
+    rootUrl = 'http://62b61327.ngrok.com';
 }
 
-// Temporarily use NGROK for the server
-rootUrl = 'http://62b61327.ngrok.com';
 
 // Common mongodb initializer for the app server and the activity service
 mdb.initialize(function (err) {
