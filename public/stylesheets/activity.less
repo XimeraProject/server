@@ -141,7 +141,7 @@ span.LATEX .TEX .E {
 
 .scrollbar .handle {
     height: 100%;
-    background: black;
+    background: #555;
     cursor: pointer;
 }
 
@@ -182,4 +182,82 @@ span.LATEX .TEX .E {
 
 .btn-margin {
     margin-left: 4px;
+}
+
+.activity-content {
+    margin-top: 6pt;
+}
+
+.activity-card {
+    width: 168px;
+    height: 168px;
+    margin: 5px;
+    position: relative;
+    border: 1px solid #DDD;
+}
+
+.activity-card a {
+    word-wrap: break-word;
+}
+
+.activity-card h1 {
+    margin: 0;
+    margin-right: -2pt;
+    margin-bottom: -8pt;
+    padding: 0;
+    text-align: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;    
+}
+
+.activity-card span.titlemark {
+    display: none;
+}
+
+.large-card {
+    width: 250px;
+    background: #888;
+    color: white;
+    border: none;    
+}
+
+.medium-card {
+    width: 200px;
+    background: #AAA;
+    color: white;    
+    border: none;    
+}
+
+/****************************************************************/
+/* Icons in text fields */
+
+/* enable absolute positioning */
+.inner-addon { 
+    position: relative; 
+}
+
+/* style icon */
+.inner-addon .fa {
+  position: absolute;
+  padding: 10px;
+  pointer-events: none;
+}
+
+/* align icon */
+.left-addon .fa  { left:  0px;}
+.right-addon .fa { right: 0px;}
+
+/* add padding  */
+.left-addon input  { padding-left:  30px; }
+.right-addon input { padding-right: 30px; }
+
+/* Selects shouldn't have the caret */
+select {
+    -webkit-appearance: none;
+    -moz-appearance: window;
+    padding: 2px 30px 2px 2px;
+    border: none;
+    background-repeat: no-repeat;
+    background-position: right center;
 }

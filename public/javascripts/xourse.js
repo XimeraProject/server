@@ -1,32 +1,56 @@
-define(['jquery', 'underscore'], function($, _) {
+define(['jquery', 'underscore', 'isotope'], function($, _, Isotope) {
 
-    var layoutXourse = function( xourse ) {
+    var layoutXourse = function( xourseData ) {
+	console.log( xourseData );
+	
+	var xourse = $('.xourse-contents');
 
-	//console.log( $(':header', xourse ) );
+	var cards = $('h1, h2, h3, a.activity', xourseData);
 
-	$('.partHead .titlemark', xourse).hide();
+	cards.each( function() {
+	    var cardData = $(this);
+	    console.log( cardData );
+	    
+	    var card = $('<div class="activity-card"></div>');
 
-	$('h1', xourse).each( function() {
-	    var rule = $( '<hr/>' );
-	    rule.insertBefore( $(this) );
+	    var type = cardData.prop('tagName');
+	    
+	    if (type === 'H1') {
+		card = $('<div class="activity-card large-card"></div>');
+	    }
+
+	    if (type === 'H2') {
+		card = $('<div class="activity-card medium-card"></div>');
+	    }	    
+
+	    card.append( cardData );
+
+	    xourse.append(card);
 	});
 
-	$('a.activity', xourse).each( function() {
-	    var href = $(this).attr('href').replace( /\.tex$/, '' );
-	    
-	    var activityTemplate = _.template( '<a href="<%= href %>">Activity</a>' );
-	    
-	    $(this).replaceWith( $( activityTemplate( { href: href } ) ) );
-	});	
-	
 	xourse.show();
+	
+	var options = {
+	    layoutMode: 'fitRows',
+	    itemSelector: '.activity-card',
+	    filter: '*',
+	    animationOptions: {
+		duration: 750,
+		easing: 'linear',
+		queue: false
+	    }
+	};
+
+	var iso = new Isotope( xourse.get(0),
+			       options );
+	
     };
     
     // On document ready...
     $(function() {
-	$('.xourse-contents').each( function() {
-	    var xourse = $(this);
-	    layoutXourse( xourse );
+	$('.xourse-data').each( function() {
+	    var xourseData = $(this);
+	    layoutXourse( xourseData );
 	});
     });
     

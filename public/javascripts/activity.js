@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'mathjax', 'tincan', 'progress-bar', 'database', 'problem', 'math-answer', 'multiple-choice', 'hint', 'free-response', 'shuffle'], function($, _, MathJax, TinCan, ProgressBar) {
+define(['jquery', 'underscore', 'mathjax', 'tincan', 'progress-bar', 'database', 'problem', 'math-answer', 'multiple-choice', 'select-all', 'word-choice', 'hint', 'free-response', 'shuffle'], function($, _, MathJax, TinCan, ProgressBar) {
 
     var createActivity = function() {
 	var activity = $(this);
@@ -24,6 +24,8 @@ define(['jquery', 'underscore', 'mathjax', 'tincan', 'progress-bar', 'database',
 	    $(".problem-environment", activity).problemEnvironment();
 	    $(".mathjax-input", activity).mathAnswer();	    
 	    $(".multiple-choice", activity).multipleChoice();
+	    $(".select-all", activity).selectAll();
+	    $(".word-choice", activity).wordChoice();
 	    $(".hint", activity).hint();
 	    $(".free-response", activity).freeResponse();
 	    
