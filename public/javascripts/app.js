@@ -18,7 +18,8 @@ require.config({
     ],
     
     paths: {
-        mathjax: "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured",
+        //mathjax: "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured",
+	mathjax: "../../components/MathJax/MathJax",
 	less: "../../components/less/dist/less.min",
 	"async": "../../components/async/lib/async",
 	"sly": "../../components/sly/dist/sly.min",
