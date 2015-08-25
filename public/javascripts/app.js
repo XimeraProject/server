@@ -20,7 +20,7 @@ require.config({
     paths: {
         mathjax: "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured",
 	less: "../../components/less/dist/less.min",
-	socketio: '../../socket.io-client/socket.io',
+	socketio: '../../components/socket.io-client/socket.io',
 	youtube: '//www.youtube.com/iframe_api',
 	"async": "../../components/async/lib/async",
 	"sly": "../../components/sly/dist/sly.min",
