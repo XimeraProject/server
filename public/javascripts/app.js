@@ -20,6 +20,8 @@ require.config({
     paths: {
         mathjax: "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured",
 	less: "../../components/less/dist/less.min",
+	socketio: '../../socket.io/socket.io',
+	youtube: '//www.youtube.com/iframe_api',
 	"async": "../../components/async/lib/async",
 	"sly": "../../components/sly/dist/sly.min",
 	"isotope": "../../components/isotope/dist/isotope.pkgd.min",

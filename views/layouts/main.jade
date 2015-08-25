@@ -26,12 +26,9 @@ html(lang="en")
     if stylesheet
       link(rel="stylesheet/less",type="text/css",href=stylesheet)
         
-    script(src="https://www.youtube.com/iframe_api")
-    script(src="/socket.io/socket.io.js")
-
     if deployment == 'production'
-      script(data-module=script,data-main="/public/javascripts/app",src="/components/requirejs/require.js")
-      // I'd like to actually compile this with almond, but loading mathjax is so hard      
+      script(data-module=script,data-main="/public/javascripts/app.min",src="/components/requirejs/require.js")
+      // I'd like to actually compile this with almond, but loading mathjax is so hard
       //script(data-module=script,src=versionPath("/public/javascripts/app.min.js"))
     else
       script(data-module=script,data-main="/public/javascripts/app",src="/components/requirejs/require.js")
@@ -40,6 +37,7 @@ html(lang="en")
     link(rel="apple-touch-icon",sizes="72x72",href=versionPath("/public/images/icons/favicon-72x72.png"))
     link(rel="apple-touch-icon",sizes="57x57",href=versionPath("/public/images/icons/favicon-57x57.png"))
     link(rel="shortcut icon",type="image/x-icon",href="/favicon.ico")
+    
     script(type="text/javascript").
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
