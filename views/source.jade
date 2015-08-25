@@ -1,0 +1,28 @@
+extends layouts/main
+
+block title
+  | #{file.path}
+
+block content
+    div.container
+      div.pull-right.btn-toolbar(role="toolbar")
+        //.btn-group
+        //  a.btn.btn-info(href="../")
+        //    | <i class="fa fa-pencil"></i> Do Activity
+        //.btn-group
+        //  a.btn.btn-primary(href="https://github.com/#{activity.slug.split(':')[0]}/blob/master/#{activity.relativePath}")
+        //    | <i class="fa fa-github-alt"></i> View on GitHub
+
+      .page-header
+         h1 #{file.path}
+           small &nbsp;source code
+      pre(class="brush: latex;")      
+        | #{file.data}
+      if compileLog
+        hr
+        h1 Compile Log
+        pre
+          | #{compileLog.errorList}        
+        pre
+          | #{compileLog.log}
+        

@@ -9,7 +9,11 @@ exports.getXarma = function(req, res) {
 	return;
     }
 
-    res.json(req.user.xarma);
+    if (req.user.xarma)
+	res.json(req.user.xarma);
+    else
+	res.json(0);
+    
     return;
 }
 
@@ -19,7 +23,11 @@ exports.getXudos = function(req, res) {
 	return;
     }
 
-    res.json(req.user.xudos);
+    if (req.user.xudos)
+	res.json(req.user.xudos);
+    else
+	res.json(0);    
+
     return;
 }
 

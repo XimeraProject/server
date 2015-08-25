@@ -23,32 +23,16 @@ html(lang="en")
 
     link(rel="stylesheet",href="//www.osu.edu/assets/fonts/webfonts.css")
 
-    script(type="text/x-mathjax-config")
-      | MathJax.Hub.Config(
-      |    {
-      |      showProcessingMessages: false,
-      |      tex2jax: { inlineMath: [['$', '$'], ['\\(','\\)']],
-      |                 displayMath: [['$$','$$'], ['\[','\]']] },
-      |      TeX: {
-      |        extensions: ["color.js"],
-      |        Macros: {
-      |          "R": "{\\mathbb{R}}",
-      |          "verticalvector": ["\\begin{bmatrix}#1\\end{bmatrix}",1]
-      |        }
-      |      }
-      |    });
-    script(type="text/javascript",src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
-
+    if stylesheet
+      link(rel="stylesheet/less",type="text/css",href=stylesheet)
+        
     script(src="https://www.youtube.com/iframe_api")
     script(src="/socket.io/socket.io.js")
 
-    if instructorApp
-      script(data-main="/public/javascripts/instructor-app", src="/components/requirejs/require.js")
+    if deployment == 'production'
+      script(data-module=script,src=versionPath("/public/javascripts/app.min.js"))
     else
-      if deployment == 'production'
-        script(src=versionPath("/public/javascripts/app.min.js"))
-      else
-        script(data-main="/public/javascripts/app",src="/components/requirejs/require.js")
+      script(data-module=script,data-main="/public/javascripts/app",src="/components/requirejs/require.js")
 
     link(rel="apple-touch-icon",sizes="114x114",href=versionPath("/public/images/icons/favicon-114x114.png"))
     link(rel="apple-touch-icon",sizes="72x72",href=versionPath("/public/images/icons/favicon-72x72.png"))
@@ -63,7 +47,19 @@ html(lang="en")
       ga('create', 'UA-47676415-1', 'osu.edu');
       ga('send', 'pageview');
 
+    script(type="text/javascript").
+      var $buoop = {vs:{i:10,f:25,o:12.1,s:7},c:2}; // The versions to warn about
+      function $buo_f(){ 
+        var e = document.createElement("script"); 
+        e.src = "//browser-update.org/update.min.js"; 
+        document.body.appendChild(e);
+      };
+      try {document.addEventListener("DOMContentLoaded", $buo_f,false)}
+      catch(e){window.attachEvent("onload", $buo_f)}
+      
   body
+     div
+       block modals
      include includes/osu
      #wrap
        include includes/header

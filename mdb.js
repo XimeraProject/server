@@ -4,7 +4,6 @@ var fstream = require('fstream');
 var fs = require("fs");
 var winston = require("winston");
 var _ = require("underscore");
-var mubsub = require('mubsub');
 
 exports = module.exports;
 
@@ -14,21 +13,30 @@ var Mixed = mongoose.Schema.Types.Mixed;
 var url = 'mongodb://' + process.env.XIMERA_MONGO_URL + "/" +
                  process.env.XIMERA_MONGO_DATABASE;
 
-mongoose.connect(url, function (error) {
-    var client = mubsub(mongoose.connection.db);
-    exports.channel = client.channel('github');
-    exports.gradebook = client.channel('gradebook');
-    exports.gfs = Grid(mongoose.connection.db, mongoose.mongo);
-});
 
 // Notice this is different from Schema.ObjectId; Schema.ObjectId if for passing
 // models/schemas, Types.ObjectId is for generating ObjectIds.
 exports.ObjectId = mongoose.Types.ObjectId;
 
 // TODO: Add appropriate indexes.
-exports.initialize = function initialize() {
+exports.initialize = function initialize(callback) {
     winston.info("Initializing Mongo");
 
+    var GitPushesSchema = new mongoose.Schema(
+	{
+	    gitIdentifier: String,
+	    senderAccessToken: {type: String},
+	    sender: Mixed,
+	    repository: Mixed,
+	    ref: String,
+	    headCommit: Mixed,
+	    finishedProcessing: Boolean
+	},
+	{
+	    capped: 1024*1024,
+	});
+    exports.GitPushes = mongoose.model("GitPushes", GitPushesSchema);
+    
     exports.GitRepo = mongoose.model("GitRepo",
                                      {
                                          // Key
@@ -36,31 +44,103 @@ exports.initialize = function initialize() {
                                          // Other
                                          file: ObjectId,
                                          needsUpdate: Boolean,
-					 feedback: String,
+                                         feedback: String,
                                          currentActivities: [ObjectId]
                                      });
 
+    exports.Branch = mongoose.model("Branch",
+                                     {
+                                         owner: {type: String, index: true},
+					 repository: {type: String, index: true},
+					 name: {type: String, index: true},
+					 commit: String,
+                                         lastUpdate: {type: Date, index: true},
+                                     });
+
+    // These records are designed to conform to the TinCan API 1.0.0
+    exports.LearningRecord = mongoose.model("LearningRecord",
+					    {
+						actor: {type: ObjectId, ref:"User"},
+						verbId: String,
+						object: Mixed,
+						result: Mixed,
+						context: Mixed,
+						timestamp: Date,
+						stored: Date,
+						authority: Mixed,
+						version: String,
+						attachments: Mixed
+					    });    
+    
+    // 128 megabytes of compile logs
+    var CompileLogSchema = new mongoose.Schema(
+	{
+	    hash: {type: String, index: true},
+	    commit: {type: String, index: true},
+	    errorList: Mixed,
+	    log: String
+	},
+	{
+	    capped: 1024*1024*128,
+	});
+    
+    exports.CompileLog = mongoose.model("CompileLog", CompileLogSchema);    
+
+    exports.GitFile = mongoose.model("GitFile",
+                                      {
+					  hash: {type: String, index: true},
+					  commit: {type: String, index: true},
+                                          path: {type: String, index: true},
+                                      });
+
+    exports.Blob = mongoose.model("Blob",
+                                  {
+				      hash: {type: String, index: true, unique: true, sparse: true},
+				      data: Buffer
+				  });
+
+    exports.Xourse = mongoose.model("Xourse",
+				    {
+                                        timeLastUsed: {type: Date, index: true},
+					commit: {type: String, index: true},
+					path: String,
+					hash: {type: String, index: true},
+                                        title: String,
+                                        activityList: Mixed,
+                                        activities: Mixed,
+				    }
+				   );
+    
     exports.Activity = mongoose.model("Activity",
                                       {
-                                          // Key
-                                          repo: {type: ObjectId, ref:"GitRepo"},
-                                          relativePath: String,
-                                          baseFileHash: {type: String, index: true},
-                                          // Other
-                                          htmlFile: ObjectId,
+					  // deprecated
                                           latexSource: String,
+                                          htmlFile: ObjectId,
+                                          baseFileHash: {type: String, index: true},
+					  relativePath: String,
+                                          repo: {type: ObjectId, ref:"GitRepo"},
+
+                                          // Unknown status
                                           description: String,
-                                          title: String,
                                           recent: Boolean,
                                           slug: String,
-                                          timeLastUsed: {type: Date, index: true}
+
+					  // Currently used
+                                          timeLastUsed: {type: Date, index: true},
+					  commit: {type: String, index: true},
+					  path: String,
+					  hash: {type: String, index: true},
+                                          title: String,
                                       });
 
     exports.User = mongoose.model("User",
                                   {
                                       googleOpenId: {type: String, index: true, unique: true, sparse: true},
                                       courseraOAuthId: {type: String, index: true, unique: true, sparse: true},
+                                      twitterOAuthId: {type: String, index: true, unique: true, sparse: true},				      
                                       ltiId: {type: String, index: true, unique: true, sparse: true},
+                                      githubId: {type: String, index: true, unique: true, sparse: true},
+                                      githubAccessToken: {type: String},
 				      course: String,
 				      superuser: Boolean,
                                       name: String,
@@ -79,6 +159,7 @@ exports.initialize = function initialize() {
                                       isInstructor: Boolean
                                   });
 
+    // Deprecated
     exports.Scope = mongoose.model("Scope",
                                    new mongoose.Schema({
                                        activity: ObjectId,
@@ -88,6 +169,15 @@ exports.initialize = function initialize() {
                                        minimize: false
                                    }));
 
+    exports.State = mongoose.model("State",
+                                   new mongoose.Schema({
+                                       activityHash: String,
+                                       user: ObjectId,
+                                       data: Mixed
+                                   }, {
+                                       minimize: false
+                                   }));    
+    
     exports.Post = mongoose.model("Post",
                                    new mongoose.Schema({
                                        room: {type: String, index: true},
@@ -240,35 +330,7 @@ exports.initialize = function initialize() {
 
     exports.Course = mongoose.model('Course', CourseSchema );
 
-    exports.GitRepo.find({}, function (err, repos) {
-	if (repos.length == 0) {
-	    var testRepo = new exports.GitRepo({
-		gitIdentifier: "kisonecat/git-pull-test",
-		file: mongoose.Types.ObjectId()
-	    });
-	    testRepo.save(function () {});
-	}
+    mongoose.connect(url, {}, function (err) {
+	callback(err);
     });
-}
-
-exports.copyLocalFileToGfs = function (path, fileId, callback) {
-	var locals = {pipeErr: false};
-	read = fs.createReadStream(path);
-    write = exports.gfs.createWriteStream({
-        _id: fileId,
-        mode: 'w'
-    });
-    write.on('error', function (err) {
-        locals.pipeErr = true;
-    });
-    write.on('close', function (file) {
-        if (locals.pipeErr) {
-            callback("Unknown error saving archive.");
-        }
-        else {
-            winston.info("GFS file written.")
-            callback();
-        }
-    });
-    read.pipe(write);
 }

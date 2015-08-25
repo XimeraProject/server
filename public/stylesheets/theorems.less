@@ -3,8 +3,10 @@ The colors that you type below in theoremEnvironments will all get standardized 
 @theoremEnvironmentSaturation: 100%;
 @theoremEnvironmentLightness: 92%;
 
-/*"Array" of names and colors to select from. Be careful that every environment has a color, 
-and don't choose white or black since the "saturation" and "hue" of white and black don't behave well. */
+/*"Array" of names and colors to select from.
+Be careful that every environment has a color, 
+and don't ever choose white, gray, or black, since the "saturation"
+and "hue" of white and black don't behave well. */
 @theoremEnvironments:
 theorem green,
 axiom green,
@@ -24,14 +26,13 @@ example yellow,
 observation yellow,
 fact yellow,
 remark yellow,
-acknowledgement yellow,
 algorithm yellow,
 notation yellow,
 criterion yellow,
-exercise white,
-problem white,
-question white;
-
+exercise blue,
+problem blue,
+question blue
+exploration blue;
 
 /* This is a faux loop that doesn't end up in the final css. 
 Writing this does not actually cause the loop to be executed; see below
@@ -74,6 +75,11 @@ We want to stop when the index reaches the end of the list of environments. */
    .@{nameOfClass} ul{
        padding-left: 1em;
    }
+
+   /* When things are nested, don't push them right */
+   .@{nameOfClass} .@{nameOfClass} {
+       padding: 0em;
+   }
   
    /* Here we execute loop again for the next entry. */
    .loop(@index + 1);
@@ -81,3 +87,4 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* This calls the loop with @index set to 1, thus starting the loop. Without this, all the code above would never run. */
 .loop(1);
+

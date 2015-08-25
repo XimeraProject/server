@@ -48,6 +48,14 @@ block content
         div(course-breadcrumbs="")
         .row
           .col-md-9.activity(data-activityId=activityId, style="display: none;", ng-controller="ActivityController")
+            ul.pager
+             li.previous(class=(previousActivity ? undefined : "disabled"))
+               +courseActivityLink(course,previousActivity)
+                 | &larr; Previous Activity
+             li.next(class=(nextActivity ? undefined : "disabled"),completion-blink="")
+               +courseActivityLink(course,nextActivity)
+                 | Next Activity &rarr;
+
             block activity
 
             ul.pager

@@ -1,11 +1,6 @@
 
 @import 'bootstrap';
 
-/* Cloak the {{angular}} stuff */
-[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-    display: none !important;
-}
-
 /*****************************************************************/
 /* Use mathjax fonts for body text... or not, since it is so ugly. */
 
@@ -695,7 +690,7 @@ tell theorems.less about it and choose the background color. */
   margin-bottom: 8pt;
 }
 
-.model-solution > p:first-child:before
+.model-solution::first-child:before
 {
     content:"Model Solution. ";
     display: inline;
@@ -740,10 +735,42 @@ tell theorems.less about it and choose the background color. */
 }
 
 .navbar-progress-bar .completion-meter {
-  width: 144pt;
+  width: 100pt;
+}
+
+/* Default to hidden unless we have some progress to display */
+.navbar-progress-bar {
+    display: none;
 }
 
 /* Fixing the size of images */
 .image img {
   max-width: 100%;
+}
+
+/************************************************************/
+/* The styling for the abstract */
+
+.abstract::before{
+  font-weight:bold;
+  content:"Abstract. ";
+  font-style:normal;
+}
+.abstract{
+  text-align:justify;
+  margin-left:10%;
+  margin-right:10%;
+  font-style:italic;
+  margin-bottom:2em;
+}
+
+/****************************************************************/
+/* Xarma and xudos are hidden by default */
+
+li.xarma {
+    display: none;
+}
+
+li.xudos {
+    display: none;
 }

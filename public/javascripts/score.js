@@ -1,52 +1,80 @@
-define(['angular', 'jquery', 'underscore'], function(angular, $, _) {
-    var app = angular.module('ximeraApp.score', ["ngAnimate"]);
+define(['jquery', 'underscore'], function($, _) {
 
-    app.factory('scoreService', ['$rootScope', '$http', function ($rootScope, $http) {
-	var service = {};
+    var scoreXarma = undefined;
+    var scoreXudos = undefined;
+    var exports = {};
 
-	service.scores = { xudos: 0, xarma: 0 };
+    var update = function() {
+	if (scoreXarma) {
+	    $('.xarma').toggle(scoreXarma != 0);
+		
+	    var xarma = $('#score-xarma');
 
-	$http.get( '/users/xarma' ).success(function(data){
-	    service.scores.xarma = parseInt(data);
-	});
-
-	$http.get( '/users/xudos' ).success(function(data){
-	    service.scores.xudos = parseInt(data);
-	});
-
-	$rootScope.$on('Xarma', function(e, points) {
-	    $http.post( '/users/xarma', {points: points} ).success(function(data){
-		service.scores.xarma = parseInt(data);
-	    });
-	});
-
-	$rootScope.$on('Xudos', function(e, points) {
-	    $http.post( '/users/xudos', {points: points} ).success(function(data){
-		service.scores.xudos = parseInt(data);
-	    });
-	});
-
-        return service;
-    }]);
-
-    app.directive('highlightOnChange', ['$animate', function($animate) {
-	return {
-	    link: function($scope, element, attrs) {
-		attrs.$observe('highlightOnChange', function(val) {
-		    $(element).removeClass('heartbeat');
-		    $(element).css('opacity');
-		    $(element).css({'opacity': 0.25});
-		    $(element).css('opacity');
-		    $(element).addClass('heartbeat');
-		    $(element).css({'opacity': 1.0});
-		});
+	    if (xarma.text() != scoreXarma.toString()) {
+		if (xarma.text().length > 0)
+		    $(".xarma").effect("highlight", {}, 3000);
+		
+		xarma.text( scoreXarma.toString() );
 	    }
-	};
-    }]);
+	}
 
-    app.controller('ScoreController', ["$scope", 'scoreService', function ($scope, scoreService) {
-	$scope.scores = scoreService.scores;
-    }]);
+	if (scoreXudos) {
+	    $('.xudos').toggle(scoreXudos != 0);
+	    
+	    var xudos = $('#score-xudos');
+	    
+	    if (xudos.text() != scoreXudos.toString()) {
+		if (xudos.text().length > 0)
+		    $(".xudos").effect("highlight", {}, 3000);
+		
+		xudos.text( scoreXudos.toString() );
+	    }
+	}
+    };
+    
+    // When the document is ready...
+    $(function() {
+	$.ajax({
+	    url: '/users/xarma',
+	    type: 'GET',
+	    success: function( result ) {
+		scoreXarma = parseInt(result);
+		update();
+	    }
+	});
 
+	$.ajax({
+	    url: '/users/xudos',
+	    type: 'GET',
+	    success: function( result ) {
+		scoreXudos = parseInt(result);
+		update();		
+	    }
+	});	
+	
+    });
 
+    exports.earnXarma = function(points) {
+	scoreXarma += points;
+	update();
+
+	$.ajax({
+	    url: '/users/xarma',
+	    data: {points: points},
+	    type: 'POST'
+	});		
+    };
+
+    exports.earnXudos = function(points) {
+	scoreXudos += points;
+	update();
+
+	$.ajax({
+	    url: '/users/xudos',
+	    data: {points: points},
+	    type: 'POST'
+	});			
+    };
+
+    return exports;
 });

@@ -1,0 +1,66 @@
+extends layouts/main
+
+block title
+  | #{activity.title}
+
+block activity
+   div.activity-content
+      | !{activity.html}
+
+block badheader
+      .page-header
+        div.pull-right.btn-toolbar(role="toolbar")
+          if !activity.recent
+            .btn-group
+              a.pull-right.btn.btn-sm.btn-primary(role="button", ng-confirm-click="Updating to the most recent version of this activity will erase your work. Are you sure you want to update to the new version?", href="update/")
+                | <i class="fa fa-level-up"></i> Update Activity
+
+
+
+block resetModal
+  div.modal.fade#resetWarningModal(tabindex="-1",role="dialog",aria-labelledby="resetWarningModal")
+      div.modal-dialog(role="document")
+        div.modal-content<div class="modal-content">
+          div.modal-header
+            button(type="button", class="close", data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="true") &times;
+            h4(class="modal-title",id="resetModalLabel") Warning
+          div.modal-body
+            p You are about to <strong>erase your work</strong> on this activity.  Are you sure you want to do this?
+          div.modal-footer
+            button(type="button", class="btn btn-default", data-dismiss="modal") No, keep my work.
+            button#reset-work-button(type="button",class="btn btn-danger", data-dismiss="modal")
+              | <i class="fa fa-eraser"></i>&nbsp;Yes, delete my work.
+
+block modals
+  block resetModal
+                
+block content
+  div.container
+    div(course-breadcrumbs="")
+        .row
+          .col-md-12
+            div.course-navigation
+              div.frame
+                ul.items.pagination
+                  for activityUrl in activity.xourse.activityList
+                    li(class=( activityUrl == activity.path ) ? "active" : undefined)
+                      a(href="/course/#{activity.ownerName}/#{activity.repositoryName}/#{activity.branchName}/#{activityUrl}")
+                        | #{activity.xourse.activities[activityUrl].title}
+              div.scrollbar
+                div.handle
+        .row                     
+          .col-md-12.activity(id="theActivity", data-activity=activity.hash)
+
+            block activity
+
+            ul.pager
+             li.previous(class=(previousActivity ? undefined : "disabled"))
+               //+courseActivityLink(course,previousActivity)
+                 | &larr; Previous Activity
+             li.next(class=(nextActivity ? undefined : "disabled"),completion-blink="")
+               //+courseActivityLink(course,nextActivity)
+                 | Next Activity &rarr;
+            //p {{db}}
+            //p {{currentActivity}}
+            //div(forum="#{activity.slug}")

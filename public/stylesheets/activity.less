@@ -1,3 +1,5 @@
+@import 'theorems';
+
 .activitytitle {
   font-size: 16pt;
   font-weight: bold;
@@ -7,4 +9,255 @@
   form.form-inline {
     width: 11em;
   }
+}
+
+/* Use LESS to copy bootstrap's dl-horizontal to our dialogue class */
+dl.dialogue {
+  .dl-horizontal;
+}
+
+/*
+.btn-ximera-correct, .btn-ximera-incorrect, .btn-ximera-submit {
+    width: 20px;
+}
+*/
+
+.hint {
+      color: gray;
+      margin-left: 1em;
+}
+
+.btn-reveal-hint {
+    float: right;
+    clear: right;
+    margin-bottom: 1em;
+    
+    /* Sometimes mathjax elements cover up the hint collapse button */
+    z-index: 1;
+    position: relative;
+}
+
+.btn-hint-collapse {
+    float: right;
+    clear: right;
+    margin-bottom: 1em;
+    
+    /* Sometimes mathjax elements cover up the hint collapse button */
+    z-index: 1;
+    position: relative;
+}
+
+/****************************************************************
+ Code for making spinning icons 
+*/
+
+.fa-spinning {
+    animation: spin 1s infinite linear;
+    -webkit-animation: spin2 1s infinite linear;
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+/****************************************************************/
+
+.pulsate {
+    -webkit-animation: pusate 1s infinite alternate;
+    -moz-animation: pusate 1s infinite alternate;
+    -animation: pusate 1s infinite alternate;
+    text-shadow: 0 0 8px #ccc;
+}
+@-webkit-keyframes pusate {
+    from { box-shadow: 0 0 10px #333; }
+    to { box-shadow: 0 0 20px #c00; }
+}
+@-moz-keyframes pusate {
+    from { box-shadow: 0 0 10px #333; }
+    to { box-shadow: 0 0 20px #c00; }
+}
+@keyframes pusate {
+    from { box-shadow: 0 0 10px #333; }
+    to { box-shadow: 0 0 20px #c00; }
+}
+
+/****************************************************************/
+
+.activity img {
+    max-width: 100%;
+}
+
+/****************************************************************/
+/* LaTeX logo */
+
+span.LATEX {
+  font-family: Times, "Times New Roman", serif;	
+  letter-spacing: 1px;
+}
+
+span.LATEX .A {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.85em;
+  vertical-align: 0.15em;
+  margin-left: -0.36em;
+  margin-right: -0.15em;
+}
+
+span.LATEX .TEX .E {
+  text-transform: uppercase;
+  vertical-align: -0.5ex;
+  margin-left: -0.1667em;
+  margin-right: -0.125em;
+  font-size: 1em;
+}
+
+/****************************************************************/
+/* More tex4ht css */
+
+.center {
+    text-align: center;
+}
+
+.preamble {
+	  display: none;
+}
+
+/****************************************************************/
+/* Course navigation */
+
+.scrollbar {
+    height: 2px;
+    margin: 1em 0px 0px 0px;
+    background: #DDD none repeat scroll 0% 0%;
+    line-height: 0;
+}
+
+.scrollbar .handle {
+    height: 100%;
+    background: #555;
+    cursor: pointer;
+}
+
+.frame ul.items {
+    list-style: outside none none;
+    margin: 0px;
+    padding: 0px;
+    height: 100%;
+    line-height: 100px;
+}
+
+.frame ul.items li {
+    float: left;
+    width: 150px;
+    height: 100%;
+    color: #DDD;
+    text-align: center;
+    cursor: pointer;    
+}
+
+.frame ul.items li a {
+    float: left;
+    width: 150px;
+    height: 100%;
+    text-align: center;
+    cursor: pointer;
+}
+
+.frame {
+    height: 100px;
+    line-height: 100px;
+}
+
+.frame ul.items li.active
+{
+    //background: #F00;
+}
+
+.btn-margin {
+    margin-left: 4px;
+}
+
+.activity-content {
+    margin-top: 6pt;
+}
+
+.activity-card {
+    width: 168px;
+    height: 168px;
+    margin: 5px;
+    position: relative;
+    border: 1px solid #DDD;
+}
+
+.activity-card a {
+    word-wrap: break-word;
+}
+
+.activity-card h1 {
+    margin: 0;
+    margin-right: -2pt;
+    margin-bottom: -8pt;
+    padding: 0;
+    text-align: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;    
+}
+
+.activity-card span.titlemark {
+    display: none;
+}
+
+.large-card {
+    width: 250px;
+    background: #888;
+    color: white;
+    border: none;    
+}
+
+.medium-card {
+    width: 200px;
+    background: #AAA;
+    color: white;    
+    border: none;    
+}
+
+/****************************************************************/
+/* Icons in text fields */
+
+/* enable absolute positioning */
+.inner-addon { 
+    position: relative; 
+}
+
+/* style icon */
+.inner-addon .fa {
+  position: absolute;
+  padding: 10px;
+  pointer-events: none;
+}
+
+/* align icon */
+.left-addon .fa  { left:  0px;}
+.right-addon .fa { right: 0px;}
+
+/* add padding  */
+.left-addon input  { padding-left:  30px; }
+.right-addon input { padding-right: 30px; }
+
+/* Selects shouldn't have the caret */
+select {
+    -webkit-appearance: none;
+    -moz-appearance: window;
+    padding: 2px 30px 2px 2px;
+    border: none;
+    background-repeat: no-repeat;
+    background-position: right center;
 }

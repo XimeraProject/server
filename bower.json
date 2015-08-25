@@ -7,12 +7,14 @@
 	"moment": "*",
 	"lex": "https://github.com/aaditmshah/lexer.git",
 	"jquery": "*",
-        "bootstrap": "*",
-        "angular": "*",
-        "angular-animate": "*",
-        "angular-sanitize": "*",
+	"less": "*",
+	"jquery-ui": "*",	
+        "bootstrap": "3.3.4",
 	"underscore": "1.6.0",
         "font-awesome": "*",
+        "sly": "*",
+        "isotope": "*",		
+	"MathJax": "*",
 	"x-editable": "*",
 	"threejs": "https://github.com/mrdoob/three.js.git",
 	"pagedown-bootstrap": "https://github.com/tchapi/pagedown-bootstrap.git",
@@ -22,7 +24,8 @@
 	"js-quantities": "*",
 	"codemirror": "3.22.0",
 	"skulpt": "*",
-	"angular-strap": "2.0.0-rc.3",
+	"async": "*",
+	"math-expressions": "https://github.com/kisonecat/math-expressions.git",
 	"JavaScript-MD5": "*"
     }
 }
