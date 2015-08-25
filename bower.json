@@ -11,6 +11,7 @@
 	"jquery-ui": "*",	
         "bootstrap": "3.3.4",
 	"underscore": "1.6.0",
+	"socket.io-client": "*",
         "font-awesome": "*",
         "sly": "*",
         "isotope": "*",		

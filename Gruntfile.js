@@ -10,9 +10,6 @@ module.exports = function(grunt) {
 		    include: "app",
 		    baseUrl: "public/javascripts",
 		    mainConfigFile: "public/javascripts/app.js",
-		    paths: {
-			"socketio": "//ximera.osu.edu/socket.io/socket.io"
-		    },
 		    out: "public/javascripts/app.min.js",
 		    // necessary to keep angular working
 		    optimize: "uglify2",
