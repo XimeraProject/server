@@ -19,7 +19,6 @@ var express = require('express')
   , less = require('less-middleware')
   , passport = require('passport')
   , mongo = require('mongodb')
-  , mongoose = require('mongoose')
   , http = require('http')
   , path = require('path')
   , winston = require('winston')
@@ -85,10 +84,6 @@ if (process.env.DEPLOYMENT === 'production') {
 }
 
 
-// Common mongodb initializer for the app server and the activity service
-mdb.initialize(function (err) {
-});
-
 app.use(logger('dev'));
 app.use(favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
 
@@ -110,27 +105,35 @@ cookieSecret = process.env.XIMERA_COOKIE_SECRET;
 
 app.use(cookieParser(cookieSecret));
 
-// Store session data in the mongo database; this is needed if we're
-// going to have multiple web servers sharing a single db
-var MongoStore = require('connect-mongo')(session);
+// Common mongodb initializer for the app server and the activity service
+mdb.initialize(function (err) {
+    
+    // Store session data in the mongo database; this is needed if we're
+    // going to have multiple web servers sharing a single db
+    var MongoStore = require('connect-mongo')(session);
+    
+    var theSession = session({
+	secret: cookieSecret,
+	resave: false,
+	saveUninitialized: false,
+	db: new MongoStore({ mongooseConnection: mdb.mongoose.connection })
+    });
+    
+    app.use(theSession);
 
-var theSession = session({
-    secret: cookieSecret,
-    resave: false,
-    saveUninitialized: false,
-    db: new MongoStore({ mongooseConnection: mongoose.connection })
-});
-
-app.use(theSession);
+    console.log( "Session setup." );
 
 // setup ANOTHER connection to the mongo database (maybe you are upset
 // that I have two connections to mongodb, but it seems like this is
 // the easiest way to use both mongoose for our models and
 // connect-mongo for sessions).
+
+/*
 var databaseUrl = 'mongodb://' + process.env.XIMERA_MONGO_URL + "/" + process.env.XIMERA_MONGO_DATABASE;
 var collections = ['users', 'scopes', 'imageFiles'];
 var mongojs = require('mongojs');
 var db = mongojs(databaseUrl, collections);
+*/
 
 passport.use(login.googleStrategy(rootUrl));
 passport.use(login.twitterStrategy(rootUrl));
@@ -151,7 +154,7 @@ passport.deserializeUser(function(id, done) {
 
 // Middleware for all environments
 function addDatabaseMiddleware(req, res, next) {
-    req.db = db;
+    //req.db = db;
 
     if ('user' in req)
 	res.locals.user = req.user;
@@ -443,3 +446,5 @@ git.long(function (commit) {
     });
     
 });
+
+    });

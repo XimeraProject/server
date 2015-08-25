@@ -13,6 +13,7 @@ var Mixed = mongoose.Schema.Types.Mixed;
 var url = 'mongodb://' + process.env.XIMERA_MONGO_URL + "/" +
                  process.env.XIMERA_MONGO_DATABASE;
 
+exports.mongoose = mongoose;
 
 // Notice this is different from Schema.ObjectId; Schema.ObjectId if for passing
 // models/schemas, Types.ObjectId is for generating ObjectIds.
