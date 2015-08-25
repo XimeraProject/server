@@ -302,9 +302,6 @@ git.long(function (commit) {
     // LTI login
     app.post('/lti', passport.authenticate('lti', { successRedirect: '/just-logged-in',
 						    failureRedirect: '/'}));
-    app.post('/lti/', passport.authenticate('lti', { successRedirect: '/just-logged-in',
-						    failureRedirect: '/'}));    
-
     app.get('/logout', function (req, res) {
         req.logout();
         res.redirect('/');

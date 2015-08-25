@@ -14,6 +14,7 @@ function LtiStrategy(options, verify) {
 util.inherits(LtiStrategy, passport.Strategy);
 
 LtiStrategy.prototype.authenticate = function(req) {
+    
     // I'm behind nginx so it looks like I'm serving http, but as far as the rest of the world is concerned, it's https
     var protocol = 'https';
     if (req.get('host') == 'localhost:3000') {
@@ -29,8 +30,10 @@ LtiStrategy.prototype.authenticate = function(req) {
 	if (!user) { return self.fail(info); }
 	self.success(user, info);
 	
+	/*
 	if (self.returnURL)
 	    self.redirect( self.returnURL );
+	    */
     }
 
     self.provider.valid_request(myRequest, function(err, isValid) {
