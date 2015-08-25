@@ -6,7 +6,7 @@ exports.postStatements = function(req, res) {
         res.status(500).send("");
     }
     else {
-	for( data of req.body ) {
+	req.body.forEach( function(data) {
 	    var statement = {};
 
 	    statement.actor = req.user._id;
@@ -36,7 +36,7 @@ exports.postStatements = function(req, res) {
 	    mdb.LearningRecord.create( statement, function(err) {
 		return;
 	    });
-	}
+	});
 
 	res.status(200).json({ok: true});
     }    
