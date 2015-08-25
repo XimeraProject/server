@@ -313,7 +313,7 @@ git.long(function (commit) {
         else {
             if (req.user.course) {
 		console.log( "course = ", req.user.course);
-		res.redirect( '/course/' + req.user.course +  '/course/' );
+		res.redirect( req.user.course );
 	    } else {
 		res.redirect('/');
 	    }
