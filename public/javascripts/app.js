@@ -115,7 +115,8 @@ require.config({
 			// answer input boxes to appear in the most
 			// appropriate places
 			jax: ["input/TeX","output/HTML-CSS"],
-			extensions: ["tex2jax.js","MathMenu.js","CHTML-preview.js"],			
+			extensions: ["tex2jax.js","MathMenu.js","CHTML-preview.js"],
+			processEnvironments: true,
 			showProcessingMessages: false,
 			tex2jax: { inlineMath: [['$', '$'], ['\\(','\\)']],
 				   displayMath: [['$$','$$'], ['\\[','\\]']] },
