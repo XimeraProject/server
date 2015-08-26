@@ -1,7 +1,10 @@
 var mdb = require('../mdb'),
     remember = require('../remember'),
     async = require('async'),
+    dirname = require('path').dirname,
+    normalize = require('path').normalize,    
     extname = require('path').extname,
+    pathJoin = require('path').join,
     winston = require('winston');
 
 exports.index = function(req, res) {
@@ -464,7 +467,8 @@ exports.activity = function(req, res) {
 
 		activity.repositoryName = repository;
 		activity.ownerName = owner;
-
+		activity.branchName = branchName;
+		
 		callback( null, commit );
 	    },	    	    
 
@@ -478,9 +482,22 @@ exports.activity = function(req, res) {
 	    },
 
 	    // Attach the xourse to the activity
-	    function( result, callback ) {
-		if (result) {
-		    activity.xourse = result;
+	    function( xourse, callback ) {
+		if (xourse) {
+		    xourse.activityList.forEach( function(activityPath) {
+			console.log( activityPath );
+			
+			var url = pathJoin( activity.ownerName,
+					    activity.repositoryName,
+					    activity.branchName,
+					    dirname( xourse.path ),
+					    activityPath
+					  );
+			
+			xourse.activities[activityPath].url = '/course/' + normalize(url);
+		    });
+
+		    activity.xourse = xourse;		    
 		}
 
 		callback(null);
@@ -561,6 +578,18 @@ exports.tableOfContents = function(req, res) {
 		    xourse.ownerName = result.owner;
 		    xourse.branchName = branchName;
 
+		    xourse.activityList.forEach( function(activityPath) {
+			console.log( activityPath );
+			var url = pathJoin( xourse.ownerName,
+					    xourse.repositoryName,
+					    xourse.branchName,
+					    dirname( xourse.path ),
+					    activityPath
+					  );
+
+			xourse.activities[activityPath].url = '/course/' + normalize(url);
+		    });
+		    
 		    res.render('xourse', { xourse: xourse });
 		}
 	    }
