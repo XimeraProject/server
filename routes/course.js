@@ -494,6 +494,9 @@ exports.activity = function(req, res) {
 					    activityPath
 					  );
 
+			if (xourse.activities === undefined)
+			    xourse.activities = {};			
+			
 			if (xourse.activities[activityPath] === undefined) {
 			    xourse.activities[activityPath] = {};
 			    xourse.activities[activityPath].title = url;
@@ -592,14 +595,17 @@ exports.tableOfContents = function(req, res) {
 					    activityPath
 					  );
 
+			if (xourse.activities === undefined)
+			    xourse.activities = {};
+			
 			if (xourse.activities[activityPath] === undefined) {
 			    xourse.activities[activityPath] = {};
 			    xourse.activities[activityPath].title = url;
-			}			
+			}
 			
 			xourse.activities[activityPath].url = '/course/' + normalize(url);
 		    });
-		    
+
 		    res.render('xourse', { xourse: xourse });
 		}
 	    }
