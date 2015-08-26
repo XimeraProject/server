@@ -46,7 +46,12 @@ block content
                   for activityUrl in activity.xourse.activityList
                     li(class=( activityUrl == activity.path ) ? "active" : undefined)
                       a(href="/course/#{activity.ownerName}/#{activity.repositoryName}/#{activity.branchName}/#{activityUrl}")
-                        | #{activity.xourse.activities[activityUrl].title}
+                        if activity.xourse                    
+                          if activity.xourse.activities
+                            if activity.xourse.activities[activityUrl]   
+                              | #{activity.xourse.activities[activityUrl].title}
+                          else
+                            | #{activityUrl}
               div.scrollbar
                 div.handle
         .row                     
