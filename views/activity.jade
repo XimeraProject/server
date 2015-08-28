@@ -38,23 +38,17 @@ block content
     div(course-breadcrumbs="")
         .row
           .col-md-12
-            div.course-navigation
+            div.course-navigation(data-commit=activity.commit, data-user=user._id.toString())
               div.frame
                 ul.items.pagination
                   for activityUrl in activity.xourse.activityList
                     li(class=( activityUrl == activity.path ) ? "active" : undefined)
-                      a(href="#{activity.xourse.activities[activityUrl].url}")
-                        if activity.xourse                    
-                          if activity.xourse.activities
-                            if activity.xourse.activities[activityUrl]   
-                              | #{activity.xourse.activities[activityUrl].title}
-                          else
-                            | #{activityUrl}
+                      a.activity-card(href="/course/" + activity.ownerName + "/" + activity.repositoryName + "/" + activity.branchName + "/" + activityUrl, data-path=activityUrl)
               div.scrollbar
                 div.handle
         .row                     
           .col-md-12.activity(id="theActivity", data-activity=activity.hash)
-
+            
             block activity
 
             ul.pager

@@ -35,6 +35,13 @@ define(['jquery', 'underscore'], function($, _){
 	$('span', progressBar).text('');
 
 	progressBar.toggleClass('progress-bar-striped', proportion > 0.9999);
+
+	var otherProgressBar = $('li.active a.activity-card div.progress-bar.progress-bar-success');
+	
+	otherProgressBar.attr('aria-valuenow', Math.round(percent));
+	otherProgressBar.attr('aria-valuemax', 100);
+	otherProgressBar.css('width', percent.toString() + '%' );
+	$('span', otherProgressBar).text('');	
     };    
     
 
@@ -70,10 +77,13 @@ define(['jquery', 'underscore'], function($, _){
     
     var update = _.debounce( function() {
 	var value = calculateProgress( activityToMonitor );
+
 	exports.progressProportion( value );
 	
 	// Store the progress as the "score" in the database
 	$(activityToMonitor).persistentData( 'score', value );
+	// and in a separate "completion" table
+	$(activityToMonitor).recordCompletion( value );
     }, 300 );
        
     exports.monitorActivity = function( activity ) {

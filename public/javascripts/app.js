@@ -204,7 +204,6 @@ require( ["jquery", "shCore", "mathjax", "jquery-ui", "shBrushJScript", "shBrush
     console.log( document );
     
     $(document).ready(function() {
-	console.log( "ready" );
 	shCore.SyntaxHighlighter.highlight();
 	
 	$(".dropdown-toggle").dropdown();

@@ -217,10 +217,6 @@ git.long(function (commit) {
 
     app.get('/', routes.index);
 
-    app.post('/activity/log-answer', activity.logAnswer);
-    app.post('/activity/log-completion', activity.logCompletion);
-    app.get('/users/completion', activity.completion);
-
     app.get('/users/', user.getCurrent);
     //app.get('/users/profile', user.currentProfile);
     //app.get('/users/:id/profile', user.profile);
@@ -249,7 +245,6 @@ git.long(function (commit) {
     app.get( '/course/:username/:repository/:branch/', course.tableOfContents );
     app.get( '/course/:username/:repository/:branch$', function( req, res ) { res.redirect(req.url + '/'); });
     
-    
     app.get( '/course/:username/:repository/:branch/:path(*.tex)', course.source );
     app.get( '/course/:username/:repository/:branch/:path(*.png)', course.image );
     app.get( '/course/:username/:repository/:branch/:path(*.jpg)', course.image );    
@@ -259,13 +254,6 @@ git.long(function (commit) {
     app.get( '/course/:username/:repository/:branch/:path(*.js)', course.javascript );
     app.get( '/course/:username/:repository/:branch/:path(*)', course.activity );
     
-    //app.get(/^\/course\/(.+)\/activity\/(.+)\/update\/$/, course.activityUpdate);
-    //app.get(/^\/course\/(.+)\/activity\/(.+)\/source\/$/, course.activitySource);
-    //app.get(/^\/course\/(.+)\/activity\/(.+)\/$/, course.activity );
-    //app.get( /^\/course\/(.+)\/activity\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
-    //app.get(/^\/course\/(.+)\/$/, course.landing );
-    //app.get( /^\/course\/(.+)$/, function( req, res ) { res.redirect(req.url + '/'); });
-
     // TinCan (aka Experience) API
     app.post('/xAPI/statements', tincan.postStatements);
     
@@ -343,10 +331,14 @@ git.long(function (commit) {
     app.get('/template/:templateFile', template.renderTemplate);
     app.get('/template/forum/:templateFile', template.renderForumTemplate);
 
-    var state = require('./routes/state.js')(null);    
+    var state = require('./routes/state.js')(null);
     app.get('/state/:activityHash', state.get);
     app.put('/state/:activityHash', state.put);
-    app.delete('/state/:activityHash', state.remove);    	
+    app.delete('/state/:activityHash', state.remove);
+    app.put('/completion/:activityHash', state.completion);
+
+    app.get('/users/:id/completions', state.getCompletions);
+    app.get('/commits/:hash/activities', course.getActivitiesFromCommit );
     
     app.get('/image/:hash', mongoImage.get);
 

@@ -114,18 +114,9 @@ exports.initialize = function initialize(callback) {
     
     exports.Activity = mongoose.model("Activity",
                                       {
-					  // deprecated
-                                          latexSource: String,
-                                          htmlFile: ObjectId,
-                                          baseFileHash: {type: String, index: true},
-					  relativePath: String,
-                                          repo: {type: ObjectId, ref:"GitRepo"},
-
-                                          // Unknown status
+					  // This should be "abstract"?
                                           description: String,
-                                          recent: Boolean,
-                                          slug: String,
-
+					  
 					  // Currently used
                                           timeLastUsed: {type: Date, index: true},
 					  commit: {type: String, index: true},
@@ -160,20 +151,10 @@ exports.initialize = function initialize(callback) {
                                       isInstructor: Boolean
                                   });
 
-    // Deprecated
-    exports.Scope = mongoose.model("Scope",
-                                   new mongoose.Schema({
-                                       activity: ObjectId,
-                                       user: ObjectId,
-                                       dataByUuid: Mixed
-                                   }, {
-                                       minimize: false
-                                   }));
-
     exports.State = mongoose.model("State",
                                    new mongoose.Schema({
-                                       activityHash: String,
-                                       user: ObjectId,
+                                       activityHash: {type: String, index: true},
+                                       user: {type: ObjectId, index: true},
                                        data: Mixed
                                    }, {
                                        minimize: false
@@ -194,142 +175,19 @@ exports.initialize = function initialize(callback) {
                                        minimize: false
                                    }));
 
-
-    // Activity completion is updated to most recent version; completion log is write-only.
-    activityCompletionSchema = new mongoose.Schema({
-        activitySlug: String,
-        user: {type: ObjectId, index: true},
-        activity: ObjectId, // Most recent version.
-        percentDone: Number, // Percent complete of most recent version.
-	numParts: Number,
-	numComplete: Number,
-        completeUuids: [String],
-        complete: Boolean,
-        completeTime: Date
-    });
-    exports.CompletionLog = mongoose.model("CompletionLog", activityCompletionSchema);
-    activityCompletionSchema.index({activitySlug: 1, user: 1}, {unique: true});
-    exports.ActivityCompletion = mongoose.model("ActivityCompletion", activityCompletionSchema);
-
-    answerLogSchema = new mongoose.Schema({
-        activity: ObjectId,
-        user: ObjectId,
-        questionPartUuid: String,
-        value: String,
-        correct: Boolean,
-        timestamp: Date
-    });
-    answerLogSchema.index({activity: 1, user: 1});
-    answerLogSchema.index({user: 1, timestamp: 1});
-    exports.AnswerLog = mongoose.model("AnswerLog", answerLogSchema);
-
-    var CourseSchema = new mongoose.Schema ({
-        // Key
-        repo: ObjectId,
-        relativePath: String,
-        // Other
-        name: String,
-        description: String,
-	slug: {type: String, index: true},
-        activityTree: Mixed
-    });
-
+    exports.Completion = mongoose.model("Completion",
+					new mongoose.Schema({
+					    activityHash: {type: String, index: true},
+					    user: {type: ObjectId, index: true},
+					    complete: Number,
+                                            date: Date
+					}, {
+					    minimize: false
+					}));    
+    
     RegExp.escape= function(s) {
 	return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     };
-
-    CourseSchema.methods.normalizeSlug = function normalizeActivitySlug(activitySlug) {
-	var repo = this.slug.split('/').slice(0,2).join( '/' )
-	var re = new RegExp("^" + RegExp.escape(repo) + '\\/');
-	return activitySlug.replace( ":", '/' ).replace( re, '' );
-    };
-
-    CourseSchema.methods.activityURL = function activityURL(activity) {
-	return "/course/" + this.slug + "/activity/" + this.normalizeSlug(activity.slug) + "/";
-    };
-    
-    CourseSchema.methods.flattenedActivities = function flattenedActivities() {
-	var queue = [];
-
-	var f = function(nodes) {
-	    for(var i = 0; i < nodes.length; i++) {
-		queue.push( nodes[i] );
-		f(nodes[i].children);
-	    }
-	};
-	
-	f(this.activityTree);
-
-	return queue;
-    };
-
-    CourseSchema.methods.previousActivity = function previousActivities(activity) {
-	var flattened = this.flattenedActivities();
-
-	activity = _.find( flattened, function(x) { return x.slug === activity.slug } );
-	if (activity === undefined)
-	    return null;
-
-	var i = _.indexOf( flattened, activity );
-
-	if (i <= 0)
-	    return null;
-
-	return flattened[i-1];
-    };
-
-    CourseSchema.methods.nextActivity = function nextActivities(activity) {
-	var flattened = this.flattenedActivities();
-
-	activity = _.find( flattened, function(x) { return x.slug === activity.slug } );
-	if (activity === undefined)
-	    return null;
-
-	var i = _.indexOf( flattened, activity );
-
-	if (i + 1 < flattened.length)
-	    return flattened[i+1];
-
-	return null;
-    };
-
-    CourseSchema.methods.activityParent = function activityParent(activity) {
-	var f = function(nodes) {
-	    for(var i = 0; i < nodes.length; i++) {
-		var result = f(nodes[i].children);
-		if (result) return result;
-
-		if (_.where( nodes[i].children, {slug: activity.slug} ).length > 0) {
-		    return nodes[i];
-		}
-	    }
-
-	    return null;
-	};
-
-	return f(this.activityTree);
-    };
-
-    CourseSchema.methods.activityChildren = function activityChildren(activity) {
-	var flattened = this.flattenedActivities();
-
-	activity = _.find( flattened, function(x) { return x.slug === activity.slug } );
-	if (activity === undefined)
-	    return [];
-
-	return activity.children;
-    };
-
-    CourseSchema.methods.activitySiblings = function activitySiblings(activity) {
-	var parent = this.activityParent(activity);
-
-	if (parent)
-	    return parent.children;
-
-	return this.activityTree;
-    };
-
-    exports.Course = mongoose.model('Course', CourseSchema );
 
     mongoose.connect(url, {}, function (err) {
 	callback(err);

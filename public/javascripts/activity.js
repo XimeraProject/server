@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'mathjax', 'tincan', 'progress-bar', 'database', 'problem', 'math-answer', 'multiple-choice', 'select-all', 'word-choice', 'hint', 'free-response', 'shuffle'], function($, _, MathJax, TinCan, ProgressBar) {
+define(['jquery', 'underscore', 'mathjax', 'tincan', 'progress-bar', 'activity-card', 'database', 'problem', 'math-answer', 'multiple-choice', 'select-all', 'word-choice', 'hint', 'free-response', 'shuffle'], function($, _, MathJax, TinCan, ProgressBar) {
 
     var createActivity = function() {
 	var activity = $(this);
@@ -31,6 +31,8 @@ define(['jquery', 'underscore', 'mathjax', 'tincan', 'progress-bar', 'database',
 	    
 	    $(".shuffle", activity).shuffle();
 
+	    $('a.activity-card').activityCard();
+	    
 	    ProgressBar.monitorActivity( activity );
 	});
     };
@@ -38,7 +40,23 @@ define(['jquery', 'underscore', 'mathjax', 'tincan', 'progress-bar', 'database',
     $.fn.extend({
 	activity: function() {
 	    return this.each( createActivity );
-	}
+	},
+
+	recordCompletion: function(proportionComplete) {
+	    var hash = $(this).activityHash();
+	    
+	    $.ajax({
+		url: '/completion/' + hash,
+		type: 'PUT',
+		data: JSON.stringify({complete: proportionComplete}),
+		contentType: 'application/json',
+		success: function( result ) {
+		    console.log( "recording completion for " + hash );
+		},
+	    });	    
+
+	    return;
+	},
     });    
 
     return;

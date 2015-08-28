@@ -36,6 +36,35 @@ module.exports = function(io) {
             });
 	}
     }
+
+    exports.completion = function(req, res) {
+	if (!req.user) {
+            res.status(500).send("");
+	}
+	else {
+	    console.log( req.body );
+            mdb.Completion.update({activityHash: req.params.activityHash, user: req.user._id}, {$set: {complete: req.body.complete, date: new Date()}}, {upsert: true}, function (err, affected, raw) {
+		if (err) {
+		    res.status(500).json(err);
+		} else
+		    res.json({ok: true});
+            });
+	}
+    }
+
+    exports.getCompletions = function(req, res) {
+	if (!req.user) {
+	    res.json({});
+	}
+	else {
+	    if (req.user._id.toString() != req.params.id)
+		res.json({});
+	    else
+		mdb.Completion.find({user: req.user._id}, function (err, completions) {
+		    res.json(completions);
+		});
+	}
+    }        
     
     exports.remove = function(req, res) {
 	if (!req.user) {

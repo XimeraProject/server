@@ -14,26 +14,6 @@ exports.index = function(req, res) {
     });
 }
 
-exports.landing = function(req, res) {
-    remember(req);
-
-    var slug = req.params[0];
-
-    mdb.Course.findOne({slug: slug}).exec( function (err, course) {
-	if (course) {
-	    mdb.GitRepo.findOne({_id: course.repo}).exec( function (err, repo) {
-		if (repo) {
-		    res.render('course/landing', { course: course, repo: repo });
-		} else {
-		    res.send("Repo not found.");
-		}
-	    });
-	} else {
-	    res.send("Course not found.");
-	}
-    });
-}
-
 function findMostRecentBranch(owner, repository, branchName, callback) {
     mdb.Branch.find({owner: owner, repository: repository, name: branchName}).sort({lastUpdate: -1}).limit(1).exec( function (err, branches) {
 	var branch = branches[0];
@@ -239,108 +219,6 @@ exports.activityUpdate = function(req, res) {
         }]);
 }
 
-exports.activity = function(req, res) {
-    remember(req);
-
-    var courseSlug = req.params[0];
-    var activitySlug = req.params[1];
-
-    if (!activitySlug.match( ':' )) {
-	var repo = courseSlug.split('/').slice(0,2).join( '/' )
-	activitySlug = repo + ':' + activitySlug;
-    }
-
-    var locals = {};
-
-    async.series([
-        function (callback) {
-            findCourseAndActivityBySlugs(req.user, courseSlug, activitySlug, function (course, activity) {
-                locals.course = course;
-                locals.activity = activity;
-                if (!course) {
-                    callback("Course not found.");
-                }
-                else if (!activity) {
-                    callback("Activity not found.");
-                }
-                else {
-                    callback();
-                }
-            });
-        },
-        function (callback) {
-            getActivityHtml(locals.activity, function(html) {
-                locals.activityHtml = html;
-                if (!html) {
-                    res.send('Error reading activity.');
-                }
-                else {
-                    callback();
-                }
-            });
-        },
-        function (callback) {
-	    //var parentActivity = locals.course.activityParent(locals.activity);
-	    var nextActivity = locals.course.nextActivity(locals.activity);
-	    var previousActivity = locals.course.previousActivity(locals.activity);
-	    res.render('course/activity',
-		       { activity: locals.activity, activityHtml: locals.activityHtml,
-			 course: locals.course,
-			 nextActivity: nextActivity, previousActivity: previousActivity,
-			 activityId: locals.activity._id.toString()
-		       });
-        }
-    ],
-    function (err) {
-        if (err) {
-            res.send(err);
-        }
-    });
-};
-
-exports.activitySource = function(req, res) {
-    remember(req);
-
-    var courseSlug = req.params[0];
-    var activitySlug = req.params[1];
-
-    if (!activitySlug.match( ':' )) {
-	var repo = courseSlug.split('/').slice(0,2).join( '/' )
-	activitySlug = repo + ':' + activitySlug;
-    }
-
-    var locals = {};
-
-    async.series([
-        function (callback) {
-            findCourseAndActivityBySlugs(req.user, courseSlug, activitySlug, function (course, activity) {
-                locals.course = course;
-                locals.activity = activity;
-                if (!course) {
-                    res.send("Course not found.");
-                }
-                if (!activity) {
-                    res.send("Activity not found.");
-                }
-                callback();
-            });
-        },
-        function (callback) {
-            getActivityHtml(locals.activity, function(html) {
-                locals.activityHtml = html;
-                if (!html) {
-                    res.send('Error reading activity.');
-                }
-                callback();
-            });
-        },
-        function (callback) {
-            res.render('activity-source', { activity: locals.activity, activityId: locals.activity._id });
-        }
-    ]);
-};
-
-
 exports.source = function(req, res) {
     remember(req);
 
@@ -495,7 +373,7 @@ exports.activity = function(req, res) {
 					  );
 
 			if (xourse.activities === undefined)
-			    xourse.activities = {};			
+			    xourse.activities = {};
 			
 			if (xourse.activities[activityPath] === undefined) {
 			    xourse.activities[activityPath] = {};
@@ -610,4 +488,20 @@ exports.tableOfContents = function(req, res) {
 		}
 	    }
 	});
+};
+
+
+exports.getActivitiesFromCommit = function(req, res) {
+    var commit = req.params.hash;
+    console.log( commit );
+    mdb.Xourse.findOne({commit: commit}, function(err, xourse) {
+	if (err) {
+	    res.json({});
+	} else {
+	    if ('activities' in xourse)
+		res.json( xourse.activities );
+	    else
+		res.json( {} );
+	}
+    });    
 };

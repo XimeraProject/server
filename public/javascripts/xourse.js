@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'isotope'], function($, _, Isotope) {
+define(['jquery', 'underscore', 'isotope', 'activity-card'], function($, _, Isotope) {
 
     var layoutXourse = function( xourseData ) {
 	console.log( xourseData );
@@ -21,13 +21,22 @@ define(['jquery', 'underscore', 'isotope'], function($, _, Isotope) {
 
 	    if (type === 'H2') {
 		card = $('<div class="activity-card medium-card"></div>');
-	    }	    
+	    }
 
-	    card.append( cardData );
+	    if (type === 'A') {
+		card = $('<a class="activity-card"></a>');
+		card.attr('data-path', cardData.attr('href') );
+		card.attr('href', cardData.attr('href') );
+		
+		cardData.remove();
+	    } else
+		card.append( cardData );
 
 	    xourse.append(card);
 	});
 
+	$('a.activity-card', xourse).activityCard();
+	
 	xourse.show();
 	
 	var options = {
