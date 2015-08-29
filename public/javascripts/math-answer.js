@@ -98,7 +98,7 @@ define(['jquery', 'underscore', 'popover', 'math-expressions', 'tincan', 'databa
 	    var correctAnswerText = result.attr('data-answer');
 	    var correctAnswer;
 	    
-	    correctAnswer = Expression.fromText(correctAnswerText);
+	    correctAnswer = Expression.fromLatex(correctAnswerText);
 
 	    var studentAnswer;
 	    
