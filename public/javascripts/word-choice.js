@@ -93,6 +93,8 @@ define(['jquery', 'underscore', 'database', 'mathjax', 'tincan'], function($, _,
 	    element.persistentData( 'correct', selected.hasClass('correct') );
 	    element.persistentData( 'attempt', selected.attr('id') );
 
+	    element.trigger( 'ximera:attempt' );
+	    
 	    if (element.persistentData('correct')) {
 		element.trigger( 'ximera:correct' );
 	    }	    

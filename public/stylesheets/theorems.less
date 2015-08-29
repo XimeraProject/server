@@ -31,7 +31,8 @@ notation yellow,
 criterion yellow,
 exercise blue,
 problem blue,
-question blue
+question blue,
+explanation green,
 exploration blue;
 
 /* This is a faux loop that doesn't end up in the final css. 
@@ -48,7 +49,8 @@ We want to stop when the index reaches the end of the list of environments. */
    @nameOfClass: extract(@thisTheoremEnvironment, 1);
    @colorOfClass: extract(@thisTheoremEnvironment, 2);
    @counterToIncrement: @nameOfClass;
-   /* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
 
    body {
       counter-reset: @counterToIncrement;     /* The body needs to initialize all the counters. */
@@ -88,3 +90,8 @@ We want to stop when the index reaches the end of the list of environments. */
 /* This calls the loop with @index set to 1, thus starting the loop. Without this, all the code above would never run. */
 .loop(1);
 
+
+.explanation::before
+{
+  content:"Explanation.";
+}

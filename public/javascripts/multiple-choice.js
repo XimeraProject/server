@@ -85,6 +85,8 @@ define(['jquery', 'underscore', 'database', 'mathjax', 'tincan'], function($, _,
 		multipleChoice.persistentData('correct',
 					      multipleChoice.find('#' + multipleChoice.persistentData('chosen')).hasClass( 'correct' ) );
 
+		multipleChoice.trigger( 'ximera:attempt' );
+		
 		if (multipleChoice.persistentData('correct')) {
 		    multipleChoice.trigger( 'ximera:correct' );
 		} else {

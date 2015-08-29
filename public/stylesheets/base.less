@@ -692,8 +692,7 @@ footer .address a {
 
 .activity-content {
     font-family: @font-family-serif;
-    font-size: 12pt;
-    line-height: 15pt; 
+    //font-size: 14px;
 }
 
 .activity-content button {
@@ -819,4 +818,13 @@ li.xarma {
 
 li.xudos {
     display: none;
+}
+
+
+/****************************************************************/
+/* tex4ht generates enumerate-enumitem as description lists.  I want them inline. */
+
+dt.enumerate-enumitem {
+    float: left;
+    padding-right: 0.5em;
 }

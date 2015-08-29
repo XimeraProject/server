@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'mathjax', 'tincan', 'progress-bar', 'activity-card', 'database', 'problem', 'math-answer', 'multiple-choice', 'select-all', 'word-choice', 'hint', 'free-response', 'shuffle'], function($, _, MathJax, TinCan, ProgressBar) {
+define(['jquery', 'underscore', 'mathjax', 'tincan', 'progress-bar', 'activity-card', 'database', 'problem', 'math-answer', 'multiple-choice', 'select-all', 'word-choice', 'hint', 'free-response', 'shuffle', 'feedback'], function($, _, MathJax, TinCan, ProgressBar) {
 
     var createActivity = function() {
 	var activity = $(this);
@@ -30,6 +30,7 @@ define(['jquery', 'underscore', 'mathjax', 'tincan', 'progress-bar', 'activity-c
 	    $(".free-response", activity).freeResponse();
 	    
 	    $(".shuffle", activity).shuffle();
+	    $(".feedback", activity).feedback();	    
 
 	    $('a.activity-card').activityCard();
 	    

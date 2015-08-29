@@ -96,6 +96,8 @@ define(['jquery', 'underscore', 'database', 'mathjax', 'tincan'], function($, _,
 		
 		selectAll.persistentData('correct', correct );
 
+		selectAll.trigger( 'ximera:attempt' );
+		
 		if (selectAll.persistentData('correct')) {
 		    selectAll.trigger( 'ximera:correct' );
 		}
