@@ -21,12 +21,12 @@ require.config({
         mathjax: "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured",
 	less: "../../components/less/dist/less.min",
 	socketio: '../../components/socket.io-client/socket.io',
-	youtube: '//www.youtube.com/iframe_api',
 	"async": "../../components/async/lib/async",
 	"sly": "../../components/sly/dist/sly.min",
 	"isotope": "../../components/isotope/dist/isotope.pkgd.min",
 	"jquery": "../../components/jquery/dist/jquery.min",
 	"jquery-ui": "../../components/jquery-ui/jquery-ui.min",
+	"jquery-fullsizable": "../../components/jquery-fullsizable/js/jquery-fullsizable.min",
 	"angular": "../../components/angular/angular",
         "angular-animate": "../../components/angular-animate/angular-animate.min",
         "angular-sanitize": "../../components/angular-sanitize/angular-sanitize.min",
@@ -116,6 +116,11 @@ require.config({
 			// appropriate places
 			jax: ["input/TeX","output/HTML-CSS"],
 			extensions: ["tex2jax.js","MathMenu.js","CHTML-preview.js"],
+
+			"HTML-CSS": {
+			    availableFonts: ["TeX"]
+			},
+			
 			processEnvironments: true,
 			showProcessingMessages: false,
 			tex2jax: { inlineMath: [['$', '$'], ['\\(','\\)']],
@@ -187,7 +192,7 @@ require.config({
 
 
 require( ["jquery", "shCore", "mathjax", "jquery-ui", "shBrushJScript", "shBrushLatex", 
-	  "less", "database", "bootstrap", "moment", "mailing-list", "codemirror-python", "sticky-scroll", "user/profile", "math-answer", "activity", "score", "progress-bar", "xourse", "navigation"],
+	  "less", "database", "bootstrap", "moment", "mailing-list", "codemirror-python", "sticky-scroll", "user/profile", "math-answer", "activity", "score", "progress-bar", "xourse", "navigation", "image-environment", "youtube"],
 	  function($, shCore, MathJax) {
 
     'use strict';

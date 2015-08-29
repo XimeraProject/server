@@ -647,12 +647,58 @@ footer .address a {
 }
 
 ////////////////////////////////////////////////////////////////
-// stix fonts
+// align font with mathjax
+
+@font-face {
+    font-family: 'MJX_Math';
+    src: url('http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Math-Italic.eot'); /* IE9 Compat Modes */
+    src: url('http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Math-Italic.eot?iefix') format('eot'),
+    url('http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_Math-Italic.woff')  format('woff'),
+    url('http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Math-Italic.otf')  format('opentype'),
+    url('http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/svg/MathJax_Math-Italic.svg#MathJax_Math-Italic') format('svg');
+}
+
+@font-face {
+    font-family: 'MJX_Main';
+    src: url('http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Main-Regular.eot'); /* IE9 Compat Modes */
+    src: url('http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Main-Regular.eot?iefix') format('eot'),
+    url('http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_Main-Regular.woff')  format('woff'),
+    url('http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Main-Regular.otf')  format('opentype'),
+    url('http://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/svg/MathJax_Main-Regular.svg#MathJax_Main-Regular') format('svg');
+}
+
+.mjxi {
+    font-family: MJX_Math;
+    font-size: 131%;
+    line-height: .8em;
+}
+
+.mjx {
+    font-family: MJX_Main;
+    font-size: 131%;
+    line-height: .8em;
+}
+
 //@import "fonts.less";
-//@font-family-serif: 'STIXGeneral', Georgia, 'Times New Roman', Times, serif;
+//@font-family-serif: 'STIXGeneral', 'Times New Roman', Times, serif;
 //@font-family-base: @font-family-serif;
 //@headings-font-family: @font-family-sans-serif;
-//@font-size-base: 14pt;
+//@font-size-base: 12pt;
+
+@font-family-serif: MJX_Main, Georgia, 'Times New Roman', Times, serif;
+//@font-family-base: @font-family-serif;
+//@headings-font-family: @font-family-sans-serif;
+//@font-size-base: 12pt;
+
+.activity-content {
+    font-family: @font-family-serif;
+    font-size: 12pt;
+    line-height: 15pt; 
+}
+
+.activity-content button {
+    font-family: @font-family-sans-serif;    
+}
 
 .btn:focus {outline: thin dotted black;}
 

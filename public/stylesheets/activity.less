@@ -258,3 +258,112 @@ select {
     background-repeat: no-repeat;
     background-position: right center;
 }
+
+/****************************************************************/
+/* image-environment's use jquery-fullsizable */
+
+.image-environment.well {
+    background-color: white;
+
+    text-align: center;
+}
+
+/* BADBAD: maybe this should be controlled with tex4ht somehow */
+.image-environment img {
+    width: 75%;
+}
+
+@import '../../components/jquery-fullsizable/css/jquery-fullsizable.css';
+@import '../../components/jquery-fullsizable/css/jquery-fullsizable-theme.css';
+#jquery-fullsizable {
+    background-color: white;
+}
+
+#fullsized_go_prev, #fullsized_go_next {
+    text-align: center;
+    background: none;
+    background-color: #EEE;
+}
+
+#fullsized_go_prev {
+    left: 0;
+}
+
+#fullsized_go_prev:hover, #fullsized_go_next:hover {
+    background-color: #AAA;
+}
+
+#fullsized_go_next {
+    right: 0;
+}
+
+
+
+#fullsized_go_prev:before {
+    left: 0;
+}
+#fullsized_go_next:before {
+    right: 0;
+}
+
+#fullsized_go_prev:before, #fullsized_go_next:before {
+    color: black;
+    font-family: FontAwesome;
+    width: 32px;
+    height: 32px;
+    font-size: 32px;
+    line-height: 32px;
+    position: absolute;
+    top: 47px;
+}
+
+#fullsized_go_prev:before {
+    content: "\F104";    
+}
+
+#fullsized_go_next:before {
+    content: "\F105";
+}
+
+
+#fullsized_close, #fullsized_fullscreen {
+  position: absolute;
+  top: 0;
+  display: block;
+  width: 32px;
+  height: 32px;
+  background: none;
+  text-align: center;
+}
+
+#fullsized_close {
+    right: 0;
+}
+
+#fullsized_fullscreen {
+  right: 40px;
+}
+
+#fullsized_close:before, #fullsized_fullscreen:before {
+    color: black;
+    font-family: FontAwesome;
+    width: 32px;
+    height: 32px;
+    font-size: 32px;
+    line-height: 32px;
+}
+
+#fullsized_close:before {
+    content: "\F00D";    
+}
+
+#fullsized_fullscreen:before {
+    content: "\F065";
+}
+
+#fullsized_close:hover, #fullsized_fullscreen:hover {
+  background-color: #AAA;
+  text-decoration: none;			   
+}
+
+

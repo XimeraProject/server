@@ -38,6 +38,17 @@ define(['jquery', 'underscore', 'database'], function($, _){
 	});
     };
 
+    exports.experienceVideo = function(video, title) {
+	exports.recordVerbObject( verbExperienced, {
+	    objectType: "Activity",
+	    id: video,
+	    definition: {
+		name: { "en-US": title }
+	    }
+	    // BADBAD: should include a definition
+	});
+    };    
+
     exports.experienceActivity = function(element) {
 	return exports.experienceActivityByHash( $(element).activityHash() );
     };

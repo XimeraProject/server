@@ -16,6 +16,7 @@
         "sly": "*",
         "isotope": "*",		
 	"x-editable": "*",
+	"jquery-fullsizable": "*",
 	"threejs": "https://github.com/mrdoob/three.js.git",
 	"pagedown-bootstrap": "https://github.com/tchapi/pagedown-bootstrap.git",
 	"mathquill": "https://github.com/mathquill/mathquill.git",
