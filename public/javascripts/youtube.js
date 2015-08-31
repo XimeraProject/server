@@ -14,7 +14,7 @@ define(['jquery', 'underscore', 'tincan'], function($, _, TinCan) {
 
     window.onYouTubeIframeAPIReady = _.once( function() {
         _.each(videosToConstruct, function(video) {
-            new YT.Player(video[0], video[1]);
+	    player.loadPlayer(container, videoId);
         });
     });    
     
