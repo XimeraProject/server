@@ -46,8 +46,8 @@ block content
                       a.activity-card(href="/course/" + activity.ownerName + "/" + activity.repositoryName + "/" + activity.branchName + "/" + activityUrl, data-path=activityUrl)
               div.scrollbar
                 div.handle
-        .row                     
-          .col-md-12.activity(id="theActivity", data-activity=activity.hash)
+        .row
+          .col-md-offset-2.col-md-8.activity(id="theActivity", data-activity=activity.hash)
             
             block activity
 
