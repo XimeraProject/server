@@ -411,7 +411,8 @@ git.long(function (commit) {
 		}
 		socket.join(activityHash + '/' + userId);
 	    });
-	    
+
+	    /*
 	    socket.on('persistent-data', function (data) {
 		var userId = socket.handshake.session.guestUserId;
 		if (socket.handshake.session.passport) {
@@ -425,6 +426,7 @@ git.long(function (commit) {
 
 		socket.to(data.activityHash + '/' + userId).emit('persistent-data', data);
 	    });
+	    */
 	});
 	
 	// If nothing else matches, it is a 404
