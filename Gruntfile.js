@@ -52,7 +52,8 @@ module.exports = function(grunt) {
 	cssmin: {
 	    combine: {
 		options: {
-		    root: '.'
+		    root: '.',
+		    noAdvanced: true
 		},
 		files: {
 		    'public/static/base.min.css': ["public/stylesheets/base.css"]
@@ -65,5 +66,6 @@ module.exports = function(grunt) {
     require('load-grunt-tasks')(grunt);    
     grunt.registerTask('default', []);
 
-    grunt.registerTask('production', ['requirejs', 'revision', 'sed', 'less', 'cssmin']);
+    //grunt.registerTask('production', ['requirejs', 'revision', 'sed', 'less', 'cssmin']);
+    grunt.registerTask('production', ['less', 'cssmin']);
 };
