@@ -112,6 +112,13 @@ exports.initialize = function initialize(callback) {
 				    }
 				   );
     
+    exports.Outcome = mongoose.model("Outcome",
+				     {
+					 name: {type: String, index: true},
+					 activityHash: {type: String, index: true},
+				     }
+				    );
+    
     exports.Activity = mongoose.model("Activity",
                                       {
 					  // This should be "abstract"?
@@ -123,6 +130,7 @@ exports.initialize = function initialize(callback) {
 					  path: String,
 					  hash: {type: String, index: true},
                                           title: String,
+                                          outcomes: Mixed,
                                       });
 
     exports.User = mongoose.model("User",

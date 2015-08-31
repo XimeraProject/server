@@ -122,7 +122,8 @@ require.config({
 			},
 			
 			processEnvironments: true,
-			showProcessingMessages: false,
+			//showProcessingMessages: false,
+			showProcessingMessages: true,
 			tex2jax: { inlineMath: [['$', '$'], ['\\(','\\)']],
 				   displayMath: [['$$','$$'], ['\\[','\\]']] },
 			TeX: {
@@ -131,6 +132,17 @@ require.config({
 			}
 		    });
 
+		MathJax.Hub.Register.MessageHook("TeX Jax - parse error",function (message) {
+		    // do something with the error.  message[1] will contain the data about the error.
+		    console.log(message);
+		});
+
+		MathJax.Hub.Register.MessageHook("Math Processing Error",function (message) {
+		    //  do something with the error.  message[2] is the Error object that records the problem.
+		    console.log(message);
+		});
+		
+		
 		MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 		    // Remove CDATA's from the script tags
 		    MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {

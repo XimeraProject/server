@@ -32,7 +32,16 @@ define(['jquery', 'underscore', 'mathjax', 'database', 'tincan'], function($, _,
 		// size everything appropriately even while it is
 		// hidden,
 
-		if (problem.persistentData( 'available' )) {
+		var visible = false;
+
+		if (problem.persistentData( 'available' ))
+		    visible = true;
+
+		var parent = problem.parents(".problem-environment").first();
+		if ( ! (parent.persistentData( 'blocking' )))
+		    visible = true;
+		
+		if (visible) {
 		    problem.css({visibility: 'visible', position:'relative'});
 		    problem.fadeTo('slow', 1);
 		} else {
@@ -64,6 +73,8 @@ define(['jquery', 'underscore', 'mathjax', 'database', 'tincan'], function($, _,
 	    answersNeeded = _.filter( answersNeeded, inDom );
 	    
 	    problem.data( 'answers-needed', answersNeeded  );
+
+	    problem.persistentData( 'blocking', true );
 	    
 	    return false;
 	});
