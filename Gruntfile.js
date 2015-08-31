@@ -66,6 +66,5 @@ module.exports = function(grunt) {
     require('load-grunt-tasks')(grunt);    
     grunt.registerTask('default', []);
 
-    //grunt.registerTask('production', ['requirejs', 'revision', 'sed', 'less', 'cssmin']);
-    grunt.registerTask('production', ['less', 'cssmin']);
+    grunt.registerTask('production', ['requirejs', 'revision', 'sed', 'less', 'cssmin']);
 };
