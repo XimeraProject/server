@@ -12,12 +12,6 @@ define(['jquery', 'underscore', 'tincan'], function($, _, TinCan) {
 
     var videosToConstruct = [];    
 
-    window.onYouTubeIframeAPIReady = _.once( function() {
-        _.each(videosToConstruct, function(video) {
-	    player.loadPlayer(container, videoId);
-        });
-    });    
-    
     var player = {
 	playVideo: function(container, videoId) {
 	    if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
@@ -50,6 +44,12 @@ define(['jquery', 'underscore', 'tincan'], function($, _, TinCan) {
 	}
     };
 
+    window.onYouTubeIframeAPIReady = _.once( function() {
+        _.each(videosToConstruct, function(video) {
+	    player.loadPlayer(container, videoId);
+        });
+    });    
+    
     $(function() {
 	$('.youtube-player').each( function() {
 	    var div = $(this);
