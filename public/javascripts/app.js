@@ -122,10 +122,8 @@ require.config({
 			},
 			
 			processEnvironments: true,
-			//showProcessingMessages: false,
-			showProcessingMessages: true,
-			tex2jax: { inlineMath: [['$', '$'], ['\\(','\\)']],
-				   displayMath: [['$$','$$'], ['\\[','\\]']] },
+			showProcessingMessages: false,
+			
 			TeX: {
 			    extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js", "color.js"],
 			    Macros: {}
