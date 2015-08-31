@@ -116,7 +116,7 @@ mdb.initialize(function (err) {
 	secret: cookieSecret,
 	resave: false,
 	saveUninitialized: false,
-	db: new MongoStore({ mongooseConnection: mdb.mongoose.connection })
+	store: new MongoStore({ mongooseConnection: mdb.mongoose.connection })
     });
     
     app.use(theSession);
