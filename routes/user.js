@@ -10,7 +10,7 @@ var remember = require('../remember');
 
 exports.list = function(req, res){
     if (('user' in req) && (req.user.superuser)) {
-	mdb.users.find(function(err,document) {
+	mdb.User.find(function(err,document) {
             if (document) {
 		res.render('users', { users: document, title: 'users' });
 	    } else {
@@ -94,7 +94,7 @@ exports.deleteLinkedAccount = function(req, res, account){
     });
     
     // Only look for a user who has OTHER accounts available
-    mdb.users.update({ _id: new mongo.ObjectID(id),
+    mdb.User.update({ _id: new mongo.ObjectID(id),
 			  $or: otherAccounts
 			},
 			{ $unset: accountHash },
@@ -128,10 +128,10 @@ exports.get = function(req, res){
     }
 
     // Add one view to the count of profileViews
-    mdb.users.update({_id: new mongo.ObjectID(id)},
+    mdb.User.update({_id: new mongo.ObjectID(id)},
 			{ $inc: { profileViews: 1 } });
     
-    mdb.users.findOne({_id: new mongo.ObjectID(id)}, function(err,document) {
+    mdb.User.findOne({_id: new mongo.ObjectID(id)}, function(err,document) {
         if (document) {
 	    
 	    //if ('email' in document)
