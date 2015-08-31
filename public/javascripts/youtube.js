@@ -1,4 +1,4 @@
-define(['jquery', 'tincan'], function($, TinCan) {
+define(['jquery', 'underscore', 'tincan'], function($, _, TinCan) {
     function onPlayerStateChange(event) {
 	if (event.data == YT.PlayerState.PLAYING) {
 	    var url = event.target.getVideoUrl();
@@ -10,13 +10,19 @@ define(['jquery', 'tincan'], function($, TinCan) {
 	}
     }
 
+    var videosToConstruct = [];    
+
+    window.onYouTubeIframeAPIReady = _.once( function() {
+        _.each(videosToConstruct, function(video) {
+            new YT.Player(video[0], video[1]);
+        });
+    });    
+    
     var player = {
 	playVideo: function(container, videoId) {
 	    if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
-		window.onYouTubeIframeAPIReady = function() {
-		    player.loadPlayer(container, videoId);
-		};
-
+		videosToConstruct.push([container, videoId]);
+		
 		$.getScript('//www.youtube.com/iframe_api');
 	    } else {
 		player.loadPlayer(container, videoId);
