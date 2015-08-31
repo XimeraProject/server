@@ -273,7 +273,6 @@ exports.javascript = function(req, res) {
 
 
 exports.image = function(req, res) {
-    remember(req);
 
     var owner = req.params.username;
     var repository = req.params.repository;
