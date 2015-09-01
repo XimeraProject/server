@@ -398,9 +398,21 @@ exports.activity = function(req, res) {
 		    activity.branchName = branchName;
 		    activity.path = path;
 
+		    var nextActivity = null;
+		    var previousActivity = null;
+		    if (activity && (activity.xourse) && (activity.xourse.activityList)) {
+			var i = activity.xourse.activityList.indexOf( activity.path );
+			if (i >= 0)
+			    nextActivity = activity.xourse.activityList[i+1];
+			if (i > 0)
+			    previousActivity = activity.xourse.activityList[i-1];			
+		    }
+		    
 		    var stylesheet = '/course/' + owner + '/' + repository + '/' + branchName + '/' + path + '.css';
 		    var javascript = '/course/' + owner + '/' + repository + '/' + branchName + '/' + path + '.js';
-		    res.render('activity', { activity: activity, stylesheet: stylesheet, javascript: javascript });
+		    res.render('activity', { activity: activity, stylesheet: stylesheet,
+					     nextActivity: nextActivity, previousActivity: previousActivity,
+					     javascript: javascript });
 		}
 	    }
 	});
