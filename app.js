@@ -123,18 +123,6 @@ mdb.initialize(function (err) {
 
     console.log( "Session setup." );
 
-// setup ANOTHER connection to the mongo database (maybe you are upset
-// that I have two connections to mongodb, but it seems like this is
-// the easiest way to use both mongoose for our models and
-// connect-mongo for sessions).
-
-/*
-var databaseUrl = 'mongodb://' + process.env.XIMERA_MONGO_URL + "/" + process.env.XIMERA_MONGO_DATABASE;
-var collections = ['users', 'scopes', 'imageFiles'];
-var mongojs = require('mongojs');
-var db = mongojs(databaseUrl, collections);
-*/
-
 passport.use(login.googleStrategy(rootUrl));
 passport.use(login.twitterStrategy(rootUrl));
 passport.use(login.courseraStrategy(rootUrl));
