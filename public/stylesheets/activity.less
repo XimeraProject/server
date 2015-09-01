@@ -278,6 +278,20 @@ select {
 }
 
 /****************************************************************/
+/* tex4ht generates description lists from \begin{description} */
+
+dl.description {
+    margin-top: 12px;
+    margin-bottom: 12px;    
+}
+
+dl.description dt.description {
+    float: left;
+    padding-right: 0.5em;
+    margin-top: 4px;
+}
+
+/****************************************************************/
 /* image-environment's use jquery-fullsizable */
 
 .image-environment.well {
@@ -385,3 +399,22 @@ select {
 }
 
 
+/****************************************************************/
+/* select boxes should have a lighter background color */
+
+select.form-control {
+    .well; .well-sm;
+    padding: 0;
+    -moz-appearance: none;
+    -webkit-appearance: none;    
+    background-color: white;
+}
+
+option:not(:checked) {
+    background-color: white;
+    color: #000;
+}
+
+.activity-content {
+    line-height: @line-height-base * 1.35;
+}
