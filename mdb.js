@@ -127,7 +127,7 @@ exports.initialize = function initialize(callback) {
 					  // Currently used
                                           timeLastUsed: {type: Date, index: true},
 					  commit: {type: String, index: true},
-					  path: String,
+					  path: {type: String, index: true},
 					  hash: {type: String, index: true},
                                           title: String,
                                           outcomes: Mixed,
