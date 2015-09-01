@@ -49,8 +49,8 @@ define(['jquery', 'underscore'], function($, _){
 	if (depth === undefined)
 	    depth = 0;
 
-	// Find immediate problem-environment children which aren't hints
-	var children = $(problem).find('.problem-environment').not('.hint').filter( function() {
+	// Find immediate problem-environment children which aren't hints or feedback
+	var children = $(problem).find('.problem-environment').not('.hint').not('.feedback').filter( function() {
 	    var parents = $(this).parent('.problem-environment');
 	    return (parents.length == 0) || (parents.first().is(problem)); } );
 
@@ -77,13 +77,18 @@ define(['jquery', 'underscore'], function($, _){
 	return (total + nodeValue) / (children.length + nodeMaxValue);
     };
 
-
     var activityToMonitor = undefined;
     
     var update = _.debounce( function() {
 	var value = calculateProgress( activityToMonitor );
 
-	exports.progressProportion( value );
+	// Activities that have NO problems will have total progress
+	// NaN because of the 0 denominator; let's give credit to
+	// students who simply look at such activities
+	if (isNaN(value))
+	    value = 1;
+
+	exports.progressProportion( value );	    
 	
 	// Store the progress as the "score" in the database
 	$(activityToMonitor).persistentData( 'score', value );
@@ -93,6 +98,8 @@ define(['jquery', 'underscore'], function($, _){
        
     exports.monitorActivity = function( activity ) {
 	activityToMonitor = activity;
+
+	update();
 	
 	$('.problem-environment', activity).each( function() {
 	    $(this).persistentData( update );
