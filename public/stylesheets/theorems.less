@@ -70,6 +70,9 @@ We want to stop when the index reaches the end of the list of environments. */
       padding-left: 24px;
       margin-top: 12px;
    }
+
+   /* This produces the lovely colored bar on the right hand side. */
+   /* It's ::after because I already used ::before for the environment name. */
    .@{nameOfClass}::after {
        z-index: 1;
        content: "";
@@ -82,26 +85,20 @@ We want to stop when the index reaches the end of the list of environments. */
        background-color: hsl(hue(@colorOfClass),@theoremEnvironmentSaturation,@theoremEnvironmentLightness);
    } 
    
-   .@{nameOfClass}::before
-   {
+   .@{nameOfClass}::before {
+      /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
       /* content:"@{nameOfClass} " counter(@counterToIncrement) ". ";*/
       content:"@{nameOfClass}.";
       display: inline;
       text-transform: capitalize;   /* CSS here only applies to one word, like "Theorem." or "Example." */
-      font-weight: bold; 
+      font-weight: bold;
+      padding-right: 0.5em;
    }
    
    .@{nameOfClass} ul{
        padding-left: 1em;
    }
 
-   /* When things are nested... */
-   /*
-   .@{nameOfClass} .@{nameOfClass} {
-       padding: 0em;
-   }
-  */
-  
    /* Here we execute loop again for the next entry. */
    .loop(@index + 1);
 }
@@ -109,8 +106,24 @@ We want to stop when the index reaches the end of the list of environments. */
 /* This calls the loop with @index set to 1, thus starting the loop. Without this, all the code above would never run. */
 .loop(1);
 
-
 .explanation::before
 {
   content:"Explanation.";
 }
+
+/****************************************************************/
+/* \begin{theorem}[title] will put title inside a span.theorem-like-title */
+
+.theorem-like-title {
+    opacity: 0.5;
+    padding-right: 0.5em;
+}
+
+.theorem-like-title::before {
+    content: "(";
+}
+
+.theorem-like-title::after {
+    content: ")";
+}
+
