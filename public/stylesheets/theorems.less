@@ -1,7 +1,7 @@
 /* Change this value to change the saturation and lightness of the background colors of the theorem environments. 
 The colors that you type below in theoremEnvironments will all get standardized to have the same saturation and lightness. */
 @theoremEnvironmentSaturation: 100%;
-@theoremEnvironmentLightness: 92%;
+@theoremEnvironmentLightness: 96%;
 
 /*"Array" of names and colors to select from.
 Be careful that every environment has a color, 
@@ -57,23 +57,40 @@ We want to stop when the index reaches the end of the list of environments. */
    }
    
    .@{nameOfClass} { 
-
-      /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
-      background-color: hsl(hue(@colorOfClass),@theoremEnvironmentSaturation,@theoremEnvironmentLightness);
+       .well; /* Mix-in the bootstrap .well component */
+       
+       background-color: #FDFDFD;
+       /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+       //background-color: hsl(hue(@colorOfClass),@theoremEnvironmentSaturation,@theoremEnvironmentLightness);
 
       /* Increment the counter for this theorem type. */
       counter-increment: @counterToIncrement;
 
       /*These are the things that are common to all environments. */
-      border-radius: 4pt; padding: 1em; margin-top: 4pt; margin-bottom: 4pt;
+      padding-left: 24px;
+      margin-top: 12px;
    }
+   .@{nameOfClass}::after {
+       z-index: 1;
+       content: "";
+       position: absolute;
+       display: inline;
+       left: 0px;
+       top: 0px;
+       bottom: 0px;
+       width: 12px;
+       background-color: hsl(hue(@colorOfClass),@theoremEnvironmentSaturation,@theoremEnvironmentLightness);
+   } 
+   
    .@{nameOfClass}::before
    {
-      content:"@{nameOfClass} " counter(@counterToIncrement) ". ";          
+      /* content:"@{nameOfClass} " counter(@counterToIncrement) ". ";*/
+      content:"@{nameOfClass}.";
       display: inline;
       text-transform: capitalize;   /* CSS here only applies to one word, like "Theorem." or "Example." */
       font-weight: bold; 
-   } 
+   }
+   
    .@{nameOfClass} ul{
        padding-left: 1em;
    }
