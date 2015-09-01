@@ -132,7 +132,7 @@ define(['jquery', 'underscore', 'async', 'socketio'], function($, _, async, io){
     
     // Upload our local copy (if needed) of the database to the server
     exports.save = function(callback) {
-
+	
 	if (reseting)
 	    return false;
 	
@@ -292,7 +292,14 @@ define(['jquery', 'underscore', 'async', 'socketio'], function($, _, async, io){
     $(document).ready(function() {    
 	window.setInterval(function(){
 	    clickSaveWorkButton();
-	}, 7000);
+	}, 1000);
+
+	window.onbeforeunload = function() {
+	    // Before the page disappears, let's test to see if there is unsaved data
+	    if (_.some( _.keys(DATABASES), function(hash) { return (JSON.stringify(DATABASES[hash]) != REMOTES[hash]); } )) {
+		return "There is unsaved data on this page.";
+	    }
+	};
 	
 	$(SAVE_WORK_BUTTON_ID).click( clickSaveWorkButton );
 	$(RESET_WORK_BUTTON_ID).click( clickResetWorkButton );
