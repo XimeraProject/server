@@ -95,10 +95,12 @@ We want to stop when the index reaches the end of the list of environments. */
        padding-left: 1em;
    }
 
-   /* When things are nested, don't push them right */
+   /* When things are nested... */
+   /*
    .@{nameOfClass} .@{nameOfClass} {
        padding: 0em;
    }
+  */
   
    /* Here we execute loop again for the next entry. */
    .loop(@index + 1);
