@@ -53,11 +53,19 @@ block content
 
             ul.pager
              li.previous(class=(previousActivity ? undefined : "disabled"))
-               a(href="/course/" + activity.ownerName + "/" + activity.repositoryName + "/" + activity.branchName + "/" + previousActivity)
-                 | &larr; Previous Activity
+               if previousActivity
+                 a(href="/course/" + activity.ownerName + "/" + activity.repositoryName + "/" + activity.branchName + "/" + previousActivity)
+                   | &larr; Previous Activity
+               else
+                 span
+                   | &larr; Previous Activity               
              li.next(class=(nextActivity ? undefined : "disabled"),completion-blink="")
-               a(href="/course/" + activity.ownerName + "/" + activity.repositoryName + "/" + activity.branchName + "/" + nextActivity)
-                 | Next Activity &rarr;
+               if nextActivity
+                 a(href="/course/" + activity.ownerName + "/" + activity.repositoryName + "/" + activity.branchName + "/" + nextActivity)
+                   | Next Activity &rarr;
+               else
+                 span
+                   | Next Activity &rarr;               
                  
             //p {{db}}
             //p {{currentActivity}}
