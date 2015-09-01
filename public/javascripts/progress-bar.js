@@ -59,8 +59,13 @@ define(['jquery', 'underscore'], function($, _){
 	var nodeMaxValue = 0;
 	
 	if (depth != 0) {
-	    nodeValue = $(problem).persistentData('complete') ? 1 : 0;
-	    nodeMaxValue = 1;
+	    if ( $(problem).persistentData('blocking') ) {
+		nodeValue = $(problem).persistentData('complete') ? 1 : 0;
+		nodeMaxValue = 1;
+	    } else {
+		nodeValue = 1;
+		nodeMaxValue = 1;		
+	    }
 	}
 
 	// Each node's value is the average of its children's values and its own completion flag
