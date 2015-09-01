@@ -3,11 +3,17 @@ define(['jquery', 'underscore', 'jquery-fullsizable'], function($, _) {
 	$('div.image-environment').each( function() {
 	    var imageEnvironment = $(this);
 	    imageEnvironment.addClass('well well-lg');
-	    var link = $('<a>');
-	    link.attr('href', $('img', imageEnvironment).attr('src'));
 
-	    link.append( imageEnvironment.children() );
-	    imageEnvironment.append( link );
+	    $('img', imageEnvironment).each( function() {
+		var img = $(this);
+		var href = img.attr('src');
+		
+		var link = $('<a>');
+		link.attr('href', href);
+
+		link.append( img );
+		imageEnvironment.append( link );
+	    });
 	});
 
 	$('div.image-environment a').fullsizable({
