@@ -5,6 +5,8 @@ if [ $(hostname) = ximera-1.asc.ohio-state.edu ]; then
     mv -f environment.sh environment.backup
     git pull
     mv -f environment.backup environment.sh
+    echo Deleting math-expressions
+    rm -rf components/math-expressions
     echo Updating npm...
     npm install
     echo Running grunt...
