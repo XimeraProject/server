@@ -241,6 +241,7 @@ git.long(function (commit) {
     app.get( '/course/:username/:repository/:branch/:path(*.css)', course.stylesheet );
     app.get( '/course/:username/:repository/:branch/:path(*.js)', course.javascript );
     app.get( '/course/:username/:repository/:branch/:path(*)', course.activity );
+    app.get( '/activity/:commit/:hash', course.activityByHash );
     
     // TinCan (aka Experience) API
     app.post('/xAPI/statements', tincan.postStatements);
@@ -284,18 +285,16 @@ git.long(function (commit) {
     });
 
     app.get('/just-logged-in', function (req, res) {
-        if (req.user.lastUrlVisited && (req.user.lastUrlVisited != "/")) {
-	    console.log( "lastUrlVisited = ", req.user.lastUrlVisited);
-            res.redirect(req.user.lastUrlVisited);
-        }
-        else {
-            if (req.user.course) {
-		console.log( "course = ", req.user.course);
-		res.redirect( req.user.course );
-	    } else {
+        if (req.user.course) {
+	    console.log( "course = ", req.user.course);
+	    res.redirect( req.user.course );
+	} else {
+	    if (req.user.lastUrlVisited && (req.user.lastUrlVisited != "/") && (!(req.user.lastUrlVisited.match(/\.svg$/)))) {
+		console.log( "lastUrlVisited = ", req.user.lastUrlVisited);
+		res.redirect(req.user.lastUrlVisited);
+	    } else
 		res.redirect('/');
-	    }
-        }
+	}
     });
 
     app.get('/mailing-list', function( req, res ) {
