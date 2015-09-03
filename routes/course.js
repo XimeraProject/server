@@ -530,6 +530,11 @@ exports.tableOfContents = function(req, res) {
 			    xourse.activities[activityPath] = {};
 			    xourse.activities[activityPath].title = url;
 			}
+
+			var splashImage = xourse.activities[activityPath].splashImage;
+
+			if (splashImage)
+			    xourse.activities[activityPath].splashImage = '/activity/' + commit + '/' + splashImage;
 			
 			xourse.activities[activityPath].url = '/course/' + normalize(url);
 		    });
@@ -548,9 +553,16 @@ exports.getActivitiesFromCommit = function(req, res) {
 	if (err) {
 	    res.json({});
 	} else {
-	    if ('activities' in xourse)
+	    if ('activities' in xourse) {
+
+		xourse.activityList.forEach( function(activityPath) {
+		    var activity = xourse.activities[activityPath];
+		    
+		    activity.commit = commit;
+		});
+		
 		res.json( xourse.activities );
-	    else
+	    } else
 		res.json( {} );
 	}
     });    

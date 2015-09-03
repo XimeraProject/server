@@ -34,6 +34,12 @@ define(['jquery', 'underscore'], function($, _) {
 
     var displayActivity = function( card, content ) {
 	$(card).empty();
+
+	var background = 'linear-gradient( rgba(255,255,255,0.75), rgba(255,255,255,0.75) )';
+	
+	if (content.splashImage)
+	    $(card).css( 'background-image', background + ', url(/activity/' + content.commit + '/' + content.splashImage + ')');
+	
 	$(card).append( $('<div class="progress"><div class="progress-bar progress-bar-success" role="progressbar" style="width: 0%;"></div></div>') );
 	$(card).append( $('<h2>' + content.title + '</h2>') );
 	$(card).append( $('<h3>' + content.summary + '</h3>') );
