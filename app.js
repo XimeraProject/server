@@ -235,13 +235,21 @@ git.long(function (commit) {
     
     app.get( '/course/:username/:repository/:branch/:path(*.tex)', course.source );
     app.get( '/course/:username/:repository/:branch/:path(*.png)', course.image );
-    app.get( '/course/:username/:repository/:branch/:path(*.jpg)', course.image );    
+    app.get( '/course/:username/:repository/:branch/:path(*.jpg)', course.image );
     app.get( '/course/:username/:repository/:branch/:path(*.pdf)', course.image );
     app.get( '/course/:username/:repository/:branch/:path(*.svg)', course.image );
-    app.get( '/course/:username/:repository/:branch/:path(*.css)', course.stylesheet );
-    app.get( '/course/:username/:repository/:branch/:path(*.js)', course.javascript );
     app.get( '/course/:username/:repository/:branch/:path(*)', course.activity );
-    app.get( '/activity/:commit/:hash', course.activityByHash );
+
+    app.get( '/activity/:commit/:path(*.css)', course.stylesheet );
+    app.get( '/activity/:commit/:path(*.js)', course.javascript );
+
+    app.get( '/activity/:commit/:path(*.tex)', course.source );
+    
+    app.get( '/activity/:commit/:path(*.png)', course.image );
+    app.get( '/activity/:commit/:path(*.jpg)', course.image );
+    app.get( '/activity/:commit/:path(*.pdf)', course.image );
+    app.get( '/activity/:commit/:path(*.svg)', course.image );    
+    app.get( '/activity/:commit/:path', course.activityByHash );
     
     // TinCan (aka Experience) API
     app.post('/xAPI/statements', tincan.postStatements);

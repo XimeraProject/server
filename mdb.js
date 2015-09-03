@@ -54,7 +54,7 @@ exports.initialize = function initialize(callback) {
                                          owner: {type: String, index: true},
 					 repository: {type: String, index: true},
 					 name: {type: String, index: true},
-					 commit: String,
+					 commit: {type: String, index: true},
                                          lastUpdate: {type: Date, index: true},
                                      });
 

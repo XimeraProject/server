@@ -207,17 +207,6 @@ require( ["jquery", "shCore", "mathjax", "jquery-ui", "shBrushJScript", "shBrush
 
     'use strict';
 
-    /*
-    var module;
-
-    if (module = $('script[src$="require.js"]').data('module')) {
-	require([module]);
-    }
-    */
-
-    console.log( "here" );
-    console.log( document );
-    
     $(document).ready(function() {
 	shCore.SyntaxHighlighter.highlight();
 	

@@ -15,6 +15,22 @@ block badheader
               a.pull-right.btn.btn-sm.btn-primary(role="button", ng-confirm-click="Updating to the most recent version of this activity will erase your work. Are you sure you want to update to the new version?", href="update/")
                 | <i class="fa fa-level-up"></i> Update Activity
 
+block updateModal
+  div.modal.fade#updateWarningModal(tabindex="-1",role="dialog",aria-labelledby="updateWarningModal")
+      div.modal-dialog(role="document")
+        div.modal-content<div class="modal-content">
+          div.modal-header
+            button(type="button", class="close", data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="true") &times;
+            h4(class="modal-title",id="updateModalLabel") Updated Version Available
+          div.modal-body
+            p There is an <strong>updated version</strong> of this activity, but if you update to the most recent version of this activity, then you will lose your workand have to start over with the new version.  How would you like to proceed?
+          div.modal-footer
+            button#update-version-button(type="button",class="btn btn-default", data-dismiss="modal")
+              | <i class="fa fa-level-down"></i>&nbsp;Keep the old version.
+            a#update-version-button(href="/activity/#{activity.commitUpdated}/#{activity.path}",class="btn btn-warning")
+              | <i class="fa fa-level-up"></i>&nbsp;Delete my work and update to the new version.
+
 block resetModal
   div.modal.fade#resetWarningModal(tabindex="-1",role="dialog",aria-labelledby="resetWarningModal")
       div.modal-dialog(role="document")
@@ -31,7 +47,10 @@ block resetModal
               | <i class="fa fa-eraser"></i>&nbsp;Yes, delete my work.
 
 block modals
-  block resetModal
+  div
+    block resetModal
+  div
+    block updateModal
                 
 block content
   div.container
@@ -48,7 +67,7 @@ block content
                 div.handle
         .row
           .col-md-offset-2.col-md-8.activity(id="theActivity", data-activity=activity.hash)
-            
+
             block activity
 
             ul.pager

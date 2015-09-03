@@ -42,7 +42,6 @@ module.exports = function(io) {
             res.status(500).send("");
 	}
 	else {
-	    console.log( req.body );
             mdb.Completion.update({activityHash: req.params.activityHash, user: req.user._id}, {$set: {complete: req.body.complete, date: new Date()}}, {upsert: true}, function (err, affected, raw) {
 		if (err) {
 		    res.status(500).json(err);
