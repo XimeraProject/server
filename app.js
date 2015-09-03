@@ -249,7 +249,7 @@ git.long(function (commit) {
     app.get( '/activity/:commit/:path(*.jpg)', course.image );
     app.get( '/activity/:commit/:path(*.pdf)', course.image );
     app.get( '/activity/:commit/:path(*.svg)', course.image );    
-    app.get( '/activity/:commit/:path', course.activityByHash );
+    app.get( '/activity/:commit/:path(*)', course.activityByHash );
     
     // TinCan (aka Experience) API
     app.post('/xAPI/statements', tincan.postStatements);
