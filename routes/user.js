@@ -234,9 +234,6 @@ exports.update = function(req, res){
     mdb.User.findOne({_id: new mongo.ObjectID(id)}, function(err,document) {
         if (document) {
 
-	    if (document.email)
-	    	document.gravatar = crypto.createHash('md5').update(validator.normalizeEmail(document.email)).digest("hex");	    
-
 	    if (req.user._id.toString() == id)
 		document.pronouned = "me";
 	    else
@@ -279,6 +276,9 @@ exports.update = function(req, res){
 	    
 	    if (req.body.location)
 		document.location = hash.location = validator.toString(req.body.location);
+	    
+	    if (document.email)
+	    	document.gravatar = crypto.createHash('md5').update(validator.normalizeEmail(document.email)).digest("hex");	    
 	    
 	    mdb.User.update( {_id: new mongo.ObjectID(id)}, {$set: hash},
 			     function(err, d) {
