@@ -20,7 +20,7 @@ define(['jquery', 'underscore', 'mathjax', 'tincan', 'progress-bar', 'activity-c
 		    firstTime = false;
 		}
 	    });
-	    
+
 	    $(".problem-environment", activity).problemEnvironment();
 	    $(".mathjax-input", activity).mathAnswer();	    
 	    $(".multiple-choice", activity).multipleChoice();
