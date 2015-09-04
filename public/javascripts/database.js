@@ -171,7 +171,7 @@ define(['jquery', 'underscore', 'async', 'socketio'], function($, _, async, io){
 	var activityHash = activity.attr( 'data-activity' );
 
 	$.ajax({
-	    url: '/state/' + activityHash,
+	    url: '/state/' + activityHash + '?' + (new Date().getTime().toString()),
 	    type: 'GET',
 	    dataType: 'json',
 	    success: function( result ) {
