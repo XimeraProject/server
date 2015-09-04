@@ -97,16 +97,29 @@ define(['jquery', 'underscore', 'popover', 'math-expressions', 'tincan', 'databa
 	result.find( ".btn-ximera-submit" ).click( function() {
 	    var correctAnswerText = result.attr('data-answer');
 	    var correctAnswer;
-	    
-	    correctAnswer = Expression.fromLatex(correctAnswerText);
 
+	    try {	    
+		correctAnswer = Expression.fromLatex(correctAnswerText);
+	    } catch (err) {
+		try {	    		
+		    correctAnswer = Expression.fromText(correctAnswerText);
+		} catch (err) {
+		    console.log( "Instructor error in \\answer: " + err );
+		    correctAnswer = Expression.fromText( "sqrt(-1)" );
+		}
+	    }
+		
 	    var studentAnswer;
+	    var studentAnswerText = inputBox.val();
 	    
 	    try {
-		var studentAnswerText = inputBox.val();
 		studentAnswer = Expression.fromText( studentAnswerText );
 	    } catch (err) {
-		studentAnswer = Expression.fromText( "sqrt(-1)" );
+		try {
+		    studentAnswer = Expression.fromLatex( studentAnswerText );
+		} catch (err) {
+		    studentAnswer = Expression.fromText( "sqrt(-1)" );
+		}
 	    }
 	    
 	    var tolerance = result.attr('data-tolerance');
