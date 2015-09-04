@@ -39,6 +39,8 @@ define(['jquery', 'underscore'], function($, _) {
 	
 	if (content.splashImage)
 	    $(card).css( 'background-image', background + ', url(/activity/' + content.commit + '/' + content.splashImage + ')');
+	else
+	    $(card).css( 'background-image', background );
 	
 	$(card).append( $('<div class="progress"><div class="progress-bar progress-bar-success" role="progressbar" style="width: 0%;"></div></div>') );
 	$(card).append( $('<h2>' + content.title + '</h2>') );
