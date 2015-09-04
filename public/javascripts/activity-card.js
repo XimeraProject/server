@@ -9,7 +9,7 @@ define(['jquery', 'underscore'], function($, _) {
 	
 	if (userId) {
 	    $.ajax({
-		url: '/users/' + userId + '/completions',
+		url: '/users/' + userId + '/completions' + '?' + (new Date().getTime().toString()),
 		type: 'GET',
 		success: function( result ) {
 		    completions.resolve( result );
@@ -22,7 +22,7 @@ define(['jquery', 'underscore'], function($, _) {
 
 	if (commit) {
 	    $.ajax({
-		url: '/commits/' + commit + '/activities',
+		url: '/commits/' + commit + '/activities' + '?' + (new Date().getTime().toString()),
 		type: 'GET',
 		success: function( result ) {
 		    activities.resolve( result );
