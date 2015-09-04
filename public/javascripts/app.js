@@ -31,7 +31,6 @@ require.config({
         "angular-animate": "../../components/angular-animate/angular-animate.min",
         "angular-sanitize": "../../components/angular-sanitize/angular-sanitize.min",
 	"underscore": "../../components/underscore/underscore",
-	"x-editable": "../../components/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.min",
 	"threejs": "../../components/threejs/build/three.min",
 	"moment": "../../components/moment/min/moment.min",
         "q": "../../components/q/q",
@@ -64,6 +63,8 @@ require.config({
 
 	"js-quantities": "../../components/js-quantities/src/quantities",
 
+	"eonasdan-bootstrap-datetimepicker": "../../components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min",
+	
 	'md5': '../../components/JavaScript-MD5/js/md5.min'
     },
 
@@ -84,9 +85,8 @@ require.config({
         "angular-strap-tpl": { deps: ['angular-strap'] },
 	jquery: { exports: 'jQuery' },
 	"bootstrap": { deps: ['jquery'] },
-	"bootstrap-datepicker": { deps: ['jquery'] },
 
-        "x-editable": { deps: ['jquery', 'jquery-ui'] },
+	"eonasdan-bootstrap-datetimepicker": { deps: ['jquery', 'moment'] },
 	
 	"pagedown-converter": { exports: 'Markdown.Converter', deps: ['bootstrap'] },
 	"pagedown-sanitizer": { exports: 'Markdown.Sanitizer', deps: ['bootstrap', "pagedown-converter"] },

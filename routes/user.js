@@ -5,6 +5,8 @@
 
 var crypto = require('crypto');
 var mongo = require('mongodb');
+var validator = require('validator');
+var moment = require('moment');
 var mdb = require('../mdb');
 var remember = require('../remember');
 
@@ -133,10 +135,19 @@ exports.get = function(req, res){
     
     mdb.User.findOne({_id: new mongo.ObjectID(id)}, function(err,document) {
         if (document) {
-	    
-	    //if ('email' in document)
-	    //	document.gravatar = crypto.createHash('md5').update(document.email).digest("hex");
 
+	    if (document.email)
+	    	document.gravatar = crypto.createHash('md5').update(validator.normalizeEmail(document.email)).digest("hex");
+
+	    if (document.birthday) {
+		document.formattedBirthday = moment(new Date(document.birthday)).format('MMMM D, YYYY');
+	    }	    
+	    
+	    if (req.user._id.toString() == id)
+		document.pronouned = "me";
+	    else
+		document.pronouned = document.name;		
+	    
 	    res.format({
 		html: function(){
 		    remember(req);
@@ -160,94 +171,134 @@ exports.get = function(req, res){
     });
 };
 
-exports.put = function(req, res){
-    var user = req.body.user;
+exports.edit = function(req, res){
+    var id = req.params.id;
 
-    // If this is an x-editable update
-    if ('pk' in req.body) {
-	console.log( req.user._id.toString() );
-	console.log( req.body.pk );
-
-	// Could you 
-	if ((req.user._id.toString() !== req.body.pk) && (!req.user.superuser)) {
-	    res.status(403).send('You are not permitted to edit this user.');
-	    return;
-	}
-	
-	var hash = {};
-
-	if (req.body.name == "location")
-	    hash['location'] = req.body.value;
-
-	if (req.body.name == "name") {
-	    hash['name'] = req.body.value;
-
-	    if ( ! (/[A-z]/.test(hash['name']))) {
-		res.status(403).send('Your name must contain some letters.');
-		return;		
-	    }
-	}
-	    
-	if (req.body.name == "displayName")
-	    hash['displayName'] = req.body.value;
-
-	if (req.body.name == "privacy")
-	    hash['privacy'] = req.body.value;	
-	    
-	if (req.body.name == "birthday")
-	    hash['birthday'] = req.body.value;
-	
-	mdb.User.update( {_id: new mongo.ObjectID(req.body.pk)}, {$set: hash},
-			 function(err, document) {
-			     if (err)
-				 res.send(500);
-			     
-			     res.send(200);
-			 });
-
-	return;
-	
-    } else {
-	res.send(404);
-    }
-    
     if (!req.user) {
 	res.send(401);
     }
 
-    if (req.user.superuser || (req.user._id == user._id)) {
-	var id = user._id;
-
-	var hash = {};
-
-	if ('email' in user)
-	    hash['email'] = user.email;
-
-	if ('displayName' in user)
-	    hash['displayName'] = user.displayName;
-
-	if ('website' in user)
-	    hash['website'] = user.website;
-
-	if ('location' in user)
-	    hash['location'] = user.location;
-
-	if ('biography' in user)
-	    hash['biography'] = user.biography;
-
-	if ('birthday' in user)
-	    hash['birthday'] = user.birthday;
-
-	console.log( hash );
-
-	mdb.User.update( {_id: new mongo.ObjectID(id)}, {$set: hash},
-			 function(err, document) {
-			     if (err)
-				 res.send(500);
-			     
-			     res.send(200);
-			 });
-    } else {
-	res.send(404);
+    // BADBAD: should include more nuanced security here
+    if (req.user._id.toString() != id) {
+        res.status(500).send('No permission to access other users.');
+	return;	
     }
+
+    mdb.User.findOne({_id: new mongo.ObjectID(id)}, function(err,document) {
+        if (document) {
+	    
+	    if (document.email)
+	    	document.gravatar = crypto.createHash('md5').update(validator.normalizeEmail(document.email)).digest("hex");
+
+	    if (req.user._id.toString() == id)
+		document.pronouned = "me";
+	    else
+		document.pronouned = document.name;			    
+
+	    if (document.birthday) {
+		document.formattedBirthday = moment(new Date(document.birthday)).format('MMMM D, YYYY');
+	    }
+	    
+	    res.format({
+		html: function(){
+		    remember(req);
+		    
+		    res.render('user/edit', { userId: req.params.id,
+					      user: req.user,
+					      script: "user/profile",
+					      person: document,
+					      editable: true,
+					      title: 'Profile' } );
+		},
+	    });
+        }
+        else {
+	    res.status(404).json({});
+        }
+    });
 };
+
+exports.update = function(req, res){
+    var id = req.params.id;
+
+    if (!req.user) {
+	res.send(401);
+    }
+
+    // BADBAD: should include more nuanced security here
+    if (req.user._id.toString() != id) {
+        res.status(500).send('No permission to access other users.');
+	return;	
+    }
+
+    mdb.User.findOne({_id: new mongo.ObjectID(id)}, function(err,document) {
+        if (document) {
+
+	    if (document.email)
+	    	document.gravatar = crypto.createHash('md5').update(validator.normalizeEmail(document.email)).digest("hex");	    
+
+	    if (req.user._id.toString() == id)
+		document.pronouned = "me";
+	    else
+		document.pronouned = document.name;			    
+	    
+	    var hash = {};
+
+	    if (req.body.displayName)
+		document.displayName = hash.displayName = validator.toString(req.body.displayName);	    
+	    else
+		document.displayName = hash.displayName = '';		
+
+	    if (req.body.visibility)
+		if (validator.isIn(req.body.visibility, ["none", "users", "everyone"]))
+		    document.visibility = hash.visibility = req.body.visibility;
+	    
+	    if ((req.body.email) && (validator.isEmail(req.body.email)))
+		document.email = hash.email = validator.normalizeEmail(req.body.email);
+	    else
+		document.email = hash.email = '';		
+	    
+	    if ((req.body.homepage) && (validator.isURL(req.body.homepage)))
+		document.website = hash.website = req.body.homepage;
+	    else
+		document.website = hash.website = '';	
+
+	    if (req.body.birthday)
+		document.birthday = hash.birthday = validator.toDate(req.body.birthday);
+	    else
+		document.birthday = '';
+
+	    if (document.birthday) {
+		document.formattedBirthday = moment(new Date(document.birthday)).format('MMMM D, YYYY');
+	    }	    
+	    
+	    if (req.body.biography)
+		document.biography = hash.biography = validator.toString(req.body.biography);
+	    else
+		document.biography = hash.biography = '';
+	    
+	    if (req.body.location)
+		document.location = hash.location = validator.toString(req.body.location);
+	    
+	    mdb.User.update( {_id: new mongo.ObjectID(id)}, {$set: hash},
+			     function(err, d) {
+				 
+				 if (err)
+				     res.send(500);
+				 else {	
+				     res.render('user/profile', { userId: req.params.id,
+								  user: req.user,
+								  updated: true,
+								  script: "user/profile",
+								  person: document,
+								  editable: true,
+								  title: 'Profile' } );
+				 }
+			     });
+        }
+        else {
+	    res.status(404).json({});
+        }
+    });
+};
+

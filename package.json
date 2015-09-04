@@ -20,6 +20,7 @@
 	"passport": "*",
 	"mongodb": "*",
 	"mongojs": "*",
+	"validator": "*",
 	"jade": "*",
 	"file": "*",
 	"jsdom": "*",

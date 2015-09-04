@@ -1,23 +1,16 @@
-define(['require', 'x-editable'], function(require) {
+define(['require', "eonasdan-bootstrap-datetimepicker"], function(require) {
     var $ = require('jquery');
     var ui = require('jquery-ui');
     var moment = require('moment');
 
-    // Use Font Awesome instead of Glyphicons (which are somewhat broken in Bootstrap 3, apparently?)
-    $.fn.editableform.buttons =
-	'<button type="submit" class="btn btn-primary btn-sm editable-submit">'+
-	'<i class="fa fa-fw fa-check"></i>'+
-	'</button>'+
-	'<button type="button" class="btn btn-default btn-sm editable-cancel">'+
-	'<i class="fa fa-fw fa-times"></i>'+
-	'</button>';
-
-    // Default to inline x-editables instead of pop-ups
-    // $.fn.editable.defaults.mode = 'inline';
-    
     // jsfiddle which updates all relative dates defined by <time class='relative-date'>
     var updateAllRelativeDates = function() {
         $('time').each(function (i, e) {
+            if ($(e).attr("class") == 'absolute-date') {
+                var time = moment(new Date($(e).attr('datetime')));
+                $(e).html('<span>' + time.format('MMMM D, YYYY') + '</span>');		
+	    }
+	    
             if ($(e).attr("class") == 'relative-date') {
 		
                 // Initialise momentjs
@@ -57,18 +50,24 @@ define(['require', 'x-editable'], function(require) {
     };
 
     $(document).ready(function() {
+	$("#datepicker").datetimepicker({
+	    format: "MMMM D, YYYY",
+	    icons: {
+		time: "fa fa-clock-o",
+		date: "fa fa-calendar",		
+		up: "fa fa-arrow-up",
+		down: "fa fa-arrow-down",
+		previous: "fa fa-arrow-left",
+		next: "fa fa-arrow-right",		
+	    }
+	});
+	
 	// Update all dates
 	updateAllRelativeDates();
 
 	// Update dates every minute
 	setInterval(updateAllRelativeDates, 60000);
 	
-	$('.x-editable').attr( "data-url", function() {
-	    return "/users/" + $(this).attr("data-pk");
-	});
-
-	$('.x-editable').editable({ajaxOptions: {type: 'put'}});
-
 	var updateLinkedAccountButtons = function() {
 	    $('.linked-account[connected]').switchClass('btn-default', 'btn-danger');
 	    $('.linked-account:not([connected])').switchClass('btn-danger', 'btn-default');

@@ -80,7 +80,7 @@ if (process.env.DEPLOYMENT === 'production') {
     rootUrl = 'http://ximera.osu.edu';
 } else {
     // Temporarily use NGROK for the server    
-    rootUrl = 'http://62b61327.ngrok.com';
+    rootUrl = 'http://2698981c.ngrok.com';
 }
 
 
@@ -209,7 +209,8 @@ git.long(function (commit) {
     //app.get('/users/profile', user.currentProfile);
     //app.get('/users/:id/profile', user.profile);
     app.get('/users/:id', user.get);
-    app.put('/users/:id', user.put);
+    app.get('/users/:id/edit', user.edit);
+    app.post('/users/:id', user.update);
 
     app.delete('/users/:id/google', function( req, res ) { user.deleteLinkedAccount( req, res, 'google' ); } );
     app.delete('/users/:id/coursera', function( req, res ) { user.deleteLinkedAccount( req, res, 'coursera' ); } );
