@@ -369,7 +369,13 @@ function renderActivity( res, activity ) {
 		});
 		
 		activity.xourse = xourse;		    
+	    } else {
+		xourse = {};
+		xourse.activityList = [];
+		xourse.activities = {};		
 	    }
+
+	    activity.xourse = xourse;		    	    
 	    
 	    callback(null);
 	}
@@ -500,6 +506,7 @@ exports.tableOfContents = function(req, res) {
 	    
 	], function(err, result) {
 	    if ((err == "Missing branch") && (branchName != "master")) {
+		// BADBAD: sometimes ACTIVITY is undefined
 		res.redirect("/course/" + activity.ownerName + "/" + activity.repositoryName + "/master/" + activity.branchName + "/");
 	    } else {
 		if ((err) || (!result)) {
