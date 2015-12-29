@@ -12,7 +12,7 @@ require.config({
     packages: [
 	{
 	    name: "math-expressions",
-	    location: "../../components/math-expressions/amd",
+	    location: "../../components/math-expressions/build",
 	    main: "math-expressions"
 	}
     ],

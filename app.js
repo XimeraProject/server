@@ -7,6 +7,7 @@ var express = require('express')
   , activity = require('./routes/activity')
   , course = require('./routes/course')
   , user = require('./routes/user')
+  , api = require('./routes/api')
   , about = require('./routes/about')
   , score = require('./routes/score')
   , github = require('./routes/github')
@@ -182,6 +183,10 @@ git.long(function (commit) {
     app.use(passport.initialize());
     app.use(passport.session());
 
+    app.get('/xake', api.authenticateViaHMAC);
+    app.get('/xake', api.xake);      
+    
+    
     app.use(login.guestUserMiddleware);
     app.use(addDatabaseMiddleware);
 

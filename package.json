@@ -1,16 +1,17 @@
 {
     "name": "ximera",
     "description": "Ximera interactive textbook server",
-    "version": "0.0.5",
+    "version": "0.0.7",
     "private": true,
     "scripts": {
 	"start": "node app.js",
-	"postinstall": "./node_modules/bower/bin/bower install && cd ./components/mathquill && npm install && make && cd ../.. && mkdir -p components/syntaxhighlighter/amd && node node_modules/requirejs/bin/r.js -convert components/syntaxhighlighter/scripts components/syntaxhighlighter/amd && cd ./components/math-expressions && npm install && cd ../../ && mkdir -p components/math-expressions/amd && node node_modules/requirejs/bin/r.js -convert components/math-expressions/lib components/math-expressions/amd"
+	"postinstall": "./node_modules/bower/bin/bower install && cd ./components/mathquill && npm install && make && cd ../.. && mkdir -p components/syntaxhighlighter/amd && node node_modules/requirejs/bin/r.js -convert components/syntaxhighlighter/scripts components/syntaxhighlighter/amd"
     },
     "dependencies": {
 	"forever": "*",
 	"underscore": "*",
 	"bower": "*",
+	"node-uuid": "*",	
 	"express": "*",
 	"http-proxy-middleware": "*",
 	"less-middleware": "0.1.15",
