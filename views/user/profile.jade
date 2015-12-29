@@ -94,5 +94,29 @@ block content
                   mixin linked_account('Google', 'google', 'google', person._id, person.googleOpenId )
                   mixin linked_account('Coursera', undefined, 'coursera', person._id, person.courseraOAuthId )
                   mixin linked_account('GitHub', 'github-alt', 'github', person._id, person.githubId )
-                  mixin linked_account('Twitter', 'twitter', 'twitter', person._id, person.twitterOAuthId )            
-                          
+                  mixin linked_account('Twitter', 'twitter', 'twitter', person._id, person.twitterOAuthId )
+        if (user.superuser) || (user._id.toString() === person._id.toString())                  
+          .row
+            .col-sm-12
+              div.panel.panel-default
+                div.panel-heading
+                  h3.panel-title Secret
+                div.panel-body
+                  div.btn-toolbar(style="margin-bottom: 15px;")
+                    div.btn-group.pull-right
+                      button.btn.btn-primary(type="button",userId=userId,id="create-secret") <i class="fa fa-user-secret"></i>&nbsp;
+                        if person.apiKey
+                          | Recreate Secret
+                        else 
+                          | Create Secret
+                    div.btn-group
+                      if person.apiKey
+                        | Connect to your account with the command <kbd>xake login</kbd>.
+                      else
+                        | Create a key and secret in order to connect to your account using command-line tools like <code>xake</code>.
+                  dl.dl-horizontal
+                    dt Key
+                    dd.select-all#api-key #{person.apiKey}
+                    dt Secret
+                    dd.select-all#api-secret #{person.apiSecret}                
+                  

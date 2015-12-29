@@ -80,6 +80,40 @@ define(['require', "eonasdan-bootstrap-datetimepicker"], function(require) {
 	};
 
 	updateLinkedAccountButtons();
+
+	$('#create-secret').click( function() {
+	    var button = this;	    
+	    console.log('requesting secret');
+
+	    $.ajax({
+		url: '/users/' + $(button).attr("userId") + '/secret',
+		type: 'PUT',
+		success: function(result) {
+		    $('#api-key').fadeOut(function() {
+			$(this).text( result.apiKey );
+		    }).fadeIn();
+		    $('#api-secret').fadeOut(function() {
+			$(this).text( result.apiSecret );
+		    }).fadeIn();		    
+		}
+	    });	    
+	});
+
+	$('.select-all').click(function (){
+	    var range, selection;
+	    
+	    if (window.getSelection && document.createRange) {
+		selection = window.getSelection();
+		range = document.createRange();
+		range.selectNodeContents(this);
+		selection.removeAllRanges();
+		selection.addRange(range);
+	    } else if (document.selection && document.body.createTextRange) {
+		range = document.body.createTextRange();
+		range.moveToElementText(this);
+		range.select();
+	    }
+	});
 	
 	$('.linked-account').click( function() {
 	    var button = this;

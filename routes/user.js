@@ -4,6 +4,7 @@
  */
 
 var crypto = require('crypto');
+var uuid = require('node-uuid');
 var mongo = require('mongodb');
 var validator = require('validator');
 var moment = require('moment');
@@ -43,6 +44,34 @@ exports.profile = function(req, res){
     var id = req.params.id;
     var editable = ('user' in req) && (req.user.superuser || (req.user._id === id));
     res.render('user', { userId: req.params.id, user: req.user, editable: editable, title: 'Profile' } );
+};
+
+exports.putSecret = function(req, res){
+    var id = req.params.id;
+
+    if (!req.user) {
+	res.send(401);
+    }
+
+    // BADBAD: should include more nuanced security here
+    if (req.user._id.toString() != id) {
+        res.status(500).send('No permission to access other users.');
+	return;	
+    }
+
+    var hash = {};
+    hash.apiKey = uuid.v4();
+    hash.apiSecret = crypto.createHash('sha256').update(uuid.v4()).update(crypto.randomBytes(256)).digest('hex');
+    
+    mdb.User.update( {_id: new mongo.ObjectID(id)}, {$set: hash},
+		     function(err, d) {
+			 
+			 if (err)
+			     res.send(500);
+			 else {
+			     res.status(200).json(hash);
+			 }
+		     });
 };
 
 ////////////////////////////////////////////////////////////////

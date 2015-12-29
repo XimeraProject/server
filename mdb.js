@@ -158,7 +158,9 @@ exports.initialize = function initialize(callback) {
 				      remoteAddress: String,
                                       isGuest: Boolean,
                                       lastUrlVisited: String,
-                                      isInstructor: Boolean
+                                      isInstructor: Boolean,
+                                      apiKey: {type: String, index: true, unique: true, sparse: true},				      
+                                      apiSecret: String				      
                                   });
 
     exports.State = mongoose.model("State",

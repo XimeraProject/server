@@ -80,7 +80,7 @@ if (process.env.DEPLOYMENT === 'production') {
     rootUrl = 'http://ximera.osu.edu';
 } else {
     // Temporarily use NGROK for the server    
-    rootUrl = 'http://2698981c.ngrok.com';
+    rootUrl = 'http://5304979f.ngrok.com';
 }
 
 
@@ -216,6 +216,8 @@ git.long(function (commit) {
     app.delete('/users/:id/coursera', function( req, res ) { user.deleteLinkedAccount( req, res, 'coursera' ); } );
     app.delete('/users/:id/github', function( req, res ) { user.deleteLinkedAccount( req, res, 'github' ); } );
     app.delete('/users/:id/twitter', function( req, res ) { user.deleteLinkedAccount( req, res, 'twitter' ); } );
+
+    app.put('/users/:id/secret', function( req, res ) { user.putSecret( req, res ); } );
     
     app.get( '/course/calculus-one/', function( req, res ) { res.redirect('/about/plans'); });
     app.get( '/course/calculus-one', function( req, res ) { res.redirect('/about/plans'); });

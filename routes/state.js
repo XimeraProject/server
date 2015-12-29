@@ -6,11 +6,16 @@ module.exports = function(io) {
     , util = require('util');
     
     exports.get = function(req, res) {
+	console.log( '----------------------------------------------------------------' );
+	
 	if (!req.user) {
             res.status(500).send('');
 	}
 	else {
             mdb.State.findOne({activityHash: req.params.activityHash, user: req.user._id} , function(err, document) {
+		console.log( "User = ", req.user._id );
+		console.log( "activityHash = ", req.params.activityHash );
+		
 		if (document) {
 		    // If the document isn't any good, just send an empty hash {}
 		    if (document.data)
