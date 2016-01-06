@@ -180,12 +180,17 @@ git.long(function (commit) {
 
     console.log( versionator.versionPath('/template/test') );
 
+    app.use(api.authenticateViaHMAC);    
     app.use(passport.initialize());
     app.use(passport.session());
 
     app.get('/xake', api.authenticateViaHMAC);
-    app.get('/xake', api.xake);      
-    
+    app.get('/api/xake', api.xake);
+
+    app.put( '/activity/:commit/:path(*)', api.authenticateViaHMAC);    
+    app.put( '/activity/:commit/:path(*)', api.putActivity );
+    app.put( '/activity/:commit/:path(*.tex)', api.authenticateViaHMAC);
+    //app.put( '/activity/:commit/:path(*.tex)', api.putTex );
     
     app.use(login.guestUserMiddleware);
     app.use(addDatabaseMiddleware);

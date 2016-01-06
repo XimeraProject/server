@@ -10,6 +10,12 @@ var remember = require('../remember');
 
 exports.authenticateViaHMAC = function(req, res, next) {
     var authorization = req.header("Authorization");
+    
+    if (!authorization) {
+	next();
+	return;
+    }
+	
     authorization = authorization.replace(/^Ximera /,'');
     var key = authorization.replace(/:.*$/,'');
     var desiredHash = authorization.replace(/^.*:/,'');
@@ -32,4 +38,13 @@ exports.authenticateViaHMAC = function(req, res, next) {
 
 exports.xake = function(req, res){
     res.status(200).json(req.user);
+};
+
+exports.putActivity = function(req, res){
+    var commit = req.params.commit;
+    var path = req.params.path;
+
+    //console.log( req.rawBody );
+    
+    res.status(200).json("Got it.");
 };

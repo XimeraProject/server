@@ -31,7 +31,10 @@ exports.getCurrent = function(req, res){
 	return;
     }
 
-    req.user.gravatar = crypto.createHash('md5').update(req.user.email).digest("hex");
+    if (req.user.email)
+	req.user.gravatar = crypto.createHash('md5').update(req.user.email).digest("hex");
+
+    req.user.apiSecret = '';
     res.json(req.user);
 };
 
