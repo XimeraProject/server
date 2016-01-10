@@ -140,10 +140,8 @@ define(['jquery', 'underscore', 'async', 'socketio'], function($, _, async, io){
 		function(activityHash, callback) {
 		    var json = JSON.stringify(DATABASES[activityHash]);
 
-		    console.log( activityHash );
-
 		    // BADBAD: I do not have to save anything if we agree with the remote -- unless I changed this in another browser!
-		    if ((activityHash === undefined) || (json == REMOTES[activityHash])) {
+		    if ((activityHash == "undefined") || (json == REMOTES[activityHash])) {
 			callback(null);
 		    } else {
 			$.ajax({
