@@ -1,9 +1,13 @@
 define(['jquery', 'bootstrap'], function($) {
     $(document).ready(function() {
-	$('#scroller').affix({
-	    offset: {
-		top: $("#scroller-anchor").offset().top
-	    }
-	});
+	var offset = $("#scroller-anchor").offset();
+	
+	if (offset) {
+	    $('#scroller').affix({
+		offset: {
+		    top: offset.top;
+		}
+	    });
+	}
     });
 });
