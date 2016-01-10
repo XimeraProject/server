@@ -76,7 +76,7 @@ require.config({
     shim: {
 	socketio: { exports: 'io' },
 
-	sly: { exports: 'Sly' },
+	sly: { exports: 'Sly', deps: ['jquery'] },
 
 	angular: { exports: 'angular', deps: ['jquery'] },
         "angular-animate": { deps: ['angular'] },
@@ -84,7 +84,9 @@ require.config({
         "angular-strap": { deps: ['angular', 'bootstrap', "angular-animate"] },
         "angular-strap-tpl": { deps: ['angular-strap'] },
 	jquery: { exports: 'jQuery' },
-	"bootstrap": { deps: ['jquery'] },
+	"jquery-ui": { deps: ['jquery'] },
+	"jquery-fullsizable": { deps: ['jquery'] },	
+	"bootstrap": { deps: ['jquery'] },	
 
 	"eonasdan-bootstrap-datetimepicker": { deps: ['jquery', 'moment'] },
 	
