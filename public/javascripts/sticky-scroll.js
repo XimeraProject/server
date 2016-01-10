@@ -5,7 +5,7 @@ define(['jquery', 'bootstrap'], function($) {
 	if (offset) {
 	    $('#scroller').affix({
 		offset: {
-		    top: offset.top;
+		    top: offset.top
 		}
 	    });
 	}
