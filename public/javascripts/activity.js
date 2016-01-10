@@ -45,16 +45,18 @@ define(['jquery', 'underscore', 'mathjax', 'tincan', 'progress-bar', 'activity-c
 
 	recordCompletion: function(proportionComplete) {
 	    var hash = $(this).activityHash();
-	    
-	    $.ajax({
-		url: '/completion/' + hash,
-		type: 'PUT',
-		data: JSON.stringify({complete: proportionComplete}),
-		contentType: 'application/json',
-		success: function( result ) {
-		    console.log( "recording completion for " + hash );
-		},
-	    });	    
+
+	    if (hash != undefined) {
+		$.ajax({
+		    url: '/completion/' + hash,
+		    type: 'PUT',
+		    data: JSON.stringify({complete: proportionComplete}),
+		    contentType: 'application/json',
+		    success: function( result ) {
+			console.log( "recording completion for " + hash );
+		    },
+		});
+	    }
 
 	    return;
 	},
