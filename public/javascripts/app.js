@@ -8,15 +8,15 @@ require.config({
             // noGlobal: true
         }
     },
-    /*
+
     packages: [
 	{
 	    name: "math-expressions",
-	    location: "../../components/math-expressions/build",
+	    location: "../../components/math-expressions/amd",
 	    main: "math-expressions"
 	}
     ],
-    */
+
     paths: {
         mathjax: "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured",
 	less: "../../components/less/dist/less.min",
@@ -66,8 +66,6 @@ require.config({
 	"eonasdan-bootstrap-datetimepicker": "../../components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min",
 	
 	'md5': '../../components/JavaScript-MD5/js/md5.min',
-	
-	'math-expressions': '../../components/math-expressions/build/math-expressions'
     },
 
     priority: [
@@ -79,8 +77,6 @@ require.config({
 	socketio: { exports: 'io' },
 
 	sly: { exports: 'Sly', deps: ['jquery'] },
-
-	"math-expressions":  { exports: 'Expression' },
 	
 	angular: { exports: 'angular', deps: ['jquery'] },
         "angular-animate": { deps: ['angular'] },
