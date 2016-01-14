@@ -89,11 +89,15 @@ app.use(logger('dev'));
 app.use(favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
 
 app.use(function(req, res, next) {
-    req.rawBody = '';
-    
-    req.on('data', function(chunk) { 
-	req.rawBody += chunk;
+
+    req.chunks = [];
+    req.on('data', function(chunk) {
+	req.chunks.push( new Buffer(chunk) );
     });
+    req.on('end', function(chunk) {
+	req.rawBody = Buffer.concat( req.chunks );
+	console.log( req.rawBody.length );
+    });    
     
     next();
 });
@@ -184,12 +188,22 @@ git.long(function (commit) {
     app.use(passport.initialize());
     app.use(passport.session());
 
-    app.get('/xake', api.authenticateViaHMAC);
-    app.get('/api/xake', api.xake);
+    //app.get('/xake', api.authenticateViaHMAC);
+    //app.get('/api/xake', api.xake);
+ 
+    app.put( '/activity/:commit/:path(*)', api.authenticateViaHMAC);
+    app.put( '/activity/:commit/:path(*.png)', api.putFile );
+    app.put( '/activity/:commit/:path(*.css)', api.putFile );
+    app.put( '/activity/:commit/:path(*.js)', api.putFile );
+    app.put( '/activity/:commit/:path(*.tex)', api.putFile );
+    app.put( '/activity/:commit/:path(*.jpg)', api.putFile );
+    app.put( '/activity/:commit/:path(*.pdf)', api.putFile );
+    app.put( '/activity/:commit/:path(*.svg)', api.putFile );    
 
-    app.put( '/activity/:commit/:path(*)', api.authenticateViaHMAC);    
     app.put( '/activity/:commit/:path(*)', api.putActivity );
-    app.put( '/activity/:commit/:path(*.tex)', api.authenticateViaHMAC);
+    app.put( '/repos/:owner/:repo/git/commits/:sha', api.putCommit );
+    
+    //app.put( '/activity/:commit/:path(*.tex)', api.authenticateViaHMAC);
     //app.put( '/activity/:commit/:path(*.tex)', api.putTex );
     
     app.use(login.guestUserMiddleware);
@@ -263,6 +277,12 @@ git.long(function (commit) {
     app.get( '/activity/:commit/:path(*.pdf)', course.image );
     app.get( '/activity/:commit/:path(*.svg)', course.image );    
     app.get( '/activity/:commit/:path(*)', course.activityByHash );
+
+    //app.head( '/activity/:commit/:path(*.png)', course.imageHead );
+    //app.head( '/activity/:commit/:path(*.jpg)', course.imageHead );
+    //app.head( '/activity/:commit/:path(*.pdf)', course.imageHead );
+    //app.head( '/activity/:commit/:path(*.svg)', course.imageHead );    
+    app.head( '/activity/:commit/:path(*)', course.activityByHashHead );
     
     // TinCan (aka Experience) API
     app.post('/xAPI/statements', tincan.postStatements);

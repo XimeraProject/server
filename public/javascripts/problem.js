@@ -71,9 +71,13 @@ define(['jquery', 'underscore', 'mathjax', 'database', 'tincan'], function($, _,
 	    
 	    var inDom = function(e) { return $.contains( document.documentElement, e ); };
 	    answersNeeded = _.filter( answersNeeded, inDom );
+
+	    // mathjax also sticks extra stuff under a "semantics" tag now
+	    var notSemantic = function(e) { return $(e).closest( 'semantics' ).length == 0; }
+	    answersNeeded = _.filter( answersNeeded, notSemantic );
 	    
 	    problem.data( 'answers-needed', answersNeeded  );
-
+	    
 	    problem.persistentData( 'blocking', true );
 	    
 	    return false;

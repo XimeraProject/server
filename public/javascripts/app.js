@@ -125,7 +125,7 @@ require.config({
 			
 			processEnvironments: true,
 			showProcessingMessages: false,
-			
+			showMathMenu: false,
 			TeX: {
 			    extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js", "color.js"],
 			    Macros: {}

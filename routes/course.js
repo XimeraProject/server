@@ -171,6 +171,7 @@ function findMostRecentGitFileContents(owner, repository, branchName, commit, pa
 		    callback( "Missing gitFile", null );
 		else {
 		    hash = gitFile.hash;
+
 		    mdb.Blob.findOne({hash: gitFile.hash}).exec(callback);
 		}
 	    },
@@ -305,7 +306,7 @@ exports.image = function(req, res) {
 		res.contentType( 'image/jpeg' );
 	    else
 		res.contentType( 'image/' + extname(path).replace('.', '') );
-	    
+
 	    res.end( file.data, 'binary' );
 	}
     });
@@ -401,6 +402,18 @@ function renderActivity( res, activity ) {
 				     nextActivity: nextActivity, previousActivity: previousActivity,
 				     javascript: javascript });
 	}
+    });
+};
+
+exports.activityByHashHead = function(req, res) {
+    var commit = req.params.commit;
+    var path = req.params.path;
+
+    mdb.Activity.findOne({path: path, commit: commit}).exec( function( err, activity ) {
+	if (!activity)
+	    res.send(404);
+	else
+	    res.send(200);
     });
 };
 
@@ -560,17 +573,21 @@ exports.getActivitiesFromCommit = function(req, res) {
 	if (err) {
 	    res.json({});
 	} else {
-	    if ('activities' in xourse) {
+	    if (!(xourse)) {
+		res.json({});
+	    } else {
+		if ('activities' in xourse) {
 
-		xourse.activityList.forEach( function(activityPath) {
-		    var activity = xourse.activities[activityPath];
-		    
-		    activity.commit = commit;
-		});
+		    xourse.activityList.forEach( function(activityPath) {
+			var activity = xourse.activities[activityPath];
+			
+			activity.commit = commit;
+		    });
 		
-		res.json( xourse.activities );
-	    } else
-		res.json( {} );
+		    res.json( xourse.activities );
+		} else
+		    res.json( {} );
+	    }
 	}
     });    
 };
