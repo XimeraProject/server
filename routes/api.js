@@ -98,6 +98,39 @@ exports.putFile = function(req, res){
     });
 };
 
+var githubRepository = async.memoize(
+    function( token, user, repo, callback ) {
+	var github = new githubApi({version: "3.0.0"});
+	
+	github.authenticate({
+	    type: "oauth",
+	    token: token
+	});
+
+	console.log( "downloading!" );
+	github.repos.get({user: user, repo: repo}, callback );
+    },
+    function( token, user, repo ) {
+	console.log( token + ":" + user + "/" + repo );
+	return token + ":" + user + "/" + repo;
+    }
+);
+
+exports.verifyCollaborator = function(req, res, next){
+    if ((req.user) && (req.user.githubAccessToken)) {
+	githubRepository( req.user.githubAccessToken, req.params.owner, req.params.repo, function(err, githubRepo) {
+	    if (err)
+		res.status(500).send(err);
+	    else {
+		console.log( githubRepo );
+		next();
+	    }
+	});
+    } else {
+	res.status(500).send("You must attach your GitHub account to your Ximera account.");
+    }
+};
+
 exports.putCommit = function(req, res){
     var commit = req.params.commit;
     
