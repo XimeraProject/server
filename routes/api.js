@@ -27,16 +27,25 @@ exports.authenticateViaHMAC = function(req, res, next) {
 	hmac.setEncoding('hex');
 
 	hmac.write(req.method + " " + req.path + "\n");
-	hmac.end(req.rawBody, function() {
-	    var hash = hmac.read();
-	    if (hash == desiredHash) {
-		req.user = user;
-		next();
-	    } else {
-    		res.status(401).json("Forbidden.");
-	    }
+
+	req.chunks = [];	
+	req.on('data', function(chunk) {
+	    hmac.write(chunk);
+	    req.chunks.push( new Buffer(chunk) );	    
 	});
-    });    
+	req.on('end', function(chunk) {
+	    req.rawBody = Buffer.concat( req.chunks );	    
+	    hmac.end(function() {
+		var hash = hmac.read();
+		if (hash == desiredHash) {
+		    req.user = user;
+		    next();
+		} else {
+    		    res.status(401).send("Invalid signature.");
+		}
+	    });
+	});
+    });
 }
 
 exports.xake = function(req, res){

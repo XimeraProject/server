@@ -1,7 +1,10 @@
 extends layouts/main
 
 block title
-  | #{activity.title}
+  if activity.title
+    | #{activity.title}
+  else
+    | Activity
 
 block activity
    div.activity-content
@@ -57,16 +60,18 @@ block content
     | \newcommand{\dd}[2][]{\frac{d #1}{d #2}}
   div.container
     div(course-breadcrumbs="")
-        .row
-          .col-md-12
-            div.course-navigation(data-commit=activity.commit, data-user=user._id.toString())
-              div.frame
-                ul.items.pagination
-                  for activityUrl in activity.xourse.activityList
-                    li(class=( activityUrl == activity.path ) ? "active" : undefined)
-                      a.activity-card(href="/course/" + activity.ownerName + "/" + activity.repositoryName + "/" + activity.branchName + "/" + activityUrl, data-path=activityUrl)
-              div.scrollbar
-                div.handle
+        // BADBAD: only display navigation if the item can be found IN a navigation list
+        if (activity.xourse.activityList.length > 0)
+          .row
+            .col-md-12
+              div.course-navigation(data-commit=activity.commit, data-user=user._id.toString())
+                div.frame
+                  ul.items.pagination
+                    for activityUrl in activity.xourse.activityList
+                      li(class=( activityUrl == activity.path ) ? "active" : undefined)
+                        a.activity-card(href="/course/" + activity.ownerName + "/" + activity.repositoryName + "/" + activity.branchName + "/" + activityUrl, data-path=activityUrl)
+                div.scrollbar
+                  div.handle
         .row
           .col-md-offset-2.col-md-8.activity(id="theActivity", data-activity=activity.hash)
 

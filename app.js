@@ -88,19 +88,31 @@ if (process.env.DEPLOYMENT === 'production') {
 app.use(logger('dev'));
 app.use(favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
 
+/*
 app.use(function(req, res, next) {
+    var contentType = req.headers['content-type'] || ''
+    , mime = contentType.split(';')[0];
 
-    req.chunks = [];
-    req.on('data', function(chunk) {
-	req.chunks.push( new Buffer(chunk) );
-    });
-    req.on('end', function(chunk) {
-	req.rawBody = Buffer.concat( req.chunks );
-	console.log( req.rawBody.length );
-    });    
+    console.log(mime);
+    if ((mime != 'text/plain') && (mime != 'image/svg+xml'))
+	next();
+    else {
+	req.chunks = [];
+	req.on('data', function(chunk) {
+	    console.log( "new data = ", chunk.length );
+	    req.chunks.push( new Buffer(chunk) );
+	});
+	req.on('end', function(chunk) {
+	    //req.chunks.push( new Buffer(chunk) );
+	    console.log( "req.chunks.length = ", req.chunks.length );
+	    req.rawBody = Buffer.concat( req.chunks );
+	    console.log( "rawBody length = ", req.rawBody.length );
+	    next();
+	});    
+    }
     
-    next();
 });
+*/
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -191,7 +203,7 @@ git.long(function (commit) {
     //app.get('/xake', api.authenticateViaHMAC);
     //app.get('/api/xake', api.xake);
  
-    app.put( '/activity/:commit/:path(*)', api.authenticateViaHMAC);
+    //app.put( '/activity/:commit/:path(*)', api.authenticateViaHMAC);
     app.put( '/activity/:commit/:path(*.png)', api.putFile );
     app.put( '/activity/:commit/:path(*.css)', api.putFile );
     app.put( '/activity/:commit/:path(*.js)', api.putFile );
@@ -226,8 +238,8 @@ git.long(function (commit) {
     app.post('/users/xudos', score.postXudos);
 
     // Requires the rawBody middleware above
-    github.secret = process.env.GITHUB_WEBHOOK_SECRET;
-    app.post('/github', github.github);
+    //github.secret = process.env.GITHUB_WEBHOOK_SECRET;
+    //app.post('/github', github.github);
 
     app.get('/', routes.index);
 
