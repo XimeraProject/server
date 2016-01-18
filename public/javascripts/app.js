@@ -200,7 +200,7 @@ require.config({
 
 require( ["jquery", "shCore", "mathjax", "jquery-ui", "shBrushJScript", "shBrushLatex", 
 	  "less", "database", "bootstrap", "moment", "mailing-list", "codemirror-python", "sticky-scroll", "user/profile", "math-answer", "activity", "score", "progress-bar", "xourse", "navigation", "image-environment", "youtube",
-	  "invigilator"],
+	  "invigilator", "clock"],
 	  function($, shCore, MathJax) {
 
     'use strict';
