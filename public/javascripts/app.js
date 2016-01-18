@@ -47,8 +47,6 @@ require.config({
 	"bootstrap": "../../components/bootstrap/dist/js/bootstrap.min",
 	"bootstrap-datepicker": "../../components/bootstrap-datepicker/js/bootstrap-datepicker",
 
-	"mathquill": "../../components/mathquill/build/mathquill.min",
-
 	'XRegExp': '../../components/syntaxhighlighter/amd/XRegExp',
 	'shCore': '../../components/syntaxhighlighter/amd/shCore',
 
@@ -57,9 +55,6 @@ require.config({
 	'shBrushPython': '../../components/syntaxhighlighter/amd/shBrushPython',
 
 	'requirejs': '../../components/requirejs/require',
-
-	'angular-strap': '../../components/angular-strap/dist/angular-strap.min',
-	'angular-strap-tpl': '../../components/angular-strap/dist/angular-strap.tpl.min',
 
 	"js-quantities": "../../components/js-quantities/src/quantities",
 

@@ -5,7 +5,7 @@
     "private": true,
     "scripts": {
 	"start": "node app.js",
-	"postinstall": "./node_modules/bower/bin/bower install && cd ./components/mathquill && npm install && make && cd ../.. && mkdir -p components/syntaxhighlighter/amd && node node_modules/requirejs/bin/r.js -convert components/syntaxhighlighter/scripts components/syntaxhighlighter/amd && cd ./components/math-expressions && npm install && cd ../.. && mkdir -p ./components/math-expressions/amd && node node_modules/requirejs/bin/r.js -convert components/math-expressions/lib components/math-expressions/amd"
+	"postinstall": "./node_modules/bower/bin/bower install && mkdir -p components/syntaxhighlighter/amd && node node_modules/requirejs/bin/r.js -convert components/syntaxhighlighter/scripts components/syntaxhighlighter/amd && cd ./components/math-expressions && npm install && cd ../.. && mkdir -p ./components/math-expressions/amd && node node_modules/requirejs/bin/r.js -convert components/math-expressions/lib components/math-expressions/amd"
     },
     "dependencies": {
 	"forever": "*",
@@ -28,7 +28,8 @@
 	"passport-google-openidconnect": "*",
 	"passport-oauth": "*",
 	"passport-oauth2": "*",
-	"passport-twitter": "*",            
+	"passport-twitter": "*",
+	"passport-local": "*",
 	"jison": "*",
 	"requirejs": "*",
 	"jasmine-node": "*",

@@ -148,7 +148,9 @@ exports.putCommit = function(req, res){
     var sha = req.params.sha;
     
     var github = new githubApi({version: "3.0.0"});
-    
+
+    // BADBAD: it's possible that "xake publish" is being called on a branch behind github's master
+    // and then this fails
     github.repos.getBranches( {user: owner, repo: repo }, function(err, data) {
 	data.forEach( function(branch) {
 	    if (branch.commit.sha == sha) {

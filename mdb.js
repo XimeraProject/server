@@ -157,6 +157,8 @@ exports.initialize = function initialize(callback) {
                                       githubAccessToken: {type: String},
 				      course: String,
 				      superuser: Boolean,
+				      username: String,
+				      password: String,				      
                                       name: String,
                                       email: String,
 				      displayName: String,

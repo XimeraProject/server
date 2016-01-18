@@ -80,4 +80,13 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
                li
                  a(href="/auth/twitter") <i class='fa fa-twitter'></i> Sign In with Twitter
                li
-                 a(href="/auth/github") <i class='fa fa-github'></i> Sign In with GitHub                                  
+                 a(href="/auth/github") <i class='fa fa-github'></i> Sign In with GitHub
+               if deployment != 'production'
+                 li.divider(role="presentation")
+                 li
+                   form.navbar-form#form-login(action="/auth/local",method="post")
+                     div.input-group
+                       input.form-control#username(name="username",type="text",placeholder="Username")
+                     div.input-group                     
+                       input.form-control#password(name="password",type="password")
+                     button.btn.btn-primary.btn-default#button-login(type="submit") Sign In

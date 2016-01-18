@@ -140,6 +140,7 @@ mdb.initialize(function (err) {
 
     console.log( "Session setup." );
 
+passport.use(login.localStrategy(rootUrl));
 passport.use(login.googleStrategy(rootUrl));
 passport.use(login.twitterStrategy(rootUrl));
 passport.use(login.courseraStrategy(rootUrl));
@@ -318,6 +319,16 @@ git.long(function (commit) {
             passport.authenticate('google-openidconnect', { successRedirect: '/just-logged-in',
 							    failureRedirect: '/auth/google'}));
 
+
+    // Permit local logins when on a test machine
+    if (app.locals.deployment != 'production') {
+	app.post('/auth/local', 
+		 passport.authenticate('local', { failureRedirect: '/' }),
+		 function(req, res) {
+		     res.redirect('/');
+		 });
+    }
+    
     // Twitter login.
     app.get('/auth/twitter', passport.authenticate('twitter'));
     app.get('/auth/twitter/callback',

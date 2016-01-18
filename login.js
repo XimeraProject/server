@@ -1,6 +1,7 @@
 var GoogleStrategy = require('passport-google-openidconnect').Strategy
   , CourseraOAuthStrategy = require('./passport-coursera-oauth').Strategy
   , TwitterStrategy = require('passport-twitter').Strategy
+  , LocalStrategy = require('passport-local').Strategy
   , LtiStrategy = require('./passport-lti').Strategy
   , OAuth2Strategy = require('passport-oauth2').Strategy
   , async = require('async')
@@ -74,6 +75,21 @@ module.exports.twitterStrategy = function(rootUrl) {
 	passReqToCallback: true
     }, function(req, token, tokenSecret, profile, done) {
         addUserAccount(req, 'twitterOAuthId', profile.id_str, profile.name, null, null, done);
+    });
+}
+
+module.exports.localStrategy = function(rootUrl) {
+    return new  LocalStrategy({
+	passReqToCallback: true
+    }, function(req, username, password, done) {
+    	mdb.User.findOne({ username: username }, function(err, user) {
+	    if (err) { return done(err); }
+	    if (!user) { return done(null,false); }
+	    // BADBAD: password should be hashed
+	    if (user.password != password) { return done(null,false); }
+	    req.user = user;
+	    return done(null, user);
+	});
     });
 }
 
