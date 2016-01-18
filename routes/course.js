@@ -307,7 +307,10 @@ exports.image = function(req, res) {
 	    else
 		res.contentType( 'image/' + extname(path).replace('.', '') );
 
-	    res.end( file.data, 'binary' );
+	    if (file)
+		res.end( file.data, 'binary' );
+	    else
+		res.end( '' );
 	}
     });
 };
