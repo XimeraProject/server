@@ -73,26 +73,25 @@ block content
                 div.scrollbar
                   div.handle
         .row
-          .col-md-offset-2.col-md-8.activity(id="theActivity", data-activity=activity.hash)
+          .col-md-offset-2.col-md-8.activity(id="theActivity", data-activity=activity.hash, data-commit=activity.commit, data-path=activity.path)
 
             block activity
 
             ul.pager
-             li.previous(class=(previousActivity ? undefined : "disabled"))
+             li.previous#previous-activity(class=(previousActivity ? undefined : "disabled"))
                if previousActivity
                  a(href="/course/" + activity.ownerName + "/" + activity.repositoryName + "/" + activity.branchName + "/" + previousActivity)
                    | &larr; Previous Activity
                else
                  span
                    | &larr; Previous Activity               
-             li.next(class=(nextActivity ? undefined : "disabled"),completion-blink="")
+             li.next#next-activity(class=(nextActivity ? undefined : "disabled"),completion-blink="")
                if nextActivity
                  a(href="/course/" + activity.ownerName + "/" + activity.repositoryName + "/" + activity.branchName + "/" + nextActivity)
-                   | Next Activity &rarr;
+                   | <span id="next-activity-label">Next Activity</span> &rarr;
                else
-                 span
-                   | Next Activity &rarr;               
-                 
+                 a(href="#")
+                   | <span id="next-activity-label">Next Activity</span> &rarr;
             //p {{db}}
             //p {{currentActivity}}
             //div(forum="#{activity.slug}")
