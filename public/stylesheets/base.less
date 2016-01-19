@@ -2,6 +2,10 @@
 
 @import "clock";
 
+#invigilator {
+    display: none;
+}
+
 /*****************************************************************/
 /* Use mathjax fonts for body text... or not, since it is so ugly. */
 
@@ -176,67 +180,6 @@
     transition: color 0.15s ease-in;
 }
 
-
-/*****************************************************************/
-/* mathquill AFTER bootstrap */
-@import "../../components/mathquill/build/mathquill.css";
-
-.mathquill-editable {
-    sup {		    
-	top: inherit;   
-    }
-
-    * {
-	box-sizing: content-box;
-	-moz-box-sizing: content-box;
-	-webkit-box-sizing: content-box;
-    }
-}
-
-.mathquill-editable {
-  font-size: 14px;
-  font-size: 28px;
-  min-width: 206px;
-
-  display: inline-block;
-  min-height: 2em;
-  height: 2em;
-  padding: 4px 6px;
-  margin-bottom: @line-height-base / 2;
-  color: @gray;
-  border-radius: @input-border-radius;
-  //vertical-align: middle;
-
-  background-color: @input-bg;
-  border: 1px solid @input-border;
-  .box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
-  .transition(~"border linear .2s, box-shadow linear .2s");
-
-  // Focus state
-  &:focus {
-    border-color: rgba(82,168,236,.8);
-    outline: 0;
-    outline: thin dotted \9; /* IE6-9 */
-    .box-shadow(~"inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6)");
-  }
-}
-
-
-.input-append,
-.input-prepend,
-.input-group {
-  .mathquill-editable {
-    position: relative;
-    margin-bottom: 0;
-    margin-left: 0;
-    vertical-align: top;
-    border-radius: 0 @input-border-radius @input-border-radius 0;
-    // Make input on top when focused so blue border and shadow always show
-    &:focus {
-      z-index: 2;
-    }
-  }
-}
 
 // TODO: Fix?
 .form-inline {
@@ -712,10 +655,6 @@ footer .address a {
 */
 			 
 .btn:focus {outline: thin dotted black;}
-
-/*****************************************************************/
-/* x-editable styles */
-@import "../../components/x-editable/dist/bootstrap-editable/css/bootstrap-editable.css";
 
 /*****************************************************************/
 /* codemirror CSS */

@@ -49,12 +49,30 @@ block resetModal
             button#reset-work-button(type="button",class="btn btn-danger", data-dismiss="modal")
               | <i class="fa fa-eraser"></i>&nbsp;Yes, delete my work.
 
+block shutdownInvigilatorModal
+  div.modal.fade#shutdownInvigilatorModal(tabindex="-1",role="dialog",aria-labelledby="shutdownInvigilatorModal")
+      div.modal-dialog(role="document")
+        div.modal-content<div class="modal-content">
+          div.modal-header
+            button(type="button", class="close", data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="true") &times;
+            h4(class="modal-title",id="resetModalLabel") Warning
+          div.modal-body
+            p You are about to <strong>shut down the invigilator</strong>, which is what guides you through the various problems and exercises.  Are you sure you want to do this?
+          div.modal-footer
+            button(type="button", class="btn btn-default", data-dismiss="modal") No; I want to continue as before.
+            // BADBAD: this does not shut down the invigilator
+            a.btn.btn-danger(data-dismiss="modal",href="/#?none")
+              | <i class="fa fa-power-off"></i>&nbsp;Yes, shut it down.
+
 block modals
   div
     block resetModal
   div
     block updateModal
-                
+  div
+    block shutdownInvigilatorModal
+                    
 block content
   script(type="math/tex")
     | \newcommand{\dd}[2][]{\frac{d #1}{d #2}}
