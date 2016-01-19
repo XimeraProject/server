@@ -93,6 +93,11 @@ exports.putFile = function(req, res){
     var commit = req.params.commit;
     var path = req.params.path;
 
+    if (!(req.user.isInstructor)) {
+    	res.status(500).send('You must be an instructor to PUT files.');
+	return;
+    }
+    
     saveToContentAddressableFilesystem( req.rawBody, function(err, hash) {
 	var gitFile = new mdb.GitFile();
 	gitFile.commit = commit;
@@ -141,6 +146,11 @@ exports.verifyCollaborator = function(req, res, next){
 };
 
 exports.putCommit = function(req, res){
+    if (!(req.user.isInstructor)) {
+    	res.status(500).send('You must be an instructor to PUT commits.');
+	return;
+    }
+    
     var commit = req.params.commit;
     
     var owner = req.params.owner;
@@ -192,10 +202,13 @@ exports.putCommit = function(req, res){
 };
 
 exports.putActivity = function(req, res){
+    if (!(req.user.isInstructor)) {
+    	res.status(500).send('You must be an instructor to PUT activities.');
+	return;
+    }
+    
     var commit = req.params.commit;
     var path = req.params.path;
-
-    res.status(200).send();
 
     var $ = cheerio.load( req.rawBody, {xmlMode: true} );
     $('a').each( function() {
@@ -234,6 +247,7 @@ exports.putActivity = function(req, res){
 	    activity.path = path.replace( /\.html$/, "" );
 	    activity.title = title;
 	    //activity.outcomes = outcomes;
+	    activity.outcomes = [];
 	    
 	    activity.save(function(err) {
 		if (err)
