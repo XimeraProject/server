@@ -11,6 +11,20 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
         | <span style="font-weight: 200;">XIMERA.</span><span style="font-weight: 700;">OSU</span><span style="font-weight: 200;">.EDU</span>
     .navbar-collapse.collapse
       ul.nav.navbar-nav.navbar-right
+
+        li.dropdown#invigilator
+             a.dropdown-toggle(href="#",data-toggle="dropdown")
+               | <i class="fa fa-university"></i>&nbsp;
+               span#invigilator-short-name Invigilator
+               b.caret
+             ul(id="invigilator-menu").dropdown-menu
+               li
+                 a(href="#")
+                   span#invigilator-name Invigilator
+               li(style="display: none;")
+                 // button.btn-margin.navbar-btn.pull-right.btn.btn-sm.btn-danger(type="button",data-toggle="modal", data-target="#shutdownInvigilatorModal")
+                 a(data-toggle="modal", data-target="#shutdownInvigilatorModal")
+                   | <i class="fa fa-power-off"></i> Shutdown
       
         li(id="clock")
            p.navbar-text
@@ -49,7 +63,7 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
                   | <i class="fa fa-refresh fa-spinning"></i> Saving&hellip;
                 span(id="work-save")
                   | <i class="fa fa-save"></i> Save
-      
+
          li.navbar-progress-bar-item
            span.navbar-progress-bar
              div.progress.completion-meter
@@ -64,10 +78,10 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
            a(href="/about/xudos")
              i.fa.fa-thumbs-up 
              | &nbsp;<span id="score-xudos"></span> Xudos
+             
          if (user) && (!user.isGuest)
-           // This also, confusingly, manages to send the user object over to Angular
-           li.dropdown(ng-init="user=#{JSON.stringify(user)}")
-             a.dropdown-toggle(href="#",data-toggle="dropdown", ng-controller="LoginController")
+           li.dropdown
+             a.dropdown-toggle(href="#",data-toggle="dropdown")
                | <i class="fa fa-user"></i> #{user.name.split(' ')[0]} 
                b.caret
              ul(id="login-menu").dropdown-menu

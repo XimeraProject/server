@@ -88,7 +88,10 @@ define(['jquery', 'underscore'], function($, _){
 	if (isNaN(value))
 	    value = 1;
 
-	exports.progressProportion( value );	    
+	// Only display progress if there is no invigilator running
+	if (!($('#invigilator').data( 'invigilator' ))) {
+	    exports.progressProportion( value );
+	}
 	
 	// Store the progress as the "score" in the database
 	$(activityToMonitor).persistentData( 'score', value );
