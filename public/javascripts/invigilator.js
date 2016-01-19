@@ -60,7 +60,7 @@ define(['jquery', 'underscore', 'progress-bar'], function($, _, progress) {
 	    if (!(activity.path.match(/welcome/))) {
 		this.counter = this.counter + 1;
 	    }
-	    
+
 	    this.save();
 	},
 	
@@ -103,9 +103,9 @@ define(['jquery', 'underscore', 'progress-bar'], function($, _, progress) {
 	    });
 	    
 	    $('body').on( 'ximera:attempt', function(event) {
-		if (invigilator) {	    
+		if (invigilator) {
 		    invigilator.onAttempt();
-		    next( invigilator.next() );		
+		    next( invigilator.next() );
 		    invigilator.save();
 		}
 	    });
@@ -125,10 +125,10 @@ define(['jquery', 'underscore', 'progress-bar'], function($, _, progress) {
 		return 'thanks';
 
 	    if (this.halfwayDone) {
-		i = this.extraProblems.indexOf(activity.path);
+		var i = this.extraProblems.indexOf(activity.path);
 
 		if (i >= 0)
-		    return this.extraProblems[i+1];
+		    return this.extraProblems[(i+1) % this.extraProblems.length];
 		else
 		    return this.extraProblems[0];		    
 	    }
@@ -136,7 +136,7 @@ define(['jquery', 'underscore', 'progress-bar'], function($, _, progress) {
 	    var i = this.problemOrder.indexOf(activity.path);
 
 	    if (i >= 0)
-		return this.problemOrder[i+1];
+		return this.problemOrder[(i+1) % this.problemOrder.length];
 	    else
 		return this.problemOrder[0];
 	},
@@ -234,6 +234,8 @@ define(['jquery', 'underscore', 'progress-bar'], function($, _, progress) {
 	    invigilator.setup();
 
 	    invigilator.save = function() {
+		console.log( "Saving invigilator..." );
+		console.log( invigilator );
 		localStorage.setItem( desiredInvigilator, JSON.stringify(invigilator) );
 	    };
 	    
