@@ -88,6 +88,7 @@ if (process.env.DEPLOYMENT === 'production') {
 app.use(logger('dev'));
 app.use(favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
 
+/*
 app.use(function(req, res, next) {
     var contentType = req.headers['content-type'] || ''
     , mime = contentType.split(';')[0];
@@ -102,7 +103,7 @@ app.use(function(req, res, next) {
 	    req.chunks.push( new Buffer(chunk) );
 	});
 	req.on('end', function(chunk) {
-	    //req.chunks.push( new Buffer(chunk) );
+	    req.chunks.push( new Buffer(chunk) );  OR NOT?
 	    console.log( "req.chunks.length = ", req.chunks.length );
 	    req.rawBody = Buffer.concat( req.chunks );
 	    console.log( "rawBody length = ", req.rawBody.length );
@@ -110,6 +111,16 @@ app.use(function(req, res, next) {
 	});    
     }
     
+    });*/
+
+app.use(function(req, res, next) {
+    req.rawBody = '';
+    
+    req.on('data', function(chunk) { 
+	req.rawBody += chunk;
+    });
+    
+    next();
 });
 
 app.use(bodyParser.json());
