@@ -115,7 +115,8 @@ require.config({
 			extensions: ["tex2jax.js","MathMenu.js","CHTML-preview.js"],
 
 			"HTML-CSS": {
-			    availableFonts: ["TeX"]
+			    availableFonts: ["TeX"],
+			    imageFont: null
 			},
 			
 			processEnvironments: true,
