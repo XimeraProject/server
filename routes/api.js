@@ -22,19 +22,21 @@ exports.authenticateViaHMAC = function(req, res, next) {
     var key = authorization.replace(/:.*$/,'');
     var desiredHash = authorization.replace(/^.*:/,'');
 
+    // this is a hack
+    var empty = false;
+    req.on('end', function() {
+	empty = true;
+    });
+    
     mdb.User.findOne({apiKey: key}, function(err,user) {
 	var hmac = crypto.createHmac("sha256", user.apiSecret);
 	hmac.setEncoding('hex');
 
 	hmac.write(req.method + " " + req.path + "\n");
 
-	req.chunks = [];	
-	req.on('data', function(chunk) {
-	    hmac.write(chunk);
-	    req.chunks.push( new Buffer(chunk) );	    
-	});
-	req.on('end', function(chunk) {
-	    req.rawBody = Buffer.concat( req.chunks );	    
+	if (empty) {
+	    hmac.write('');
+	    req.rawBody = Buffer.concat([]);	    
 	    hmac.end(function() {
 		var hash = hmac.read();
 		if (hash == desiredHash) {
@@ -44,7 +46,25 @@ exports.authenticateViaHMAC = function(req, res, next) {
     		    res.status(401).send("Invalid signature.");
 		}
 	    });
-	});
+	} else {
+	    req.chunks = [];	
+	    req.on('data', function(chunk) {
+		hmac.write(chunk);
+		req.chunks.push( new Buffer(chunk) );	    
+	    });
+	    req.on('end', function(chunk) {
+		req.rawBody = Buffer.concat( req.chunks );	    
+		hmac.end(function() {
+		    var hash = hmac.read();
+		    if (hash == desiredHash) {
+			req.user = user;
+			next();
+		    } else {
+    			res.status(401).send("Invalid signature.");
+		    }
+		});
+	    });
+	}
     });
 }
 
