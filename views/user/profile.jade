@@ -39,7 +39,7 @@ block content
               span.small &nbsp;(#{person.name})
           else
             h2 #{person.name}          
-          div.list-group
+          div.list-group(data-toggle="tooltip" data-placement="bottom" title=whyVisible)
             if (!(person.visibility )) || (person.visibility == "none")
               span.list-group-item <i class="fa fa-eye-slash"></i>&nbsp;Only visible to <strong>#{person.pronouned}</strong>
             if (person.visibility == "users")
@@ -72,7 +72,7 @@ block content
                 strong Updated.&nbsp;
                 | The public profile has been changed.
           .col-sm-3                
-            if (user.superuser) || (user._id.toString() === person._id.toString())
+            if editable
               div.btn-toolbar(style="margin-bottom: 15px;")
                 div.btn-group.pull-right
                   a.btn.btn-primary(role="button", href="/users/#{person._id}/edit") <i class="fa fa-pencil"></i> Edit Profile
@@ -84,18 +84,19 @@ block content
                   h3.panel-title About
                 div.panel-body
                   p #{person.biography}
-        .row
-          .col-sm-12
-            div.panel.panel-default
-              div.panel-heading
-                h3.panel-title Linked accounts        
-              div.panel-body
-                div.btn-toolbar(role="toolbar")
-                  mixin linked_account('Google', 'google', 'google', person._id, person.googleOpenId )
-                  mixin linked_account('Coursera', undefined, 'coursera', person._id, person.courseraOAuthId )
-                  mixin linked_account('GitHub', 'github-alt', 'github', person._id, person.githubId )
-                  mixin linked_account('Twitter', 'twitter', 'twitter', person._id, person.twitterOAuthId )
-        if (user.superuser) || (user._id.toString() === person._id.toString())                  
+        if (person.googleOpenId || person.courseraOAuthId || person.githubId || person.twitterOAuthId)
+          .row
+            .col-sm-12
+              div.panel.panel-default
+                div.panel-heading
+                  h3.panel-title Linked accounts        
+                div.panel-body
+                  div.btn-toolbar(role="toolbar")
+                    mixin linked_account('Google', 'google', 'google', person._id, person.googleOpenId )
+                    mixin linked_account('Coursera', undefined, 'coursera', person._id, person.courseraOAuthId )
+                    mixin linked_account('GitHub', 'github-alt', 'github', person._id, person.githubId )
+                    mixin linked_account('Twitter', 'twitter', 'twitter', person._id, person.twitterOAuthId )
+        if (user.superuser) || (user._id.equals(person._id))
           .row
             .col-sm-12
               div.panel.panel-default
