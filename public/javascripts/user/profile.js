@@ -1,8 +1,4 @@
-define(['require', "eonasdan-bootstrap-datetimepicker"], function(require) {
-    var $ = require('jquery');
-    var ui = require('jquery-ui');
-    var moment = require('moment');
-
+define(['require', "jquery", "jquery-ui", "moment", "eonasdan-bootstrap-datetimepicker"], function(require, $, ui, moment) {
     // jsfiddle which updates all relative dates defined by <time class='relative-date'>
     var updateAllRelativeDates = function() {
         $('time').each(function (i, e) {
