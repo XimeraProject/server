@@ -266,6 +266,9 @@ git.long(function (commit) {
     app.delete('/users/:id/twitter', function( req, res ) { user.deleteLinkedAccount( req, res, 'twitter' ); } );
 
     app.put('/users/:id/secret', function( req, res ) { user.putSecret( req, res ); } );
+
+    // BADBAD: this should probably be a PUT since it changes state
+    app.get('/users/:id/courses', function( req, res ) { user.courses( req, res ); } );    
     
     app.get( '/course/calculus-one/', function( req, res ) { res.redirect('/about/plans'); });
     app.get( '/course/calculus-one', function( req, res ) { res.redirect('/about/plans'); });

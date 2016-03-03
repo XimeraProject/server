@@ -175,6 +175,7 @@ exports.initialize = function initialize(callback) {
                                       isGuest: Boolean,
                                       lastUrlVisited: String,
                                       isInstructor: Boolean,
+				      instructor: Mixed,
                                       apiKey: {type: String, index: true, unique: true, sparse: true},				      
                                       apiSecret: String				      
                                   });

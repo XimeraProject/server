@@ -10,6 +10,7 @@ var validator = require('validator');
 var moment = require('moment');
 var mdb = require('../mdb');
 var remember = require('../remember');
+var githubApi = require('github');
 
 function hasPermissionToView( viewer, viewee ) {
     if (viewer._id.equals(viewee._id))
@@ -368,3 +369,62 @@ exports.update = function(req, res){
     });
 };
 
+exports.courses = function(req, res){
+    var id = req.params.id;
+
+    mdb.User.findOne({_id: new mongo.ObjectID(id)}, function(err,instructor) {    
+	if ((err) || (! instructor)) {
+            res.status(500).send('No such person.');
+	    return;		    
+	} else {
+	    if (!(instructor.githubAccessToken)) {
+		res.status(500).send('Instructor is not linked to GitHub.');
+		return;
+	    } else {
+		var github = new githubApi({version: "3.0.0"});
+
+		github.authenticate({
+		    type: "oauth",
+		    token: req.user.githubAccessToken
+		});
+	    
+		github.repos.getFromUser({user: req.user.githubId}, function(err, repos) {
+		    if (err) {
+			res.status(500).send(err);
+			return;
+		    } else {
+			var owners = repos.map( function(x) { return x.owner.login; } );
+			var repositories = repos.map( function(x) { return x.name; } );
+
+			// filter to those branches which have EITHER a owner or repository name in common with our instructor
+			mdb.Branch.find( { owner: {$in: owners }, repository: {$in: repositories} },
+					 { owner: 1, repository: 1, commit: 1, _id: 0 },
+					 function(err, branches) {
+					     if (err) {
+						 res.status(500).send(err);
+						 return;						 
+					     } else {
+						 // filter to those branches which match both owner and repository name
+						 branches = branches.filter( function(branch) {
+						     return (repos.filter( function(repo) { return (repo.owner.login == branch.owner) && (repo.name == branch.repository); } ).length > 0);
+						 });
+
+						 var commits = branches.map( function(branch) { return branch.commit; } );
+						 
+						 var hash = { instructor: commits };
+							 
+						 mdb.User.update( {_id: instructor._id }, {$set: hash},
+								  function(err, document) {
+								      if (err)
+									  res.status(500).send(err);
+								      else
+									  res.status(200).json(commits);
+								  });
+					     }
+					 });
+		    }			
+		});
+	    }
+	}
+    });
+};
