@@ -1,4 +1,4 @@
-Ohio State University hosted a second Ximera Workshop July 27--29, 2015.
+Ohio State University is hosting a third Ximera Workshop July 24--28, 2016.
 
 The goal of Ximera Workshops is to bring together
 
@@ -6,8 +6,8 @@ The goal of Ximera Workshops is to bring together
 - developers who are interested in creating the backend technology, and
 - researchers who want to build tools for analyzing the student data.
 
-The workshop followd an informal working-group format.  July 26th
-and July 30th were travel days.
+The workshop followd an informal working-group format.  July 24th
+and July 28th are travel days.
 
 This workshop was funded by
 [NSF Grant DUE-1245433](http://www.nsf.gov/awardsearch/showAward?AWD_ID=1245433).
