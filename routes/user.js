@@ -382,7 +382,7 @@ exports.courses = function(req, res){
 		return;
 	    } else {
 		var github = new githubApi({version: "3.0.0"});
-
+		
 		github.authenticate({
 		    type: "oauth",
 		    token: req.user.githubAccessToken
