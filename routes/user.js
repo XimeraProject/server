@@ -64,7 +64,15 @@ exports.getCurrent = function(req, res){
     if (req.user.email)
 	req.user.gravatar = crypto.createHash('md5').update(req.user.email).digest("hex");
 
-    req.user.apiSecret = '';
+    if (document.googleOpenId) document.googleOpenId = "token";
+    if (document.courseraOAuthId) document.courseraOAuthId = "token";
+    if (document.githubId) document.githubId = "token";
+    if (document.twitterOAuthId) document.twitterOAuthId = "token";
+    
+    document.apiKey = "";
+    document.apiSecret = "";
+    document.password = "";
+    
     res.json(req.user);
 };
 
@@ -214,6 +222,9 @@ exports.get = function(req, res){
 		    document.courseraOAuthId = undefined;
 		    document.githubId = undefined;
 		    document.twitterOAuthId = undefined;
+		    document.apiKey = "";
+		    document.apiSecret = "";
+		    document.password = "";
 		}
 		
 		res.format({
@@ -371,7 +382,9 @@ exports.update = function(req, res){
 
 exports.courses = function(req, res){
     var id = req.params.id;
-
+    var owner = req.params.owner;
+    var repo = req.params.repo;
+    
     mdb.User.findOne({_id: new mongo.ObjectID(id)}, function(err,instructor) {    
 	if ((err) || (! instructor)) {
             res.status(500).send('No such person.');
@@ -387,41 +400,50 @@ exports.courses = function(req, res){
 		    type: "oauth",
 		    token: req.user.githubAccessToken
 		});
-	    
-		github.repos.getFromUser({user: req.user.githubId}, function(err, repos) {
+
+		// BADBAD: check if a user is a collaborator
+		github.user.get({}, function(err, githubUser) {
 		    if (err) {
 			res.status(500).send(err);
 			return;
 		    } else {
-			var owners = repos.map( function(x) { return x.owner.login; } );
-			var repositories = repos.map( function(x) { return x.name; } );
+			var githubId = githubUser.id;
+			
+			github.repos.getCollaborators({user: owner, repo: repo}, function(err, collaborators) {
+			    if (err) {
+				res.status(500).send(err);
+				return;
+			    } else {
+				// check to see if instructor is in the collaborators hash
 
-			// filter to those branches which have EITHER a owner or repository name in common with our instructor
-			mdb.Branch.find( { owner: {$in: owners }, repository: {$in: repositories} },
-					 { owner: 1, repository: 1, commit: 1, _id: 0 },
-					 function(err, branches) {
-					     if (err) {
-						 res.status(500).send(err);
-						 return;						 
-					     } else {
-						 // filter to those branches which match both owner and repository name
-						 branches = branches.filter( function(branch) {
-						     return (repos.filter( function(repo) { return (repo.owner.login == branch.owner) && (repo.name == branch.repository); } ).length > 0);
-						 });
-
-						 var commits = branches.map( function(branch) { return branch.commit; } );
-						 
-						 var hash = { instructor: commits };
-							 
-						 mdb.User.update( {_id: instructor._id }, {$set: hash},
-								  function(err, document) {
-								      if (err)
-									  res.status(500).send(err);
-								      else
-									  res.status(200).json(commits);
-								  });
-					     }
-					 });
+				if (collaborators.filter( function(c) { return c.id == githubId; } ).length == 0) {
+				    res.status(500).send("User is not a collaborator.");
+				    return;
+				} else {
+				    mdb.Branch.find( { owner: owner, repository: repo },
+						     { commit: 1, _id: 0 },
+						     function(err, branches) {
+							 if (err) {
+							     res.status(500).send(err);
+							     return;						 
+							 } else {
+							     var commits = branches.map( function(branch) { return branch.commit; } );
+							     
+							     // BADBAD: REALLY should add and uniqueify here, otherwise we're clobbering old hashes
+							     var hash = { instructor: commits };
+							     
+							     mdb.User.update( {_id: instructor._id }, {$set: hash},
+									      function(err, document) {
+										  if (err)
+										      res.status(500).send(err);
+										  else
+										      res.status(200).json(commits);
+									      });
+							 }
+						     });
+				}
+			    }
+			});
 		    }			
 		});
 	    }
