@@ -1,8 +1,7 @@
-var console = { log: print };
 var mongo = new Mongo();
-var db = mongo.getDB("lrs");
+var db = mongo.getDB("test");
 
-var map = function() {
+var mapResponse = function() {
     var url = this.object.id.split('/');
     var hash = url[4];
     var problem = url[6];
@@ -11,7 +10,7 @@ var map = function() {
     var result = {};
     result[problem] = {};
     result[problem][answer] = {};
-    // results of reduce get fed BACK into reduce
+
     var response = this.result.response;
     
     if (typeof response == 'string')
@@ -27,6 +26,24 @@ var map = function() {
     
     emit(hash, result);
 };
+
+var mapSuccess = function() {
+    var url = this.object.id.split('/');
+    var hash = url[4];
+    var problem = url[6];
+    var answer = url[8];
+
+    var result = {};
+    result[problem] = {};
+    result[problem][answer] = {};
+
+    var success = this.result.success;
+    
+    result[problem][answer][success] = 1;
+    
+    emit(hash, result);
+};
+
 
 var reduce = function(key, values) {
     var result = {};
@@ -54,8 +71,12 @@ var reduce = function(key, values) {
     return result;
 };
 
-// should be learningrecord
-db.LearningRecords.mapReduce( map, reduce,
-			      { out: "example",
+db.learningrecords.mapReduce( mapResponse, reduce,
+			      { out: "answers",
+				query: { verbId: "http://adlnet.gov/expapi/verbs/answered" }
+			      });
+
+db.learningrecords.mapReduce( mapSuccess, reduce,
+			      { out: "successes",
 				query: { verbId: "http://adlnet.gov/expapi/verbs/answered" }
 			      });

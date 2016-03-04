@@ -147,6 +147,19 @@ exports.initialize = function initialize(callback) {
                                           outcomes: Mixed,
                                       });
 
+    exports.Answers = mongoose.model("Answers",
+				     {
+					 _id: {type: String, index: true},
+					 value: Mixed
+				    });
+
+    exports.Successes = mongoose.model("Successes",
+				     {
+					 _id: {type: String, index: true},
+					 value: Mixed
+				    });
+
+    
     exports.User = mongoose.model("User",
                                   {
                                       googleOpenId: {type: String, index: true, unique: true, sparse: true},
@@ -174,7 +187,6 @@ exports.initialize = function initialize(callback) {
 				      remoteAddress: String,
                                       isGuest: Boolean,
                                       lastUrlVisited: String,
-                                      isInstructor: Boolean,
 				      instructor: Mixed,
                                       apiKey: {type: String, index: true, unique: true, sparse: true},				      
                                       apiSecret: String				      

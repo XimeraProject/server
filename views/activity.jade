@@ -72,8 +72,9 @@ block modals
     block updateModal
   div
     block shutdownInvigilatorModal
-                    
+
 block content
+  // BADBAD: shouldn't this be removed now that htlatex is working fine?
   script(type="math/tex")
     | \newcommand{\dd}[2][]{\frac{d #1}{d #2}}
   div.container

@@ -25,7 +25,7 @@ define(['jquery', 'underscore', 'progress-bar'], function($, _, progress) {
 	    this.extraProblems.push( "v2/q" + i );
 
 	shuffle(this.extraProblems);		
-	
+
 	this.answeredProblems = [];
 	this.counter = 0;
     }

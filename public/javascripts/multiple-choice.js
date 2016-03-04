@@ -35,6 +35,21 @@ define(['jquery', 'underscore', 'database', 'mathjax', 'tincan'], function($, _,
 	});
 
 	multipleChoice.trigger( 'ximera:answer-needed' );
+
+	// Display statistics for this problem
+	multipleChoice.on( 'ximera:statistics:answers', function(event, answers) {
+	    var total = Object.keys( answers ).map( function(x) { return answers[x]; } ).reduce(function(a, b) { return a + b; });
+	    
+	    Object.keys( answers ).forEach( function(choice) {
+		var fraction = answers[choice] * 100.0 / total;
+		var element = multipleChoice.find( '#' + choice );
+		element.css('background', 'linear-gradient(90deg, rgba(0,0,255,0.1) ' + fraction + '%, rgba(0,0,0,0) ' + fraction + '%)' );
+		
+		element.attr('data-toggle', 'tooltip');
+		element.attr('title', answers[choice].toString() +' of ' + total.toString() + ' learners chose this response.' );
+		$(element).tooltip();
+	    });
+	});	
 	
 	multipleChoice.persistentData(function(event) {
 	    multipleChoice.find( 'label').removeClass('active');
@@ -112,6 +127,8 @@ define(['jquery', 'underscore', 'database', 'mathjax', 'tincan'], function($, _,
 		multipleChoice.persistentData('chosen', $(this).attr('id'));
 	    });
 	});
+
+
 	
     };
 

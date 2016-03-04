@@ -30,7 +30,19 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
            p.navbar-text
              i.fa.fa-clock-o
              | &nbsp;<span class="clock-display"><span class="clock-minute">20</span>:<span class="clock-second">00</span></span>
-      
+
+        if activity && user && (user.instructor.indexOf(activity.commit) > 0)
+          li.dropdown
+             a.dropdown-toggle(href="#",data-toggle="dropdown")
+               | <i class="fa fa-graduation-cap"></i> Instructor
+               b.caret
+             ul(id="instructor-menu").dropdown-menu
+                li
+                   a(id="instructor-view-statistics", data-commit=activity.commit, data-activity=activity.hash)
+                     | <i class="fa fa-bar-chart"></i> View statistics
+                   a(href="/statistics/#{activity.commit}/#{activity.hash}/answers")
+                     | <i class="fa fa-bar-chart"></i> View ALL
+                   
         li.dropdown
              a.dropdown-toggle(href="#",data-toggle="dropdown")
                | <i class="fa fa-bug"></i> Bug

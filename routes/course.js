@@ -399,10 +399,12 @@ function renderActivity( res, activity ) {
 	    }
     
 	    var stylesheet = '/activity/' + activity.commit + '/' + activity.path + '.css';
-	    var javascript = '/activity/' + activity.commit + '/' + activity.path + '.js';	    
-	    
-	    res.render('activity', { activity: activity, stylesheet: stylesheet,
-				     nextActivity: nextActivity, previousActivity: previousActivity,
+	    var javascript = '/activity/' + activity.commit + '/' + activity.path + '.js';
+
+	    res.render('activity', { activity: activity,
+				     stylesheet: stylesheet,
+				     nextActivity: nextActivity,
+				     previousActivity: previousActivity,
 				     javascript: javascript });
 	}
     });
@@ -414,11 +416,41 @@ exports.activityByHashHead = function(req, res) {
 
     mdb.Activity.findOne({path: path, commit: commit}).exec( function( err, activity ) {
 	if (!activity)
-	    res.send(404);
+	    res.sendStatus(404);
 	else
-	    res.send(200);
+	    res.sendStatus(200);
     });
 };
+
+function statistics( req, res, model )
+{
+    var commit = req.params.commit;
+    var hash = req.params.hash;
+
+    // Verify that the user is an instructor for that given commit
+    if (('user' in req) && (req.user.instructor.indexOf(commit) > 0)) {
+	// Verify that the hash belongs to the given commit
+	mdb.Activity.findOne({hash: hash, commit: commit}).exec( function( err, activity ) {
+	    if (err || (!activity)) {
+		res.sendStatus(500);
+	    } else {
+		// Send answers statistics to instructor
+		model.findOne({_id : hash}).exec( function( err, answers ) {
+		    if ((err) || (!answers))
+			res.status(500).send(err);
+		    else {
+			res.json( answers.value );
+		    }
+		});
+	    }
+	});
+    } else {
+	res.sendStatus(403);
+    }    
+}
+
+exports.answers = function(req, res) { return statistics( req, res, mdb.Answers ); };
+exports.successes = function(req, res) { return statistics( req, res, mdb.Successes ); };
 
 exports.activityByHash = function(req, res) {
     remember(req);

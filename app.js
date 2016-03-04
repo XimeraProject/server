@@ -268,7 +268,7 @@ git.long(function (commit) {
     app.put('/users/:id/secret', function( req, res ) { user.putSecret( req, res ); } );
 
     // BADBAD: this should probably be a PUT since it changes state
-    app.get('/users/:id/courses', function( req, res ) { user.courses( req, res ); } );    
+    app.get('/users/:id/courses', function( req, res ) { user.courses( req, res ); } );
     
     app.get( '/course/calculus-one/', function( req, res ) { res.redirect('/about/plans'); });
     app.get( '/course/calculus-one', function( req, res ) { res.redirect('/about/plans'); });
@@ -304,6 +304,9 @@ git.long(function (commit) {
     app.get( '/activity/:commit/:path(*.pdf)', course.image );
     app.get( '/activity/:commit/:path(*.svg)', course.image );    
     app.get( '/activity/:commit/:path(*)', course.activityByHash );
+
+    app.get( '/statistics/:commit/:hash/answers', course.answers );
+    app.get( '/statistics/:commit/:hash/successes', course.successes );
 
     //app.head( '/activity/:commit/:path(*.png)', course.imageHead );
     //app.head( '/activity/:commit/:path(*.jpg)', course.imageHead );
