@@ -398,7 +398,7 @@ exports.courses = function(req, res){
 		
 		github.authenticate({
 		    type: "oauth",
-		    token: req.user.githubAccessToken
+		    token: instructor.githubAccessToken
 		});
 
 		// BADBAD: check if a user is a collaborator
