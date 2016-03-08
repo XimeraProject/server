@@ -401,6 +401,8 @@ exports.courses = function(req, res){
 		    token: instructor.githubAccessToken
 		});
 
+		
+		
 		// BADBAD: check if a user is a collaborator
 		github.user.get({}, function(err, githubUser) {
 		    if (err) {
@@ -408,40 +410,35 @@ exports.courses = function(req, res){
 			return;
 		    } else {
 			var githubId = githubUser.id;
-			
-			github.repos.getCollaborators({user: owner, repo: repo}, function(err, collaborators) {
+
+			github.repos.getCollaborator({user: owner, repo: repo, collabuser: githubUser.login}, function(err, collaborators) {
 			    if (err) {
 				res.status(500).send(err);
 				return;
 			    } else {
-				// check to see if instructor is in the collaborators hash
+				// No error means we're a collaborator
 
-				if (collaborators.filter( function(c) { return c.id == githubId; } ).length == 0) {
-				    res.status(500).send("User is not a collaborator.");
-				    return;
-				} else {
-				    mdb.Branch.find( { owner: owner, repository: repo },
-						     { commit: 1, _id: 0 },
-						     function(err, branches) {
-							 if (err) {
-							     res.status(500).send(err);
-							     return;						 
-							 } else {
-							     var commits = branches.map( function(branch) { return branch.commit; } );
-							     
-							     // BADBAD: REALLY should add and uniqueify here, otherwise we're clobbering old hashes
-							     var hash = { instructor: commits };
-							     
-							     mdb.User.update( {_id: instructor._id }, {$set: hash},
-									      function(err, document) {
-										  if (err)
-										      res.status(500).send(err);
-										  else
-										      res.status(200).json(commits);
-									      });
-							 }
-						     });
-				}
+				mdb.Branch.find( { owner: owner, repository: repo },
+						 { commit: 1, _id: 0 },
+						 function(err, branches) {
+						     if (err) {
+							 res.status(500).send(err);
+							 return;						 
+						     } else {
+							 var commits = branches.map( function(branch) { return branch.commit; } );
+							 
+							 // BADBAD: REALLY should add and uniqueify here, otherwise we're clobbering old hashes
+							 var hash = { instructor: commits };
+							 
+							 mdb.User.update( {_id: instructor._id }, {$set: hash},
+									  function(err, document) {
+									      if (err)
+										  res.status(500).send(err);
+									      else
+										  res.status(200).json(commits);
+									  });
+						     }
+						 });
 			    }
 			});
 		    }			
