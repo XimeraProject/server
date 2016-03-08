@@ -15,7 +15,7 @@ module.exports.githubStrategy = function(rootUrl) {
 	tokenURL: 'https://github.com/login/oauth/access_token',
 	clientID: process.env.GITHUB_CLIENT_ID,
 	clientSecret: process.env.GITHUB_CLIENT_SECRET,
-	scope: "repo:status,repo_deployment,write:repo_hook",
+	scope: "repo:status,public_repo,repo_deployment,write:repo_hook",
 	callbackURL: rootUrl + "/auth/github/callback",
 	passReqToCallback: true
     }, function(req, accessToken, refreshToken, profile, done) {
