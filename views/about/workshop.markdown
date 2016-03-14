@@ -6,7 +6,7 @@ The goal of Ximera Workshops is to bring together
 - developers who are interested in creating the backend technology, and
 - researchers who want to build tools for analyzing the student data.
 
-The workshop followd an informal working-group format.  July 24th
+The workshop follows an informal working-group format.  July 24th
 and July 28th are travel days.
 
 This workshop was funded by
