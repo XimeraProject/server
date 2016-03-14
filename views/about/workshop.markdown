@@ -1,4 +1,4 @@
-Ohio State University is hosting a third Ximera Workshop July 24--28, 2016.
+Ohio State University is hosting a third Ximera Workshop July 24&ndash;28, 2016.
 
 The goal of Ximera Workshops is to bring together
 
