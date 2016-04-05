@@ -8,6 +8,7 @@ var mongo = require('mongodb');
 var cheerio = require('cheerio');
 var mdb = require('../mdb');
 var remember = require('../remember');
+var path = require('path');
 var githubApi = require('github');
 
 exports.authenticateViaHMAC = function(req, res, next) {
@@ -22,6 +23,12 @@ exports.authenticateViaHMAC = function(req, res, next) {
     var key = authorization.replace(/:.*$/,'');
     var desiredHash = authorization.replace(/^.*:/,'');
 
+    req.chunks = [];	
+    req.on('data', function(chunk) {
+	console.log( chunk );
+	req.chunks.push( new Buffer(chunk) );	    
+    });    
+    
     // this is a hack
     var empty = false;
     req.on('end', function() {
@@ -35,8 +42,8 @@ exports.authenticateViaHMAC = function(req, res, next) {
 	hmac.write(req.method + " " + req.path + "\n");
 
 	if (empty) {
-	    hmac.write('');
-	    req.rawBody = Buffer.concat([]);	    
+	    req.rawBody = Buffer.concat( req.chunks );
+	    hmac.write( req.rawBody );
 	    hmac.end(function() {
 		var hash = hmac.read();
 		if (hash == desiredHash) {
@@ -47,13 +54,9 @@ exports.authenticateViaHMAC = function(req, res, next) {
 		}
 	    });
 	} else {
-	    req.chunks = [];	
-	    req.on('data', function(chunk) {
-		hmac.write(chunk);
-		req.chunks.push( new Buffer(chunk) );	    
-	    });
 	    req.on('end', function(chunk) {
-		req.rawBody = Buffer.concat( req.chunks );	    
+		req.rawBody = Buffer.concat( req.chunks );
+		hmac.write( req.rawBody );
 		hmac.end(function() {
 		    var hash = hmac.read();
 		    if (hash == desiredHash) {
@@ -113,22 +116,25 @@ exports.putFile = function(req, res){
     var commit = req.params.commit;
     var path = req.params.path;
 
-    if (!(req.user.isInstructor)) {
+    if (!(req.user.isAuthor)) {
     	res.status(500).send('You must be an instructor to PUT files.');
 	return;
     }
     
     saveToContentAddressableFilesystem( req.rawBody, function(err, hash) {
-	var gitFile = new mdb.GitFile();
+	var gitFile = {};
+	;
 	gitFile.commit = commit;
 	gitFile.path = path;
 	gitFile.hash = hash;
-	gitFile.save(function(err) {
-	    if (err)
-		res.status(500).send();
-	    else
-		res.status(200).send();
-	});
+
+	mdb.GitFile.findOneAndUpdate({commit: gitFile.commit, hash: gitFile.hash, path: gitFile.path},
+				    gitFile, {upsert:true}, function(err, doc){
+					if (err)
+					    res.status(500).send();
+					else
+					    res.status(200).send();
+				    });
     });
 };
 
@@ -166,8 +172,8 @@ exports.verifyCollaborator = function(req, res, next){
 };
 
 exports.putCommit = function(req, res){
-    if (!(req.user.isInstructor)) {
-    	res.status(500).send('You must be an instructor to PUT commits.');
+    if (!(req.user.isAuthor)) {
+    	res.status(500).send('You must have permission to PUT commits.');
 	return;
     }
     
@@ -179,62 +185,116 @@ exports.putCommit = function(req, res){
     
     var github = new githubApi({version: "3.0.0"});
 
+    github.authenticate({
+	type: "oauth",
+	token: req.user.githubAccessToken
+    });
+    
     // BADBAD: it's possible that "xake publish" is being called on a branch behind github's master
     // and then this fails
     github.repos.getBranches( {user: owner, repo: repo }, function(err, data) {
-	data.forEach( function(branch) {
-	    if (branch.commit.sha == sha) {
-		var b = new mdb.Branch();
-		b.repository = repo;
-		b.owner = owner;
-		b.name = branch.name;
-		b.commit = branch.commit.sha;
-		b.lastUpdate = new Date();
-		b.save(function(err) { return; });
-	    }
-	});
+	if (err) {
+	    res.status(500).send(err);
+	} else {	
+	    data.forEach( function(branch) {
+		if (branch.commit.sha == sha) {
+		    var b = {};
+		    b.repository = repo;
+		    b.owner = owner;
+		    b.name = branch.name;
+		    b.commit = branch.commit.sha;
+		    b.lastUpdate = new Date();
+
+		    mdb.Branch.findOneAndUpdate({commit: b.commit, name: b.name, repository: b.repository, owner: b.owner},
+						b, {upsert:true}, function(err, doc){ return; });
+		}
+	    });
+	}
     });
     
     github.repos.getCommits( {user: owner, repo: repo, sha: sha }, function(err, data) {
-	data = data.filter( function(commit) {
-	    return commit.sha == sha;
-	});
-	
-	if (data.length == 0) {
-	    res.status(500).send("Could not locate the commit hash on GitHub; have you 'git push'ed your work?");
+	if (err) {
+	    res.status(500).send(err);
 	} else {
-	    var commitData = data[0];
-
-	    var commit = new mdb.Commit();
-	    commit.owner = owner;
-	    commit.repository = repo;
-	    commit.sha = sha;
-	    commit.author = commitData.commit.author;
-	    commit.committer = commitData.commit.committer;
-	    commit.url = commitData.commit.url;
-	    commit.message = commitData.message;
-	    commit.tree = commitData.tree;	    
-	    commit.save(function() {
-		res.status(200).send();
+	    data = data.filter( function(commit) {
+		return commit.sha == sha;
 	    });
+	
+	    if (data.length == 0) {
+		res.status(500).send("Could not locate the commit hash on GitHub; have you 'git push'ed your work?");
+	    } else {
+		var commitData = data[0];
+		
+		var commit = {};
+		commit.owner = owner;
+		commit.repository = repo;
+		commit.sha = sha;
+		commit.author = commitData.commit.author;
+		commit.committer = commitData.commit.committer;
+		commit.url = commitData.commit.url;
+		commit.message = commitData.message;
+		commit.tree = commitData.tree;
+
+		mdb.Commit.findOneAndUpdate({sha: commit.sha},
+					    commit, {upsert:true},
+					    function(err, doc){
+						res.status(200).send();
+					    });
+	    }
 	}
     });
 };
 
-exports.putActivity = function(req, res){
-    if (!(req.user.isInstructor)) {
-    	res.status(500).send('You must be an instructor to PUT activities.');
+function findRelatedCommits( commit, callback ) {
+    mdb.Branch.findOne( { commit: commit }, function( err, branch ) {
+	if (err)
+	    callback(err);
+	else {
+	    if (branch) {
+		mdb.Branch.find( { owner: branch.owner, repository: branch.repository }, function( err, branches ) {
+		    if (err)
+			callback(err);
+		    else
+			callback(err, branches.map( function(branch) { return branch.commit; } ) );
+		});
+	    } else {
+		callback("Missing branch");
+	    }
+	}
+    });
+}
+
+function findOldActivities( xourse, callback ) {
+    findRelatedCommits( xourse.commit, function(err, commits) {
+	if (err)
+	    callback(err);
+	else {
+	    mdb.Activity.find( { commit: { $in: commits } }, function( err, activities ) {
+		callback( err, activities );
+	    });
+	}
+    });
+}
+
+// BADBAD: This creates new course objects, but it should UPDATE old ones if there is one...
+exports.putXourse = function(req, res){
+    if (!(req.user.isAuthor)) {	
+    	res.status(500).send('You must be an author to PUT xourses.');
 	return;
     }
     
     var commit = req.params.commit;
-    var path = req.params.path;
+    var pathname = req.params.path;
 
     var $ = cheerio.load( req.rawBody, {xmlMode: true} );
-    $('a').each( function() {
-	if ($(this).attr('id'))
-	    $(this).remove();
-    });
+    
+    // Guarantee that this is actually a xourse file
+    var isXourse = $('meta[name="description"]').attr('content') == 'xourse';
+    if (!isXourse) {
+	res.status(500).send("Meta name description does not equal 'xourse'." );
+	return;
+    }
+    
     var body = $('body').html();    
     var title = $('title').html();
 
@@ -242,6 +302,146 @@ exports.putActivity = function(req, res){
 	if (err) {
 	    res.status(500).send("Error in saving content to CAFS.");
 	} else {
+	    var xourse = {};
+	    
+            // Save the HTML file to the database as an xourse
+            xourse.commit = commit;
+            xourse.hash = hash;
+            xourse.path = pathname.replace( /.html$/, "" );
+            xourse.title = title;
+            xourse.activityList = [];
+	    
+	    // Go through the xourse text and add the activity URLs to the activity list
+	    $('a.activity').each( function() {
+		var href = $(this).attr('href');
+		//href = path.normalize( path.join( xourse.path, href ) );
+		xourse.activityList.push( href );
+	    });
+
+	    // BADBAD: this is broken -- the xourse object needs to have an activity list
+	    
+            // Find all activities for the given xourse
+            mdb.Activity.find( { commit: xourse.commit, path: { $in: xourse.activityList } }, function(err, activities) {
+                if (err)
+		    res.status(500).send(err);
+                else {
+                    var activityHash = {};
+		    
+		    async.series(
+			[function(callback) {
+			    async.each(activities, function(activity, callback) {
+				if (!(activity.path in activityHash))
+				    activityHash[activity.path] = {};
+				
+				activityHash[activity.path].title = activity.title;
+				activityHash[activity.path].hash = activity.hash;                                       
+				
+				mdb.Blob.findOne({hash: activity.hash}, function(err, blob) {
+				    var $ = cheerio.load( blob.data );
+				    
+				    var images = $('img');
+				    if (images.length > 0)
+					activityHash[activity.path].splashImage = path.normalize(
+					    path.join( path.dirname( activity.path ),
+                                                       images.first().attr('src') ) );
+				    
+				    var summary = $('div.abstract');
+				    if (summary.length > 0)
+					activityHash[activity.path].summary = summary.text();
+				    
+				    var beginning = $('p');
+				    if (beginning.length > 0)
+					activityHash[activity.path].beginning = beginning.first().text();
+				    
+				    callback(err);
+				});
+			    }, function(err) {
+				xourse.activities = activityHash;
+				//xourse.markModified('activities');
+				callback(err);
+			    });
+			},
+			 function(callback) {
+			     findOldActivities( xourse, function(err, activities) {
+				 if (err) {
+				     res.status(500).send(err);
+				 } else {
+				     activities.forEach( function(activity) {
+					 if ( ! (activity.path in xourse.activities))
+					     xourse.activities[activity.path] = {};
+					 
+					 if ( ! ('hashes' in xourse.activities[activity.path]))
+					     xourse.activities[activity.path].hashes = [];
+					 
+					 if (xourse.activities[activity.path].hashes.indexOf( activity.hash ) < 0) {
+					     xourse.activities[activity.path].hashes.push( activity.hash );
+					     //xourse.markModified('activities');
+					 }
+				     });
+				     
+				     callback(null);
+				 }
+			     });
+			 }
+			],
+			function(err) {
+			    // Save xourse!
+			    mdb.Xourse.findOneAndUpdate({commit: xourse.commit, hash: xourse.hash, path: xourse.path},
+							xourse, {upsert:true}, function(err, doc){
+				if (err)
+				    res.status(500).send("Could not save xourse.");
+				else
+				    res.status(200).send();
+			    });
+			});
+		}
+	    });
+	}
+    });
+}
+
+exports.putActivity = function(req, res){
+    if (!(req.user.isAuthor)) {	
+    	res.status(500).send('You must be an author to PUT activities.');
+	return;
+    }
+    
+    var commit = req.params.commit;
+    var pathname = req.params.path;
+
+    var $ = cheerio.load( req.rawBody, {xmlMode: true} );
+    
+    // Remove the anchor links that htlatex is inserting
+    $('a').each( function() {
+	if ($(this).attr('id'))
+	    $(this).remove();
+    });
+
+    var body = $('body').html();    
+    var title = $('title').html();
+
+    saveToContentAddressableFilesystem( body, function(err, hash) {
+	if (err) {
+	    res.status(500).send("Error in saving content to CAFS.");
+	} else {
+	    // Save the HTML file to the database as an activity
+	    var activity = {};
+	    activity.commit = commit;
+	    activity.hash = hash;
+	    activity.path = pathname.replace( /\.html$/, "" );
+	    activity.title = title;
+	    // BADBAD: all the outcomes should be read from the <head>
+	    //activity.outcomes = outcomes;
+	    activity.outcomes = [];
+
+	    mdb.Activity.findOneAndUpdate({commit: activity.commit, hash: activity.hash, path: activity.path},
+					  activity, {upsert:true}, function(err, doc){
+					      if (err)
+						  res.status(500).send("Could not save activity: " + err);
+					      else
+						  res.status(200).send();					      
+					});	    
+	    
 	    // Find all the learning outcomes mentioned in the <head>'s meta tags
 	    /*
 	      var outcomes = [];
@@ -254,27 +454,11 @@ exports.putActivity = function(req, res){
 	      outcome.hash = hash;
 	      
 	      outcome.save( function() {
-	      winston.info( "Associated " + path + " with outcome: " + learningOutcome );
+	      winston.info( "Associated " + pathname + " with outcome: " + learningOutcome );
 	      });
 	      
 	      outcomes.push( learningOutcome );
 	      });*/
-	    
-	    // Save the HTML file to the database as an activity
-	    var activity = new mdb.Activity();
-	    activity.commit = commit;
-	    activity.hash = hash;
-	    activity.path = path.replace( /\.html$/, "" );
-	    activity.title = title;
-	    //activity.outcomes = outcomes;
-	    activity.outcomes = [];
-	    
-	    activity.save(function(err) {
-		if (err)
-		    res.status(500).send("Could not save activity.");
-		else
-		    res.status(200).send();
-	    });
 	}
     });
 };

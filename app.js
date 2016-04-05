@@ -223,6 +223,7 @@ git.long(function (commit) {
     app.put( '/activity/:commit/:path(*.svg)', api.putFile );    
 
     app.put( '/activity/:commit/:path(*)', api.putActivity );
+    app.put( '/course/:commit/:path(*)', api.putXourse );
     
     app.put( '/repos/:owner/:repo/git/commits/:sha', api.verifyCollaborator );
     app.put( '/repos/:owner/:repo/git/commits/:sha', api.putCommit );

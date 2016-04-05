@@ -64,14 +64,14 @@ exports.getCurrent = function(req, res){
     if (req.user.email)
 	req.user.gravatar = crypto.createHash('md5').update(req.user.email).digest("hex");
 
-    if (document.googleOpenId) document.googleOpenId = "token";
-    if (document.courseraOAuthId) document.courseraOAuthId = "token";
-    if (document.githubId) document.githubId = "token";
-    if (document.twitterOAuthId) document.twitterOAuthId = "token";
+    if (req.user.googleOpenId) req.user.googleOpenId = "token";
+    if (req.user.courseraOAuthId) req.user.courseraOAuthId = "token";
+    if (req.user.githubId) req.user.githubId = "token";
+    if (req.user.twitterOAuthId) req.user.twitterOAuthId = "token";
     
-    document.apiKey = "";
-    document.apiSecret = "";
-    document.password = "";
+    req.user.apiKey = "";
+    req.user.apiSecret = "";
+    req.user.password = "";
     
     res.json(req.user);
 };

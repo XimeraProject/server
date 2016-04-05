@@ -554,8 +554,7 @@ exports.tableOfContents = function(req, res) {
 	    
 	], function(err, result) {
 	    if ((err == "Missing branch") && (branchName != "master")) {
-		// BADBAD: sometimes ACTIVITY is undefined
-		res.redirect("/course/" + activity.ownerName + "/" + activity.repositoryName + "/master/" + activity.branchName + "/");
+		res.redirect("/course/" + owner + "/" + repository + "/master/" + branchName + "/");
 	    } else {
 		if ((err) || (!result)) {
 		    renderError( res, err );
@@ -615,8 +614,8 @@ exports.getActivitiesFromCommit = function(req, res) {
 
 		    xourse.activityList.forEach( function(activityPath) {
 			var activity = xourse.activities[activityPath];
-			
-			activity.commit = commit;
+			if (activity)
+  			  activity.commit = commit;
 		    });
 		
 		    res.json( xourse.activities );
