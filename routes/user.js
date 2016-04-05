@@ -401,8 +401,6 @@ exports.courses = function(req, res){
 		    token: instructor.githubAccessToken
 		});
 
-		
-		
 		// BADBAD: check if a user is a collaborator
 		github.user.get({}, function(err, githubUser) {
 		    if (err) {
