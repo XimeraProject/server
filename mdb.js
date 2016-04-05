@@ -186,6 +186,7 @@ exports.initialize = function initialize(callback) {
 				      visibility: String,
 				      remoteAddress: String,
                                       isGuest: Boolean,
+                                      isAuthor: Boolean, // BADBAD: this is what permits a user to use xake publish
                                       lastUrlVisited: String,
 				      instructor: Mixed,
                                       apiKey: {type: String, index: true, unique: true, sparse: true},				      
