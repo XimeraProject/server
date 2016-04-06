@@ -241,8 +241,9 @@ require.config({
 });
 
 
+// no longer using codemirror-python?
 require( ["jquery", "shCore", "mathjax", "jquery-ui", "shBrushJScript", "shBrushLatex", 
-	  "less", "database", "bootstrap", "moment", "mailing-list", "codemirror-python", "sticky-scroll", "user/profile", "math-answer", "activity", "score", "progress-bar", "xourse", "navigation", "image-environment", "youtube",
+	  "less", "database", "bootstrap", "moment", "mailing-list", "sticky-scroll", "user/profile", "math-answer", "activity", "score", "progress-bar", "xourse", "navigation", "image-environment", "youtube",
 	  "invigilator", "clock","instructor"],
 	  function($, shCore, MathJax) {
 

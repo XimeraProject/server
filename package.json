@@ -39,6 +39,7 @@
 	"karma": "*",
 	"karma-mocha": "*",
 	"karma-chai": "*",
+	"grunt": "*",	
 	"grunt-cli": "*",
 	"grunt-contrib-watch": "*",
 	"gridfs-stream": "*",
