@@ -19,6 +19,8 @@ require.config({
 
     paths: {
         mathjax: "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured",
+        desmos: "https://www.desmos.com/api/v0.7/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6",
+	
 	less: "../../components/less/dist/less.min",
 	socketio: '../../components/socket.io-client/socket.io',
 	"async": "../../components/async/lib/async",
@@ -100,11 +102,12 @@ require.config({
 
         'skulpt': { exports: 'Sk' },
         'skulpt-stdlib': { deps: ['skulpt'] },
-
+	'desmos': { exports: 'Desmos' },
 	
 	mathjax: {
 	    exports: "MathJax",
-	    init: function () {
+	    deps: ["desmos"],
+	    init: function (Desmos) {
 		MathJax.Hub.Config(
 		    {
 			// You might think putput/SVG would be better,
@@ -154,8 +157,49 @@ require.config({
 			HTML = MathJax.HTML;
 		    
 		    TEXDEF.macros.answer = "answer";
-		    
+		    TEXDEF.macros.graph = "graph";
+
+                    var calculatorCount = 0;		    
+
 		    TEX.Parse.Augment({
+			/* Implements \graph{y=x^2, r = theta} and the like */
+			graph: function(name) {
+			    var optionalArguments = this.GetBrackets(name);
+			    var equations = this.GetArgument(name);
+
+                            var id = "calculator" + calculatorCount;
+                            calculatorCount = calculatorCount + 1;
+			    var element = HTML.Element("div",
+						     {className:"calculator",
+                                                      id: id,
+						      style: {width: "30px", height: "300px"}
+						     });
+			    var mml = MML["annotation-xml"](MML.xml(element)).With({encoding:"application/xhtml+xml",isToken:true});
+			    this.Push(MML.semantics(mml));
+			    
+                            MathJax.Hub.Queue( function () {
+				var element = document.getElementById(id);
+                                var parent = $(element).closest( 'div.MathJax_Display' );
+				parent.empty();
+				element = parent;
+				
+				var calculator = Desmos.Calculator(element, {expressionsCollapsed: true});
+				window.calculator = calculator;
+
+				if (equations.match( /^\(.*\)$/ ))
+                                    calculator.setExpression({id:'graph', latex: equations});
+				else {
+				    equations.split(',').forEach( function(equation, index) {
+					calculator.setExpression({id:'graph' + index, latex: equation});
+				    });
+				}
+				$(element).height(300);
+				calculator.resize();
+                            });
+
+
+			},
+
 			/* Implements \answer[key=value]{text} */
 			answer: function(name) {
 			    var keys = this.GetBrackets(name);
@@ -183,15 +227,13 @@ require.config({
 				    input.setAttribute("data-" + key, value);
 				});
 			    }
-
 			    
 			    var mml = MML["annotation-xml"](MML.xml(input)).With({encoding:"application/xhtml+xml",isToken:true});
-			    this.Push(MML.semantics(mml));			    
+			    this.Push(MML.semantics(mml));
 			}
 		    });
 		});
 
-			
 		return MathJax;
 	    }
 	}
