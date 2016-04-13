@@ -25,13 +25,10 @@ html(lang="en")
 
     if stylesheet
       link(rel="stylesheet/less",type="text/css",href=stylesheet)
-        
-    if deployment == 'production'
-      script(data-module=script,data-main="/public/javascripts/app.min",src="/components/requirejs/require.js")
-      // I'd like to actually compile this with almond, but loading mathjax is so hard
-      //script(data-module=script,src=versionPath("/public/javascripts/app.min.js"))
-    else
-      script(data-module=script,data-main="/public/javascripts/app",src="/components/requirejs/require.js")
+
+    script(type="text/javascript",src="/node_modules/mathjax/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured")
+    script(type="text/javascript",src="https://www.desmos.com/api/v0.7/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6")
+    script(type="text/javascript",src="/public/javascripts/main.min.js")
 
     link(rel="apple-touch-icon",sizes="114x114",href=versionPath("/public/images/icons/favicon-114x114.png"))
     link(rel="apple-touch-icon",sizes="72x72",href=versionPath("/public/images/icons/favicon-72x72.png"))

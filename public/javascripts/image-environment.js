@@ -1,26 +1,29 @@
-define(['jquery', 'underscore', 'jquery-fullsizable'], function($, _) {
-    $(function() {
-	$('div.image-environment').each( function() {
-	    var imageEnvironment = $(this);
-	    imageEnvironment.addClass('well well-lg');
+var $ = require('jquery');
+window.jQuery = $;
+var fullsizeable = require('jquery-fullsizable');
 
-	    $('img', imageEnvironment).each( function() {
-		var img = $(this);
-		var href = img.attr('src');
-		
-		var link = $('<a>');
-		link.attr('href', href);
+$(function() {
+    $('div.image-environment').each( function() {
 
-		link.append( img );
-		imageEnvironment.append( link );
-	    });
+	var imageEnvironment = $(this);
+	imageEnvironment.addClass('well well-lg');
+
+	$('img', imageEnvironment).each( function() {
+	    var img = $(this);
+	    var href = img.attr('src');
+	    
+	    var link = $('<a>');
+	    link.attr('href', href);
+
+	    link.append( img );
+	    imageEnvironment.append( link );
 	});
-
-	$('div.image-environment a').fullsizable({
-	   // Detaching would look nicer, but MathJax seems to be angry when we detach math elements?
-	   // detach_id: "wrap"
-	});
-
     });
-    
+
+    $('div.image-environment a').fullsizable({
+	// Detaching would look nicer, but MathJax seems to be angry when we detach math elements?
+	// detach_id: "wrap"
+    });
+
 });
+

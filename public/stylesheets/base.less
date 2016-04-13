@@ -527,17 +527,20 @@ footer .address a {
 
 /*****************************************************************/
 /* Font Awesome to replace the glypicons from bootstrap */
-@import "/components/font-awesome/css/font-awesome.min.css";
+@import "/node_modules/font-awesome/css/font-awesome.min.css";
 
-@import "../../components/pagedown-bootstrap/Markdown.Editor.less";
+/*
+@import "../../node_modules/pagedown-bootstrap/Markdown.Editor.less";
+
 .icon-link,
 .icon-blockquote,
 .icon-code,
 .icon-bullet-list,
 .icon-list,
 .icon-undo {
-        background-image: url(/components/pagedown-bootstrap/Markdown.Editor.Icons.png);
+        background-image: url(/node_modules/pagedown-bootstrap/Markdown.Editor.Icons.png);
 }
+*/
 
 /* icon-header is now fa-text-height */
 .icon-header, .icon-hr-line {
@@ -564,8 +567,8 @@ footer .address a {
 ////////////////////////////////////////////////////////////////
 // Syntax Highlighter 
 
-@import "../../components/syntaxhighlighter/styles/shCore.css";
-@import "../../components/syntaxhighlighter/styles/shThemeDefault.css";
+@import "../../node_modules/syntaxhighlighter/styles/shCore.css";
+@import "../../node_modules/syntaxhighlighter/styles/shThemeDefault.css";
 
 .syntaxhighlighter .toolbar {
     display: none;
@@ -582,7 +585,7 @@ footer .address a {
 ////////////////////////////////////////////////////////////////
 // Date picker
 
-@import "../../components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css";
+@import "../../node_modules/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css";
 
 ////////////////////////////////////////////////////////////////
 // Trees
@@ -595,7 +598,7 @@ footer .address a {
   border-radius: @width;
 }
 // No more trees?
-// @import "../../components/bootstrap-tree/less/bootstrap-tree.less";
+// @import "../../node_modules/bootstrap-tree/less/bootstrap-tree.less";
 .tree {
   border: 0;
 }
@@ -659,7 +662,7 @@ footer .address a {
 
 /*****************************************************************/
 /* codemirror CSS */
-@import "../../components/codemirror/lib/codemirror.css";
+@import "../../node_modules/codemirror/lib/codemirror.css";
 
 /*****************************************************************/
 /* some frontpage hacks */

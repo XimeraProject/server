@@ -1,22 +1,21 @@
-define(['jquery'], function($){
-    var $ = jQuery;
-    $(document).ready(function() {
-	$('#mailingListAlert').hide();
+var $ = require('jquery');
 
-	$("#mailingListSubmit").click( function(event) {
-	    var emailAddress = $("#mailingListEmail").val();
+$(document).ready(function() {
+    $('#mailingListAlert').hide();
+
+    $("#mailingListSubmit").click( function(event) {
+	var emailAddress = $("#mailingListEmail").val();
+	$("#mailingListEmail").val("");
+
+	$.ajax({
+	    url: "/mailing-list",
+	    data: {"email": emailAddress},
+	}).done(function(data) {
+	    $('#mailingListAlert').show();
+	    $('#mailingListAlert').fadeOut(2000);
 	    $("#mailingListEmail").val("");
-
-	    $.ajax({
-		url: "/mailing-list",
-		data: {"email": emailAddress},
-	    }).done(function(data) {
-		$('#mailingListAlert').show();
-		$('#mailingListAlert').fadeOut(2000);
-		$("#mailingListEmail").val("");
-	    });
-
-	    return false;
 	});
+
+	return false;
     });
 });

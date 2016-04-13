@@ -1,10 +1,11 @@
 {
     "name": "ximera",
     "description": "Ximera interactive textbook server",
-    "version": "0.0.7",
+    "version": "0.0.9",
     "private": true,
     "scripts": {
 	"start": "node app.js",
+	"install": "napa MSchmidt/jquery-fullsizable tchapi/pagedown-bootstrap",
 	"postinstall": "./node_modules/bower/bin/bower install && mkdir -p components/syntaxhighlighter/amd && node node_modules/requirejs/bin/r.js -convert components/syntaxhighlighter/scripts components/syntaxhighlighter/amd && cd ./components/math-expressions && npm install && cd ../.. && mkdir -p ./components/math-expressions/amd && node node_modules/requirejs/bin/r.js -convert components/math-expressions/lib components/math-expressions/amd"
     },
     "dependencies": {
@@ -52,6 +53,7 @@
 	"async": "*",
 	"socket.io": "*",
 	"socket.io-express-session": "*",
+	"socket.io-client": "*",	
 	"versionator": "*",
 	"git-rev": "*",
 	"crypto": "*",
@@ -67,9 +69,44 @@
 	"method-override": "*",	
 	"morgan": "*",
 	"errorhandler": "*",
-	"github": "*"
+	"github": "*",
+	"bufferutil": "*",
+	"utf-8-validate": "*",	
+	"eonasdan-bootstrap-datetimepicker": "*",
+	"math-expressions": "https://github.com/kisonecat/math-expressions.git",
+	"underscore": "*",
+	"bootstrap": "3.3.4",
+	"syntaxhighlighter": "*",	
+	"moment": "*",
+	"jquery": "*",
+        "sly": "https://github.com/darsain/sly",
+        "isotope-layout": "*",
+	"jquery-ui": "*",
+	"font-awesome": "*",	
+	"mathjax": "*",
+	"less": "*"
     },
+    
+    "aliasify": {
+        "aliases": {
+            "mathjax": "./public/javascripts/mathjax.js",
+            "jquery-fullsizable": "./node_modules/jquery-fullsizable/js/jquery-fullsizable.min.js",
+            "math-expressions": "./node_modules/math-expressions/lib/math-expressions.js",
+	    "sly": "./node_modules/sly/dist/sly.min.js",
+
+	    "pagedown-converter": "./node_modules/pagedown-bootstrap/Markdown.Converter.js",
+	    "pagedown-sanitizer": "./node_modules/pagedown-bootstrap/Markdown.Sanitizer.js",
+	    "pagedown-editor": "./node_modules/pagedown-bootstrap/Markdown.Editor.js"
+        }
+    },
+    
     "devDependencies": {
+	"napa": "*",
+	"browserify": "*",
+	"watchify": "*",
+	"aliasify": "*",
+	"babelify": "*",
+	"gulp": "*",
 	"load-grunt-tasks": "~0.2.1",
 	"grunt-contrib-requirejs": "^0.4.3",
 	"grunt-contrib-less": "^0.9.0",

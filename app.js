@@ -182,7 +182,7 @@ function addDatabaseMiddleware(req, res, next) {
 
 ////////////////////////////////////////////////////////////////
 // Less Middleware
-var bootstrapPath = path.join(__dirname, 'components', 'bootstrap');
+var bootstrapPath = path.join(__dirname, 'node_modules', 'bootstrap');
 app.use(less({
     src    : path.join(__dirname, 'public', 'stylesheets'),
     prefix   : '/public/stylesheets',
@@ -200,7 +200,7 @@ git.long(function (commit) {
 
     app.use(versionator.middleware);
     app.use('/public', express.static(path.join(__dirname, 'public')));
-    app.use('/components', express.static(path.join(__dirname, 'components')));
+    app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
     app.locals.versionPath = versionator.versionPath;
 
