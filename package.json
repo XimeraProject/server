@@ -1,17 +1,15 @@
 {
     "name": "ximera",
     "description": "Ximera interactive textbook server",
-    "version": "0.0.9",
+    "version": "0.0.12",
     "private": true,
     "scripts": {
 	"start": "node app.js",
-	"install": "napa MSchmidt/jquery-fullsizable tchapi/pagedown-bootstrap",
-	"postinstall": "./node_modules/bower/bin/bower install && mkdir -p components/syntaxhighlighter/amd && node node_modules/requirejs/bin/r.js -convert components/syntaxhighlighter/scripts components/syntaxhighlighter/amd && cd ./components/math-expressions && npm install && cd ../.. && mkdir -p ./components/math-expressions/amd && node node_modules/requirejs/bin/r.js -convert components/math-expressions/lib components/math-expressions/amd"
+	"install": "napa MSchmidt/jquery-fullsizable tchapi/pagedown-bootstrap"
     },
     "dependencies": {
 	"forever": "*",
 	"underscore": "*",
-	"bower": "*",
 	"node-uuid": "*",	
 	"express": "*",
 	"http-proxy-middleware": "*",
@@ -40,15 +38,13 @@
 	"karma": "*",
 	"karma-mocha": "*",
 	"karma-chai": "*",
-	"grunt": "*",	
-	"grunt-cli": "*",
-	"grunt-contrib-watch": "*",
 	"gridfs-stream": "*",
 	"mongoose": "*",
 	"fstream": "*",
 	"domino": "*",
 	"csv": "*",
 	"winston": "*",
+	"react": "*",
 	"less": "*",
 	"async": "*",
 	"socket.io": "*",
@@ -76,7 +72,9 @@
 	"math-expressions": "https://github.com/kisonecat/math-expressions.git",
 	"underscore": "*",
 	"bootstrap": "3.3.4",
-	"syntaxhighlighter": "*",	
+	"syntaxhighlighter": "*",
+	"brush-javascript": "*",
+	"brush-python": "*",	
 	"moment": "*",
 	"jquery": "*",
         "sly": "https://github.com/darsain/sly",
@@ -103,16 +101,19 @@
     "devDependencies": {
 	"napa": "*",
 	"browserify": "*",
+	"reactify": "*",
+	"babelify": "*",
+	"babel-preset-es2015": "*",
+	"babel-preset-react": "*",
 	"watchify": "*",
 	"aliasify": "*",
 	"babelify": "*",
 	"gulp": "*",
-	"load-grunt-tasks": "~0.2.1",
-	"grunt-contrib-requirejs": "^0.4.3",
-	"grunt-contrib-less": "^0.9.0",
-	"grunt-contrib-cssmin": "^0.8.0",
-	"grunt-contrib-jshint": "^0.8.0",
-	"grunt-sed": "*",
-	"grunt-git-revision": "0.0.1"
+	"gulp-util": "*",
+	"lodash.assign": "*",	
+	"gulp-sourcemaps": "*",
+	"vinyl-source-stream": "*",
+	"vinyl-buffer": "*"
     }
 }
+

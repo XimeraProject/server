@@ -567,8 +567,7 @@ footer .address a {
 ////////////////////////////////////////////////////////////////
 // Syntax Highlighter 
 
-@import "../../node_modules/syntaxhighlighter/styles/shCore.css";
-@import "../../node_modules/syntaxhighlighter/styles/shThemeDefault.css";
+@import "./syntaxHighlighter.less";
 
 .syntaxhighlighter .toolbar {
     display: none;
@@ -580,6 +579,11 @@ footer .address a {
 }
 .syntaxhighlighter .container:after {
     display: block;
+}
+
+.syntaxhighlighter code {
+    background-color: white;
+    padding: 0;
 }
 
 ////////////////////////////////////////////////////////////////

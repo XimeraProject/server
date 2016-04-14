@@ -19,6 +19,8 @@ var feedback = require('./feedback');
 var createActivity = function() {
     var activity = $(this);
 
+    console.log("ACTIVITY");
+
     activity.fetchData( function(db) {
 	activity.persistentData( function() {
 	    if (!(activity.persistentData( 'experienced' ))) {

@@ -3,8 +3,12 @@ var $ = window.$ = window.jQuery = require('jquery');
 var jqueryUI = require('jquery-ui');
 var bootstrap = require('bootstrap');
 
-//var shCore = require('syntaxhighlighter');
-// and require  "shBrushJScript", "shBrushLatex", 
+var syntaxHighlighter = require('syntaxhighlighter');
+window.sh = syntaxHighlighter;
+syntaxHighlighter.registerBrush(require('./brushes/shBrushLatex'));
+syntaxHighlighter.registerBrush(require('brush-javascript'));
+syntaxHighlighter.registerBrush( require('brush-python'));
+
 var MathJax = require('./mathjax');
 
 var activity = require('./activity');
@@ -155,7 +159,9 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 MathJax.Hub.Configured();
 
 $(document).ready(function() {
-    //shCore.SyntaxHighlighter.highlight();
+
+    // BADBAD: This seems like the wrong thing---why is default here?
+    syntaxHighlighter.default.highlight();
 	
     $(".dropdown-toggle").dropdown();
 
@@ -164,3 +170,5 @@ $(document).ready(function() {
     
     $(".activity").activity();
 });
+
+console.log("done.");
