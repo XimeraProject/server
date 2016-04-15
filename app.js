@@ -17,7 +17,6 @@ var express = require('express')
   , path = require('path')
   , mdb = require('./mdb')
   , login = require('./login')
-  , less = require('less-middleware')
   , passport = require('passport')
   , mongo = require('mongodb')
   , http = require('http')
@@ -181,16 +180,6 @@ function addDatabaseMiddleware(req, res, next) {
 }
 
 ////////////////////////////////////////////////////////////////
-// Less Middleware
-var bootstrapPath = path.join(__dirname, 'node_modules', 'bootstrap');
-app.use(less({
-    src    : path.join(__dirname, 'public', 'stylesheets'),
-    prefix   : '/public/stylesheets',
-    paths  : [path.join(bootstrapPath, 'less')],
-    dest   : path.join(__dirname, 'public', 'stylesheets'),
-    force  : true
-}));
-
 var git = require('git-rev');
 git.long(function (commit) {
 

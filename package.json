@@ -1,7 +1,7 @@
 {
     "name": "ximera",
     "description": "Ximera interactive textbook server",
-    "version": "0.0.12",
+    "version": "0.0.14",
     "private": true,
     "scripts": {
 	"start": "node app.js",
@@ -13,7 +13,6 @@
 	"node-uuid": "*",	
 	"express": "*",
 	"http-proxy-middleware": "*",
-	"less-middleware": "0.1.15",
 	"connect-mongo": "*",
 	"markdown": "*",
 	"moment": "*",
@@ -45,7 +44,6 @@
 	"csv": "*",
 	"winston": "*",
 	"react": "*",
-	"less": "*",
 	"async": "*",
 	"socket.io": "*",
 	"socket.io-express-session": "*",
@@ -82,7 +80,6 @@
 	"jquery-ui": "*",
 	"font-awesome": "*",	
 	"mathjax": "*",
-	"less": "*"
     },
     
     "aliasify": {
@@ -110,7 +107,12 @@
 	"babelify": "*",
 	"gulp": "*",
 	"gulp-util": "*",
-	"lodash.assign": "*",	
+	"gulp-uglify": "*",
+	"gulp-minify-css": "*",	
+	"gulp-if": "*",	
+	"gulp-less": "*",
+	"lodash.assign": "*",
+	"yargs": "*",
 	"gulp-sourcemaps": "*",
 	"vinyl-source-stream": "*",
 	"vinyl-buffer": "*"
