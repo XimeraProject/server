@@ -58,7 +58,7 @@ CKAv2.prototype = {
 	
 	progress.progressProportion( proportionFinished );
 	
-	if (!(activity.path.match(/welcome/))) {
+	if (!(activity.path.match(/begin/))) {
 	    this.counter = this.counter + 1;
 	}
 
