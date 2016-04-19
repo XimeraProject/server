@@ -203,6 +203,9 @@ function addUserAccount(req, authField, authId, name, email, course, done) {
                         done(err, null);
                     }
                     else {
+			req.user.name = name;
+			req.user.email = email;
+			req.user.course = course;
                         req.user[authField] = authId;
                         req.user.save(function (err) {
                             done(err, req.user);
