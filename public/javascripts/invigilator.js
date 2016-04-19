@@ -86,7 +86,7 @@ CKAv2.prototype = {
 	if (activity.path.match(/thanks/)) {
 	    nextLabel('You are welcome.');	    
 	    $('#next-activity').addClass('disabled');
-	} else if (activity.path.match(/welcome/)) {
+	} else if (activity.path.match(/begin/)) {
 	    nextLabel('Get started!');
 	    $('#next-activity').addClass('pulse');	    
 	} else {
