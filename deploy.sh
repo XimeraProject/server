@@ -5,13 +5,11 @@ if [ $(hostname) = ximera-1.asc.ohio-state.edu ]; then
     mv -f environment.sh environment.backup
     git pull
     mv -f environment.backup environment.sh
-    echo Deleting math-expressions
-    rm -rf components/math-expressions
     echo Updating npm...
-    echo which npm? $(which npm)
     npm install
-    echo Running grunt...
-    ./node_modules/grunt-cli/bin/grunt production
+    echo Running gulp...
+    node ./node_modules/gulp/bin/gulp.js js
+    node ./node_modules/gulp/bin/gulp.js css    
     echo Stopping old copies of app.js...
     ./node_modules/forever/bin/forever -c /home/deploy/local/bin/node stop ximera
     echo Starting a new copy of app.js...
