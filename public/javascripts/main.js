@@ -63,7 +63,6 @@ MathJax.Hub.Register.MessageHook("Math Processing Error",function (message) {
     console.log(message);
 });
 
-
 MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     // Remove CDATA's from the script tags
     MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
@@ -170,5 +169,6 @@ $(document).ready(function() {
     
     $(".activity").activity();
 });
+
 
 console.log("done.");
