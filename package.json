@@ -79,7 +79,7 @@
         "isotope-layout": "*",
 	"jquery-ui": "*",
 	"font-awesome": "*",	
-	"mathjax": "*",
+	"mathjax": "*"
     },
     
     "aliasify": {
