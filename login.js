@@ -191,7 +191,13 @@ function addUserAccount(req, authField, authId, name, email, course, done) {
 
         // If user already has account, we're done.
         if (req.user[authField] == authId) {
-            done(null, req.user)
+	    req.user.name = name;
+	    req.user.email = email;
+	    req.user.course = course;
+            req.user[authField] = authId;
+            req.user.save(function (err) {
+                done(err, req.user);
+            });
         }
         else {
             mdb.User.find(searchFields, function (err, users) {
@@ -209,9 +215,9 @@ function addUserAccount(req, authField, authId, name, email, course, done) {
                         req.user[authField] = authId;
                         req.user.save(function (err) {
                             done(err, req.user);
-                        })
+                        });
                     }
-                })
+                });
             });
         }
     }
