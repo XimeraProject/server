@@ -32,7 +32,7 @@ exports.initialize = function initialize(callback) {
 	    ref: String,
 	    headCommit: Mixed,
 	    finishedProcessing: Boolean
-	},
+	}, 
 	{
 	    capped: 1024*1024,
 	});
