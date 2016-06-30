@@ -64,6 +64,7 @@ jade.filters.markdown = function(str){
 
 // Create Express 4 app to configure.
 var app = express();
+exports.app = app;
 
 // Because I care about trailing slashes
 app.enable('strict routing');
@@ -179,21 +180,16 @@ function addDatabaseMiddleware(req, res, next) {
     next();
 }
 
-////////////////////////////////////////////////////////////////
-var git = require('git-rev');
-git.long(function (commit) {
 
-    // versionator
     app.version = require('./package.json').version;
-    var versionator = require('versionator').create(commit);
 
-    app.use(versionator.middleware);
+    //app.use(versionator.middleware);
     app.use('/public', express.static(path.join(__dirname, 'public')));
     app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
-    app.locals.versionPath = versionator.versionPath;
+    //app.locals.versionPath = versionator.versionPath;
 
-    console.log( versionator.versionPath('/template/test') );
+    //console.log( versionator.versionPath('/template/test') );
 
     app.use(api.authenticateViaHMAC);    
     app.use(passport.initialize());
@@ -386,8 +382,8 @@ git.long(function (commit) {
     app.get('/about/supporters', function( req, res ) { res.redirect('/about/support'); });
     app.get('/about/support', about.support);
 
-    app.get('/template/:templateFile', template.renderTemplate);
-    app.get('/template/forum/:templateFile', template.renderForumTemplate);
+    //app.get('/template/:templateFile', template.renderTemplate);
+    //app.get('/template/forum/:templateFile', template.renderForumTemplate);
 
     var state = require('./routes/state.js')(null);
     app.get('/state/:activityHash', state.get);
@@ -492,7 +488,6 @@ git.long(function (commit) {
             res.render('404', { status: 404, url: req.url });
 	});
 	
-    });
     
 });
 

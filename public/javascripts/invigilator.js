@@ -16,14 +16,14 @@ var CKAv2 = function() {
     this.problemOrder = [];
 
     for(var i=1; i<=39; i++ )
-	this.problemOrder.push( "v1/p" + (("0" + i).slice(-2)) );
+	this.problemOrder.push( "v1p/p" + (("0" + i).slice(-2)) );
 
     shuffle(this.problemOrder);	
     
     this.extraProblems = [];	
     
     for(var i=1; i<=182; i++ )
-	this.extraProblems.push( "v2/q" + i );
+	this.extraProblems.push( "v2p/q" + i );
 
     shuffle(this.extraProblems);		
 
@@ -33,8 +33,8 @@ var CKAv2 = function() {
 
 CKAv2.prototype = {
     shortName: "CKA",
-    name: "Calculus Knowledge Assessment",
-    version: "2.0.1",
+    name: "Calculus Knowledge Post-Assessment",
+    version: "2.0.1p",
 
     tick: function() {
 	var proportionFinished = 0;
@@ -58,7 +58,7 @@ CKAv2.prototype = {
 	
 	progress.progressProportion( proportionFinished );
 	
-	if (!(activity.path.match(/welcome/))) {
+	if (!(activity.path.match(/begin/))) {
 	    this.counter = this.counter + 1;
 	}
 
@@ -86,7 +86,7 @@ CKAv2.prototype = {
 	if (activity.path.match(/thanks/)) {
 	    nextLabel('You are welcome.');	    
 	    $('#next-activity').addClass('disabled');
-	} else if (activity.path.match(/welcome/)) {
+	} else if (activity.path.match(/begin/)) {
 	    nextLabel('Get started!');
 	    $('#next-activity').addClass('pulse');	    
 	} else {
@@ -168,7 +168,7 @@ function eraseLocationSearch() {
 	window.history.pushState( {}, document.title, window.location.pathname );
 }
 
-exports.register( 'cka', CKAv2 );
+exports.register( 'cka2', CKAv2 );
 
 function nextLabel( label ) {
     $('#next-activity-label', '#next-activity').text(label);
