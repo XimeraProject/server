@@ -50,7 +50,7 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
              ul(id="bug-menu").dropdown-menu
               if activity
                 li
-                  a(href="https://github.com/#{activity.ownerName}/#{activity.repositoryName}/issues/new") Report error in content  
+                  a(href="https://github.com/#{activity.ownerName}/#{activity.repositoryName}/issues/new?title=#{activity.title}&body=%0A%0ASee%20[#{activity.path}.tex](https://github.com/#{activity.ownerName}/#{activity.repositoryName}/blob/#{activity.commit}/#{activity.path}.tex)") Report error in content  
               li
                 a(href="https://github.com/kisonecat/ximera/issues/new") Report error with website      
 
