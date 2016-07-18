@@ -82,6 +82,12 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
     var calculatorCount = 0;		    
 
+    /* Sometimes htlatex generates \relax's which should be ignored */
+    MathJax.InputJax.TeX.Definitions.Add({
+	macros: {
+	    relax: ["Macro", ""]
+	}});
+    
     TEX.Parse.Augment({
 	/* Implements \graph{y=x^2, r = theta} and the like */
 	graph: function(name) {
