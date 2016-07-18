@@ -85,7 +85,9 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     /* Sometimes htlatex generates \relax's which should be ignored */
     MathJax.InputJax.TeX.Definitions.Add({
 	macros: {
-	    relax: ["Macro", ""]
+	    relax: ["Macro", ""],
+	    ensuremath: ["Macro", ""],
+	    xspace: ["Macro", ""]
 	}});
     
     TEX.Parse.Augment({
