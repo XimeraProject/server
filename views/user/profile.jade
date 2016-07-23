@@ -9,22 +9,6 @@ mixin linked_account(name, icon, shortname, userId, token)
       else
         | <span class="connect">Connect</span><span class="disconnect" style="display: none;">Disconnect</span> #{name}      
 
-mixin broken(name, icon, shortname, userId, token)
-    if token
-      a.btn.btn-default.btn-danger(href=url,role="button")
-        if icon
-          i(class="fa fa-" + icon)
-          | &nbsp;Disconnect #{name}
-        else
-          | Disconnect #{name}
-    else
-      button.btn.btn-default(type="button",shortname=shortname)
-        if icon
-          i(class="fa fa-" + icon)
-          | &nbsp;Connect #{name}
-        else
-          | Connect #{name}        
-
 block title
   #{title}
   
@@ -58,10 +42,15 @@ block content
             if person.birthday                                    
               span.list-group-item <i class="fa fa-birthday-cake"></i>&nbsp;
                 time(class="absolute-date", datetime=person.birthday)
-                  | #{person.formattedBirthday}            
-            //span.list-group-item <i class="fa fa-eye"></i>&nbsp;
-            //  time(class="relative-date", datetime=person.lastSeen)
-            //    | #{person.lastSeen}
+                  | #{person.formattedBirthday}
+            if person.lastSeen
+              span.list-group-item <i class="fa fa-calendar"></i>&nbsp;
+                time(class="relative-date", datetime=person.lastSeen)
+                  | #{person.lastSeen}
+            if person.superuser
+              span.list-group-item <i class="fa fa-hashtag"></i>&nbsp;Superuser
+            if person.isAuthor
+              span.list-group-item <i class="fa fa-pencil"></i>&nbsp;Author
       .col-sm-9
         .row
           .col-sm-9

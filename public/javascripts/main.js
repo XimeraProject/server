@@ -30,6 +30,8 @@ var instructor = require('./instructor');
 var invigilator = require('./invigilator');
 var clock = require('./clock');
 
+var rowclick = require('./rowclick');
+
 MathJax.Hub.Config(
     {
 	// You might think putput/SVG would be better,
@@ -169,7 +171,9 @@ $(document).ready(function() {
 
     // BADBAD: This seems like the wrong thing---why is default here?
     syntaxHighlighter.default.highlight();
-	
+
+    rowclick.addClickableTableRows();
+    
     $(".dropdown-toggle").dropdown();
 
     // This could go in "init" above, but it needs to be after the end process hook

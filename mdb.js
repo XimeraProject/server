@@ -158,8 +158,7 @@ exports.initialize = function initialize(callback) {
 					 value: Mixed
 				    });
 
-    
-    exports.User = mongoose.model("User",
+    var UserSchema = new mongoose.Schema(
                                   {
                                       googleOpenId: {type: String, index: true, unique: true, sparse: true},
                                       courseraOAuthId: {type: String, index: true, unique: true, sparse: true},
@@ -187,10 +186,14 @@ exports.initialize = function initialize(callback) {
                                       isGuest: Boolean,
                                       isAuthor: Boolean, // BADBAD: this is what permits a user to use xake publish
                                       lastUrlVisited: String,
+				      lastSeen: Date,
 				      instructor: Mixed,
                                       apiKey: {type: String, index: true, unique: true, sparse: true},				      
                                       apiSecret: String				      
                                   });
+    UserSchema.index( { lastSeen: -1 } );
+    
+    exports.User = mongoose.model("User", UserSchema);
 
     exports.State = mongoose.model("State",
                                    new mongoose.Schema({
@@ -229,6 +232,8 @@ exports.initialize = function initialize(callback) {
     RegExp.escape= function(s) {
 	return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     };
+
+    mongoose.set('debug', true);    
 
     mongoose.connect(url, {}, function (err) {
 	callback(err);

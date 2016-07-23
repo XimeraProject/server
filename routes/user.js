@@ -8,6 +8,7 @@ var uuid = require('node-uuid');
 var mongo = require('mongodb');
 var validator = require('validator');
 var moment = require('moment');
+var async = require('async');
 var mdb = require('../mdb');
 var remember = require('../remember');
 var githubApi = require('github');
@@ -280,7 +281,7 @@ exports.edit = function(req, res){
 		res.format({
 		    html: function(){
 			remember(req);
-			
+			console.log(document);
 			res.render('user/edit', { userId: req.params.id,
 						  user: req.user,
 						  script: "user/profile",
@@ -356,6 +357,29 @@ exports.update = function(req, res){
 		
 		if (document.email)
 	    	    document.gravatar = crypto.createHash('md5').update(validator.normalizeEmail(document.email)).digest("hex");	    
+
+		// Only superusers can edit flags
+		if (req.user.superuser) {
+		    if (req.body.isInstructor) 
+			document.isInstructor = hash.isInstructor = true;
+		    else
+			document.isInstructor = hash.isInstructor = false;
+
+		    if (req.body.isAuthor) 
+			document.isAuthor = hash.isAuthor = true;
+		    else
+			document.isAuthor = hash.isAuthor = false;
+
+		    if (req.body.isGuest) 
+			document.isGuest = hash.isGuest = true;
+		    else
+			document.isGuest = hash.isGuest = false;		    
+
+		    if (req.body.superuser) 
+			document.superuser = hash.superuser = true;
+		    else
+			document.superuser = hash.superuser = false;		    		    
+		}
 		
 		mdb.User.update( {_id: new mongo.ObjectID(id)}, {$set: hash},
 				 function(err, d) {
@@ -444,4 +468,41 @@ exports.courses = function(req, res){
 	    }
 	}
     });
+};
+
+exports.index = function(req, res) {
+    var page = req.params.page;
+    var pageSize = 10;
+    var pageCount = 1;
+    
+    async.waterfall(
+	[
+	    function(callback) {
+		mdb.User.count( callback );
+	    },
+	    function(userCount, callback) {
+		pageCount = Math.ceil( userCount / pageSize );
+		
+		mdb.User.find()
+		    .skip( (page-1)*pageSize )
+		    .limit( pageSize )
+		    .sort('-lastSeen')
+		    .exec( callback );
+	    },
+	], function(err, users) {
+	    if (err) {
+		res.status(500).send(err);
+	    } else {
+		users.forEach( function(user) {
+		    if (user.email)
+	    		user.gravatar = crypto.createHash('md5').update(validator.normalizeEmail(user.email)).digest("hex");
+		});
+		
+		res.render('user/index', {
+		    users: users,
+		    page: page,
+		    pageCount: pageCount
+		} );    		
+	    }
+	});
 };

@@ -48,6 +48,23 @@ block content
                     input.form-control(type="text",name="birthday",id="birthday",placeholder="July 17, 1990",value=person.formattedBirthday)
                     span.input-group-addon
                       span.fa.fa-calendar
+            if user.superuser
+              div.form-group
+                label.col-sm-3.control-label(for="biography") <i class="fa fa-sitemap"></i>&nbsp;Roles
+                div.col-sm-9
+                  label.checkbox-inline
+                    input#superuser(type="checkbox", name="superuser", checked=person.superuser)
+                    | Superuser
+                  label.checkbox-inline
+                    input#isAuthor(type="checkbox", name="isAuthor", checked=person.isAuthor)
+                    | Author
+                  label.checkbox-inline
+                    input#isInstructor(type="checkbox", name="isInstructor", checked=person.isInstructor)
+                    | Instructor                    
+                  label.checkbox-inline
+                    input#isGuest(type="checkbox", name="isGuest", checked=person.isGuest)
+                    | Guest      
+                      
             div.form-group
                 label.col-sm-3.control-label(for="biography") <i class="fa fa-file-text-o"></i>&nbsp;Short Biography 
                 div.col-sm-9           
