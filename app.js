@@ -123,6 +123,12 @@ app.use(function(req, res, next) {
     next();
 });
 
+app.use(function(req, res, next) {
+    res.locals.path = req.path;    
+    next();
+});
+
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride());
@@ -247,7 +253,9 @@ function addDatabaseMiddleware(req, res, next) {
     app.get('/users/:id', user.get);
     app.get('/users/:id/edit', user.edit);
     app.post('/users/:id', user.update);
+
     app.get('/users/', user.index);
+    app.get('/users/page/:page', user.index); // pagination in Mongo is fairly slow
     
     app.delete('/users/:id/google', function( req, res ) { user.deleteLinkedAccount( req, res, 'google' ); } );
     app.delete('/users/:id/coursera', function( req, res ) { user.deleteLinkedAccount( req, res, 'coursera' ); } );
