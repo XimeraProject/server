@@ -117,24 +117,24 @@ exports.putFile = function(req, res){
     var path = req.params.path;
 
     if (!(req.user.isAuthor)) {
-    	res.status(500).send('You must be an instructor to PUT files.');
+    	res.status(500).send('You must be an author to PUT files.');
 	return;
     }
     
     saveToContentAddressableFilesystem( req.rawBody, function(err, hash) {
 	var gitFile = {};
-	;
+
 	gitFile.commit = commit;
 	gitFile.path = path;
 	gitFile.hash = hash;
 
 	mdb.GitFile.findOneAndUpdate({commit: gitFile.commit, hash: gitFile.hash, path: gitFile.path},
-				    gitFile, {upsert:true}, function(err, doc){
-					if (err)
-					    res.status(500).send();
-					else
-					    res.status(200).send();
-				    });
+				     gitFile, {upsert:true}, function(err, doc){
+					 if (err)
+					     res.status(500).send();
+					 else
+					     res.status(200).send();
+				     });
     });
 };
 
@@ -226,6 +226,7 @@ exports.putCommit = function(req, res){
 		var commitData = data[0];
 		
 		var commit = {};
+		
 		commit.owner = owner;
 		commit.repository = repo;
 		commit.sha = sha;
@@ -245,6 +246,32 @@ exports.putCommit = function(req, res){
     });
 };
 
+exports.putBareCommit = function(req, res){
+    if (!(req.user.isAuthor)) {
+    	res.status(500).send('You must have permission to PUT commits.');
+	return;
+    }
+    
+    var sha = req.params.sha;
+    var head = JSON.parse(req.rawBody);
+
+    var commit = {};
+    
+    commit.owner = undefined;
+    commit.repository = undefined;
+    commit.sha = sha;
+    commit.author = head.author;
+    commit.committer = head.committer;
+    commit.message = head.message;
+    commit.parents = head.parents;
+    
+    mdb.Commit.findOneAndUpdate({sha: commit.sha},
+				commit, {upsert:true},
+				function(err, doc){
+				    res.status(200).send();
+				});
+}
+
 function findRelatedCommits( commit, callback ) {
     mdb.Branch.findOne( { commit: commit }, function( err, branch ) {
 	if (err)
@@ -258,7 +285,8 @@ function findRelatedCommits( commit, callback ) {
 			callback(err, branches.map( function(branch) { return branch.commit; } ) );
 		});
 	    } else {
-		callback("Missing branch");
+		// This could have been callback("Missing branch"); but instead I'm just going to fake it
+		callback(err, [ commit ] );
 	    }
 	}
     });

@@ -8,9 +8,6 @@ var mdb = require('../mdb'),
     pathJoin = require('path').join,
     winston = require('winston');
 
-// Async-kit's race has slightly different semantics than async's race; in this case, the first non-error is returned.
-var race = require('async-kit').race;
-
 function renderError( res, err ) {
     res.status(500).render('fail', { title: "Internal Error", message: err });
 }
@@ -27,134 +24,143 @@ exports.activityByHashHead = function(req, res) {
     });
 };
 
-var findBranch = function( username, reponame, branch, filename, model, callback ) {
-    mdb.Branch.find( { owner: username, repository: reponame, name: branch } )
+exports.xourseFromUserAndRepo = function(req, res, next) {
+    
+    var branch = req.params.branch;
+    if (!branch)
+	branch = 'master';
+    
+    mdb.Branch.find( { owner: req.params.username, repository: req.params.repository, name: branch } )
+	.sort({lastUpdate: -1})
+	.limit(1).exec( function (err, branches) {
+	    if (err) next('route');
+	    if (branches.length == 0) next('route');
+	    
+	    var branch = branches[0];
+
+	    mdb.Xourse.findOne({commit: branch.commit}).exec( function(err, xourse) {
+		if (err)
+		    next('route');
+		else {
+		    if (!xourse)
+			next('route');
+		    else {
+			req.xourse = xourse;
+			req.locator = [req.params.username, req.params.repository, branch].join('/');			
+			next();
+		    }
+		}
+	    });
+	});
+};
+
+exports.xourseFromCommit = function(req, res, next) {
+    var sha = req.params.commit;
+
+    mdb.Xourse.findOne({commit: sha}).exec( function(err, xourse) {
+	if (err)
+	    next('route');
+	else {
+	    if (!xourse)
+		next('route');
+	    else {
+		req.xourse = xourse;
+		req.locator = sha;
+		next();
+	    }
+	}
+    });
+};
+
+
+exports.objectFromCommit = function(req, res, next) {
+    var model = mdb.GitFile;
+    if (path.extname(req.params.path) == '')
+	model = mdb.Activity;
+
+    var sha = req.params.commit;
+
+    mdb.Commit.findOne( { sha: sha } ).exec( function(err, commit) {
+	if (err)
+	    next('route');
+	else {
+	    model.find({path: req.params.path, commit: req.params.commit }).exec( function(err, objects) {
+		if (objects.length == 0)
+		    next('route');
+		else {
+		    req.commits = [sha];
+		    req.commit = commit;
+		    // BADBAD: the locator should be
+		    // made symbolic because the
+		    // locator is used to link to
+		    // other pages ,which might cause
+		    // some trouble with state
+		    req.locator = sha;
+		    req.objects = objects;
+		    next();
+		}
+	    });
+	}
+    });
+};
+
+exports.objectFromUserAndRepo = function(req, res, next) {
+    var model = mdb.GitFile;
+    if (path.extname(req.params.path) == '')
+	model = mdb.Activity;
+    
+    var branch = req.params.branch;
+    if (!branch)
+	branch = 'master';
+    
+    mdb.Branch.find( { owner: req.params.username, repository: req.params.repository, name: branch } )
 	.sort({lastUpdate: -1})
 	.exec( function( err, branches ) {
 	    if (err)
-		callback(err);
+		next('route');
 	    else {
 		if (branches.length == 0)
-		    callback( "Missing branch" );
+		    next('route');
 		else {
 		    // These will be in order from the most recent update
 		    var commits = branches.map( function(branch) { return branch.commit; } );
 
-		    model.find({path: filename, commit: { $in: commits }}).exec( function(err, objects) {
-				if (objects.length == 0)
-				    callback( "Nothing found." );
-				else
-				    callback( err, { commits: commits,
-						     branches: branches,
-						     locator: [username, reponame, branch].join('/'),
-						     filename: filename,
-						     objects: objects } );				
+		    model.find({path: req.params.path, commit: { $in: commits }}).exec( function(err, objects) {
+			if (objects.length == 0)
+			    next('route');
+			else {
+			    req.commits = commits;
+			    req.branches = branches;
+			    req.locator = [req.params.username, req.params.repository, branch].join('/');						    
+			    req.objects = objects;
+			    req.objects.sort( function(a,b) {
+				return req.commits.indexOf( a.commit ) - req.commits.indexOf( b.commit );
+			    });		    
+			    next();
+			}
 		    });		    
 		}
 	    }
 	});
-};
-
-/** findObjectsFromPathWithLocator takes a path for an object (of type model) which could be of the form
-       commit/the/file/path.txt or
-       username/reponame/branch/the/file/path.txt or    
-       username/reponame/the/file/path.txt (meaning the "master" branch implicitly)
- and calls callback with the located objects
- */
-var findObjectsFromPathWithLocator = function(pathname, model, callback) {
-    // Use async-kit's race so that the first NON-error is called
-    race(
-	[
-	    // Find commit by commit hash
-	    function(callback) {
-		var separated = pathname.split('/');
-		var sha = separated.shift();
-		var filename = separated.join('/');
-
-		if (!(sha.match(/^[0-9A-Fa-f]*$/))) {
-		    callback('not a hexadecimal hash');
-		} else {
-		    mdb.Commit.findOne( { sha: sha } ).exec( function(err, commit) {
-			if (err)
-			    callback( err );
-			else {
-			    model.find({path: filename, commit: sha}).exec( function(err, objects) {
-				if (objects.length == 0)
-				    callback( "Nothing found." );
-				else
-				    // BADBAD: the locator should be
-				    // made symbolic because the
-				    // locator is used to link to
-				    // other pages ,which might cause
-				    // some trouble with state
-				    callback( err, { commits: [sha],
-						     commit: commit,
-						     locator: sha,
-						     filename: filename,
-						     objects: objects } );				
-			    });
-			}
-		    });
-		}
-	    },
-
-	    // Find commit by username/reponame
-	    function(callback) {
-		var separated = pathname.split('/');
-		var username = separated.shift();
-		var reponame = separated.shift();
-		var branchname = 'master';
-		var filename = separated.join('/');
-
-		if ((username) && (reponame))
-		    findBranch( username, reponame, branchname, filename, model, callback );
-		else
-		    callback( "Missing username and reponame" );
-	    },
-
-	    // Find commit by username/reponame/branchname
-	    function(callback) {
-		var separated = pathname.split('/');
-		var username = separated.shift();
-		var reponame = separated.shift();
-		var branchname = separated.shift();		
-		var filename = separated.join('/');
-
-		if ((username) && (reponame) && (branchname))
-		    findBranch( username, reponame, branchname, filename, model, callback );
-		else
-		    callback( "Missing username and reponame and branchname" );
-	    }
-	]).exec( function( err, result ) {
-	    if (err) {
-		callback(err);
-	    } else {
-		result.objects.sort( function(a,b) {
-		    return result.commits.indexOf( a.commit ) - result.commits.indexOf( b.commit );
-		});
-		callback( null, result );
-	    }
-	});
-};
+};    
 
 
 exports.activity = function(req, res) {
-
+    remember(req);
+    
     var user = req.user;
     var activities = undefined;
-   
+    var activityHashes = undefined;
+    
     async.waterfall(
 	[
 	    function(callback) {
-		findObjectsFromPathWithLocator( req.params.path, mdb.Activity, callback);
-	    },
-	    function(result, callback) {
-		activities = result.objects;
-		activities.forEach( function(activity) { activity.locator = result.locator; } );
+		activities = req.objects;
+		activities.forEach( function(activity) { activity.locator = req.locator; } );
 		
 		// There may be duplicates here because the same
 		// activity can appear in multiple commits
-		var activityHashes = activities.map( function(activity) { return activity.hash; } );
+		activityHashes = activities.map( function(activity) { return activity.hash; } );
 		
 		mdb.State.find({user: user._id, activityHash: { $in: activityHashes }}).exec( callback );
 	    },
@@ -198,61 +204,38 @@ exports.activity = function(req, res) {
 	});
 };
 
-exports.file = function(req, res) {
-    var file = undefined;
+exports.source = function(req, res) {
+    remember(req);
     
-    async.waterfall(
-	[
-	    function(callback) {
-		findObjectsFromPathWithLocator( req.params.path, mdb.GitFile, callback);
-	    },
-	    function(result, callback) {
-		file = result.objects[0];
-		mdb.Blob.findOne({hash: file.hash}).exec(callback);
-	    },
-	],
-	function( err, blob ) {
+    var file = req.objects[0];
+    
+    mdb.Blob.findOne({hash: file.hash}).exec(function(err,blob) {
+	if (err) {
+	    renderError( res, err );
+	} else {
+	    file.data = blob.data;
+	    res.render('source', { file: file });
+	}
+    });
+};
+
+exports.file = function( mimetype ) {
+    return function(req, res) {
+	remember(req);
+	
+	var file = req.objects[0];
+    
+	mdb.Blob.findOne({hash: file.hash}).exec(function(err,blob) {
 	    if (err) {
 		renderError( res, err );
 	    } else {
 		file.data = blob.data;
-		    
-		if (path.extname(file.path) == ".tex") {
-		    res.render('source', { file: file });
-		} else {
-		    if (path.extname(file.path) == ".js") {
-			res.contentType( 'text/javascript' );
-		    } else if (path.extname(file.path) == ".css") {
-			res.contentType( 'text/css' );		    
-		    } else if (path.extname(file.path) == ".svg") {
-			// SVG files will only be rendered if they are sent with content type image/svg+xml			
-			res.contentType( 'image/svg+xml' );
-		    } else if (path.extname(file.path) == ".jpg") {
-			res.contentType( 'image/jpeg' );
-		    } else if (path.extname(file.path) == ".png") {
-			res.contentType( 'image/' + path.extname(file.path).replace('.', '') );
-		    } else if (path.extname(file.path) == ".pdf") {
-			res.contentType( 'image/' + path.extname(file.path).replace('.', '') );
-		    } 		    
-		    
-		    res.end( file.data, 'binary' );
-		}
+		res.contentType( mimetype );
+		res.end( file.data, 'binary' );		
 	    }
-	}
-    );
+	});
+    };
 };
-
-exports.activityOrFile = function(req, res) {
-    remember(req);
-
-    var noun = req.params.noun; // either 'course' or 'activity'
-
-    if (path.extname(req.params.path) == '') {
-	exports.activity( req, res );
-    } else {
-	exports.file( req, res );	
-    }
-};  
     
     
 function renderActivity( res, activity ) {
@@ -409,4 +392,47 @@ exports.getActivitiesFromCommit = function(req, res) {
 	    }
 	}
     });    
+};
+
+
+
+exports.tableOfContents = function(req, res) {
+    remember(req);
+    
+    var xourse = req.xourse;
+    
+    hash = xourse.hash;
+    
+    mdb.Blob.findOne({hash: hash}).exec(function(err, blob) {
+	if ((err) || (!blob)) {
+	    renderError( res, err );
+	} else {
+	    xourse.html = blob.data;
+	    xourse.locator = req.locator;
+
+	    xourse.activityList.forEach( function(activityPath) {
+		var url = pathJoin( xourse.locator,
+				    dirname( xourse.path ),
+				    activityPath
+				  );
+
+		if (xourse.activities === undefined)
+		    xourse.activities = {};
+			
+		if (xourse.activities[activityPath] === undefined) {
+		    xourse.activities[activityPath] = {};
+		    xourse.activities[activityPath].title = url;
+		}
+
+		var splashImage = xourse.activities[activityPath].splashImage;
+		
+		if (splashImage)
+		    xourse.activities[activityPath].splashImage = '/activity/' + xourse.locator + '/' + splashImage;
+		
+		xourse.activities[activityPath].url = '/course/' + normalize(url);
+	    });
+	    
+	    res.render('xourse', { xourse: xourse });
+	}
+    });
 };

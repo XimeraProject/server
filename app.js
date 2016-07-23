@@ -270,32 +270,30 @@ function addDatabaseMiddleware(req, res, next) {
     app.get( '/courses', function( req, res ) { res.redirect('/course/'); });
     app.get( '/courses/', function( req, res ) { res.redirect('/course/'); });
 
-    app.get( '/:noun(course|activity)/:path(*)', course.activityOrFile );
+    app.get( '/course/:commit([0-9a-fA-F]+)$', function( req, res ) { res.redirect(req.url + '/'); });
     
-    /*
-     All of this is subsumed by /course/:path and /activity/:path
-    app.get( '/course/:commit/', course.tableOfContentsByCommit );
-    app.get( '/course/:commit$', function( req, res ) { res.redirect(req.url + '/'); });
-    app.get( '/course/:username/:repository/', course.tableOfContents );
-    app.get( '/course/:username/:repository$', function( req, res ) { res.redirect(req.url + '/'); });
-    app.get( '/course/:username/:repository/:branch/', course.tableOfContents );
-    app.get( '/course/:username/:repository/:branch$', function( req, res ) { res.redirect(req.url + '/'); });
-    app.get( '/course/:username/:repository/:branch/:path(*.tex)', course.source );
-    app.get( '/course/:username/:repository/:branch/:path(*.png)', course.image );
-    app.get( '/course/:username/:repository/:branch/:path(*.jpg)', course.image );
-    app.get( '/course/:username/:repository/:branch/:path(*.pdf)', course.image );
-    app.get( '/course/:username/:repository/:branch/:path(*.svg)', course.image );
-    app.get( '/course/:username/:repository/:branch/:path(*)', course.activity );
-    app.get( '/activity/:commit/:path(*.css)', course.stylesheet );
-    app.get( '/activity/:commit/:path(*.js)', course.javascript );
-    app.get( '/activity/:commit/:path(*.tex)', course.source );
-    app.get( '/activity/:commit/:path(*.png)', course.image );
-    app.get( '/activity/:commit/:path(*.jpg)', course.image );
-    app.get( '/activity/:commit/:path(*.pdf)', course.image );
-    app.get( '/activity/:commit/:path(*.svg)', course.image );    
-    app.get( '/activity/:commit/:path(*)', course.activityByHash );
-     */
-    
+    app.get( '/course/:commit([0-9a-fA-F]+)/', course.xourseFromCommit, course.tableOfContents );
+    app.get( '/course/:username/:repository/', course.xourseFromUserAndRepo, course.tableOfContents );
+    app.get( '/course/:username/:repository/:branch/', course.xourseFromUserAndRepo, course.tableOfContents );
+
+    var appXimera = function( regexp, callback ) {
+	app.get( '/:noun(course|activity)/:commit([0-9a-fA-F]+)/:path(' + regexp + ')', course.objectFromCommit, callback );
+	app.get( '/:noun(course|activity)/:username/:repository/:path(' + regexp + ')', course.objectFromUserAndRepo, callback );
+	app.get( '/:noun(course|activity)/:username/:repository/:branch/:path(' + regexp + ')', course.objectFromUserAndRepo, callback );
+    };
+
+    appXimera( '*.tex', course.source );
+
+    // SVG files will only be rendered if they are sent with content type image/svg+xml
+    appXimera( '*.svg', course.file('image/svg+xml') );
+    appXimera( '*.png', course.file('image/png') );
+    appXimera( '*.pdf', course.file('image/pdf') );
+    appXimera( '*.jpg', course.file('image/jpeg') );
+    appXimera( '*.js',  course.file('text/javascript') );
+    appXimera( '*.css', course.file('text/css') );                
+
+    appXimera( '*', course.activity );
+            
     app.get( '/statistics/:commit/:hash/answers', course.answers );
     app.get( '/statistics/:commit/:hash/successes', course.successes );
 

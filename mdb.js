@@ -59,18 +59,17 @@ exports.initialize = function initialize(callback) {
                                      });
 
     exports.Commit = mongoose.model("Commit",
-                                     {
-                                         owner: {type: String, index: true},
-					 repository: {type: String, index: true},
-					 sha: {type: String, index: true},
-                                         author: Mixed,
-                                         url: String,					 
-                                         committer: Mixed,
-                                         message: String,
-                                         tree: Mixed,
-                                         parents: Mixed,					 			
-                                     });
-
+                                    {
+                                        owner: {type: String, index: true},
+					repository: {type: String, index: true},
+					sha: {type: String, index: true},
+                                        author: Mixed,
+                                        url: String,
+                                        committer: Mixed,
+                                        message: String,
+                                        tree: Mixed,
+                                        parents: Mixed,					 			
+                                    });
     
     // These records are designed to conform to the TinCan API 1.0.0
     exports.LearningRecord = mongoose.model("LearningRecord",
