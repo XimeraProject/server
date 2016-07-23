@@ -212,6 +212,8 @@ function addDatabaseMiddleware(req, res, next) {
     
     app.put( '/repos/:owner/:repo/git/commits/:sha', api.verifyCollaborator );
     app.put( '/repos/:owner/:repo/git/commits/:sha', api.putCommit );
+
+    app.put( '/commits/:sha', api.putBareCommit );
     
     //app.put( '/activity/:commit/:path(*.tex)', api.authenticateViaHMAC);
     //app.put( '/activity/:commit/:path(*.tex)', api.putTex );
@@ -263,34 +265,37 @@ function addDatabaseMiddleware(req, res, next) {
     app.get( '/course/multivariable/', function( req, res ) { res.redirect('/about/m2o2c2'); });
     app.get( '/course/multivariable', function( req, res ) { res.redirect('/about/m2o2c2'); });
 
-    app.get('/course/', course.index );
+    //app.get('/course/', course.index );
     app.get( '/course', function( req, res ) { res.redirect(req.url + '/'); });
     app.get( '/courses', function( req, res ) { res.redirect('/course/'); });
     app.get( '/courses/', function( req, res ) { res.redirect('/course/'); });
 
+    app.get( '/:noun(course|activity)/:path(*)', course.activityOrFile );
+    
+    /*
+     All of this is subsumed by /course/:path and /activity/:path
+    app.get( '/course/:commit/', course.tableOfContentsByCommit );
+    app.get( '/course/:commit$', function( req, res ) { res.redirect(req.url + '/'); });
     app.get( '/course/:username/:repository/', course.tableOfContents );
-    app.get( '/course/:username/:repository$', function( req, res ) { res.redirect(req.url + '/'); });    
+    app.get( '/course/:username/:repository$', function( req, res ) { res.redirect(req.url + '/'); });
     app.get( '/course/:username/:repository/:branch/', course.tableOfContents );
     app.get( '/course/:username/:repository/:branch$', function( req, res ) { res.redirect(req.url + '/'); });
-    
     app.get( '/course/:username/:repository/:branch/:path(*.tex)', course.source );
     app.get( '/course/:username/:repository/:branch/:path(*.png)', course.image );
     app.get( '/course/:username/:repository/:branch/:path(*.jpg)', course.image );
     app.get( '/course/:username/:repository/:branch/:path(*.pdf)', course.image );
     app.get( '/course/:username/:repository/:branch/:path(*.svg)', course.image );
     app.get( '/course/:username/:repository/:branch/:path(*)', course.activity );
-
     app.get( '/activity/:commit/:path(*.css)', course.stylesheet );
     app.get( '/activity/:commit/:path(*.js)', course.javascript );
-
     app.get( '/activity/:commit/:path(*.tex)', course.source );
-    
     app.get( '/activity/:commit/:path(*.png)', course.image );
     app.get( '/activity/:commit/:path(*.jpg)', course.image );
     app.get( '/activity/:commit/:path(*.pdf)', course.image );
     app.get( '/activity/:commit/:path(*.svg)', course.image );    
     app.get( '/activity/:commit/:path(*)', course.activityByHash );
-
+     */
+    
     app.get( '/statistics/:commit/:hash/answers', course.answers );
     app.get( '/statistics/:commit/:hash/successes', course.successes );
 
@@ -444,9 +449,12 @@ function addDatabaseMiddleware(req, res, next) {
 	app.delete('/forum/:post', forum.delete);
 	*/
 
-        server.listen(app.get('port'), function(stream){
-	    console.log('Express server listening on port ' + app.get('port'));
-        });	
+	if(!module.parent){
+            server.listen(app.get('port'), function(stream){
+		console.log('Express server listening on port ' + app.get('port'));
+            });		    
+	}
+
 	
 	io.on('connection', function (socket) {
 	    // join to room and save the room name
