@@ -241,13 +241,14 @@ function addDatabaseMiddleware(req, res, next) {
 
     app.get('/', routes.index);
 
-    app.get('/users/', user.getCurrent);
+    app.get('/users/me', user.getCurrent);
     //app.get('/users/profile', user.currentProfile);
     //app.get('/users/:id/profile', user.profile);
     app.get('/users/:id', user.get);
     app.get('/users/:id/edit', user.edit);
     app.post('/users/:id', user.update);
-
+    app.get('/users/', user.index);
+    
     app.delete('/users/:id/google', function( req, res ) { user.deleteLinkedAccount( req, res, 'google' ); } );
     app.delete('/users/:id/coursera', function( req, res ) { user.deleteLinkedAccount( req, res, 'coursera' ); } );
     app.delete('/users/:id/github', function( req, res ) { user.deleteLinkedAccount( req, res, 'github' ); } );
