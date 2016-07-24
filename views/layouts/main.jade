@@ -50,11 +50,15 @@ html(lang="en")
       };
       try {document.addEventListener("DOMContentLoaded", $buo_f,false)}
       catch(e){window.attachEvent("onload", $buo_f)}
+
+    if (!(atOhioState))
+      style(type="text/css") .affix-top { top: 0px; }
       
   body
      div
        block modals
-     include includes/osu
+     if (atOhioState)
+       include includes/osu
      #wrap
        include includes/header
        block content
