@@ -42,19 +42,7 @@ function hasPermissionToEdit( viewer, viewee ) {
     return false;
 }
 
-exports.list = function(req, res){
-    if (('user' in req) && (req.user.superuser)) {
-	mdb.User.find(function(err,document) {
-            if (document) {
-		res.render('users', { users: document, title: 'users' });
-	    } else {
-		res.status(500).render('fail', { title: "Users not found", error: "I could not find any users." });
-	    }
-	});
-    } else {
-	res.status(403).render('fail', { title: "Users not visible", error: "You are not a superuser." });
-    }
-};
+
 
 exports.getCurrent = function(req, res){
     if (!req.user) {
@@ -474,6 +462,11 @@ exports.index = function(req, res) {
     var page = req.params.page;
     var pageSize = 10;
     var pageCount = 1;
+
+    if (!(('user' in req) && (req.user.superuser))) {
+	res.status(403).render('fail', { title: "Users not visible", message: "You are not a superuser." });
+	return;
+    }
     
     async.waterfall(
 	[
