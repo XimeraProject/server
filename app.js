@@ -292,12 +292,6 @@ function addDatabaseMiddleware(req, res, next) {
 	app.get( '/:noun(course|activity)/:username/:repository/:branch/:path(' + regexp + ')', course.objectFromUserAndRepo, callback );
     };
 
-    /*
-     app.get( '/course/:commit([0-9a-fA-F]+)$' ,function( req, res ) { res.redirect(req.url + '/'); });
-     app.get( '/course/:username/:repository', function( req, res ) { res.redirect(req.url + '/'); });
-     app.get( '/course/:username/:repository/:branch', function( req, res ) { res.redirect(req.url + '/'); });
-     */
-    
     appXimera( '*.tex', course.source );
 
     // SVG files will only be rendered if they are sent with content type image/svg+xml
@@ -309,7 +303,11 @@ function addDatabaseMiddleware(req, res, next) {
     appXimera( '*.css', course.file('text/css') );                
 
     appXimera( '*', course.activity );
-            
+
+    app.get( '/course/:commit([0-9a-fA-F]+)$' ,function( req, res ) { res.redirect(req.url + '/'); });
+    app.get( '/course/:username/:repository', function( req, res ) { res.redirect(req.url + '/'); });
+    app.get( '/course/:username/:repository/:branch', function( req, res ) { res.redirect(req.url + '/'); });
+    
     app.get( '/statistics/:commit/:hash/answers', course.answers );
     app.get( '/statistics/:commit/:hash/successes', course.successes );
 
