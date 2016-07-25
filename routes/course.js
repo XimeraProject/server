@@ -138,7 +138,14 @@ exports.objectFromUserAndRepo = function(req, res, next) {
 			    req.objects = objects;
 			    req.objects.sort( function(a,b) {
 				return req.commits.indexOf( a.commit ) - req.commits.indexOf( b.commit );
-			    });		    
+			    });
+			    
+			    req.objects.forEach( function(object) {
+				object.ownerName = req.params.username;
+				object.repositoryName = req.params.repository;
+				object.branchName = branch;
+			    });
+			    
 			    next();
 			}
 		    });		    

@@ -66,7 +66,7 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
           li
               button.btn-margin.navbar-btn.pull-right.btn.btn-sm.btn-danger(type="button",data-toggle="modal", data-target="#resetWarningModal")
                 | <i class="fa fa-eraser"></i> Erase
-        if activity                
+        if (activity.ownerName) && (activity.repositoryName) && (activity.branchName) && (activity.path)
           li
               button.btn-margin.pull-right.btn.navbar-btn.btn-default.btn-sm(role="button",onclick="location.href = \"https://github.com/#{activity.ownerName}/#{activity.repositoryName}/edit/#{activity.branchName}/#{activity.path}.tex\";")
                 | <i class="fa fa-pencil"></i> Edit
