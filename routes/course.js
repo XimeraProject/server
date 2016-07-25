@@ -33,11 +33,14 @@ exports.xourseFromUserAndRepo = function(req, res, next) {
     mdb.Branch.find( { owner: req.params.username, repository: req.params.repository, name: branch } )
 	.sort({lastUpdate: -1})
 	.limit(1).exec( function (err, branches) {
-	    if (err) next('route');
-	    if (branches.length == 0) next('route');
+	    if (err) { next('route'); return; }
+	    if (!branches) { next('route'); return; }
+	    if (branches.length == 0) { next('route'); return; }
 	    
 	    var branch = branches[0];
 
+	    if (!branch) { next('route'); return; }
+	    
 	    mdb.Xourse.findOne({commit: branch.commit}).exec( function(err, xourse) {
 		if (err)
 		    next('route');

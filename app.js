@@ -280,11 +280,14 @@ function addDatabaseMiddleware(req, res, next) {
     app.get( '/courses', function( req, res ) { res.redirect('/course/'); });
     app.get( '/courses/', function( req, res ) { res.redirect('/course/'); });
 
-    app.get( '/course/:commit([0-9a-fA-F]+)$', function( req, res ) { res.redirect(req.url + '/'); });
-    
+    app.get( '/course/:commit([0-9a-fA-F]+)$' ,function( req, res ) { res.redirect(req.url + '/'); });
     app.get( '/course/:commit([0-9a-fA-F]+)/', course.xourseFromCommit, course.tableOfContents );
+    
     app.get( '/course/:username/:repository/', course.xourseFromUserAndRepo, course.tableOfContents );
+    app.get( '/course/:username/:repository', function( req, res ) { res.redirect(req.url + '/'); });
+    
     app.get( '/course/:username/:repository/:branch/', course.xourseFromUserAndRepo, course.tableOfContents );
+    app.get( '/course/:username/:repository/:branch', function( req, res ) { res.redirect(req.url + '/'); });
 
     var appXimera = function( regexp, callback ) {
 	app.get( '/:noun(course|activity)/:commit([0-9a-fA-F]+)/:path(' + regexp + ')', course.objectFromCommit, callback );
