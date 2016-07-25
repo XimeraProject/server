@@ -34,15 +34,6 @@ block content
           else
             li.disabled
               span &laquo;
-          - var i = 1;
-          - while ( i <= pageCount )
-            if page == i
-              li.active
-                a(href=i) #{i}
-            else
-              li
-                a(href=i) #{i}
-            - i++;
           if page < pageCount
             li
               a(href=page+1) &raquo;
