@@ -1,0 +1,52 @@
+extends ../layouts/main
+
+block title
+  | Users
+
+  
+block content
+ .container
+    div.row
+      table.table
+        thead
+          tr
+            th Id
+            th Name
+            th Seen
+        tbody
+          for user in users
+            tr(data-href="/users/#{user.id}")
+              th(scope="row")
+                a(href="/users/#{user.id}") &hellip;#{user.id.slice(-5)}
+              td
+                img.img-responsive.img-rounded(src="https://secure.gravatar.com/avatar/#{user.gravatar}.jpg?d=retro&s=80")
+              td #{user.displayName} (#{user.name})
+              if user.lastSeen
+                td #{moment(user.lastSeen).fromNow()}
+              else
+                td Never
+    div.row
+      div.text-center
+        ul.pagination.pagination-lg
+          if page > 1
+            li
+              a(href=page) &laquo;
+          else
+            li.disabled
+              span &laquo;
+          - var i = 1;
+          - while ( i <= pageCount )
+            if page == i
+              li.active
+                a(href=i) #{i}
+            else
+              li
+                a(href=i) #{i}
+            - i++;
+          if page < pageCount
+            li
+              a(href=page+1) &raquo;
+          else
+            li.disabled
+              span &raquo;
+    

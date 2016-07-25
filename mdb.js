@@ -233,7 +233,7 @@ exports.initialize = function initialize(callback) {
 	return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     };
 
-    mongoose.set('debug', true);    
+    //mongoose.set('debug', true);    
 
     mongoose.connect(url, {}, function (err) {
 	callback(err);
