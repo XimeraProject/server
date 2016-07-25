@@ -292,9 +292,11 @@ function addDatabaseMiddleware(req, res, next) {
 	app.get( '/:noun(course|activity)/:username/:repository/:branch/:path(' + regexp + ')', course.objectFromUserAndRepo, callback );
     };
 
-    app.get( '/course/:commit([0-9a-fA-F]+)$' ,function( req, res ) { res.redirect(req.url + '/'); });
-    app.get( '/course/:username/:repository', function( req, res ) { res.redirect(req.url + '/'); });
-    app.get( '/course/:username/:repository/:branch', function( req, res ) { res.redirect(req.url + '/'); });
+    /*
+     app.get( '/course/:commit([0-9a-fA-F]+)$' ,function( req, res ) { res.redirect(req.url + '/'); });
+     app.get( '/course/:username/:repository', function( req, res ) { res.redirect(req.url + '/'); });
+     app.get( '/course/:username/:repository/:branch', function( req, res ) { res.redirect(req.url + '/'); });
+     */
     
     appXimera( '*.tex', course.source );
 
