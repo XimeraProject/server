@@ -207,6 +207,7 @@ exports.putCommit = function(req, res){
 
 		    mdb.Branch.findOneAndUpdate({commit: b.commit, name: b.name, repository: b.repository, owner: b.owner},
 						b, {upsert:true}, function(err, doc){ return; });
+				 
 		}
 	    });
 	}
@@ -239,7 +240,13 @@ exports.putCommit = function(req, res){
 		mdb.Commit.findOneAndUpdate({sha: commit.sha},
 					    commit, {upsert:true},
 					    function(err, doc){
-						res.status(200).send();
+						if (err) {
+						    res.status(500).send();
+						} else {
+						    res.status(200).send();
+						    mdb.User.update( {_id: req.user._id}, {$addToSet: {instructor: commit.sha}},
+								     function(err, doc){ return; });
+						}
 					    });
 	    }
 	}
@@ -268,8 +275,16 @@ exports.putBareCommit = function(req, res){
     mdb.Commit.findOneAndUpdate({sha: commit.sha},
 				commit, {upsert:true},
 				function(err, doc){
-				    res.status(200).send();
+				    if (err) {
+					res.status(500).send();					
+				    } else {
+					res.status(200).send();
+					mdb.User.update( {_id: req.user._id}, {$addToSet: {instructor: sha}},
+							 function(err, doc){ return; });
+				    }
 				});
+
+
 }
 
 function findRelatedCommits( commit, callback ) {
