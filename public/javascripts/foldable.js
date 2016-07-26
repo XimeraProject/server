@@ -15,15 +15,22 @@ var createFoldable = function() {
     foldable.before(button);
 
     button.click( function() {
-	if (foldable.persistentData( 'collapsed' )) {
-	    foldable.persistentData( 'collapsed', false );
+	if (foldable.persistentData( 'uncollapsed' )) {
+	    foldable.persistentData( 'uncollapsed', false );
 	} else {
-	    foldable.persistentData( 'collapsed', true );
+	    foldable.persistentData( 'uncollapsed', true );
 	}
     });
     
     foldable.persistentData( function(event) {
-	if (foldable.persistentData( 'collapsed' )) {
+	if (foldable.persistentData( 'uncollapsed' )) {
+	    button.find('i').removeClass('fa-rotate-90');
+	    foldable.children().show();
+	    //$('.unfoldable', foldable).show();	    
+	    //foldable.collapse('show');
+	    foldable.css( 'font-size', '12pt' );
+	    $('.foldable', foldable).show();
+	} else {
 	    button.find('i').addClass('fa-rotate-90');
 	    //foldable.collapse('hide');
 	    foldable.css( 'font-size', '0px' );
@@ -31,13 +38,6 @@ var createFoldable = function() {
 	    $('.unfoldable', foldable).show();
 	    $('.unfoldable', foldable).parentsUntil( foldable ).show();
 	    $('.foldable', foldable).hide();
-	} else {
-	    button.find('i').removeClass('fa-rotate-90');
-	    foldable.children().show();
-	    //$('.unfoldable', foldable).show();	    
-	    //foldable.collapse('show');
-	    foldable.css( 'font-size', '12pt' );
-	    $('.foldable', foldable).show();	    
 	}
 
 	/*
