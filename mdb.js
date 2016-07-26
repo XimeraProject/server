@@ -84,7 +84,19 @@ exports.initialize = function initialize(callback) {
 						authority: Mixed,
 						version: String,
 						attachments: Mixed
-					    });    
+					    });
+
+    // A log of events
+    var ServerEventSchema = new mongoose.Schema(
+	{
+	    description: String,
+	    event: { type: String, index: true },
+	    timestamp: { type: Date, index: true },
+	}, 
+	{
+	    capped: 1024*1024,
+	});
+    exports.ServerEvent = mongoose.model("ServerEvent", ServerEventSchema);
     
     // 128 megabytes of compile logs
     var CompileLogSchema = new mongoose.Schema(

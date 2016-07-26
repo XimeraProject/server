@@ -169,6 +169,9 @@ MathJax.Hub.Configured();
 
 $(document).ready(function() {
 
+    // Make sage cells
+    sagecell.makeSagecell({"inputLocation": ".sage"});
+
     // BADBAD: This seems like the wrong thing---why is default here?
     syntaxHighlighter.default.highlight();
 
