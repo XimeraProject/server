@@ -2,7 +2,7 @@ var $ = require('jquery');
 var _ = require('underscore');
 var database = require('./database');
 
-var buttonHtml = '<button class="btn btn-info btn-xs btn-hint-collapse" type="button" aria-expanded="false" aria-controls="collapse"><i class="fa fa-chevron-left"/></button>';
+var buttonHtml = '<button class="btn btn-info btn-xs btn-hint-collapse" type="button" aria-expanded="false" aria-controls="collapse"><i class="fa fa-chevron-down"/></button>';
 
 var createHint = function() {
     var hint = $(this);
@@ -28,10 +28,10 @@ var createHint = function() {
 	    button.show('fast');
 	    
 	    if (hint.persistentData( 'collapsed' )) {
-		button.find('i').addClass('fa-rotate-270');
+		button.find('i').addClass('fa-rotate-90');
 		hint.collapse('hide');
 	    } else {
-		button.find('i').removeClass('fa-rotate-270');
+		button.find('i').removeClass('fa-rotate-90');
 		hint.collapse('show');
 	    }
 	} else {

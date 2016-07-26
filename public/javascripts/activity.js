@@ -11,6 +11,7 @@ var multipleChoice = require('./multiple-choice');
 var selectAll = require('./select-all');
 var wordChoice = require('./word-choice');
 var hint = require('./hint');
+var foldable = require('./foldable');
 
 var freeResponse = require('./free-response');
 var shuffle = require('./shuffle');
@@ -45,6 +46,7 @@ var createActivity = function() {
 	$(".select-all", activity).selectAll();
 	$(".word-choice", activity).wordChoice();
 	$(".hint", activity).hint();
+	$(".foldable", activity).foldable();
 	$(".free-response", activity).freeResponse();
 	
 	$(".shuffle", activity).shuffle();
