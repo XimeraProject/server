@@ -98,7 +98,10 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
          if (user) && (!user.isGuest)
            li.dropdown
              a.dropdown-toggle(href="#",data-toggle="dropdown")
-               | <i class="fa fa-user"></i> #{user.name.split(' ')[0]} 
+               if user.name
+                 | <i class="fa fa-user"></i> #{user.name.split(' ')[0]}
+               else
+                 | <i class="fa fa-user"></i> Me
                b.caret
              ul(id="login-menu").dropdown-menu
                li
