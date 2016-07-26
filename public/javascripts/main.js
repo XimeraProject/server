@@ -98,6 +98,12 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 	    var optionalArguments = this.GetBrackets(name);
 	    var equations = this.GetArgument(name);
 
+	    var keys = {};
+	    optionalArguments.split(/,/).forEach( function(kv) { kv = kv.split(/=/);
+		if(kv.length > 1 ) keys[kv[0]] = kv[1];
+		else keys[kv[0]] = true;
+	} );
+
             var id = "calculator" + calculatorCount;
             calculatorCount = calculatorCount + 1;
 	    var element = HTML.Element("div",
@@ -107,14 +113,16 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 				       });
 	    var mml = MML["annotation-xml"](MML.xml(element)).With({encoding:"application/xhtml+xml",isToken:true});
 	    this.Push(MML.semantics(mml));
-	    
+
             MathJax.Hub.Queue( function () {
 		var element = document.getElementById(id);
                 var parent = $(element).closest( 'div.MathJax_Display' );
 		parent.empty();
 		element = parent;
 		
-		var calculator = Desmos.Calculator(element, {expressionsCollapsed: true});
+		var calculator = Desmos.Calculator(element, {
+			expressionsCollapsed: !keys.panel
+		});
 		window.calculator = calculator;
 
 		if (equations.match( /^\(.*\)$/ ))
@@ -124,7 +132,36 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 			calculator.setExpression({id:'graph' + index, latex: equation});
 		    });
 		}
-		$(element).height(300);
+		if( keys.xmax !== undefined ) {
+			calculator.setMathBounds({
+				left: parseFloat(keys.xmin),
+				right: parseFloat(keys.xmax),
+				top: parseFloat(keys.ymax),
+				bottom: parseFloat(keys.ymin) });
+		}
+		if( keys.polar !== undefined ) {
+			calculator.setGraphSettings({polarMode:true});
+		}
+		if( keys.hideXAxis ) {
+			calculator.setGraphSettings({showXAxis:false});
+		}
+		if( keys.hideYAxis ) {
+			calculator.setGraphSettings({showYAxis:false});
+		}
+		if( keys.xAxisLabel ) {
+			calculator.setGraphSettings({xAxisLabel:keys.xAxisLabel});
+		}
+		if( keys.yAxisLabel ) {
+			calculator.setGraphSettings({yAxisLabel:keys.yAxisLabel});
+		}
+		if( keys.hideXAxisNumbers ) {
+			calculator.setGraphSettings({xAxisNumbers:false});
+		}
+		if( keys.hideYAxisNumbers ) {
+			calculator.setGraphSettings({yAxisNumbers:false});
+		}
+		var height = keys.height || 300;
+		$(element).height(height);
 		calculator.resize();
             });
 
