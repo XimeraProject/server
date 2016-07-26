@@ -356,14 +356,17 @@ function statistics( req, res, model )
 	// Verify that the hash belongs to the given commit
 	mdb.Activity.findOne({hash: hash, commit: commit}).exec( function( err, activity ) {
 	    if (err || (!activity)) {
-		res.sendStatus(500);
+		res.status(500).send(err);
 	    } else {
 		// Send answers statistics to instructor
 		model.findOne({_id : hash}).exec( function( err, answers ) {
-		    if ((err) || (!answers))
+		    if (err)
 			res.status(500).send(err);
 		    else {
-			res.json( answers.value );
+			if (answers)
+			    res.json( answers.value );
+			else
+			    res.json( {} );
 		    }
 		});
 	    }
