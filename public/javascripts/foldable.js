@@ -30,12 +30,14 @@ var createFoldable = function() {
 	    foldable.children().hide();
 	    $('.unfoldable', foldable).show();
 	    $('.unfoldable', foldable).parentsUntil( foldable ).show();
+	    $('.foldable', foldable).hide();
 	} else {
 	    button.find('i').removeClass('fa-rotate-90');
 	    foldable.children().show();
 	    //$('.unfoldable', foldable).show();	    
 	    //foldable.collapse('show');
 	    foldable.css( 'font-size', '12pt' );
+	    $('.foldable', foldable).show();	    
 	}
 
 	/*
