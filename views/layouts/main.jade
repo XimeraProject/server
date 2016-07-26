@@ -19,10 +19,12 @@ html(lang="en")
     link(href="/public/stylesheets/base.css", rel="stylesheet", media="screen")
 
     link(rel="stylesheet",href="//www.osu.edu/assets/fonts/webfonts.css")
-
+    
     if stylesheet
       link(rel="stylesheet/less",type="text/css",href=stylesheet)
 
+    link(rel="stylesheet",type="text/css",href="https://sagecell.sagemath.org/static/sagecell_embed.css")      
+      
     script(type="text/javascript",src="/node_modules/mathjax/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured")
     script(type="text/javascript",src="https://www.desmos.com/api/v0.7/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6")
     script(type="text/javascript",src="https://sagecell.sagemath.org/static/embedded_sagecell.js")    
