@@ -74,9 +74,12 @@ block modals
     block shutdownInvigilatorModal
 
 block content
-  // BADBAD: shouldn't this be removed now that htlatex is working fine?
+  // BADBAD: shouldn't this be removed now that htlatex is working
+  // fine? No!  Apparently htlatex still doesn't support two optional
+  // arguments like this.
   script(type="math/tex")
     | \newcommand{\dd}[2][]{\frac{d #1}{d #2}}
+    | \newcommand{\pp}[2][]{\frac{\partial #1}{\partial #2}}
   div.container
     div(course-breadcrumbs="")
         // BADBAD: only display navigation if the item can be found IN a navigation list
