@@ -80,3 +80,7 @@ db.learningrecords.mapReduce( mapSuccess, reduce,
 			      { out: "successes",
 				query: { verbId: "http://adlnet.gov/expapi/verbs/answered" }
 			      });
+
+// I suppose I might miss some -- oh well!
+db.ServerEvent.insert( { event: "MapReduce", timestamp: new ISODate() } );
+
