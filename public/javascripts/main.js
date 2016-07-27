@@ -214,6 +214,7 @@ $(document).ready(function() {
 
     // Make sage cells
     sagecell.makeSagecell({"inputLocation": ".sage"});
+    sagecell.makeSagecell({"inputLocation": ".sageOutput", "hide": ["editor","evalButton"], "autoeval": true });
 
     // BADBAD: This seems like the wrong thing---why is default here?
     syntaxHighlighter.default.highlight();
