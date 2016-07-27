@@ -162,6 +162,10 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 		if( keys.hideYAxisNumbers ) {
 			calculator.setGraphSettings({yAxisNumbers:false});
 		}
+		if( keys.projectorMode ) {
+			calculator.setGraphSettings({projectorMode:true});	
+		}
+		}
 		var height = keys.height || 300;
 		$(element).height(height);
 		calculator.resize();
@@ -210,6 +214,7 @@ $(document).ready(function() {
 
     // Make sage cells
     sagecell.makeSagecell({"inputLocation": ".sage"});
+    sagecell.makeSagecell({"inputLocation": ".sageOutput", "hide": ["editor","evalButton"], "autoeval": true });
 
     // BADBAD: This seems like the wrong thing---why is default here?
     syntaxHighlighter.default.highlight();
