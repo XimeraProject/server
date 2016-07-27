@@ -49,8 +49,8 @@ var createSelectAll = function() {
     selectAll.persistentData(function(event) {
 	selectAll.find( 'label').removeClass('active');
 	
-	if (selectAll.persistentData('selected')) {
-	    selectAll.persistentData('selected').forEach( function(id) {
+	if (selectAll.persistentData('chosen')) {
+	    selectAll.persistentData('chosen').forEach( function(id) {
 		console.log( id );
 		selectAll.find( '#' + id ).addClass('active');
 	    });
@@ -75,7 +75,7 @@ var createSelectAll = function() {
 
 	    if (selectAll.persistentData('checked') &&
 		(_.isEqual( _.sortBy( selectAll.persistentData('checked') ),
-			    _.sortBy( selectAll.persistentData('selected')))))
+			    _.sortBy( selectAll.persistentData('chosen')))))
 		selectAll.find( '.btn-group .btn-ximera-incorrect' ).show();
 	    else {
 		selectAll.find( '.btn-group .btn-ximera-submit' ).show();
@@ -88,16 +88,16 @@ var createSelectAll = function() {
     });
 
     var checkAnswer = function() {
-	if (selectAll.persistentData('selected')) {
-	    selectAll.persistentData('checked', selectAll.persistentData('selected') );
+	if (selectAll.persistentData('chosen')) {
+	    selectAll.persistentData('checked', selectAll.persistentData('chosen') );
 
-	    var selected = selectAll.persistentData('selected');
+	    var chosen = selectAll.persistentData('chosen');
 
 	    var correct = true;
 	    selectAll.find('label').each( function() {
 		var id = $(this).attr('id');
 		
-		if ($(this).hasClass('correct') !== _.contains( selected, id ))
+		if ($(this).hasClass('correct') !== _.contains( chosen, id ))
 		    correct = false;
 	    });
 	    
@@ -109,11 +109,9 @@ var createSelectAll = function() {
 		selectAll.trigger( 'ximera:correct' );
 	    }
 
-	    TinCan.answer( selectAll, { response: selectAll.persistentData('selected'),
+	    TinCan.answer( selectAll, { response: selectAll.persistentData('chosen'),
 					success: selectAll.persistentData('correct') } );
 	}
-
-	return false;
     };
     
     $(this).find( ".btn-ximera-submit" ).click( checkAnswer );
@@ -125,17 +123,17 @@ var createSelectAll = function() {
 		return false;
 	    
 	    var id = $(this).attr('id');
-	    var selected = selectAll.persistentData('selected');
+	    var chosen = selectAll.persistentData('chosen');
 
-	    if (!selected)
-		selected = [];
+	    if (!chosen)
+		chosen = [];
 	    
-	    if (_.contains(selected, id))
-		selectAll.persistentData('selected', _.difference( selected, [id] ) );
+	    if (_.contains(chosen, id))
+		selectAll.persistentData('chosen', _.difference( chosen, [id] ) );
 	    else
-		selectAll.persistentData('selected', _.union( selected, [id] ) );
+		selectAll.persistentData('chosen', _.union( chosen, [id] ) );
 
-	    console.log( selectAll.persistentData('selected' ) );
+	    console.log( selectAll.persistentData('chosen' ) );
 
 	    return false;	    
 	});
