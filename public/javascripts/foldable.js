@@ -6,7 +6,7 @@ var buttonHtml = '<button class="btn btn-info btn-xs btn-hint-collapse" type="bu
 
 var createFoldable = function() {
     var foldable = $(this);
-
+    
     //foldable.addClass('collapse');
     //foldable.collapse('hide');
     //foldable.css( 'font-size', '0px' );
@@ -24,6 +24,12 @@ var createFoldable = function() {
     });
     
     foldable.persistentData( function(event) {
+	if (foldable.attr('data-original') == 'expandable') {
+	    if (foldable.persistentData( 'uncollapsed' ) == undefined) {
+		foldable.persistentData( 'uncollapsed', false );
+	    }
+	}
+	
 	if (foldable.persistentData( 'uncollapsed' )) {
 	    button.find('i').removeClass('fa-rotate-90');
 	    foldable.children().show();
@@ -41,16 +47,7 @@ var createFoldable = function() {
 	    $('.foldable', foldable).hide();
 	}
 
-	/*
-	 if (foldable.persistentData( 'available' )) {
-
-	 } else {
-	 button.hide();
-	 }
-	 */
-
     });
-    
 
 };
 
