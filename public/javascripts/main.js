@@ -162,6 +162,10 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 		if( keys.hideYAxisNumbers ) {
 			calculator.setGraphSettings({yAxisNumbers:false});
 		}
+		if( keys.projectorMode ) {
+			calculator.setGraphSettings({projectorMode:true});	
+		}
+		}
 		var height = keys.height || 300;
 		$(element).height(height);
 		calculator.resize();
