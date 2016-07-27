@@ -12,6 +12,7 @@ var createFoldable = function() {
     //foldable.css( 'font-size', '0px' );
 
     var button = $(buttonHtml);
+    foldable.before('<div class="clearfix"></div>');
     foldable.before(button);
 
     button.click( function() {
