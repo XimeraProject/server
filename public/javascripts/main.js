@@ -99,10 +99,12 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 	    var equations = this.GetArgument(name);
 
 	    var keys = {};
-	    optionalArguments.split(/,/).forEach( function(kv) { kv = kv.split(/=/);
-		if(kv.length > 1 ) keys[kv[0]] = kv[1];
-		else keys[kv[0]] = true;
-	} );
+	    if( optionalArguments ) {
+	        optionalArguments.split(/,/).forEach( function(kv) { kv = kv.split(/=/);
+		    if(kv.length > 1 ) keys[kv[0]] = kv[1];
+		    else keys[kv[0]] = true;
+	        } );
+	    }
 
             var id = "calculator" + calculatorCount;
             calculatorCount = calculatorCount + 1;
