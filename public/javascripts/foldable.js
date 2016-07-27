@@ -7,44 +7,34 @@ var buttonHtml = '<button class="btn btn-info btn-xs btn-hint-collapse" type="bu
 var createFoldable = function() {
     var foldable = $(this);
     
-    //foldable.addClass('collapse');
-    //foldable.collapse('hide');
-    //foldable.css( 'font-size', '0px' );
-
     var button = $(buttonHtml);
     foldable.before('<div class="clearfix"></div>');
     foldable.before(button);
 
     button.click( function() {
-	if (foldable.persistentData( 'uncollapsed' )) {
-	    foldable.persistentData( 'uncollapsed', false );
+	if (foldable.persistentData( 'collapsed' )) {
+	    foldable.persistentData( 'collapsed', false );
 	} else {
-	    foldable.persistentData( 'uncollapsed', true );
+	    foldable.persistentData( 'collapsed', true );
 	}
     });
     
     foldable.persistentData( function(event) {
-	if (foldable.attr('data-original') == 'expandable') {
-	    if (foldable.persistentData( 'uncollapsed' ) == undefined) {
-		foldable.persistentData( 'uncollapsed', false );
-	    }
-	}
-	
-	if (foldable.persistentData( 'uncollapsed' )) {
-	    button.find('i').removeClass('fa-rotate-90');
-	    foldable.children().show();
-	    //$('.unfoldable', foldable).show();	    
-	    //foldable.collapse('show');
-	    foldable.css( 'font-size', '12pt' );
-	    $('.foldable', foldable).show();
-	} else {
+	if ( (foldable.persistentData( 'collapsed' ) == true) != (foldable.attr('data-original') == 'expandable') ) {
 	    button.find('i').addClass('fa-rotate-90');
 	    //foldable.collapse('hide');
 	    foldable.css( 'font-size', '0px' );
 	    foldable.children().hide();
 	    $('.unfoldable', foldable).show();
 	    $('.unfoldable', foldable).parentsUntil( foldable ).show();
-	    $('.foldable', foldable).hide();
+	    $('.foldable', foldable).hide();	    
+	} else {
+	    button.find('i').removeClass('fa-rotate-90');
+	    foldable.children().show();
+	    //$('.unfoldable', foldable).show();	    
+	    //foldable.collapse('show');
+	    foldable.css( 'font-size', '12pt' );
+	    $('.foldable', foldable).show();
 	}
 
     });
