@@ -310,6 +310,8 @@ function addDatabaseMiddleware(req, res, next) {
     
     app.get( '/statistics/:commit/:hash/answers', course.answers );
     app.get( '/statistics/:commit/:hash/successes', course.successes );
+    
+    app.get( '/progress/:username/:repository', course.progress );    
 
     //app.head( '/activity/:commit/:path(*.png)', course.imageHead );
     //app.head( '/activity/:commit/:path(*.jpg)', course.imageHead );

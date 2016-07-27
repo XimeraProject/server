@@ -43,9 +43,11 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
              ul(id="instructor-menu").dropdown-menu
                 li
                    a(id="instructor-view-statistics", data-commit=activity.commit, data-activity=activity.hash)
-                     | <i class="fa fa-bar-chart"></i> View statistics
+                     | <i class="fa fa-bar-chart"></i> Activity statistics
+                   a(href="/progress/#{activity.ownerName}/#{activity.repositoryName}")
+                     | <i class="fa fa-users"></i> Student progress
                    a(href="/statistics/#{activity.commit}/#{activity.hash}/answers")
-                     | <i class="fa fa-bar-chart"></i> View ALL
+                     | <i class="fa fa-bar-chart"></i> Data dump
                    
         li.dropdown
              a.dropdown-toggle(href="#",data-toggle="dropdown")

@@ -239,8 +239,16 @@ exports.initialize = function initialize(callback) {
                                             date: Date
 					}, {
 					    minimize: false
-					}));    
-    
+					}));
+
+
+    exports.Gradebook = mongoose.model("Gradebook",
+				       new mongoose.Schema({
+					   _id: {type: String, index: true},
+					   users: Mixed,
+					   commits: Mixed,
+				       }));
+							    
     RegExp.escape= function(s) {
 	return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     };

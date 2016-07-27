@@ -1,6 +1,7 @@
 var mdb = require('../mdb'),
     remember = require('../remember'),
     async = require('async'),
+    _ = require('underscore'),    
     path = require('path'),
     dirname = require('path').dirname,
     normalize = require('path').normalize,    
@@ -379,6 +380,68 @@ function statistics( req, res, model )
 exports.answers = function(req, res) { return statistics( req, res, mdb.Answers ); };
 
 exports.successes = function(req, res) { return statistics( req, res, mdb.Successes ); };
+
+exports.progress = function(req, res) {
+    var username = req.params.username;
+    var reponame = req.params.repository;
+    var course = username + "/" + reponame;
+    
+    if ( (!(req.user)) || !(req.user.instructor) ) {
+	res.sendStatus(403);
+	return;
+    }
+    
+    mdb.Gradebook.findOne({_id: course}).exec( function(err,gradebook) {
+	if (err)
+	    res.status(500).send(err);
+	else {
+	    var header = [];
+	    var rows = {};
+
+	    // Verify that the user is an instructor for a commit that
+	    // appeared in the course
+	    console.log( gradebook.commits );
+	    if (_.intersection( req.user.instructor, gradebook.commits ).length == 0) {
+		console.log(" noope.");
+		res.sendStatus(403);
+	    } else {
+		gradebook.users.forEach( function(user) {
+		    var name = user.user;
+		    rows[name] = [];
+		    user.paths.forEach( function(path) {
+			var complete = path.complete;		    
+			var path = path.path;
+			
+			if (header.indexOf(path) < 0)
+			    header.push(path);
+			rows[name][header.indexOf(path)] = complete;
+		    });
+		});
+		
+		var csv = "name,";
+		
+		header.forEach( function(h) {
+		    csv = csv + h + ",";
+		});
+		
+		csv = csv + "\n";
+		
+		gradebook.users.forEach( function(user) {
+		    var name = user.user;
+		    csv = csv + name + ",";
+		    rows[name].forEach( function(r) {
+			csv = csv + r + ",";		    
+		    });
+		    csv = csv + "\n";
+		});
+		
+		res.setHeader('Content-disposition', 'attachment; filename=' + reponame + '.csv');
+		res.set('Content-Type', 'text/csv');
+		res.status(200).send(csv);
+	    }
+	}
+    });
+};
 
 /* The xourse navigation depends on this. */
 exports.getActivitiesFromCommit = function(req, res) {
