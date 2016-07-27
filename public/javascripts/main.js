@@ -218,9 +218,8 @@ $(document).ready(function() {
 
     // This could go in "init" above, but it needs to be after the end process hook
     MathJax.Hub.Startup.onload();
-    
+
     $(".activity").activity();
 });
-
 
 console.log("done.");

@@ -17,6 +17,8 @@ var freeResponse = require('./free-response');
 var shuffle = require('./shuffle');
 var feedback = require('./feedback');
 
+var connectInteractives = require('./interactives').connectInteractives;
+
 var createActivity = function() {
     var activity = $(this);
 
@@ -52,8 +54,10 @@ var createActivity = function() {
 	$(".shuffle", activity).shuffle();
 	$(".feedback", activity).feedback();	    
 
-	$('a.activity-card').activityCard();
+	connectInteractives();
 	
+	$('a.activity-card').activityCard();
+
 	ProgressBar.monitorActivity( activity );
     });
 };

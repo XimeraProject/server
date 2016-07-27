@@ -241,7 +241,7 @@ var createMathAnswer = function() {
 	    }
 	}
 
-	result.trigger( 'ximera:attempt' );	    
+	result.trigger( 'ximera:attempt' );
 
 	TinCan.answer( result, { response: result.persistentData('response'),
 				 success: result.persistentData('correct') } );
