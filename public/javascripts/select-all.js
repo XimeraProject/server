@@ -112,6 +112,8 @@ var createSelectAll = function() {
 	    TinCan.answer( selectAll, { response: selectAll.persistentData('selected'),
 					success: selectAll.persistentData('correct') } );
 	}
+
+	return false;
     };
     
     $(this).find( ".btn-ximera-submit" ).click( checkAnswer );
@@ -134,6 +136,8 @@ var createSelectAll = function() {
 		selectAll.persistentData('selected', _.union( selected, [id] ) );
 
 	    console.log( selectAll.persistentData('selected' ) );
+
+	    return false;	    
 	});
     });
     
