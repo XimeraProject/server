@@ -165,7 +165,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 		if( keys.projectorMode ) {
 			calculator.setGraphSettings({projectorMode:true});	
 		}
-		}
 		var height = keys.height || 300;
 		$(element).height(height);
 		calculator.resize();
