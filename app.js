@@ -251,7 +251,6 @@ function addDatabaseMiddleware(req, res, next) {
     app.post('/users/xudos', score.postXudos);
 
     // Requires the rawBody middleware above
-    github.secret = process.env.GITHUB_WEBHOOK_SECRET;
     app.post('/github', github.github);
 
     app.get('/', routes.index);
