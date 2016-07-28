@@ -71,7 +71,7 @@
     "jquery": "*",
     "sly": "https://github.com/darsain/sly",
     "isotope-layout": "*",
-    "jquery-ui": "*",
+    "jquery-ui": "1.10.x",
     "font-awesome": "*",
     "mathjax": "*"
   },
