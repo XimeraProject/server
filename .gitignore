@@ -25,3 +25,5 @@ components
 bower_components
 
 environment.sh
+
+mongod.lock
