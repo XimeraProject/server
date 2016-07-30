@@ -96,7 +96,7 @@
     "gulp": "*",
     "gulp-if": "*",
     "gulp-less": "*",
-    "gulp-minify-css": "*",
+    "gulp-clean-css": "*",
     "gulp-sourcemaps": "*",
     "gulp-uglify": "*",
     "gulp-util": "*",

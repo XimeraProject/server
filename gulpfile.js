@@ -15,7 +15,7 @@ var argv = require('yargs').argv,
     aliasify   = require('aliasify'),
     babelify   = require('babelify'),
     less       = require('gulp-less'),
-    minifyCSS  = require('gulp-minify-css'),
+    cleanCSS   = require('gulp-clean-css'),
     assign     = require('lodash.assign');
 
 // Directory where static files are found. Don't forget the slash at the end.
@@ -70,7 +70,7 @@ gulp.task('js', function() {
 gulp.task('css', function(){
     return gulp.src(cssMainFile)
         .pipe(less())
-        .pipe(gulpif(argv.production, minifyCSS({keepBreaks:true})))
+        .pipe(gulpif(argv.production, cleanCSS({keepBreaks:true})))
         .pipe(gulp.dest(staticDirectoryCSS));
 });
 
