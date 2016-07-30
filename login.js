@@ -26,7 +26,7 @@ module.exports.githubStrategy = function(rootUrl) {
 	    token: accessToken
 	});
 
-	github.user.get( {}, function( err, user ) {
+	github.users.get( {}, function( err, user ) {
 	    // TODO: save the entire user object here?
 
 	    // Login using the github user id

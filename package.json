@@ -71,7 +71,7 @@
     "jquery": "*",
     "sly": "https://github.com/darsain/sly",
     "isotope-layout": "*",
-    "jquery-ui": "*",
+    "jquery-ui": "1.10.x",
     "font-awesome": "*",
     "mathjax": "*"
   },
@@ -96,7 +96,7 @@
     "gulp": "*",
     "gulp-if": "*",
     "gulp-less": "*",
-    "gulp-minify-css": "*",
+    "gulp-clean-css": "*",
     "gulp-sourcemaps": "*",
     "gulp-uglify": "*",
     "gulp-util": "*",

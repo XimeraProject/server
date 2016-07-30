@@ -39,10 +39,7 @@ var express = require('express')
 // Check for presence of appropriate environment variables.
 if (!process.env.XIMERA_COOKIE_SECRET ||
     !process.env.XIMERA_MONGO_DATABASE ||
-    !process.env.XIMERA_MONGO_URL ||
-    !process.env.COURSERA_CONSUMER_KEY ||
-    !process.env.GITHUB_WEBHOOK_SECRET ||
-    !process.env.COURSERA_CONSUMER_SECRET) {
+    !process.env.XIMERA_MONGO_URL) {
         throw "Appropriate environment variables not set.";
     }
 
@@ -75,15 +72,16 @@ app.set('view engine', 'jade');
 
 // all environments
 app.set('port', process.env.PORT || 3000);
+var rootUrl = process.env.ROOTURL;
 
-var rootUrl = 'http://localhost:' + app.get('port');
+if (rootUrl === undefined ) {
 if (process.env.DEPLOYMENT === 'production') {
     rootUrl = 'http://ximera.osu.edu';
 } else {
     // Temporarily use NGROK for the server    
     rootUrl = 'http://5304979f.ngrok.com';
 }
-
+}
 
 app.use(logger('dev'));
 app.use(favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
@@ -157,10 +155,20 @@ mdb.initialize(function (err) {
     console.log( "Session setup." );
 
 passport.use(login.localStrategy(rootUrl));
+
+if( process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET )
 passport.use(login.googleStrategy(rootUrl));
+
+if( process.env.TWITTER_CONSUMER_KEY && process.env.TWITTER_CONSUMER_SECRET )
 passport.use(login.twitterStrategy(rootUrl));
+
+if( process.env.COURSERA_CONSUMER_KEY && process.env.COURSERA_CONSUMER_SECRET )
 passport.use(login.courseraStrategy(rootUrl));
+
+if( process.env.LTI_KEY && process.env.LTI_SECRET )
 passport.use(login.ltiStrategy(rootUrl));
+
+if( process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET )
 passport.use(login.githubStrategy(rootUrl));
 
 // Only store the user _id in the session
@@ -243,7 +251,6 @@ function addDatabaseMiddleware(req, res, next) {
     app.post('/users/xudos', score.postXudos);
 
     // Requires the rawBody middleware above
-    github.secret = process.env.GITHUB_WEBHOOK_SECRET;
     app.post('/github', github.github);
 
     app.get('/', routes.index);
