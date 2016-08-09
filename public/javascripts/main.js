@@ -181,7 +181,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 	    var input = HTML.Element("input",
 				     {type:"text",
 				      className:"mathjax-input",
-				      style: {width: "160px", marginBottom: "10px", marginTop: "10px" }
+				      style: {width: "175px", marginBottom: "10px", marginTop: "10px" }
 				     });
 	    
 	    input.setAttribute("xmlns","http://www.w3.org/1999/xhtml");
