@@ -163,8 +163,14 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 		if( keys.hideYAxisNumbers ) {
 			calculator.setGraphSettings({yAxisNumbers:false});
 		}
+
+                // Bart requests that projectorMode be default
+	        calculator.setGraphSettings({projectorMode:true});	
 		if( keys.projectorMode ) {
 			calculator.setGraphSettings({projectorMode:true});	
+		}
+		if( keys.thinMode ) {
+			calculator.setGraphSettings({projectorMode:false});
 		}
 		var height = keys.height || 300;
 		$(element).height(height);
