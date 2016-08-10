@@ -100,7 +100,8 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
 	    var keys = {};
 	    if( optionalArguments ) {
-	        optionalArguments.split(/,/).forEach( function(kv) { kv = kv.split(/=/);
+	        optionalArguments.split(/,/).forEach( function(kv) {
+                    kv = kv.trim().split(/=/);
 		    if(kv.length > 1 ) keys[kv[0]] = kv[1];
 		    else keys[kv[0]] = true;
 	        } );
