@@ -13,10 +13,15 @@ exports.middleware = function(req, res, next) {
 	    req.socket.remoteAddress ||
 	    req.connection.socket.remoteAddress;
 
-    if (_.some( subnets, function(subnet) { return subnet.contains(remoteAddress); } ))
-	res.locals.atOhioState = true;
-    else
-	res.locals.atOhioState = false;	
+    try {
+	if (_.some( subnets, function(subnet) { return subnet.contains(remoteAddress); } ))
+	    res.locals.atOhioState = true;
+	else
+	    res.locals.atOhioState = false;	
+    }
+    catch (e) {    
+	res.locals.atOhioState = false;
+    }
     
     next();
 };
