@@ -15,6 +15,7 @@
     "http-proxy-middleware": "*",
     "connect-mongo": "*",
     "markdown": "*",
+    "color": "*",      
     "ip": "*",      
     "moment": "*",
     "passport": "*",

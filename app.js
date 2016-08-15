@@ -415,7 +415,7 @@ function addDatabaseMiddleware(req, res, next) {
     
     app.get('/image/:hash', mongoImage.get);
 
-
+    app.locals.Color = require('color');
     app.locals.moment = require('moment');
     app.locals._ = require('underscore');
     app.locals.deployment = process.env.DEPLOYMENT;
