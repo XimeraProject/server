@@ -317,6 +317,32 @@ function renderActivity( res, activity ) {
 	    activity.xourse = xourse;		    	    
 	    
 	    callback(null);
+	},
+
+	// Attach a preceeding chapter (if there is one!)
+	function( callback ) {
+	    // activityStyles are marked in th xourse file, NOT in the activity itself
+	    var style = activity.xourse.activities[activity.path].activityStyle;
+
+	    // If we aren't currently in a chapter..
+	    if ( ! (style && (style == 'chapter')) ) {
+		// Find the current activity
+		var i = activity.xourse.activityList.indexOf( activity.path );
+		console.log(activity.activityStyle);
+		// Walk backwards...
+		var j;
+		for( j = i; j >= 0; j-- ) {
+		    // Until we find a 'chapter' activity
+		    if (activity.xourse.activities[activity.xourse.activityList[j]].activityStyle) {
+			if (activity.xourse.activities[activity.xourse.activityList[j]].activityStyle == 'chapter')  {
+			    activity.chapter = activity.xourse.activities[activity.xourse.activityList[j]];
+			    break;
+			}
+		    }
+		}
+	    }
+
+	    callback(null);
 	}
 	
     ], function(err, result) {

@@ -352,24 +352,26 @@ exports.putXourse = function(req, res){
             xourse.hash = hash;
             xourse.path = pathname.replace( /.html$/, "" );
             xourse.title = title;
+
+	    // Both the order and the associated activity data are important
             xourse.activityList = [];
+            var activityHash = {};
 	    
 	    // Go through the xourse text and add the activity URLs to the activity list
 	    $('a.activity').each( function() {
 		var href = $(this).attr('href');
 		//href = path.normalize( path.join( xourse.path, href ) );
+		activityHash[href] = { activityStyle: $(this).attr('data-activity-style') };
 		xourse.activityList.push( href );
 	    });
 
 	    // BADBAD: this is broken -- the xourse object needs to have an activity list
 	    
             // Find all activities for the given xourse
-            mdb.Activity.find( { commit: xourse.commit, path: { $in: xourse.activityList } }, function(err, activities) {
+            mdb.Activity.find( { commit: xourse.commit, path: { $in: Object.keys(activityHash) } }, function(err, activities) {
                 if (err)
 		    res.status(500).send(err);
                 else {
-                    var activityHash = {};
-		    
 		    async.series(
 			[function(callback) {
 			    async.each(activities, function(activity, callback) {
@@ -377,7 +379,7 @@ exports.putXourse = function(req, res){
 				    activityHash[activity.path] = {};
 				
 				activityHash[activity.path].title = activity.title;
-				activityHash[activity.path].hash = activity.hash;                                       
+				activityHash[activity.path].hash = activity.hash;
 				
 				mdb.Blob.findOne({hash: activity.hash}, function(err, blob) {
 				    var $ = cheerio.load( blob.data );

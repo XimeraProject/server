@@ -10,14 +10,6 @@ block activity
    div.activity-content
       | !{activity.html}
 
-block badheader
-      .page-header
-        div.pull-right.btn-toolbar(role="toolbar")
-          if !activity.recent
-            .btn-group
-              a.pull-right.btn.btn-sm.btn-primary(role="button", ng-confirm-click="Updating to the most recent version of this activity will erase your work. Are you sure you want to update to the new version?", href="update/")
-                | <i class="fa fa-level-up"></i> Update Activity
-
 block updateModal
   div.modal.fade#updateWarningModal(tabindex="-1",role="dialog",aria-labelledby="updateWarningModal")
       div.modal-dialog(role="document")
@@ -81,7 +73,6 @@ block content
     | \newcommand{\dd}[2][]{\frac{d #1}{d #2}}
     | \newcommand{\pp}[2][]{\frac{\partial #1}{\partial #2}}
   div.container
-    div(course-breadcrumbs="")
         // BADBAD: only display navigation if the item can be found IN a navigation list
         if (activity.xourse.activityList.length > 0)
           .row
@@ -94,6 +85,25 @@ block content
                         a.activity-card(href="/course/" + activity.locator + "/" + activityUrl, data-path=activityUrl)
                 div.scrollbar
                   div.handle
+        .row
+          .col-md-12                  
+            ol.breadcrumb
+              if activity.locator
+                li.breadcrumb-item
+                  a(href="/course/" + activity.locator)
+                    if activity.xourse.title != ''
+                      | #{activity.xourse.title}
+                    else
+                      | Home
+              if activity.chapter
+                li.breadcrumb-item
+                  a(href=activity.chapter.url) #{activity.chapter.title}
+              li.breadcrumb-item.active
+                if activity.title
+                  | #{activity.title}
+                else
+                  | Activity
+                  
         .row
           .col-md-offset-2.col-md-8.activity(id="theActivity", data-activity=activity.hash, data-commit=activity.commit, data-path=activity.path)
 
