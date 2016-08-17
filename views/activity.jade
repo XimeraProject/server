@@ -81,16 +81,20 @@ block content
                 div.frame
                   - var colors = [ "red", "orange", "yellow", "green", "blue", "indigo", "violet" ];
                   - var chapterIndex = 0;
-                  - var background = Color(colors[chapterIndex]);
+                  - var currentColor = Color(colors[chapterIndex]);
+                  - var background = Color("white");
                   ul.items.pagination
                     for activityUrl in activity.xourse.activityList
                       li(class=( activityUrl == activity.path ) ? "active" : undefined)
                         - if (activity.xourse.activities[activityUrl].activityStyle == 'chapter')  {
                         -   chapterIndex = chapterIndex + 1;
-                        -   background = Color(colors[chapterIndex % (colors.length)]);
+                        -   currentColor = Color(colors[chapterIndex % (colors.length)]);
+                        -   background = currentColor.darken(0.5);
+                        - }
+                        - if (activity.xourse.activities[activityUrl].activityStyle == 'section')  {
+                        -   background = currentColor.lighten(0.3).lighten(0.3);
                         - }
                         a.activity-card(href="/course/" + activity.locator + "/" + activityUrl, data-path=activityUrl, style="background-color: #{background.hexString()}")
-                        - background = background.lighten(0.3);
                 div.scrollbar
                   div.handle
         .row
