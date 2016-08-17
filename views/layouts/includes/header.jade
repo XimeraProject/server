@@ -11,8 +11,12 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
         a.navbar-brand(href="/")
           | <span style="font-weight: 200;">XIMERA.</span><span style="font-weight: 700;">OSU</span><span style="font-weight: 200;">.EDU</span>
       else
-        a.navbar-brand(href="/")
-          | <span style="font-weight: 200;">THE </span><span style="font-weight: 700;">XIMERA</span><span style="font-weight: 200;"> PROJECT</span>        
+        if (atColoradoState)
+          a.navbar-brand(href="/")
+            | <span style="font-weight: 700;">COLOSTATE</span><span style="font-weight: 200;">.EDU</span>
+        else
+          a.navbar-brand(href="/")
+            | <span style="font-weight: 200;">THE </span><span style="font-weight: 700;">XIMERA</span><span style="font-weight: 200;"> PROJECT</span>        
     .navbar-collapse.collapse
       ul.nav.navbar-nav.navbar-right
 
