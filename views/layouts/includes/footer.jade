@@ -52,5 +52,8 @@ footer.navbar.navbar-inverse.navbar-static-bottom
           p
             | Phone: (773) 809&ndash;5659 | 
             a(href='/about/contact') Contact
+          if places
+            p
+              | Accessed at #{places.join(', ')}.
           p
             | If you have trouble accessing this page and need to request an alternate format, contact <a href="mailto:ximera@math.osu.edu">ximera@math.osu.edu</a>.
