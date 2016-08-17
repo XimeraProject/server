@@ -107,7 +107,7 @@ block content
                       | Home
               if activity.chapter
                 li.breadcrumb-item
-                  a(href="/course/" + activity.locator + "/" + activity.chapter.url) #{activity.chapter.title}
+                  a(href="/course/" + activity.locator + "/" + activity.chapter.path) #{activity.chapter.title}
               li.breadcrumb-item.active
                 if activity.title
                   | #{activity.title}
