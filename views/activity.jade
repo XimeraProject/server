@@ -79,7 +79,7 @@ block content
             .col-md-12
               div.course-navigation(data-commit=activity.commit, data-user=user._id.toString())
                 div.frame
-                  - var colors = [ "red", "orange", "yellow", "green", "blue", "indigo", "violet" ];
+                  - var colors = [ "red", "green", "blue" ];
                   - var chapterIndex = 0;
                   - var background = Color("white");
                   ul.items.pagination
@@ -107,7 +107,7 @@ block content
                       | Home
               if activity.chapter
                 li.breadcrumb-item
-                  a(href=activity.chapter.url) #{activity.chapter.title}
+                  a(href="/course/" + activity.locator + "/" + activity.chapter.url) #{activity.chapter.title}
               li.breadcrumb-item.active
                 if activity.title
                   | #{activity.title}
