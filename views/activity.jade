@@ -87,10 +87,10 @@ block content
                       li(class=( activityUrl == activity.path ) ? "active" : undefined)
                         - if (activity.xourse.activities[activityUrl].activityStyle == 'chapter')  {
                         -   chapterIndex = chapterIndex + 1;
-                        -   background = Color(colors[chapterIndex % (colors.length)]).darken(0.25);
+                        -   background = Color(colors[chapterIndex % (colors.length)]);
                         - }
                         - if (activity.xourse.activities[activityUrl].activityStyle == 'section')  {
-                        -   background = Color(colors[chapterIndex % (colors.length)]).lighten(0.25);
+                        -   background = Color(colors[chapterIndex % (colors.length)]).lighten(0.5);
                         - }
                         a.activity-card(href="/course/" + activity.locator + "/" + activityUrl, data-path=activityUrl, style="background-color: #{background.hexString()}")
                 div.scrollbar
