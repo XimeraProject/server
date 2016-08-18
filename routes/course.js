@@ -273,7 +273,7 @@ function renderActivity( res, activity ) {
 	    }
 	    
 	    callback( null, commit );
-	},	    	    
+	},
 	
 	// Get the (or rather a) xourse
 	function( commit, callback ) {
@@ -321,20 +321,18 @@ function renderActivity( res, activity ) {
 
 	// Attach a preceeding chapter (if there is one!)
 	function( callback ) {
-	    // activityStyles are marked in th xourse file, NOT in the activity itself
-	    var style = activity.xourse.activities[activity.path].activityStyle;
+	    var cssClass = activity.xourse.activities[activity.path].cssClass;
 
 	    // If we aren't currently in a chapter..
-	    if ( ! (style && (style == 'chapter')) ) {
+	    if ( ! (cssClass && (cssClass.match(/chapter/)))) {
 		// Find the current activity
 		var i = activity.xourse.activityList.indexOf( activity.path );
-		console.log(activity.activityStyle);
 		// Walk backwards...
 		var j;
 		for( j = i; j >= 0; j-- ) {
 		    // Until we find a 'chapter' activity
-		    if (activity.xourse.activities[activity.xourse.activityList[j]].activityStyle) {
-			if (activity.xourse.activities[activity.xourse.activityList[j]].activityStyle == 'chapter')  {
+		    if (activity.xourse.activities[activity.xourse.activityList[j]].cssClass) {
+			if (activity.xourse.activities[activity.xourse.activityList[j]].cssClass.match(/chapter/))  {
 			    activity.chapter = activity.xourse.activities[activity.xourse.activityList[j]];
 			    break;
 			}
