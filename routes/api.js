@@ -361,7 +361,7 @@ exports.putXourse = function(req, res){
 	    $('a.activity').each( function() {
 		var href = $(this).attr('href');
 		//href = path.normalize( path.join( xourse.path, href ) );
-		activityHash[href] = { activityStyle: $(this).attr('data-activity-style') };
+		activityHash[href] = { cssClass: $(this).attr('class').split(" ").filter( function(x) { return (x != 'card') && (x != 'activity') && (x.length > 0); } ).join(' ') };
 		xourse.activityList.push( href );
 	    });
 

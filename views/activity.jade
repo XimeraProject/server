@@ -79,20 +79,10 @@ block content
             .col-md-12
               div.course-navigation(data-commit=activity.commit, data-user=user._id.toString())
                 div.frame
-                  - var colors = [ "red", "green", "blue" ];
-                  - var chapterIndex = 0;
-                  - var background = Color("white");
                   ul.items.pagination
                     for activityUrl in activity.xourse.activityList
                       li(class=( activityUrl == activity.path ) ? "active" : undefined)
-                        - if (activity.xourse.activities[activityUrl].activityStyle == 'chapter')  {
-                        -   chapterIndex = chapterIndex + 1;
-                        -   background = Color(colors[chapterIndex % (colors.length)]);
-                        - }
-                        - if (activity.xourse.activities[activityUrl].activityStyle == 'section')  {
-                        -   background = Color(colors[chapterIndex % (colors.length)]).lighten(0.5);
-                        - }
-                        a.activity-card(href="/course/" + activity.locator + "/" + activityUrl, data-path=activityUrl, style="background-color: #{background.hexString()}")
+                        a.activity-card(class=activity.xourse.activities[activityUrl].cssClass, href="/course/" + activity.locator + "/" + activityUrl, data-path=activityUrl)
                 div.scrollbar
                   div.handle
         .row

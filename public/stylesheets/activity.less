@@ -189,6 +189,10 @@ span.LATEX .TEX .E {
     margin-top: 6pt;
 }
 
+.activity-card .progress {
+    z-index: 1;
+}
+
 .activity-card {
     width: 168px;
     height: 168px;
@@ -199,8 +203,29 @@ span.LATEX .TEX .E {
     background-size: 100% 100%;
 }
 
+.activity-card.chapter::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 100%;
+    width: 1em;
+}
+
+.activity-card.chapter::before {
+    background-color: #ccc;
+}
+
+.activity-card.chapter {
+    padding-left: 1.5em;
+}
+
 a.activity-card {
     word-wrap: break-word;
+}
+
+.activity-card.chapter h1 {
+    font-weight: 1200;
 }
 
 .activity-card h1 {
@@ -234,8 +259,13 @@ a.activity-card {
 }
 
 .activity-card h2, .activity-card h3 {
-    color: black;
+    color: #333;
     display: inline;    
+}
+
+.activity-card.chapter h2 {
+    font-weight: 800;
+    color: black;
 }
 
 .activity-card h2 {
