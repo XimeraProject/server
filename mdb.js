@@ -241,6 +241,14 @@ exports.initialize = function initialize(callback) {
 					    minimize: false
 					}));
 
+    exports.Label = mongoose.model("Label",
+					new mongoose.Schema({
+					    activityHash: {type: String, index: true},
+					    commit: {type: String, index: true},					    
+					    label: {type: String, index: true},
+					}, {
+					    minimize: false
+					}));
 
     exports.Gradebook = mongoose.model("Gradebook",
 				       new mongoose.Schema({

@@ -455,6 +455,12 @@ exports.putActivity = function(req, res){
     var pathname = req.params.path;
 
     var $ = cheerio.load( req.rawBody, {xmlMode: true} );
+
+    // Find all \labels in the activity
+    var labels = [];
+    $('a.label').each( function() {
+        labels.push( $(this).attr('id') );
+    });
     
     // Remove the anchor links that htlatex is inserting
     $('a').each( function() {
@@ -485,8 +491,16 @@ exports.putActivity = function(req, res){
 						  res.status(500).send("Could not save activity: " + err);
 					      else
 						  res.status(200).send();					      
-					});	    
-	    
+					});
+
+            if (labels.length > 0) {
+  	      mdb.Label.collection.insert( labels.map( function(label) {
+  		  return { activityHash: activity.hash, commit: activity.commit, label: label };
+	      }), function(err, doc) {
+	  	  // ignore errors
+	      });
+	    }
+
 	    // Find all the learning outcomes mentioned in the <head>'s meta tags
 	    /*
 	      var outcomes = [];
