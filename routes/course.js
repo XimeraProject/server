@@ -321,25 +321,28 @@ function renderActivity( res, activity ) {
 
 	// Attach a preceeding chapter (if there is one!)
 	function( callback ) {
-	    var cssClass = activity.xourse.activities[activity.path].cssClass;
-
-	    // If we aren't currently in a chapter..
-	    if ( ! (cssClass && (cssClass.match(/chapter/)))) {
-		// Find the current activity
-		var i = activity.xourse.activityList.indexOf( activity.path );
-		// Walk backwards...
-		var j;
-		for( j = i; j >= 0; j-- ) {
-		    // Until we find a 'chapter' activity
-		    if (activity.xourse.activities[activity.xourse.activityList[j]].cssClass) {
-			if (activity.xourse.activities[activity.xourse.activityList[j]].cssClass.match(/chapter/))  {
-			    activity.chapter = activity.xourse.activities[activity.xourse.activityList[j]];
-			    break;
+	    var xourseActivity = activity.xourse.activities[activity.path];
+	    if (xourseActivity) {
+		var cssClass = xourseActivity.cssClass;
+		
+		// If we aren't currently in a chapter..
+		if ( ! (cssClass && (cssClass.match(/chapter/)))) {
+		    // Find the current activity
+		    var i = activity.xourse.activityList.indexOf( activity.path );
+		    // Walk backwards...
+		    var j;
+		    for( j = i; j >= 0; j-- ) {
+			// Until we find a 'chapter' activity
+			if (activity.xourse.activities[activity.xourse.activityList[j]].cssClass) {
+			    if (activity.xourse.activities[activity.xourse.activityList[j]].cssClass.match(/chapter/))  {
+				activity.chapter = activity.xourse.activities[activity.xourse.activityList[j]];
+				break;
+			    }
 			}
 		    }
 		}
 	    }
-
+	    
 	    callback(null);
 	}
 	
