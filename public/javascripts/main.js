@@ -32,6 +32,8 @@ var clock = require('./clock');
 
 var rowclick = require('./rowclick');
 
+var references = require('./references');
+
 MathJax.Hub.Config(
     {
 	// You might think putput/SVG would be better,
@@ -222,6 +224,10 @@ $(document).ready(function() {
     sagecell.makeSagecell({"inputLocation": ".sage"});
     sagecell.makeSagecell({"inputLocation": ".sageOutput", "hide": ["editor","evalButton"], "autoeval": true });
 
+    // Make anchors with references from \ref actually work
+    $('a.reference').reference();
+    references.highlightTarget();
+    
     // BADBAD: This seems like the wrong thing---why is default here?
     syntaxHighlighter.default.highlight();
 

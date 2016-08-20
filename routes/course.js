@@ -13,6 +13,26 @@ function renderError( res, err ) {
     res.status(500).render('fail', { title: "Internal Error", message: err });
 }
 
+exports.getLabel = function(req, res) {
+    var commit = req.params.commit;
+    var labelName = req.params.label;
+
+    mdb.Label.findOne({label: labelName, commit: commit}).exec( function( err, label ) {
+	if (!label) {
+	    res.status(500).send(err);
+	} else {
+	    mdb.Activity.findOne({hash: label.activityHash, commit: commit}).exec( function( err, activity ) {
+		if (!activity) {
+		    res.status(500).send(err);
+		} else  {
+		    res.json( activity );
+		}
+	    });
+	}
+    });
+};
+
+
 exports.activityByHashHead = function(req, res) {
     var commit = req.params.commit;
     var path = req.params.path;
@@ -539,3 +559,5 @@ exports.tableOfContents = function(req, res) {
 	}
     });
 };
+
+

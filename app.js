@@ -281,11 +281,13 @@ function addDatabaseMiddleware(req, res, next) {
     app.get( '/courses/', function( req, res ) { res.redirect('/course/'); });
 
     app.get( '/course/:commit([0-9a-fA-F]+)/', course.xourseFromCommit, course.tableOfContents );
-    
+
     app.get( '/course/:username/:repository/', course.xourseFromUserAndRepo, course.tableOfContents );
     
     app.get( '/course/:username/:repository/:branch/', course.xourseFromUserAndRepo, course.tableOfContents );
 
+    app.get( '/labels/:commit([0-9a-fA-F]+)/:label', course.getLabel );
+    
     var appXimera = function( regexp, callback ) {
 	app.get( '/:noun(course|activity)/:commit([0-9a-fA-F]+)/:path(' + regexp + ')', course.objectFromCommit, callback );
 	app.get( '/:noun(course|activity)/:username/:repository/:path(' + regexp + ')', course.objectFromUserAndRepo, callback );

@@ -458,17 +458,19 @@ exports.putActivity = function(req, res){
 
     // Find all \labels in the activity
     var labels = [];
-    $('a.label').each( function() {
+    $('a.ximera-label').each( function() {
         labels.push( $(this).attr('id') );
     });
     
-    // Remove the anchor links that htlatex is inserting
+    // Remove, well, ... put a zero-width space inside the anchor links that htlatex is inserting
+    // This prevents cheerio from rendering them as <a id="blah"/> which is not HTML-compliant.
     $('a').each( function() {
-	if ($(this).attr('id'))
-	    $(this).remove();
+	if ($(this).attr('id')) {
+	    $(this).html("&#8203;");
+	}
     });
 
-    var body = $('body').html();    
+    var body = $('body').html();
     var title = $('title').html();
 
     saveToContentAddressableFilesystem( body, function(err, hash) {
