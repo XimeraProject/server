@@ -25,7 +25,7 @@ exports.authenticateViaHMAC = function(req, res, next) {
 
     req.chunks = [];	
     req.on('data', function(chunk) {
-	console.log( chunk );
+	//console.log( chunk );
 	req.chunks.push( new Buffer(chunk) );	    
     });    
     
@@ -194,7 +194,7 @@ exports.putCommit = function(req, res){
     // and then this fails
     github.repos.getBranches( {user: owner, repo: repo }, function(err, data) {
 	if (err) {
-	    res.status(500).send(err);
+	    res.status(500).send("getBranches failed " + err);
 	} else {	
 	    data.forEach( function(branch) {
 		if (branch.commit.sha == sha) {
@@ -215,7 +215,7 @@ exports.putCommit = function(req, res){
     
     github.repos.getCommits( {user: owner, repo: repo, sha: sha }, function(err, data) {
 	if (err) {
-	    res.status(500).send(err);
+	    res.status(500).send("getCommits failed: " + err);
 	} else {
 	    data = data.filter( function(commit) {
 		return commit.sha == sha;
@@ -338,7 +338,7 @@ exports.putXourse = function(req, res){
 	return;
     }
     
-    var body = $('body').html();    
+    var body = $('body').html();
     var title = $('title').html();
 
     saveToContentAddressableFilesystem( body, function(err, hash) {

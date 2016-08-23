@@ -76,6 +76,7 @@ exports.initialize = function initialize(callback) {
 					    {
 						actor: {type: ObjectId, ref:"User"},
 						verbId: String,
+						verb: Mixed,
 						object: Mixed,
 						result: Mixed,
 						context: Mixed,

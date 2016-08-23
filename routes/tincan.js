@@ -39,6 +39,7 @@ exports.postStatements = function(req, res) {
 	    statement.attachments = [];
 
 	    mdb.LearningRecord.create( statement, function(err) {
+		console.log( JSON.stringify( statement, null, 4 ) );
 		return;
 	    });
 	});

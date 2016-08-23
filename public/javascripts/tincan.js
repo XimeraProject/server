@@ -3,7 +3,7 @@ var _ = require('underscore');
 var database = require('./database');
 
 // The trailing slash is necsesary here
-var ximeraUrl = "http://ximera.osu.edu/";
+var ximeraUrl = "https://ximera.osu.edu/";
 
 ////////////////////////////////////////////////////////////////
 // Common verbs from ADL
@@ -21,34 +21,49 @@ var verbAttempted = verb("attempted");
 var verbAnswered = verb("answered");
 var verbCompleted = verb("completed");
 
+exports.activityHashToActivityObject = function(activityHash) {
+    var result = {
+	objectType: "Activity",
+	id: ximeraUrl + "activities/" + activityHash,
+    };
+
+    // If we are actually talking about the current activity...
+    if (activityHash == $("#theActivity").attr( 'data-activity' )) {
+	// Then we can grab a bit more information
+	var title = $("#theActivity").attr( 'data-title' );    
+    
+	result.definition = {
+	    name: { "en-US": title },
+	    moreInfo: window.location.href
+	};
+    }
+
+    return result;
+};
+
 ////////////////////////////////////////////////////////////////
 // Shortcuts for recording certain kinds of experience
 exports.experienceProblemById = function(activityHash, problemId) {
-    exports.recordVerbObject( verbExperienced, {
-	objectType: "Activity",
-	id: ximeraUrl + "activities/" + activityHash + "/problems/" + problemId,
-	// BADBAD: should include a definition
+    exports.recordStatement( {
+	verb: verbExperienced,
+	object: {
+	    objectType: "Activity",
+	    id: ximeraUrl + "activities/" + activityHash + "/problems/" + problemId
+	    // BADBAD: should include a definition
+	},
+	context: {
+	    contextActivities: {
+		parent: exports.activityHashToActivityObject( activityHash )
+	    }
+	}
     });	
 };    
 
 exports.experienceActivityByHash = function(activityHash) {
-    exports.recordVerbObject( verbExperienced, {
-	objectType: "Activity",
-	id: ximeraUrl + "activities/" + activityHash,
-	// BADBAD: should include a definition
-    });
+    exports.recordVerbObject(
+	verbExperienced,
+	exports.activityHashToActivityObject( activityHash ) );
 };
-
-exports.experienceVideo = function(video, title) {
-    exports.recordVerbObject( verbExperienced, {
-	objectType: "Activity",
-	id: video,
-	definition: {
-	    name: { "en-US": title }
-	}
-	// BADBAD: should include a definition
-    });
-};    
 
 exports.experienceActivity = function(element) {
     return exports.experienceActivityByHash( $(element).activityHash() );
@@ -87,9 +102,16 @@ exports.answer = function(element, result) {
 };
 
 exports.completeProblem = function(element) {
-    exports.recordVerbObject( verbCompleted, {
-	objectType: "Activity",
-	id: problemUrl(element)
+    exports.recordStatement( {
+	verb: verbCompleted,
+	object: {
+	    objectType: "Activity",
+	    id: problemUrl(element) },
+	context: {
+	    contextActivities: {
+		parent: exports.activityHashToActivityObject( $(element).activityHash )
+	    }
+	}
     });
 };
 
@@ -136,6 +158,3 @@ exports.recordVerbObject = function( verb, object, others ) {
     
     return exports.recordStatement( statement );
 };    
-
-
-
