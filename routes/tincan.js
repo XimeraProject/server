@@ -11,17 +11,22 @@ exports.postStatements = function(req, res) {
 
 	    statement.actor = req.user._id;
 
-	    if ('verb' in data)
+	    if ('verb' in data) {
+		statement.verb = data.verb;
+	    
 		if ('id' in data.verb)
 		    statement.verbId = data.verb.id;
+	    }
 
-	    if ('object' in data)	    
+	    if ('object' in data)
 		statement.object = data.object;
 
-	    if ('result' in data)	    
-		statement.result = data.result;	    
+	    if ('result' in data)
+		statement.result = data.result;
 
 	    statement.context = {};
+	    if ('context' in data)
+		statement.context = data.context;
 	    
 	    if ('timestamp' in data)	    	    
 		statement.timestamp = data.timestamp;
@@ -31,8 +36,8 @@ exports.postStatements = function(req, res) {
 	    statement.authorty = {};
 	    statement.version = "1.0.0";
 
-	    statement.attachments = [];	    
-	    
+	    statement.attachments = [];
+
 	    mdb.LearningRecord.create( statement, function(err) {
 		return;
 	    });
