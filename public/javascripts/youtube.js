@@ -135,6 +135,13 @@ function onPlayerStateChange(event, container, videoId) {
     container.data( 'lastPlayerState', event.data );
 }
 
+function onPlayerReady(event) {
+    var target = event.target;
+    // Matt Thomas requests that videos defualt to something with a higher resolution
+    target.setPlaybackQuality("hd720");
+}
+
+
 var videosToConstruct = [];    
 
 var player = {
@@ -163,6 +170,7 @@ var player = {
 		showinfo: 0
 	    },
 	    events: {
+		'onReady': onPlayerReady,
 		'onStateChange': function( event ) { return onPlayerStateChange(event, container, videoId); }
 	    }
 	});
