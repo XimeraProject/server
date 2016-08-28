@@ -7,6 +7,6 @@ mixin activityCard(locator, url, card)
      a.activity-card(class=card.cssClass, href="/course/" + locator + "/" + url, data-path=url, style=style, data-hashes=JSON.stringify(card.hashes))
        div.progress
          div.progress-bar.progress-bar-success(role="progressbar", style="width: 0%;")
-       h2 #{card.title}
-       h3 #{card.summary}
+       h2 !{card.title}
+       h3 !{card.summary}
        
