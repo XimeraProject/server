@@ -31,7 +31,6 @@ var createActivityCard = function() {
     
     if (hashes) {
 	hashes = JSON.parse(hashes);
-	console.log( activityCard.attr('data-path'), hashes );
 	
 	$.when(completions).done(function(completions) {
 	    var maxCompletion = 0;
