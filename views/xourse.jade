@@ -1,4 +1,5 @@
 extends layouts/main
+include ./activity-card.jade
 
 block title
   | #{xourse.title}
@@ -15,7 +16,7 @@ block content
                input.form-control(type="search",placeholder="Search")             
                       
       h1 #{xourse.title}
-  
-    div(class="xourse-data")
-      | !{xourse.html}
-    div(class="xourse-contents", data-commit=xourse.commit, data-user=user._id.toString())
+        
+    div(class="xourse", data-commit=xourse.commit, data-user=user._id.toString())
+      for activityUrl in xourse.activityList
+        +activityCard(xourse.locator, activityUrl, xourse.activities[activityUrl])

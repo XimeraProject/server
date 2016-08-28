@@ -1,4 +1,5 @@
 extends layouts/main
+include ./activity-card.jade
 
 block title
   if activity.title
@@ -10,18 +11,6 @@ block activity
    div.activity-content
       | !{activity.html}
 
-mixin activityCard(locator, url, card)
-   if url.match(/^#/)
-     h1.activity-card(class=card.cssClass) #{card.title}
-   else
-     - var style = "background-image: linear-gradient( rgba(255,255,255,0.75), rgba(255,255,255,0.75) );";
-     - if (card.splashImage) style = "background-image: linear-gradient( rgba(255,255,255,0.75), rgba(255,255,255,0.75) ) url(/activity/" + locator + '/' + card.splashImage + ');';
-     a.activity-card(class=card.cssClass, href="/course/" + locator + "/" + url, data-path=url, style=style, data-hashes=JSON.stringify(card.hashes))
-       div.progress
-         div.progress-bar.progress-bar-success(role="progressbar", style="width: 0%;")
-       h2 #{card.title}
-       h3 #{card.summary}
-       
 block updateModal
   div.modal.fade#updateWarningModal(tabindex="-1",role="dialog",aria-labelledby="updateWarningModal")
       div.modal-dialog(role="document")
