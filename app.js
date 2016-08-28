@@ -413,7 +413,6 @@ function addDatabaseMiddleware(req, res, next) {
     app.put('/completion/:activityHash', state.completion);
 
     app.get('/users/:id/completions', state.getCompletions);
-    app.get('/commits/:hash/activities', course.getActivitiesFromCommit );
     
     app.get('/image/:hash', mongoImage.get);
 

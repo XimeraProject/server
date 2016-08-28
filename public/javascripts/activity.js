@@ -56,7 +56,7 @@ var createActivity = function() {
 
 	connectInteractives();
 	
-	$('a.activity-card').activityCard();
+	$('.activity-card').activityCard();
 
 	ProgressBar.monitorActivity( activity );
     });

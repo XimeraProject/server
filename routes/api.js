@@ -358,11 +358,27 @@ exports.putXourse = function(req, res){
             var activityHash = {};
 	    
 	    // Go through the xourse text and add the activity URLs to the activity list
-	    $('a.activity').each( function() {
-		var href = $(this).attr('href');
-		//href = path.normalize( path.join( xourse.path, href ) );
-		activityHash[href] = { cssClass: $(this).attr('class').split(" ").filter( function(x) { return (x != 'card') && (x != 'activity') && (x.length > 0); } ).join(' ') };
-		xourse.activityList.push( href );
+	    $('.card').each( function() {
+		// Activities have href's
+		var href = '#';
+		
+		if ($(this).attr('href')) {
+		    href = $(this).attr('href');
+		} else if ($(this).attr('id')) {
+		    href = '#' + $(this).attr('id');
+		} else {
+		    // BADBAD: without an href or an id, we're in trouble
+		}
+
+		if (href != "#") {
+		    activityHash[href] = { cssClass: $(this).attr('class').split(" ").filter( function(x) { return (x != 'card') && (x != 'activity') && (x.length > 0); } ).join(' ') };
+		    
+		    if ($(this).hasClass('part')) {
+			activityHash[href].title = $(this).html();
+		    }
+		    
+		    xourse.activityList.push( href );
+		}
 	    });
 
 	    // BADBAD: this is broken -- the xourse object needs to have an activity list

@@ -490,35 +490,6 @@ exports.progress = function(req, res) {
     });
 };
 
-/* The xourse navigation depends on this. */
-exports.getActivitiesFromCommit = function(req, res) {
-    var commit = req.params.hash;
-
-    mdb.Xourse.findOne({commit: commit}, function(err, xourse) {
-	if (err) {
-	    res.json({});
-	} else {
-	    if (!(xourse)) {
-		res.json({});
-	    } else {
-		if ('activities' in xourse) {
-
-		    xourse.activityList.forEach( function(activityPath) {
-			var activity = xourse.activities[activityPath];
-			if (activity)
-  			  activity.commit = commit;
-		    });
-		
-		    res.json( xourse.activities );
-		} else
-		    res.json( {} );
-	    }
-	}
-    });    
-};
-
-
-
 exports.tableOfContents = function(req, res) {
     remember(req);
     

@@ -168,7 +168,7 @@ span.LATEX .TEX .E {
 
 .frame ul.items li a {
     width: 168px;
-    height: 160px;
+    height: 168px;
 }
 
 .frame {
@@ -203,6 +203,18 @@ span.LATEX .TEX .E {
     background-size: 100% 100%;
 }
 
+h1.activity-card {
+    background-color: gray;
+    margin: 5px;
+    margin-left: 0;
+    color: white;
+    font-weight: 800;
+    font-size: 20px;
+    text-align: right;
+    padding-right: 6pt;
+    padding-top: 6px + 34pt; // to agree with .pagination > li > a and a progress bar
+}
+
 .activity-card.chapter::before {
     content: '';
     position: absolute;
@@ -220,7 +232,7 @@ span.LATEX .TEX .E {
     padding-left: 1.5em;
 }
 
-a.activity-card {
+.activity-card {
     word-wrap: break-word;
 }
 
