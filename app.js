@@ -420,6 +420,7 @@ function addDatabaseMiddleware(req, res, next) {
     app.locals.moment = require('moment');
     app.locals._ = require('underscore');
     app.locals.deployment = process.env.DEPLOYMENT;
+    app.locals.version = app.version;
 
     // Setup blogs
     var Poet = require('poet')
