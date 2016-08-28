@@ -70,7 +70,7 @@ exports.xourseFromUserAndRepo = function(req, res, next) {
 			next('route');
 		    else {
 			req.xourse = xourse;
-			req.locator = [req.params.username, req.params.repository, branch].join('/');			
+			req.locator = [req.params.username, req.params.repository, branch.name].join('/');			
 			next();
 		    }
 		}
@@ -525,6 +525,8 @@ exports.tableOfContents = function(req, res) {
 		
 		xourse.activities[activityPath].url = '/course/' + normalize(url);
 	    });
+
+	    console.log( "locator = ", xourse.locator );
 	    
 	    res.render('xourse', { xourse: xourse });
 	}
