@@ -9,12 +9,11 @@ block modals
 block content
   div.container
     .page-header
-        div.pull-right.btn-toolbar(role="toolbar")
+      div.pull-right.btn-toolbar(role="toolbar")
           div#search-field
              div.inner-addon.right-addon
                i.fa.fa-search
-               input.form-control(type="search",placeholder="Search")             
-                      
+               input.form-control(id="xourse-search",type="search",placeholder="Search")             
       h1 #{xourse.title}
         
     div(class="xourse", data-commit=xourse.commit, data-user=user._id.toString())
