@@ -67,6 +67,9 @@ MathJax.Hub.Register.MessageHook("Math Processing Error",function (message) {
     console.log(message);
 });
 
+var DesmosNeeded = false;
+var DesmosPromise = $.Deferred();
+
 MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     // Remove CDATA's from the script tags
     MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
@@ -97,6 +100,30 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     TEX.Parse.Augment({
 	/* Implements \graph{y=x^2, r = theta} and the like */
 	graph: function(name) {
+	    // Load Desmos asynchronously
+	    if (DesmosNeeded == false) {
+		DesmosNeeded = true;
+		
+		console.log( "Asynchronously loading Desmos..." );
+		$.getScript( "https://www.desmos.com/api/v0.7/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6", 
+			     function() {
+				 function waitForDesmos(){
+				     if(typeof Desmos !== "undefined"){
+					 console.log( "Desmos loaded!" );
+					 DesmosPromise.resolve( Desmos );
+				     }
+				     else{
+					 setTimeout(function(){
+					     console.log( "Still waiting for Desmos to load..." );
+					     waitForDesmos();
+					 },250);
+				     }
+				 }
+				 
+				 waitForDesmos();
+			     });
+	    }
+	    
 	    var optionalArguments = this.GetBrackets(name);
 	    var equations = this.GetArgument(name);
 
@@ -124,62 +151,62 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
                 var parent = $(element).closest( 'div.MathJax_Display' );
 		parent.empty();
 		element = parent;
-		
-		var calculator = Desmos.Calculator(element, {
+
+		$.when(DesmosPromise).done(function(Desmos) {		
+		    var calculator = Desmos.Calculator(element, {
 			expressionsCollapsed: !keys.panel
-		});
-		window.calculator = calculator;
-
-		if (equations.match( /^\(.*\)$/ ))
-                    calculator.setExpression({id:'graph', latex: equations});
-		else {
-		    equations.split(',').forEach( function(equation, index) {
-			calculator.setExpression({id:'graph' + index, latex: equation});
 		    });
-		}
-		if( keys.xmax !== undefined ) {
+		    window.calculator = calculator;
+
+		    if (equations.match( /^\(.*\)$/ ))
+			calculator.setExpression({id:'graph', latex: equations});
+		    else {
+			equations.split(',').forEach( function(equation, index) {
+			    calculator.setExpression({id:'graph' + index, latex: equation});
+			});
+		    }
+		    if( keys.xmax !== undefined ) {
 			calculator.setMathBounds({
-				left: parseFloat(keys.xmin),
-				right: parseFloat(keys.xmax),
-				top: parseFloat(keys.ymax),
-				bottom: parseFloat(keys.ymin) });
-		}
-		if( keys.polar !== undefined ) {
+			    left: parseFloat(keys.xmin),
+			    right: parseFloat(keys.xmax),
+			    top: parseFloat(keys.ymax),
+			    bottom: parseFloat(keys.ymin) });
+		    }
+		    if( keys.polar !== undefined ) {
 			calculator.setGraphSettings({polarMode:true});
-		}
-		if( keys.hideXAxis ) {
+		    }
+		    if( keys.hideXAxis ) {
 			calculator.setGraphSettings({showXAxis:false});
-		}
-		if( keys.hideYAxis ) {
+		    }
+		    if( keys.hideYAxis ) {
 			calculator.setGraphSettings({showYAxis:false});
-		}
-		if( keys.xAxisLabel ) {
+		    }
+		    if( keys.xAxisLabel ) {
 			calculator.setGraphSettings({xAxisLabel:keys.xAxisLabel});
-		}
-		if( keys.yAxisLabel ) {
+		    }
+		    if( keys.yAxisLabel ) {
 			calculator.setGraphSettings({yAxisLabel:keys.yAxisLabel});
-		}
-		if( keys.hideXAxisNumbers ) {
+		    }
+		    if( keys.hideXAxisNumbers ) {
 			calculator.setGraphSettings({xAxisNumbers:false});
-		}
-		if( keys.hideYAxisNumbers ) {
+		    }
+		    if( keys.hideYAxisNumbers ) {
 			calculator.setGraphSettings({yAxisNumbers:false});
-		}
-
-                // Bart requests that projectorMode be default
-	        calculator.setGraphSettings({projectorMode:true});	
-		if( keys.projectorMode ) {
+		    }
+		    
+                    // Bart requests that projectorMode be default
+	            calculator.setGraphSettings({projectorMode:true});	
+		    if( keys.projectorMode ) {
 			calculator.setGraphSettings({projectorMode:true});	
-		}
-		if( keys.thinMode ) {
+		    }
+		    if( keys.thinMode ) {
 			calculator.setGraphSettings({projectorMode:false});
-		}
-		var height = keys.height || 300;
-		$(element).height(height);
-		calculator.resize();
+		    }
+		    var height = keys.height || 300;
+		    $(element).height(height);
+		    calculator.resize();
+		});
             });
-
-
 	},
 
 	/* Implements \answer[key=value]{text} */
