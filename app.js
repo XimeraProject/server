@@ -366,7 +366,7 @@ function addDatabaseMiddleware(req, res, next) {
 
     // LTI login
     app.post('/lti', passport.authenticate('lti', { successRedirect: '/just-logged-in',
-						    failureRedirect: '/'}));
+						    failureRedirect: '/about/lti-failed'}));
     app.get('/logout', function (req, res) {
         req.logout();
         res.redirect('/');
@@ -395,6 +395,7 @@ function addDatabaseMiddleware(req, res, next) {
     app.get('/about/workshop', about.workshop);
     app.get('/about/contact', about.contact);
     app.get('/about/faq', about.faq);
+    app.get('/about/lti-failed', about.ltiFailed);    
     app.get('/about/who', about.who);
     app.get('/about/plans', about.plans);
     app.get('/about/xarma', about.xarma);

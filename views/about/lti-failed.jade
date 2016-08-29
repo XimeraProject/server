@@ -1,0 +1,10 @@
+extends ../layouts/main
+
+block content
+  .container
+     mixin breadcrumbs(['/about','/about/lti-failed'],['About Ximera', 'LTI Failure'])
+     .page-header
+       h1 LTI Failure
+     p I am so very sorry.
+     p You have tried to connect to Ximera through the learning management system (LMS) at your institution, but this has failed.
+     p Please contact your course instructor to let them know about this problem.

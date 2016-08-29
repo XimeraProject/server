@@ -22,6 +22,10 @@ exports.plans = function(req, res) {
     res.render('about/plans', { title: 'Future Plans', user: req.user });
 };
 
+exports.ltiFailed = function(req, res) {
+    res.render('about/lti-failed', { title: 'LTI Failure', user: req.user });
+};
+
 exports.m2o2c2 = function(req, res) {
     res.render('about/m2o2c2', { title: 'M2O2C2', user: req.user });
 };
