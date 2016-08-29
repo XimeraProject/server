@@ -16,16 +16,12 @@ var CKAv2 = function() {
     this.problemOrder = [];
 
     for(var i=1; i<=39; i++ )
-	this.problemOrder.push( "v1p/p" + (("0" + i).slice(-2)) );
+	this.problemOrder.push( "v1/p" + (("0" + i).slice(-2)) );
 
     shuffle(this.problemOrder);	
     
-    this.extraProblems = [];	
-    
     for(var i=1; i<=182; i++ )
-	this.extraProblems.push( "v2p/q" + i );
-
-    shuffle(this.extraProblems);		
+	this.problemOrder.push( "v2/q" + i );
 
     this.answeredProblems = [];
     this.counter = 0;
@@ -33,8 +29,8 @@ var CKAv2 = function() {
 
 CKAv2.prototype = {
     shortName: "CKA",
-    name: "Calculus Knowledge Post-Assessment",
-    version: "2.0.1p",
+    name: "Calculus Knowledge Pre-Assessment",
+    version: "2.1.0",
 
     tick: function() {
 	var proportionFinished = 0;
@@ -66,12 +62,6 @@ CKAv2.prototype = {
     },
     
     setup: function() {
-	/*
-	 this.counter = 0;
-	 this.answeredProblems = [];
-	 this.allDone = false;
-	 this.halfwayDone = false;
-	 */
 	window.setInterval( (function(self) {
 	    return function() {   
 		self.tick(); 
@@ -125,15 +115,6 @@ CKAv2.prototype = {
 	if (this.allDone)
 	    return 'thanks';
 
-	if (this.halfwayDone) {
-	    var i = this.extraProblems.indexOf(activity.path);
-
-	    if (i >= 0)
-		return this.extraProblems[(i+1) % this.extraProblems.length];
-	    else
-		return this.extraProblems[0];		    
-	}
-	
 	var i = this.problemOrder.indexOf(activity.path);
 
 	if (i >= 0)
@@ -243,6 +224,3 @@ $(function() {
 	invigilator.save();
     }
 });
-
-
-
