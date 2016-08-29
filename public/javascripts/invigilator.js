@@ -12,25 +12,25 @@ exports.register = function(name, object) {
     REGISTRY[name] = object;
 };
 
-var CKAv2 = function() {
+var CKAv4 = function() {
     this.problemOrder = [];
 
     for(var i=1; i<=39; i++ )
 	this.problemOrder.push( "v1/p" + (("0" + i).slice(-2)) );
 
-    shuffle(this.problemOrder);	
-    
     for(var i=1; i<=182; i++ )
 	this.problemOrder.push( "v2/q" + i );
 
+    shuffle(this.problemOrder);	
+    
     this.answeredProblems = [];
     this.counter = 0;
 }
 
-CKAv2.prototype = {
+CKAv4.prototype = {
     shortName: "CKA",
     name: "Calculus Knowledge Pre-Assessment",
-    version: "2.1.0",
+    version: "4.0.1",
 
     tick: function() {
 	var proportionFinished = 0;
@@ -149,14 +149,14 @@ function eraseLocationSearch() {
 	window.history.pushState( {}, document.title, window.location.pathname );
 }
 
-exports.register( 'cka2', CKAv2 );
+exports.register( 'cka4', CKAv4 );
 
 function nextLabel( label ) {
     $('#next-activity-label', '#next-activity').text(label);
 }
 
 function next( url ) {
-    var href = "/activity/" + activity.commit + '/' + url;
+    var href = "/course/" + activity.locator + '/' + url;
     if (desiredInvigilator)
 	href = href + '?' + desiredInvigilator;
     
@@ -185,6 +185,7 @@ function shuffle(array) {
 $(function() {
     var a = $("#theActivity");
     activity.commit = a.attr('data-commit');
+    activity.locator = a.attr('data-locator');    
     activity.path = a.attr('data-path');
     activity.hash = a.attr('data-activity');
     

@@ -87,26 +87,27 @@ block content
                 div.scrollbar
                   div.handle
         .row
-          .col-md-12                  
-            ol.breadcrumb
-              if activity.locator
-                li.breadcrumb-item
-                  a(href="/course/" + activity.locator)
-                    if activity.xourse.title != ''
-                      | !{activity.xourse.title}
-                    else
-                      | Home
-              if activity.chapter
-                li.breadcrumb-item
-                  a(href=activity.chapter.url) !{activity.chapter.title}
-              li.breadcrumb-item.active
-                if activity.title
-                  | !{activity.title}
-                else
-                  | Activity
+          .col-md-12
+            if activity.xourse.title
+              ol.breadcrumb
+                if activity.locator
+                  li.breadcrumb-item
+                    a(href="/course/" + activity.locator)
+                      if (activity.xourse.title) && (activity.xourse.title != '')
+                        | !{activity.xourse.title}
+                      else
+                        | Home
+                if activity.chapter
+                  li.breadcrumb-item
+                    a(href=activity.chapter.url) !{activity.chapter.title}
+                li.breadcrumb-item.active
+                  if activity.title
+                    | !{activity.title}
+                  else
+                    | Activity
                   
         .row
-          .col-md-offset-2.col-md-8.activity(id="theActivity", data-activity=activity.hash, data-commit=activity.commit, data-path=activity.path, data-title=activity.title)
+          .col-md-offset-2.col-md-8.activity(id="theActivity", data-activity=activity.hash, data-locator=activity.locator, data-commit=activity.commit, data-path=activity.path, data-title=activity.title)
 
             block activity
 

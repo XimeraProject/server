@@ -1,9 +1,11 @@
 var $ = require('jquery');
 var _ = require('underscore');
+var TinCan = require('./tincan');
 
 var libraries = {
     jquery: $,
     underscore: _,
+    tincan: TinCan
 };
 
 exports.connectInteractives = function() {

@@ -21,6 +21,11 @@ var verbAttempted = verb("attempted");
 var verbAnswered = verb("answered");
 var verbCompleted = verb("completed");
 
+exports.verbExperienced = verb("experienced");
+exports.verbAttempted = verb("attempted");
+exports.verbAnswered = verb("answered");
+exports.verbCompleted = verb("completed");
+
 exports.activityHashToActivityObject = function(activityHash) {
     var result = {
 	objectType: "Activity",

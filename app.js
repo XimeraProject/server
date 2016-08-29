@@ -309,7 +309,7 @@ function addDatabaseMiddleware(req, res, next) {
     app.get( '/course/:commit([0-9a-fA-F]+)$' ,function( req, res ) { res.redirect(req.url + '/'); });
     app.get( '/course/:username/:repository', function( req, res ) { res.redirect(req.url + '/'); });
     app.get( '/course/:username/:repository/:branch', function( req, res ) { res.redirect(req.url + '/'); });
-    
+
     app.get( '/statistics/:commit/:hash/answers', course.answers );
     app.get( '/statistics/:commit/:hash/successes', course.successes );
     
