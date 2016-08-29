@@ -158,8 +158,8 @@ var player = {
     loadPlayer: function(container, videoId) {
 	new YT.Player(container, {
 	    videoId: videoId,
-	    width: 640,
-	    height: 360,
+	    width: 720,
+	    height: 405,
 	    // For a list of all parameters, see:
 	    // https://developers.google.com/youtube/player_parameters
 	    playerVars: {
