@@ -236,7 +236,7 @@ function addDatabaseMiddleware(req, res, next) {
 
     // Setup routes.
     app.get('/install.sh', function(req, res) {
-	res.sendFile('views/install.sh');
+	res.sendFile('views/install.sh', { root: __dirname });
     });
     
     // TODO: Move to separate file.
