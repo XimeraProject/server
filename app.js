@@ -235,7 +235,10 @@ function addDatabaseMiddleware(req, res, next) {
     }
 
     // Setup routes.
-
+    app.get('/install.sh', function(req, res) {
+	res.sendFile('views/install.sh');
+    });
+    
     // TODO: Move to separate file.
     app.get('/users/xarma', score.getXarma);
     app.get('/users/xudos', score.getXudos);
