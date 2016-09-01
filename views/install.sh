@@ -8,7 +8,7 @@ echo "Clone or update ximeraLatex..."
 
 echo "Download mutool from a repository..."
 mkdir -p ~/.local/bin
-curl http://launchpadlibrarian.net/205812926/mupdf-tools_1.7-1_amd64.deb | dpkg-deb --fsys-tarfile - | tar -xf - ./usr/bin/mutool -O > ~/.local/bin/mutool
+wget -qO- https://www.archlinux.org/packages/community/x86_64/mupdf-tools/download/ | tar -xJf - usr/bin/mutool -O > ~/.local/bin/mutool
 chmod +x ~/.local/bin/mutool
 
 echo "Clone or update xake..."
