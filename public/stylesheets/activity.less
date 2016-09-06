@@ -1,5 +1,28 @@
 @import 'theorems';
 
+/* Want vertical progress bars on practice cards */
+
+/* There's a lot of hackish pixel computations here, and they differ in the isotope and the course nav bar */
+.vertical {
+    width: 154.4px;
+    position: relative;
+    left: -154.4px;
+    -webkit-transform: rotate(-90deg);
+    -webkit-transform-origin: top right;
+    transform: rotate(-90deg);
+    transform-origin: top right;
+}
+
+a.activity-card.practice {
+    width: 36.26666px;
+}
+
+li a.activity-card.practice {
+    width: 48.266666px;
+}
+
+
+
 .activitytitle {
   font-size: 16pt;
   font-weight: bold;
@@ -160,16 +183,25 @@ span.LATEX .TEX .E {
 
 .frame ul.items li {
     float: left;
-    width: 168px;
+    //width: 168px;
     height: 168px;
     color: #DDD;
+    margin: 0;
+    padding: 0;    
     cursor: pointer;    
 }
 
 .frame ul.items li a {
-    width: 168px;
-    height: 168px;
+    //width: 168px;
+    //height: 168px;
+    margin: 0;
 }
+
+/*
+.frame ul.items li a.practice {
+    width: 37px;
+}
+*/
 
 .frame {
     height: 168px;
@@ -204,7 +236,11 @@ span.LATEX .TEX .E {
 }
 
 h1.activity-card {
-        margin: 5px;
+    margin: 5px;
+}
+
+li h1.activity-card {
+    margin: 0;
 }
 
 h1.activity-card, .xourse h1.activity-card {

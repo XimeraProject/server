@@ -1,4 +1,9 @@
-mixin activityCard(locator, url, card)
+mixin practiceCard(locator, url, card)
+  a.activity-card(class=card.cssClass, href="/course/" + locator + "/" + url, data-path=url, style=style, data-hashes=JSON.stringify(card.hashes))
+    div.progress.vertical
+      div.progress-bar.progress-bar-success(role="progressbar", style="width: 0%;")
+
+mixin regularCard(locator, url, card)   
    if url.match(/^#/)
      h1.activity-card(class=card.cssClass) #{card.title}
    else
@@ -9,4 +14,10 @@ mixin activityCard(locator, url, card)
          div.progress-bar.progress-bar-success(role="progressbar", style="width: 0%;")
        h2 !{card.title}
        h3 !{card.summary}
-       
+
+mixin activityCard(locator, url, card)
+   if card.cssClass.match( /practice/ )
+     +practiceCard( locator, url, card )
+   else
+     +regularCard( locator, url, card )
+

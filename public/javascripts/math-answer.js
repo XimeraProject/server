@@ -29,7 +29,7 @@ var createMathAnswer = function() {
     var width = input.width();
 
     var result = $(template);
-    
+
     // Copy over the old attributes!
     _.each( input, function(element) {
 	_.each( element.attributes, function(a) {
