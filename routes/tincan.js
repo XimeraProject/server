@@ -79,7 +79,7 @@ exports.postStatements = function(req, res) {
 		return;
 	    });
 	});
-
+	// BADBAD: this needs to happen ONCE 
 	res.status(200).json({ok: true});
     }    
 };

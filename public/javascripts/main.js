@@ -33,6 +33,7 @@ var clock = require('./clock');
 var rowclick = require('./rowclick');
 
 var references = require('./references');
+var Desmos = require('./desmos');
 
 MathJax.Hub.Config(
     {
@@ -67,9 +68,6 @@ MathJax.Hub.Register.MessageHook("Math Processing Error",function (message) {
     console.log(message);
 });
 
-var DesmosNeeded = false;
-var DesmosPromise = $.Deferred();
-
 MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     // Remove CDATA's from the script tags
     MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
@@ -101,28 +99,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 	/* Implements \graph{y=x^2, r = theta} and the like */
 	graph: function(name) {
 	    // Load Desmos asynchronously
-	    if (DesmosNeeded == false) {
-		DesmosNeeded = true;
-		
-		console.log( "Asynchronously loading Desmos..." );
-		$.getScript( "https://www.desmos.com/api/v0.7/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6", 
-			     function() {
-				 function waitForDesmos(){
-				     if(typeof Desmos !== "undefined"){
-					 console.log( "Desmos loaded!" );
-					 DesmosPromise.resolve( Desmos );
-				     }
-				     else{
-					 setTimeout(function(){
-					     console.log( "Still waiting for Desmos to load..." );
-					     waitForDesmos();
-					 },250);
-				     }
-				 }
-				 
-				 waitForDesmos();
-			     });
-	    }
+	    Desmos.loadAsynchronously();
 	    
 	    var optionalArguments = this.GetBrackets(name);
 	    var equations = this.GetArgument(name);
@@ -152,7 +129,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 		parent.empty();
 		element = parent;
 
-		$.when(DesmosPromise).done(function(Desmos) {		
+		Desmos.onReady( function(Desmos) {
 		    var calculator = Desmos.Calculator(element, {
 			expressionsCollapsed: !keys.panel
 		    });
