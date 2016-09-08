@@ -68,16 +68,18 @@ exports.postStatements = function(req, res) {
 	    escapeKeys( statement );
 	    
 	    mdb.LearningRecord.create( statement, function(err) {
+		/*
 		if (err) {
 		    res.status(500).json({ok: false, err: err});
 		    console.log(err);
 		} else {
-		    res.status(200).json({ok: true});
-		}
+		}*/
 		
 		//console.log( JSON.stringify( statement, null, 4 ) );
 		return;
 	    });
 	});
+
+	res.status(200).json({ok: true});
     }    
 };
