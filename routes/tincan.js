@@ -1,6 +1,31 @@
 var mdb = require('../mdb');
 var winston = require('winston');
 
+function escapeKeys(obj) {
+    if (!(Boolean(obj) && typeof obj == 'object'
+      && Object.keys(obj).length > 0)) {
+        return false;
+    }
+    Object.keys(obj).forEach(function(key) {
+        if (typeof(obj[key]) == 'object') {
+            escapeKeys(obj[key]);
+        } else {
+            if (key.indexOf('.') !== -1) {
+                var newkey = key.replace(/\./g, '．');
+                obj[newkey] = obj[key];
+                delete obj[key];
+            }
+            if (key.indexOf('$') !== -1) {
+                var newkey = key.replace(/\$/g, '＄');
+                obj[newkey] = obj[key];
+                delete obj[key];
+            }
+
+        }
+    });
+    return true;
+}
+
 exports.postStatements = function(req, res) {
     if (!req.user) {
         res.status(500).send("");
@@ -38,12 +63,21 @@ exports.postStatements = function(req, res) {
 
 	    statement.attachments = [];
 
+	    // Mongo forbids dots and dollar signs in key names, so we
+	    // replace them with full width unicode replacements
+	    escapeKeys( statement );
+	    
 	    mdb.LearningRecord.create( statement, function(err) {
-		console.log( JSON.stringify( statement, null, 4 ) );
+		if (err) {
+		    res.status(500).json({ok: false, err: err});
+		    console.log(err);
+		} else {
+		    res.status(200).json({ok: true});
+		}
+		
+		//console.log( JSON.stringify( statement, null, 4 ) );
 		return;
 	    });
 	});
-
-	res.status(200).json({ok: true});
     }    
 };
