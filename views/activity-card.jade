@@ -16,8 +16,7 @@ mixin regularCard(locator, url, card)
        h3 !{card.summary}
 
 mixin activityCard(locator, url, card)
-   if card.cssClass.match( /practice/ )
+   if (card.cssClass) && (card.cssClass.match( /practice/ ))
      +practiceCard( locator, url, card )
    else
      +regularCard( locator, url, card )
-
