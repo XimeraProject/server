@@ -10,6 +10,19 @@ var libraries = {
     tincan: TinCan
 };
 
+function asynchronousLibrary( dependencies, name, url, object ) {
+    return function( callback ) {
+	if ((libraries[name] == undefined) && (dependencies.some( function(dependency) { return dependency == name; } ))) {
+	    $.getScript( url, function() {
+		libraries[name] = window[object];
+		callback(null);
+	    });
+	} else {
+	    callback(null);
+	}
+    };
+}
+
 exports.connectInteractives = function() {
     if (window.interactives) {
 	window.interactives.forEach( function(interactive) {
@@ -33,7 +46,11 @@ exports.connectInteractives = function() {
 			} else {
 			    callback(null);
 			}
-		    }
+		    },
+
+		    asynchronousLibrary( dependencies, "three", "https://cdnjs.cloudflare.com/ajax/libs/three.js/r81/three.min.js", "THREE" ),
+		    asynchronousLibrary( dependencies, "jsxgraph", "https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/0.99.5/jsxgraphcore.js", "JXG" ),
+		    
 		], function(err) {
 		    code.apply( target, dependencies.map( function(name) { return libraries[name]; } ) );
 		}
