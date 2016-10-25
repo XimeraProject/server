@@ -138,7 +138,7 @@ module.exports.save = function(callback) {
     
     if (reseting)
 	return false;
-    
+
     async.each( _.keys(DATABASES),
 		function(activityHash, callback) {
 		    var json = JSON.stringify(DATABASES[activityHash]);

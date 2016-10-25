@@ -23,6 +23,24 @@ function asynchronousLibrary( dependencies, name, url, object ) {
     };
 }
 
+function createProxiedPersistentDataObject( element ) {
+    var handler = {
+	get: function(target, prop, receiver) {
+	    return element.persistentData( prop );
+	},
+	set: function(target, prop, value, receiver) {
+	    element.persistentData( prop, value );
+	    return true;
+	}
+    };
+    
+    var p = new Proxy(function(callback) {
+	element.persistentData(callback);
+    }, handler);
+
+    return p;
+}
+
 exports.connectInteractives = function() {
     if (window.interactives) {
 	window.interactives.forEach( function(interactive) {
@@ -52,7 +70,11 @@ exports.connectInteractives = function() {
 		    asynchronousLibrary( dependencies, "jsxgraph", "https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/0.99.5/jsxgraphcore.js", "JXG" ),
 		    
 		], function(err) {
-		    code.apply( target, dependencies.map( function(name) { return libraries[name]; } ) );
+		    code.apply( target, dependencies.map( function(name) {
+			if (name == 'db')
+			    return createProxiedPersistentDataObject(target);
+			else
+			    return libraries[name]; } ) );
 		}
 	    );
 	});
