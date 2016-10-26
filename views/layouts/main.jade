@@ -41,8 +41,9 @@ html(lang="en")
           return scripts[scripts.length - 1];
         })();
         var targetId = currentScript.getAttribute('data-target');
+        var parameters = currentScript.getAttribute('data-argument');
       
-        (window.interactives = window.interactives || []).push({dependencies: dependencies, callback: callback, targetId: targetId});
+        (window.interactives = window.interactives || []).push({dependencies: dependencies, callback: callback, targetId: targetId, parameters: parameters});
       };
     
     script(type="text/javascript").

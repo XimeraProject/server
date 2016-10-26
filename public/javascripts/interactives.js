@@ -23,6 +23,7 @@ function asynchronousLibrary( dependencies, name, url, object ) {
     };
 }
 
+// Connected to 'db'
 function createProxiedPersistentDataObject( element ) {
     var handler = {
 	get: function(target, prop, receiver) {
@@ -41,11 +42,39 @@ function createProxiedPersistentDataObject( element ) {
     return p;
 }
 
+// Connected to 'reset'
+function createResetButton( element ) {
+    var button = $('<button class="btn btn-danger" type="button"><i class="fa fa-eraser"></i>Reset</button>');
+    button.insertAfter( element );
+
+    return function( callback ) {
+	$(button).click( callback );
+    };
+}
+
+// TODO reset button
+// TODO checkwork
+// TODO includeinteractive needs to be access the parameters that it is passed
+// basically as an "parameters" object
+function parseParameters(parameters) {
+    var pairs = parameters.split(',').map( function(x) { return x.trim(); } );
+    var hash = {};
+    pairs.forEach( function(pair) {
+	var left = pair.split('=')[0];
+	var right = pair.split('=')[1];
+
+	hash[left] = right;
+    });
+
+    return hash;
+}
+
 exports.connectInteractives = function() {
     if (window.interactives) {
 	window.interactives.forEach( function(interactive) {
 	    var dependencies = interactive.dependencies;
 	    var code = interactive.callback;
+	    var parameters = interactive.parameters;	    
 	    
 	    var targetId = interactive.targetId;
 	    var target = $("#" + targetId);
@@ -73,6 +102,10 @@ exports.connectInteractives = function() {
 		    code.apply( target, dependencies.map( function(name) {
 			if (name == 'db')
 			    return createProxiedPersistentDataObject(target);
+			else if (name == 'reset')
+			    return createResetButton(target);
+			else if (name == 'parameters')
+			    return parseParameters(parameters);
 			else
 			    return libraries[name]; } ) );
 		}
