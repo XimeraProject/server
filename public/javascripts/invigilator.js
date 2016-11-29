@@ -149,7 +149,7 @@ function eraseLocationSearch() {
 	window.history.pushState( {}, document.title, window.location.pathname );
 }
 
-exports.register( 'cka4', CKAv4 );
+exports.register( 'cka4p', CKAv4 );
 
 function nextLabel( label ) {
     $('#next-activity-label', '#next-activity').text(label);
