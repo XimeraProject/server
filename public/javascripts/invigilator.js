@@ -16,10 +16,10 @@ var CKAv4 = function() {
     this.problemOrder = [];
 
     for(var i=1; i<=39; i++ )
-	this.problemOrder.push( "v1/p" + (("0" + i).slice(-2)) );
+	this.problemOrder.push( "v1p/p" + (("0" + i).slice(-2)) );
 
     for(var i=1; i<=182; i++ )
-	this.problemOrder.push( "v2/q" + i );
+	this.problemOrder.push( "v2p/q" + i );
 
     shuffle(this.problemOrder);	
     
@@ -30,7 +30,7 @@ var CKAv4 = function() {
 CKAv4.prototype = {
     shortName: "CKA",
     name: "Calculus Knowledge Pre-Assessment",
-    version: "4.0.1",
+    version: "4.0.2",
 
     tick: function() {
 	var proportionFinished = 0;
