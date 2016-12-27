@@ -84,9 +84,35 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     
     TEXDEF.macros.answer = "answer";
     TEXDEF.macros.graph = "graph";
-
+    TEXDEF.macros.newlabel = "newlabel";
+    TEXDEF.macros.sage = "sage";    
+    
     var calculatorCount = 0;		    
 
+    var getMathML = function(jax,callback) {
+	var mml;
+	try {
+	    //
+	    //  Try to produce the MathML (if an asynchronous
+	    //     action occurs, a reset error is thrown)
+	    //   Otherwise we got the MathML and call the
+	    //     user's callback passing the MathML.
+	    //
+	    mml = jax.root.toMathML("");
+	} catch(err) {
+	    if (!err.restart) {throw err} // an actual error
+	    //
+	    //  For a delay due to file loading
+	    //    call this routine again after waiting for the
+	    //    the asynchronous action to finish.
+	    //
+	    return MathJax.Callback.After([getMathML,jax,callback],err.restart);
+	}
+	//
+	//  Pass the MathML to the user's callback
+	MathJax.Callback(callback)(mml);
+    };
+    
     /* Sometimes htlatex generates \relax's which should be ignored */
     MathJax.InputJax.TeX.Definitions.Add({
 	macros: {
@@ -94,8 +120,26 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 	    ensuremath: ["Macro", ""],
 	    xspace: ["Macro", ""]
 	}});
+
+    var sagetexExpansions = [];
+    var sageCounter = 0;
     
     TEX.Parse.Augment({
+	/* Implements sagetex */
+	newlabel: function(name) {
+	    var label = this.GetArgument(name);
+	    var expansion = this.ParseArg(name);
+	    
+	    /* The primary assumption is that these appear in order. */
+	    sagetexExpansions.push( expansion );
+	},
+	sage: function(name) {
+	    var code = this.GetArgument(name);
+	    
+	    this.Push(sagetexExpansions[sageCounter]);
+	    sageCounter++;
+	},
+	
 	/* Implements \graph{y=x^2, r = theta} and the like */
 	graph: function(name) {
 	    // Load Desmos asynchronously
@@ -189,8 +233,15 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 	/* Implements \answer[key=value]{text} */
 	answer: function(name) {
 	    var keys = this.GetBrackets(name);
-	    var text = this.GetArgument(name);
-
+	    
+	    // This actually PARSES the content of the \answer command
+	    // with mathjax; the result will be MathML.  If we had
+	    // instead used this.GetArgument(name) we could have
+	    // gotten the raw string passed to \answer, but by using
+	    // ParseArg, we can invoke \newcommand's from inside an
+	    // \answer.
+	    var text = this.ParseArg(name);
+	    
 	    var input = HTML.Element("input",
 				     {type:"text",
 				      className:"mathjax-input",
@@ -200,8 +251,10 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 	    input.setAttribute("xmlns","http://www.w3.org/1999/xhtml");
 
 	    // the \answer{contents} get placed in a data-answer attribute
-	    input.setAttribute("data-answer", text);			    
-
+	    getMathML( MML(text), function( mml ) {
+		input.setAttribute("data-answer", mml);			    		
+	    });
+	    
 	    // Parse key=value pairs from optional [bracket] into data- attributes
 	    if (keys !== undefined) {
 		keys.split(",").forEach( function(keyvalue) { 
