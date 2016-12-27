@@ -197,7 +197,7 @@ var createMathAnswer = function() {
 	    correctAnswer = Expression.fromLatex(correctAnswerText);
 	} catch (err) {
 	    try {	    		
-		correctAnswer = Expression.fromText(correctAnswerText);
+		correctAnswer = Expression.fromMml(correctAnswerText);
 	    } catch (err) {
 		console.log( "Instructor error in \\answer: " + err );
 		correctAnswer = Expression.fromText( "sqrt(-1)" );
