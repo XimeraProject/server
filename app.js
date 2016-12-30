@@ -40,9 +40,8 @@ var express = require('express')
 if (!process.env.XIMERA_COOKIE_SECRET ||
     !process.env.XIMERA_MONGO_DATABASE ||
     !process.env.XIMERA_MONGO_URL ||
-    !process.env.COURSERA_CONSUMER_KEY ||
-    !process.env.GITHUB_WEBHOOK_SECRET ||
-    !process.env.COURSERA_CONSUMER_SECRET) {
+    !process.env.GITHUB_WEBHOOK_SECRET)
+    {
         throw "Appropriate environment variables not set.";
     }
 
@@ -159,7 +158,6 @@ mdb.initialize(function (err) {
 passport.use(login.localStrategy(rootUrl));
 passport.use(login.googleStrategy(rootUrl));
 passport.use(login.twitterStrategy(rootUrl));
-passport.use(login.courseraStrategy(rootUrl));
 passport.use(login.ltiStrategy(rootUrl));
 passport.use(login.githubStrategy(rootUrl));
 
@@ -262,7 +260,6 @@ function addDatabaseMiddleware(req, res, next) {
     app.get('/users/page/:page', user.index); // pagination in Mongo is fairly slow
     
     app.delete('/users/:id/google', function( req, res ) { user.deleteLinkedAccount( req, res, 'google' ); } );
-    app.delete('/users/:id/coursera', function( req, res ) { user.deleteLinkedAccount( req, res, 'coursera' ); } );
     app.delete('/users/:id/github', function( req, res ) { user.deleteLinkedAccount( req, res, 'github' ); } );
     app.delete('/users/:id/twitter', function( req, res ) { user.deleteLinkedAccount( req, res, 'twitter' ); } );
 
@@ -330,13 +327,6 @@ function addDatabaseMiddleware(req, res, next) {
     // Instructor paths
     app.get(/^\/instructor\/course\/(.+)\/activity\/(.+)\/$/, instructor.instructorActivity );
     app.get('/instructor/activity-analytics/:id', instructor.activityAnalytics);
-
-    // Coursera login.
-    app.get('/auth/coursera',
-            passport.authenticate('oauth'));
-    app.get('/auth/coursera/callback',
-            passport.authenticate('oauth', { successRedirect: '/just-logged-in',
-                                   failureRedirect: '/auth/coursera'}));
 
     // Google login.
     app.get('/auth/google', passport.authenticate('google-openidconnect'));
