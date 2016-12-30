@@ -1,5 +1,4 @@
 var GoogleStrategy = require('passport-google-openidconnect').Strategy
-  , CourseraOAuthStrategy = require('./passport-coursera-oauth').Strategy
   , TwitterStrategy = require('passport-twitter').Strategy
   , LocalStrategy = require('passport-local').Strategy
   , LtiStrategy = require('./passport-lti').Strategy
@@ -36,20 +35,6 @@ module.exports.githubStrategy = function(rootUrl) {
 		req.user.save(done);
 	    });
 	});
-    });
-}
-
-module.exports.courseraStrategy = function (rootUrl) {
-    return new CourseraOAuthStrategy({
-        requestTokenURL: 'https://authentication.coursera.org/auth/oauth/api/request_token',
-        accessTokenURL: 'https://authentication.coursera.org/auth/oauth/api/access_token',
-        consumerKey: process.env.COURSERA_CONSUMER_KEY,
-        consumerSecret: process.env.COURSERA_CONSUMER_SECRET,
-        callbackURL: rootUrl + "/auth/coursera/callback",
-        passReqToCallback: true
-    }, function(req, token, tokenSecret, profile, done) {
-	console.log( "coursera profile = ", profile );
-        addUserAccount(req, 'courseraOAuthId', profile.id, profile.full_name, null, null, done);
     });
 }
 
