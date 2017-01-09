@@ -77,6 +77,11 @@ block content
     | \newcommand{\vecj}{\vec{\hat{\bf\jmath}}}
     | \newcommand{\utan}{\vec{\hat{t}}}
     | \newcommand{\unormal}{\vec{\hat{n}}}
+    | \newenvironment{amatrix}[1]{%
+    |   \begin{bmatrix}
+    | }{%
+    |   \end{bmatrix}
+    | }
   div.container
         // BADBAD: only display navigation if the item can be found IN a navigation list
         if (activity.xourse.activityList.length > 0)
