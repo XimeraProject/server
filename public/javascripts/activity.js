@@ -19,11 +19,15 @@ var feedback = require('./feedback');
 
 var connectInteractives = require('./interactives').connectInteractives;
 
+var annotator = require('./annotator');
+
 var createActivity = function() {
     var activity = $(this);
 
     console.log("ACTIVITY");
 
+    //$('.activity-body', this).annotator();
+    
     activity.fetchData( function(db) {
 	activity.persistentData( function() {
 	    if (!(activity.persistentData( 'experienced' ))) {

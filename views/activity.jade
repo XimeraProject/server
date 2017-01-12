@@ -117,9 +117,10 @@ block content
                   
         .row
           .col-md-offset-2.col-md-8.activity(id="theActivity", data-activity=activity.hash, data-locator=activity.locator, data-commit=activity.commit, data-path=activity.path, data-title=activity.title)
-
-            block activity
-
+            .row.activity-body
+              block activity
+        .row
+          .col-md-offset-2.col-md-8
             ul.pager
              li.previous#previous-activity(class=(previousActivity ? undefined : "disabled"))
                if previousActivity
