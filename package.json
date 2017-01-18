@@ -1,7 +1,7 @@
 {
   "name": "ximera",
   "description": "Ximera interactive textbook server",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "private": true,
   "scripts": {
     "start": "node app.js",
@@ -32,7 +32,6 @@
     "forever": "*",
     "fstream": "*",
     "github": "*",
-    "base91": "*",      
     "gridfs-stream": "*",
     "http-proxy-middleware": "*",
     "ims-lti": "*",
