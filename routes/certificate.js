@@ -31,15 +31,15 @@ function certificateToCode(certificate, callback) {
 	} else {
 	    var data = new Buffer(buffer);
 	    var encrypted = crypto.privateEncrypt(privateKey, data);
-	    var s = base91.encode(encrypted);
-	    callback(null, s);
+	    callback(null, encrypted.toString('base64'));
 	}
     });
 }
 
 function codeToCertificate(code, callback) {
-    var buffer = base91.decode(code);
-    var decrypted = crypto.publicDecrypt(privateKey, buffer);    
+    var buffer = new Buffer(code, 'base64');
+    var decrypted = crypto.publicDecrypt(privateKey, buffer);
+    
     zlib.inflateRaw(decrypted, (err, buffer) => {
 	if (err) {
 	    callback(err);
