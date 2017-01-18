@@ -12,7 +12,6 @@ var crypto = require("crypto");
 var path = require("path");
 var fs = require("fs");
 var zlib = require("zlib");
-var base91 = require("base91");
 var querystring = require('querystring');
 var url = require('url');
 
