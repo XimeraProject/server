@@ -6,6 +6,7 @@ var express = require('express')
   , routes = require('./routes')
   , activity = require('./routes/activity')
   , course = require('./routes/course')
+  , certificate = require('./routes/certificate')
   , user = require('./routes/user')
   , api = require('./routes/api')
   , about = require('./routes/about')
@@ -280,10 +281,13 @@ function addDatabaseMiddleware(req, res, next) {
     app.get( '/courses', function( req, res ) { res.redirect('/course/'); });
     app.get( '/courses/', function( req, res ) { res.redirect('/course/'); });
 
-    app.get( '/course/:commit([0-9a-fA-F]+)/', course.xourseFromCommit, course.tableOfContents );
-
-    app.get( '/course/:username/:repository/', course.xourseFromUserAndRepo, course.tableOfContents );
+    app.get( '/certificate/:certificate', certificate.view );
+    app.get( '/course/:commit([0-9a-fA-F]+)/certificate', course.xourseFromCommit, certificate.xourse );
+    app.get( '/course/:username/:repository/certificate', course.xourseFromUserAndRepo, certificate.xourse );
+    app.get( '/course/:username/:repository/:branch/certificate', course.xourseFromUserAndRepo, certificate.xourse );
     
+    app.get( '/course/:commit([0-9a-fA-F]+)/', course.xourseFromCommit, course.tableOfContents );
+    app.get( '/course/:username/:repository/', course.xourseFromUserAndRepo, course.tableOfContents );
     app.get( '/course/:username/:repository/:branch/', course.xourseFromUserAndRepo, course.tableOfContents );
 
     app.get( '/labels/:commit([0-9a-fA-F]+)/:label', course.getLabel );

@@ -1,0 +1,31 @@
+extends ../layouts/main
+
+block title
+  | #{xourse.title}
+
+block modals
+                
+block content
+  div.container
+    .page-header
+      h1 #{xourse.title}
+        
+    div
+      - var percent = function(p) { return (p * 100).toFixed(2).toString() + '%'; };
+      dl.certificate
+        for activityUrl in xourse.activityList
+          - var activity = xourse.activities[activityUrl];
+          if activityUrl.match(/^#/)          
+            dt.part #{activity.title}
+            dd &nbsp;
+          else
+            dt.page
+              a(href=activityUrl) #{activity.title}
+            dd #{percent(activity.completion)}
+        hr
+        dt.total Overall
+        dd #{score.toString() + '%'}
+
+     p
+       a(href="http://localhost:3000/certificate/#{escapedCode}")
+         span.certificate https://ximera.osu.edu/certificate/#{escapedCode}

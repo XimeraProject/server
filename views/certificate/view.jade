@@ -1,0 +1,32 @@
+extends ../layouts/main
+
+block title
+  | Certificate
+
+block modals
+                
+block content
+  div.container
+    .page-header
+      h1 Valid Certificate
+        
+    div
+      p
+        | As of&nbsp;
+        time(class="relative-date", datetime=certificate.date)
+          | #{certificate.date}
+        | &nbsp;on&nbsp;
+        time(class="absolute-date", datetime=certificate.date)
+          | #{certificate.date}
+        | , 
+        a(href=('https://' + certificate.user))
+          | #{certificate.name}
+        if certificate.email
+          | &nbsp;<#{certificate.email}>
+        | &nbsp;has earned #{certificate.score}/100 in 
+        a(href="/course/" + certificate.course)
+          | #{certificate.course}
+        | .
+     p
+       a(href="http://localhost:3000/certificate/#{escapedCode}")
+         span.certificate https://ximera.osu.edu/certificate/#{escapedCode}
