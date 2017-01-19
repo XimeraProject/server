@@ -15,8 +15,11 @@ var zlib = require("zlib");
 var querystring = require('querystring');
 var url = require('url');
 
-var absolutePathToKey = path.resolve("private_key.pem");
-var privateKey = fs.readFileSync(absolutePathToKey, "utf8");
+var absolutePathToPrivateKey = path.resolve("private_key.pem");
+var privateKey = fs.readFileSync(absolutePathToPrivateKey, "utf8").toString();
+
+var absolutePathToPublicKey = path.resolve("public_key.pem");
+var publicKey = fs.readFileSync(absolutePathToPublicKey, "utf8").toString();
 
 function renderError( res, err ) {
     res.status(500).render('fail', { title: "Internal Error", message: err });
@@ -25,34 +28,50 @@ function renderError( res, err ) {
 function certificateToCode(certificate, callback) {
     var p = JSON.stringify(certificate);
     
-    zlib.deflateRaw(p, {level: zlib.Z_BEST_COMPRESSION}, (err, buffer) => {
+    zlib.gzip(p, {level: zlib.Z_BEST_COMPRESSION}, (err, buffer) => {
 	if (err) {
 	    callback(err);
 	} else {
-	    var data = new Buffer(buffer);
-	    var encrypted = crypto.privateEncrypt(privateKey, data);
-	    callback(null, encrypted.toString('base64'));
+	    const sign = crypto.createSign('RSA-SHA256');
+
+	    sign.write(buffer);
+	    sign.end();
+
+	    var signature = sign.sign(privateKey);
+	    console.log( signature );
+	    callback( null,
+		      buffer.toString('base64'),
+		      signature.toString('base64') );
 	}
     });
+
+    return;
 }
 
-function codeToCertificate(code, callback) {
+function codeToCertificate(code, signature, callback) {
+    const verify = crypto.createVerify('RSA-SHA256');
     var buffer = new Buffer(code, 'base64');
-    var decrypted = crypto.publicDecrypt(privateKey, buffer);
-    
-    zlib.inflateRaw(decrypted, (err, buffer) => {
-	if (err) {
-	    callback(err);
-	} else {
-	    var result = {};
-	    try {
-		result = JSON.parse(buffer.toString("utf8"));
-	    } catch (e) {
+
+    verify.write(buffer);
+    verify.end();
+
+    if (verify.verify(publicKey, signature, 'base64')) {
+	zlib.gunzip(buffer, (err, buffer) => {
+	    if (err) {
+		callback(err);
+	    } else {
+		var result = {};
+		try {
+		    result = JSON.parse(buffer.toString("utf8"));
+		} catch (e) {
+		}
+		
+		callback( null, result );
 	    }
-	    
-	    callback( null, result );
-	}
-    });    
+	});
+    } else {
+	callback( 'Invalid signature.' );
+    }
 }
 
 exports.xourse = function(req, res) {
@@ -115,19 +134,18 @@ exports.xourse = function(req, res) {
 		    score: score
 		};
 
-		certificateToCode( certificate, function(err, code) {
+		certificateToCode( certificate, function(err, code, signature) {
 		    if (err) {
 			res.render('certificate/xourse', { xourse: xourse,
 							   certificate: certificate,
 							   score: score
 							 });		    
 		    } else {
-			var escaped = querystring.escape(code);
-			
 			res.render('certificate/xourse', { xourse: xourse,
 							   certificate: certificate,
 							   score: score,
-							   escapedCode: escaped
+							   escapedCode: querystring.escape(code),
+							   escapedSignature: querystring.escape(signature)
 							 });
 		    }
 		});
@@ -137,14 +155,16 @@ exports.xourse = function(req, res) {
 
 exports.view = function(req, res) {
     var code = querystring.unescape( req.params.certificate );
+    var signature = querystring.unescape( req.params.signature );
 
-    codeToCertificate( code, function(err, certificate) {
+    codeToCertificate( code, signature, function(err, certificate) {
 	if (err) {
 	    renderError( res, err );	    
 	} else {
-	    var escaped = querystring.escape(code);	    
-	    res.render('certificate/view', {escapedCode: escaped,
-					    certificate: certificate});
+	    var escaped = 
+		res.render('certificate/view', {escapedCode: querystring.escape(code),
+						escapedSignature: querystring.escape(signature),
+						certificate: certificate});
 	}
     });
     

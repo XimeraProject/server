@@ -281,7 +281,7 @@ function addDatabaseMiddleware(req, res, next) {
     app.get( '/courses', function( req, res ) { res.redirect('/course/'); });
     app.get( '/courses/', function( req, res ) { res.redirect('/course/'); });
 
-    app.get( '/certificate/:certificate', certificate.view );
+    app.get( '/certificate/:certificate/:signature', certificate.view );
     app.get( '/course/:commit([0-9a-fA-F]+)/certificate', course.xourseFromCommit, certificate.xourse );
     app.get( '/course/:username/:repository/certificate', course.xourseFromUserAndRepo, certificate.xourse );
     app.get( '/course/:username/:repository/:branch/certificate', course.xourseFromUserAndRepo, certificate.xourse );

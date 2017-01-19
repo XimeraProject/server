@@ -19,7 +19,7 @@ if [ $(hostname) = ximera-1.asc.ohio-state.edu ]; then
     ./node_modules/forever/bin/forever -c /home/deploy/local/bin/node --uid "ximera" start -a -l forever.log -o out.log -e err.log app.js &
 else
     echo not on the deployment machine...
-    echo copying environment and key to deployment machine...
-    rsync -avz -f"- .git/" private_key.pem environment.sh ximera:/var/www/apps/ximera
+    echo copying environment and keys to deployment machine...
+    rsync -avz -f"- .git/" private_key.pem public_key.pem environment.sh ximera:/var/www/apps/ximera
     ssh ximera "cd /var/www/apps/ximera ; source deploy.sh"
 fi
