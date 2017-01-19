@@ -39,7 +39,8 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
              i.fa.fa-clock-o
              | &nbsp;<span class="clock-display"><span class="clock-minute">20</span>:<span class="clock-second">00</span></span>
 
-        if activity && user && user.instructor && (user.instructor.indexOf(activity.commit) > 0)
+        //if activity && user && user.instructor && (user.instructor.indexOf(activity.commit) > 0)
+        if activity && user && user.isAuthor
           li.dropdown
              a.dropdown-toggle(href="#",data-toggle="dropdown")
                | <i class="fa fa-graduation-cap"></i> Instructor

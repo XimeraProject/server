@@ -400,7 +400,8 @@ function statistics( req, res, model )
     var hash = req.params.hash;
 
     // Verify that the user is an instructor for that given commit
-    if (('user' in req) && (req.user.instructor.indexOf(commit) > 0)) {
+    //if (('user' in req) && (req.user.instructor.indexOf(commit) > 0)) {
+    if (('user' in req) && (req.user.isAuthor)) {
 	// Verify that the hash belongs to the given commit
 	mdb.Activity.findOne({hash: hash, commit: commit}).exec( function( err, activity ) {
 	    if (err || (!activity)) {
@@ -447,7 +448,6 @@ exports.progress = function(req, res) {
 
 	    // Verify that the user is an instructor for a commit that
 	    // appeared in the course
-	    console.log( gradebook.commits );
 	    if (_.intersection( req.user.instructor, gradebook.commits ).length == 0) {
 		console.log(" noope.");
 		res.sendStatus(403);
