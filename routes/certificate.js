@@ -164,6 +164,7 @@ exports.view = function(req, res) {
 	    var escaped = 
 		res.render('certificate/view', {escapedCode: querystring.escape(code),
 						escapedSignature: querystring.escape(signature),
+						publicKey: publicKey,
 						certificate: certificate});
 	}
     });

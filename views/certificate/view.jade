@@ -11,7 +11,7 @@ block content
       h1 Valid Certificate
         
     .row
-      .col-md-6
+      .col-md-7
         p
           | As of&nbsp;
           time(class="relative-date", datetime=certificate.date)
@@ -28,8 +28,10 @@ block content
           a(href="/course/" + certificate.course)
             | #{certificate.course}
           | .
-      .col-md-6
-        canvas.qrcode.float-right(data-href="https://ximera.osu.edu/certificate/#{escapedCode}/#{escapedSignature}")
+        p Certificates can be verified with this public key.
+        pre #{publicKey.trim()}          
+      .col-md-5
+        canvas.qrcode.float-right(style="max-width: 100%;", data-href="https://ximera.osu.edu/certificate/#{escapedCode}/#{escapedSignature}")
         p
           a(href="/certificate/#{escapedCode}/#{escapedSignature}")
             span.certificate https://ximera.osu.edu/certificate/#{escapedCode}/#{escapedSignature}
