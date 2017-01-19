@@ -16,11 +16,11 @@ block content
         for activityUrl in xourse.activityList
           - var activity = xourse.activities[activityUrl];
           if activityUrl.match(/^#/)          
-            dt.part #{activity.title}
+            dt.part !{activity.title}
             dd &nbsp;
           else
             dt.page
-              a(href=activityUrl) #{activity.title}
+              a(href=activityUrl) !{activity.title}
             dd #{percent(activity.completion)}
         hr
         dt.total Overall
