@@ -1,7 +1,7 @@
 {
   "name": "ximera",
   "description": "Ximera interactive textbook server",
-  "version": "0.0.32",
+  "version": "0.0.33",
   "private": true,
   "scripts": {
     "start": "node app.js",
@@ -48,6 +48,7 @@
     "karma-mocha": "*",
     "markdown": "*",
     "math-expressions": "https://github.com/kisonecat/math-expressions.git",
+    "qrcode": "*",
     "mathjax": "*",
     "method-override": "*",
     "moment": "*",

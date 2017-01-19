@@ -1,3 +1,4 @@
+var $ = require('jquery');
 var annotator = require('annotator');
 
 var activityHash = function () {

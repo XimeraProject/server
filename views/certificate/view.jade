@@ -1,7 +1,7 @@
 extends ../layouts/main
 
 block title
-  | Certificate
+  | Valid Certificate
 
 block modals
                 
@@ -10,23 +10,26 @@ block content
     .page-header
       h1 Valid Certificate
         
-    div
-      p
-        | As of&nbsp;
-        time(class="relative-date", datetime=certificate.date)
-          | #{certificate.date}
-        | &nbsp;on&nbsp;
-        time(class="absolute-date", datetime=certificate.date)
-          | #{certificate.date}
-        | , 
-        a(href=('https://' + certificate.user))
-          | #{certificate.name}
-        if certificate.email
-          | &nbsp;<#{certificate.email}>
-        | &nbsp;has earned #{certificate.score}/100 in 
-        a(href="/course/" + certificate.course)
-          | #{certificate.course}
-        | .
-     p
-       a(href="/certificate/#{escapedCode}/#{escapedSignature}")
-         span.certificate https://ximera.osu.edu/certificate/#{escapedCode}/#{escapedSignature}
+    .row
+      .col-md-6
+        p
+          | As of&nbsp;
+          time(class="relative-date", datetime=certificate.date)
+            | #{certificate.date}
+          | &nbsp;on&nbsp;
+          time(class="absolute-date", datetime=certificate.date)
+            | #{certificate.date}
+          | , 
+          a(href=('https://' + certificate.user))
+            | #{certificate.name}
+          if certificate.email
+            | &nbsp;<#{certificate.email}>
+          | &nbsp;has earned #{certificate.score}/100 in 
+          a(href="/course/" + certificate.course)
+            | #{certificate.course}
+          | .
+      .col-md-6
+        canvas.qrcode.float-right(data-href="https://ximera.osu.edu/certificate/#{escapedCode}/#{escapedSignature}")
+        p
+          a(href="/certificate/#{escapedCode}/#{escapedSignature}")
+            span.certificate https://ximera.osu.edu/certificate/#{escapedCode}/#{escapedSignature}

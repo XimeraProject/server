@@ -35,6 +35,8 @@ var rowclick = require('./rowclick');
 var references = require('./references');
 var Desmos = require('./desmos');
 
+var qrcode = require('./qrcode');
+
 MathJax.Hub.Config(
     {
 	// You might think putput/SVG would be better,
@@ -296,6 +298,8 @@ $(document).ready(function() {
     MathJax.Hub.Startup.onload();
 
     $(".activity").activity();
+
+    $(".qrcode").qrcode();    
 });
 
 console.log("done.");
