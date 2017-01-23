@@ -56,9 +56,9 @@ var calculateProgress = function(problem, depth) {
     // Non-root nodes also contribute to their value via their 'completion' flag
     var nodeValue = 0;
     var nodeMaxValue = 0;
-    
+
     if (depth != 0) {
-	if ( $(problem).persistentData('blocking') ) {
+	if ($(problem).attr('data-blocking')) {
 	    nodeValue = $(problem).persistentData('complete') ? 1 : 0;
 	    nodeMaxValue = 1;
 	} else {

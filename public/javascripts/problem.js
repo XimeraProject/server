@@ -81,8 +81,11 @@ var createProblem = function() {
 	answersNeeded = _.filter( answersNeeded, notSemantic );
 	
 	problem.data( 'answers-needed', answersNeeded  );
-	
-	problem.persistentData( 'blocking', true );
+
+	// 'blocking' is used for progress calculations, which must
+	// survive the erase work button
+	problem.persistentData( 'blocking', true );	
+	problem.attr( 'data-blocking', true );
 	
 	return false;
     });
