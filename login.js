@@ -59,6 +59,7 @@ module.exports.twitterStrategy = function(rootUrl) {
 	callbackURL: rootUrl + "/auth/twitter/callback",
 	passReqToCallback: true
     }, function(req, token, tokenSecret, profile, done) {
+	if (profile._json) profile = profile._json;
         addUserAccount(req, 'twitterOAuthId', profile.id_str, profile.name, null, null, done);
     });
 }
@@ -67,6 +68,9 @@ module.exports.localStrategy = function(rootUrl) {
     return new  LocalStrategy({
 	passReqToCallback: true
     }, function(req, username, password, done) {
+	// This is horrible, but at least it lets me check the login...
+        // addUserAccount(req, 'password', password, username, null, null, done);
+	
     	mdb.User.findOne({ username: username }, function(err, user) {
 	    if (err) { return done(err); }
 	    if (!user) { return done(null,false); }
@@ -163,10 +167,13 @@ function addUserAccount(req, authField, authId, name, email, course, done) {
                     req.user[authField] = authId;
                     req.user.isGuest = false;
                     req.user.save(function (err) {
-                        done(err, req.user)
+                        done(err, req.user);
                     });
                 }
                 else {
+		    // BADBAD: it might be nice to copy over the guest
+		    // data to the existing user account, but I'm so
+		    // terrified of merging users.
                     done(null, user);
                 }
             }
@@ -181,29 +188,76 @@ function addUserAccount(req, authField, authId, name, email, course, done) {
 	    req.user.course = course;
             req.user[authField] = authId;
             req.user.save(function (err) {
+		console.log( authField, authId );
+		console.log( JSON.stringify( req.user ) );
                 done(err, req.user);
             });
         }
         else {
-            mdb.User.find(searchFields, function (err, users) {
-                async.eachSeries(users, function (user, callback) {
-                    user[authField] = undefined;
-                    user.save(callback);
-                }, function (err) {
-                    if (err) {
-                        done(err, null);
-                    }
-                    else {
-			req.user.name = name;
-			req.user.email = email;
-			req.user.course = course;
-                        req.user[authField] = authId;
-                        req.user.save(function (err) {
-                            done(err, req.user);
-                        });
-                    }
-                });
-            });
+	    // Merge any existing accounts
+
+	    // Find any OTHER accounts (but there can be at most one)
+            mdb.User.findOne(searchFields, function (err, user) {
+		if (err) {
+		    done( err, null );
+		} else {
+		    async.series( [
+			function(callback) {
+			    if (user) {
+				user.replacedBy = req.user._id;
+
+				// Copy over OTHER login details (without clobbering any existing details)
+				user[authField] = undefined;
+
+				var authFields = ['googleOpenId', 'courseraOAuthId', 'twitterOAuthId', 'ltiId', 'githubId'];
+				authFields.forEach( function(authField) {
+				    if (user[authField] && !(req.user[authField])) {
+					req.user[authField] = user[authField];
+					user[authField] = undefined;
+				    }
+				});
+
+				user.save(callback);
+			    } else {
+				callback(null);
+			    }
+			},
+
+			function(callback) {
+			    // Update user data
+			    req.user.name = name;
+			    req.user.email = email;
+			    req.user.course = course;
+			    req.user[authField] = authId;
+			    
+			    req.user.save(callback);
+			},
+
+			function(callback) {
+			    if (user && user._id) {
+				mdb.State.update( { user: user._id },
+						  { $set: { user: req.user._id } },
+						  callback );
+			    } else {
+				callback(null);
+			    }
+			},
+
+			function(callback) {
+			    if (user && user._id) {			
+				mdb.Completion.update( { user: user._id },
+						       { $set: { user: req.user._id } },
+						       callback );
+			    } else {
+				callback(null);
+			    }
+			}
+
+		    ], function(err, results) {
+                        done(err, req.user);			
+		    });
+		}
+	    });
         }
     }
 }

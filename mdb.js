@@ -179,6 +179,7 @@ exports.initialize = function initialize(callback) {
                                       ltiId: {type: String, index: true, unique: true, sparse: true},
                                       githubId: {type: String, index: true, unique: true, sparse: true},
                                       githubAccessToken: {type: String},
+				      replacedBy: {type: ObjectId, ref:"User"},
 				      course: String,
 				      superuser: Boolean,
 				      username: String,
@@ -211,7 +212,7 @@ exports.initialize = function initialize(callback) {
     exports.State = mongoose.model("State",
                                    new mongoose.Schema({
                                        activityHash: {type: String, index: true},
-                                       user: {type: ObjectId, index: true},
+                                       user: {type: ObjectId, index: true, ref:"User"},
                                        data: Mixed
                                    }, {
                                        minimize: false
@@ -235,7 +236,7 @@ exports.initialize = function initialize(callback) {
     exports.Completion = mongoose.model("Completion",
 					new mongoose.Schema({
 					    activityHash: {type: String, index: true},
-					    user: {type: ObjectId, index: true},
+					    user: {type: ObjectId, index: true, ref:"User"},
 					    complete: Number,
                                             date: Date
 					}, {
@@ -262,7 +263,7 @@ exports.initialize = function initialize(callback) {
 	return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     };
 
-    //mongoose.set('debug', true);    
+    mongoose.set('debug', true);    
 
     mongoose.connect(url, {}, function (err) {
 	callback(err);
