@@ -217,6 +217,19 @@ function addUserAccount(req, authField, authId, name, email, course, done) {
 				    }
 				});
 
+				// Copy over xake credentials
+				if (user.isAuthor) {
+				    req.user.isAuthor = true;
+				}
+				if (!(req.user.apiKey)) {
+				    req.user.apiKey = user.apiKey;
+				    user.apiKey = undefined;
+				}
+				if (!(req.user.apiSecret)) {
+				    req.user.apiSecret = user.apiSecret;
+				    user.apiSecret = undefined;
+				}
+				
 				user.save(callback);
 			    } else {
 				callback(null);
@@ -237,6 +250,7 @@ function addUserAccount(req, authField, authId, name, email, course, done) {
 			    if (user && user._id) {
 				mdb.State.update( { user: user._id },
 						  { $set: { user: req.user._id } },
+						  { multi: true },						  
 						  callback );
 			    } else {
 				callback(null);
@@ -247,6 +261,7 @@ function addUserAccount(req, authField, authId, name, email, course, done) {
 			    if (user && user._id) {			
 				mdb.Completion.update( { user: user._id },
 						       { $set: { user: req.user._id } },
+						       { multi: true },
 						       callback );
 			    } else {
 				callback(null);
