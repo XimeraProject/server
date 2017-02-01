@@ -12,11 +12,12 @@ if [ $(hostname) = ximera-1.asc.ohio-state.edu ]; then
     node ./node_modules/gulp/bin/gulp.js css    
     echo Stopping old copies of app.js...
     ./node_modules/forever/bin/forever -c /home/deploy/local/bin/node stop ximera
+    pm2 stop ximera
     echo Starting a new copy of app.js...
     source environment.sh
     export DEPLOYMENT=production
     export NODE_ENV=production
-    ./node_modules/forever/bin/forever -c /home/deploy/local/bin/node --uid "ximera" start -a -l forever.log -o out.log -e err.log app.js &
+    pm2 start ecosystem.config.js --env production    
 else
     echo not on the deployment machine...
     echo copying environment and keys to deployment machine...
