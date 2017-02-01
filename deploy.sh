@@ -11,7 +11,6 @@ if [ $(hostname) = ximera-1.asc.ohio-state.edu ]; then
     node ./node_modules/gulp/bin/gulp.js js
     node ./node_modules/gulp/bin/gulp.js css    
     echo Stopping old copies of app.js...
-    ./node_modules/forever/bin/forever -c /home/deploy/local/bin/node stop ximera
     pm2 stop ximera
     echo Starting a new copy of app.js...
     source environment.sh

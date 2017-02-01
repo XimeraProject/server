@@ -29,7 +29,6 @@
     "express-session": "*",
     "file": "*",
     "font-awesome": "*",
-    "forever": "*",
     "fstream": "*",
     "github": "*",
     "gridfs-stream": "*",
