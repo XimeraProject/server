@@ -3,6 +3,7 @@ var _ = require('underscore');
 var async = require('async');
 var TinCan = require('./tincan');
 var Desmos = require('./desmos');
+var Javascript = require('./javascript');
 
 var libraries = {
     jquery: $,
@@ -31,6 +32,7 @@ function createProxiedPersistentDataObject( element ) {
 	},
 	set: function(target, prop, value, receiver) {
 	    element.persistentData( prop, value );
+	    Javascript.reevaluate(element);
 	    return true;
 	}
     };
@@ -75,6 +77,8 @@ exports.connectInteractives = function() {
 	    var dependencies = interactive.dependencies;
 	    var code = interactive.callback;
 	    var parameters = interactive.parameters;	    
+
+	    var variableName = parseParameters(parameters)['id'];
 	    
 	    var targetId = interactive.targetId;
 	    var target = $("#" + targetId);
@@ -101,9 +105,15 @@ exports.connectInteractives = function() {
 		    
 		], function(err) {
 		    code.apply( target, dependencies.map( function(name) {
-			if (name == 'db')
-			    return createProxiedPersistentDataObject(target);
-			else if (name == 'reset')
+			if (name == 'db') {
+			    var proxy = createProxiedPersistentDataObject(target);
+			    
+			    if (variableName) {
+				window[variableName] = proxy;
+			    }
+			    
+			    return proxy;
+			} else if (name == 'reset')
 			    return createResetButton(target);
 			else if (name == 'parameters')
 			    return parseParameters(parameters);

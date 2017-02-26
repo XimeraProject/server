@@ -37,6 +37,8 @@ var Desmos = require('./desmos');
 
 var qrcode = require('./qrcode');
 
+var Javascript = require('./javascript');
+
 MathJax.Hub.Config(
     {
 	// You might think putput/SVG would be better,
@@ -87,8 +89,10 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     TEXDEF.macros.answer = "answer";
     TEXDEF.macros.graph = "graph";
     TEXDEF.macros.newlabel = "newlabel";
-    TEXDEF.macros.sage = "sage";    
+    TEXDEF.macros.sage = "sage";
     
+    TEXDEF.macros.js = "js";
+
     var calculatorCount = 0;		    
 
     var getMathML = function(jax,callback) {
@@ -232,31 +236,39 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
             });
 	},
 
+	/* Implements \js{code} */
+	js: function(name) {
+	    var code = this.GetArgument(name);
+	    var value = Javascript.evaluateLatex(code);
+
+	    var mml = TEX.Parse(value,this.stack.env).mml();
+
+	    this.Push(mml);
+
+	    var watcher = HTML.Element("span",
+				     {className:"mathjax-javascript",
+				      style: {display: "none"}
+				     });
+	    
+	    watcher.setAttribute("data-code", code);
+	    watcher.setAttribute("data-value", value);
+	    	    
+	    var watcherMml = MML["annotation-xml"](MML.xml(watcher)).With({encoding:"application/xhtml+xml",isToken:true});
+	    this.Push(MML.semantics(watcherMml));
+	},
+	
 	/* Implements \answer[key=value]{text} */
 	answer: function(name) {
 	    var keys = this.GetBrackets(name);
 	    
-	    // This actually PARSES the content of the \answer command
-	    // with mathjax; the result will be MathML.  If we had
-	    // instead used this.GetArgument(name) we could have
-	    // gotten the raw string passed to \answer, but by using
-	    // ParseArg, we can invoke \newcommand's from inside an
-	    // \answer.
-	    var text = this.ParseArg(name);
-	    
+
 	    var input = HTML.Element("input",
 				     {type:"text",
 				      className:"mathjax-input",
 				      style: {width: "175px", marginBottom: "10px", marginTop: "10px" }
 				     });
-	    
-	    input.setAttribute("xmlns","http://www.w3.org/1999/xhtml");
 
-	    // the \answer{contents} get placed in a data-answer attribute
-	    getMathML( MML(text), function( mml ) {
-		input.setAttribute("data-answer", mml);			    		
-	    });
-	    
+
 	    // Parse key=value pairs from optional [bracket] into data- attributes
 	    if (keys !== undefined) {
 		keys.split(",").forEach( function(keyvalue) { 
@@ -266,6 +278,29 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 			value = true;
 		    
 		    input.setAttribute("data-" + key, value);
+		});
+	    }	    
+	    
+	    input.setAttribute("xmlns","http://www.w3.org/1999/xhtml");
+
+	    var text;
+	    
+	    var format = input.getAttribute("data-format");
+	    if ((format == 'string') || (format == 'integer') || (format == 'float')) {
+		text = this.GetArgument(name);
+		input.setAttribute("data-answer", text);
+	    } else {
+		// This actually PARSES the content of the \answer command
+		// with mathjax; the result will be MathML.  If we had
+		// instead used this.GetArgument(name) we could have
+		// gotten the raw string passed to \answer, but by using
+		// ParseArg, we can invoke \newcommand's from inside an
+		// \answer.
+		text = this.ParseArg(name);
+
+		// the \answer{contents} get placed in a data-answer attribute
+		getMathML( MML(text), function( mml ) {
+		    input.setAttribute("data-answer", mml);			    		
 		});
 	    }
 	    

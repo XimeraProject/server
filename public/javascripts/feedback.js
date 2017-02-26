@@ -23,7 +23,7 @@ var createFeedback = function() {
 
 	feedback.persistentData( 'available', true );
     });
-}
+};
 
 $.fn.extend({
     feedback: function() {

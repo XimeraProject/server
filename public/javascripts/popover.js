@@ -36,18 +36,28 @@ exports.displayPopover = function(answer, element) {
 	return;
     }
 
-    // Don't need to give a preview for numeric answers
-    if (answer.trim().match( /^-?[0-9\.]+$/ )) {
-	$(element).popover('hide');
-	return;
-    }
-
     if (answer.trim().length == 0) {
 	$(element).popover('hide');
 	return;
     }
     
     try {
+	var format = $(element).attr('data-format');
+
+	if (format == 'string') {
+	    return;
+	}
+	
+	if ((format == 'integer') && (answer.trim().match( /[^0-9-]/ ))) {
+	    throw 'Expecting an integer.';
+	}
+
+	// Don't need to give a preview for numeric answers
+	if (answer.trim().match( /^-?[0-9\.]+$/ )) {
+	    $(element).popover('hide');
+	    return;
+	}
+	
 	var latex = Expression.fromText(answer).tex();
 	
 	$(element).data('bs.popover').options.title = '';	    

@@ -3,6 +3,7 @@ var _ = require('underscore');
 var MathJax = require('mathjax');
 var database = require('./database');
 var TinCan = require('./tincan');
+var Javascript = require('./javascript');
 
 var buttonTemplate = _.template( '<label class="btn btn-default <%= correct %>" id="<%= id %>"></label>' );
 
@@ -20,6 +21,19 @@ var answerHtml = '<div class="btn-group" style="vertical-align: bottom; ">' +
 	'</button>' +
 	'</div>';
 
+
+function assignGlobalVariable( multipleChoice, choice ) {
+    if (multipleChoice.attr('data-id')) {
+	if ($(choice).attr('data-value')) {
+	    if (window[multipleChoice.attr('data-id')] != $(choice).attr('data-value')) {
+		window[multipleChoice.attr('data-id')] = $(choice).attr('data-value');
+		Javascript.reevaluate(multipleChoice);
+	    }
+	}
+    }
+}
+
+
 var createMultipleChoice = function() {
     var multipleChoice = $(this);
 
@@ -33,10 +47,17 @@ var createMultipleChoice = function() {
 	    correct = "correct";
 	
 	var identifier = $(this).attr('id');
+	$(this).removeAttr('id');
+
+	var value = $(this).attr('data-value');
 	var label = $(this);
 
 	label.wrap( buttonTemplate({ id: identifier, correct: correct }) );
 	label.prepend( '<input type="radio"></input>' );
+
+	if (value) {
+	    label.closest('label').attr('data-value', value );
+	}
     });
 
     multipleChoice.trigger( 'ximera:answer-needed' );
@@ -63,6 +84,9 @@ var createMultipleChoice = function() {
 	    multipleChoice.find( '#' + multipleChoice.persistentData('chosen') ).addClass('active');
 	    multipleChoice.find( '.btn-group button' ).removeClass('disabled');
 	    multipleChoice.find( '.btn-group .btn-ximera-submit' ).addClass('pulsate');
+
+	    var choice = multipleChoice.find( '#' + multipleChoice.persistentData('chosen') );
+	    assignGlobalVariable( multipleChoice, choice );
 	} else {
 	    multipleChoice.find( '.btn-group button' ).addClass('disabled');
 	    multipleChoice.find( '.btn-group .btn-ximera-submit' ).removeClass('pulsate');		
@@ -130,6 +154,8 @@ var createMultipleChoice = function() {
     $(this).find( "label" ).each( function() {
 	$(this).click( function() {
 	    multipleChoice.persistentData('chosen', $(this).attr('id'));
+
+	    assignGlobalVariable( multipleChoice, $(this) );
 	});
     });
 
