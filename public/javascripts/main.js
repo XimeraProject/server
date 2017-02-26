@@ -273,7 +273,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 	    if (keys !== undefined) {
 		keys.split(",").forEach( function(keyvalue) { 
 		    var key = keyvalue.split("=")[0];
-		    var value = keyvalue.split("=")[1];
+		    var value = keyvalue.split("=").slice(1).join('=');
 		    if (value === undefined)
 			value = true;
 		    
