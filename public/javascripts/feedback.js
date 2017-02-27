@@ -17,12 +17,33 @@ var createFeedback = function() {
 
     var problem = feedback.parents( ".problem-environment" ).first();
 
-    // BADBAD: feedback should vary based on the provided release condition
-    problem.on( 'ximera:attempt', function(event) {
-	console.log( "FEEDBACK" );
+    if (feedback.attr('data-feedback') == 'attempt') {
+	problem.on( 'ximera:attempt', function(event) {
+	    feedback.persistentData( 'available', true );
+	});
+    }
 
-	feedback.persistentData( 'available', true );
-    });
+    if (feedback.attr('data-feedback') == 'correct') {
+	problem.on( 'ximera:correct', function(event) {
+	    feedback.persistentData( 'available', true );
+	});
+    }
+
+    if (feedback.attr('data-feedback') == 'script') {
+	problem.on( 'ximera:attempt', function(event) {
+	    var release = false;
+	    try {
+		release = window[feedback.attr('id')]();
+	    } catch(err) {
+		release = false;
+	    }
+
+	    feedback.persistentData( 'available', release );
+	});
+	
+	console.log( feedback );
+    }
+    
 };
 
 $.fn.extend({
