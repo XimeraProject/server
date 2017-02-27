@@ -75,11 +75,6 @@ var reevaluateMathjax = _.debounce(reevaluateMathjaxNow, 250);
 exports.reevaluate = function(element) {
     var activity = element.closest('.activity-body');
     
-    try {
-	$('.javascript', activity ).each( function(i,e) { $(e).triggerHandler( 'ximera:reevaluate' ); } );
-    } catch (err)
-    {};
-    
     $('.inline-javascript', activity ).each( function(i,e) { $(e).triggerHandler( 'ximera:reevaluate' ); } );
     
     reevaluateMathjax(element);

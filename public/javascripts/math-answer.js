@@ -8,12 +8,13 @@ var ProgressBar = require('./progress-bar');
 var popover = require('./popover');
 var Javascript = require('./javascript');
 
+// I comment these out to make sure that the input box is rounded, but this breaks the display of the statistics
 var buttonlessTemplate = '<form class="form-inline mathjaxed-input" style="display: inline-block;">' +
-	'<span class="input-group">' +
+//	'<span class="input-group">' +
    	'<input class="form-control" type="text"/>' +
-	'<span class="input-group-btn">' +
-	'</span>' +
-	'</span>' +
+//	'<span class="input-group-btn">' +
+//	'</span>' +
+//	'</span>' +
 	'</form>';
 
 var template = '<form class="form-inline mathjaxed-input" style="display: inline-block;">' +
@@ -109,7 +110,6 @@ var createMathAnswer = function() {
 	result.persistentData( 'response', text );
 
 	assignGlobalVariable( result, text );	
-	// BADBAD: trigger all the javascript code and feedbacks on the page to run again
     });
 
     
@@ -197,7 +197,8 @@ var createMathAnswer = function() {
 
     
     // Tell whoever is above us that we need an answer to proceed
-    result.trigger( 'ximera:answer-needed' );
+    if (!buttonless)    
+	result.trigger( 'ximera:answer-needed' );
     
     // When the database changes, update the box
     result.persistentData( function(event) {
@@ -225,10 +226,11 @@ var createMathAnswer = function() {
 	    result.find('.btn-ximera-submit').hide();
 	    
 	    if ((result.persistentData('response') == result.persistentData('attempt')) &&
-		(result.persistentData('response')))
+		(result.persistentData('response'))) {
 		result.find('.btn-ximera-incorrect').show();
-	    else
+	    } else {
 		result.find('.btn-ximera-submit').show();
+	    }
 	}
 	
     });
@@ -326,11 +328,28 @@ var createMathAnswer = function() {
 	return false;
     });
 
-    inputBox.keyup(function(event) {
-	if (event.keyCode == 13) {
-	    result.find( ".btn-ximera-submit" ).click();
-	    // BADBAD: this should submit the validator if it is wrapped in a validator
+    
+    inputBox.keydown(function(event){
+	if(event.keyCode == 13) {
+	    event.preventDefault();
+	    return false;
 	}
+    });
+    
+    inputBox.keyup(function(event) {
+	if (buttonless)
+	    result.closest('.validator').trigger( 'ximera:answers-changed' );
+	
+	if (event.keyCode == 13) {
+	    if (!buttonless)
+		result.find( ".btn-ximera-submit" ).click();
+	    else {
+		// Submit the validator if it is wrapped in a validator
+		result.closest( '.validator' ).find( ".btn-ximera-submit" ).click();
+	    }
+	}
+
+	return false;
     });
     
     popover.bindPopover( result );
