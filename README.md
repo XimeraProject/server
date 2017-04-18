@@ -48,7 +48,11 @@ Note that if you used a different database name, you should set XIMERA_MONGO_DAT
 
         cd <path-to-ximera>
         npm install (you may be required to answer a prompt or two)
-You might have to install bower by running the following commands
+        openssl genrsa -out private_key.pem 2048
+
+If you are having trouble installing the canvas package and are on a Debian-based distribution, you can try `sudo apt-get install libcairo2-dev libjpeg-dev libgif-dev`
+
+You should install bower by running the following commands
 
         node ./node_modules/bower/bin/bower install
         cd ./components/mathquill
