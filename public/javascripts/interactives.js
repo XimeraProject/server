@@ -101,7 +101,7 @@ exports.connectInteractives = function() {
 
 		    asynchronousLibrary( dependencies, "three", "https://cdnjs.cloudflare.com/ajax/libs/three.js/r81/three.min.js", "THREE" ),
 		    asynchronousLibrary( dependencies, "jsxgraph", "https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/0.99.5/jsxgraphcore.js", "JXG" ),
-		    asynchronousLibrary( dependencies, "numeric", "http://numericjs.com/numeric/lib/numeric-1.2.6.min.js", "numeric" ),
+		    asynchronousLibrary( dependencies, "numeric", "https://cdnjs.cloudflare.com/ajax/libs/numeric/1.2.6/numeric.min.js", "numeric" ),
 		    
 		], function(err) {
 		    code.apply( target, dependencies.map( function(name) {
