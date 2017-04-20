@@ -59,6 +59,9 @@ function createResetButton( element ) {
 // TODO includeinteractive needs to be access the parameters that it is passed
 // basically as an "parameters" object
 function parseParameters(parameters) {
+    if (parameters === null)
+	return {};
+    
     var pairs = parameters.split(',').map( function(x) { return x.trim(); } );
     var hash = {};
     pairs.forEach( function(pair) {
