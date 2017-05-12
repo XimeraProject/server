@@ -258,6 +258,13 @@ exports.initialize = function initialize(callback) {
 					   users: Mixed,
 					   commits: Mixed,
 				       }));
+
+    exports.AccessToken = mongoose.model("AccessToken",
+				       new mongoose.Schema({
+					   keyid: {type: String, index: true},
+					   token: {type: String, index: true}
+				       }));
+    
 							    
     RegExp.escape= function(s) {
 	return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');

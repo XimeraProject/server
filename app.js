@@ -25,6 +25,9 @@ var express = require('express')
   , winston = require('winston')
   , template = require('./routes/template')
   , mongoImage = require('./routes/mongo-image')
+  , gitBackend = require('./routes/git')
+  , keyserver = require('./routes/gpg')
+  , hashcash = require('./routes/hashcash')
   , async = require('async')
   , fs = require('fs')
   , favicon = require('serve-favicon' )
@@ -33,6 +36,7 @@ var express = require('express')
   , bodyParser = require('body-parser')
   , cookieParser = require('cookie-parser')
   , logger = require('morgan')
+  , rateLimit = require('express-rate-limit')
   , methodOverride = require('method-override')
   , errorHandler = require('errorhandler')
   ;
@@ -81,7 +85,7 @@ if (process.env.DEPLOYMENT === 'production') {
     rootUrl = 'http://ximera.osu.edu';
 } else {
     // Temporarily use NGROK for the server    
-    rootUrl = 'http://5304979f.ngrok.com';
+    rootUrl = 'http://127.0.0.1:3000';
 }
 
 
@@ -189,6 +193,30 @@ function addDatabaseMiddleware(req, res, next) {
 
     app.version = require('./package.json').version;
 
+
+    var limiter = new rateLimit({
+	windowMs: 15*60*1000, // 15 minutes 
+	max: 100, // limit each IP to 100 requests per windowMs 
+	delayMs: 0 // disable delaying - full speed until the max limit is reached 
+    });
+
+    app.use( '/gpg/', limiter );
+    app.use( '/pks/', limiter );
+    app.use( '/:repository.git', limiter );
+    
+    app.get( '/gpg/token/:keyid', keyserver.token );
+    app.get( '/gpg/tokens/:keyid', keyserver.token );
+    app.post( '/pks/add', keyserver.add );
+
+    app.get( '/hello', keyserver.authorization );
+    app.get( '/hello', function(req,res) { res.status(200).send('i love you'); });
+    
+    app.post( '/:repository.git', keyserver.authorization );
+    app.post( '/:repository.git', hashcash.hashcash );
+    app.post( '/:repository.git', gitBackend.create );
+    
+    app.use( '/:repository.git', gitBackend.git );
+    
     //app.use(versionator.middleware);
     app.use('/public', express.static(path.join(__dirname, 'public')));
     app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
@@ -226,7 +254,6 @@ function addDatabaseMiddleware(req, res, next) {
     
     app.use(login.guestUserMiddleware);
     app.use(addDatabaseMiddleware);
-
     
     // Middleware for development only
     if ('development' == app.get('env')) {
