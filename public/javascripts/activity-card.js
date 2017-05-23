@@ -26,7 +26,28 @@ var displayProgress = function( card, progress ) {
 var createActivityCard = function() {
     var activityCard = $(this);
     var href = activityCard.attr('data-path');
-    
+
+    // This is the historical method for storing completion data
+    var repositoryName = activityCard.attr('data-repository-name');
+    var activityPath = activityCard.attr('data-path');
+    if (repositoryName) {
+
+	$.when(completions).done(function(completions) {
+	    var maxCompletion = 0;
+	    
+	    _.each( completions, function(c) {
+		if ((c.activityPath == activityPath) && (c.repositoryName == repositoryName)) 
+		    if (c.complete > maxCompletion)
+			maxCompletion = c.complete;
+	    });
+	    
+	    displayProgress( activityCard, maxCompletion );
+	});
+
+	return;
+    } // else
+
+    // DEPRECATED: This is the historical method for storing completion data
     var hashes = activityCard.attr('data-hashes');
     
     if (hashes) {
@@ -44,6 +65,8 @@ var createActivityCard = function() {
 	    displayProgress( activityCard, maxCompletion );
 	});
     }
+
+    // BADBAD: now we also try to load the data some other way
 };
 
 $.fn.extend({

@@ -19,7 +19,7 @@ block content
         
     div(class="xourse", data-commit=xourse.commit, data-user=user._id.toString())
       for activityUrl in xourse.activityList
-        +activityCard(xourse.locator, activityUrl, xourse.activities[activityUrl])
+        +xourseCard(repositoryName, xourse.path, activityUrl, xourse.activities[activityUrl])
     hr
     .row
       .col-md-12

@@ -235,7 +235,13 @@ exports.initialize = function initialize(callback) {
 
     exports.Completion = mongoose.model("Completion",
 					new mongoose.Schema({
+					    // The new method for storing completions
+					    activityPath: {type: String, index: true},
+					    repositoryName: {type: String, index: true},
+
+					    // The old method for storing completions
 					    activityHash: {type: String, index: true},
+					    
 					    user: {type: ObjectId, index: true, ref:"User"},
 					    complete: Number,
                                             date: Date

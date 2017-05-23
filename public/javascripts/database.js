@@ -30,6 +30,28 @@ $.fn.extend({ activityHash: function() {
     return findActivityHash( this );
 }});
 
+var findActivityPath = _.memoize( function( element ) {
+    if ($(element).hasClass('activity'))
+	return $(element).attr( 'data-path' );
+    
+    return $(element).parents( "[data-activity]" ).attr( 'data-path' );
+});
+
+$.fn.extend({ activityPath: function() {
+    return findActivityPath( this );
+}});
+
+var findRepositoryName = _.memoize( function( element ) {
+    if ($(element).hasClass('activity'))
+	return $(element).attr( 'data-repository-name' );
+    
+    return $(element).parents( "[data-activity]" ).attr( 'data-repository-name' );
+});
+
+$.fn.extend({ repositoryName: function() {
+    return findRepositoryName( this );
+}});
+
 // Return the database hash associated to the given element; the
 // element must be under a "data-activity" field.  Data-activity
 // combined with the element's ID is used for the key.

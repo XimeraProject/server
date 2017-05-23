@@ -47,14 +47,24 @@ module.exports = function(io) {
             res.status(500).send("");
 	}
 	else {
-            mdb.Completion.update({activityHash: req.params.activityHash, user: req.user._id}, {$set: {complete: req.body.complete, date: new Date()}}, {upsert: true}, function (err, affected, raw) {
+	    var query = {activityHash: req.params.activityHash,
+			 user: req.user._id};
+
+	    if (req.body.activityPath) {
+		query = {activityHash: req.params.activityHash,
+			 activityPath: req.body.activityPath,
+			 repositoryName: req.body.repositoryName,
+			 user: req.user._id};
+	    }
+	    console.log("query=",query);
+            mdb.Completion.update(query, {$set: {complete: req.body.complete, date: new Date()}}, {upsert: true}, function (err, affected, raw) {
 		if (err) {
 		    res.status(500).json(err);
 		} else
 		    res.json({ok: true});
             });
 	}
-    }
+    };
 
     exports.getCompletions = function(req, res) {
 	if (!req.user) {

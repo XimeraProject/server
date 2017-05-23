@@ -528,7 +528,7 @@ exports.tableOfContents = function(req, res) {
 
 	    console.log( "locator = ", xourse.locator );
 	    
-	    res.render('xourse', { xourse: xourse });
+	    res.render('old-xourse', { xourse: xourse });
 	}
     });
 };

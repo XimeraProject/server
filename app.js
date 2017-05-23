@@ -9,7 +9,6 @@ var express = require('express')
   , certificate = require('./routes/certificate')
   , user = require('./routes/user')
   , api = require('./routes/api')
-  , about = require('./routes/about')
   , score = require('./routes/score')
   , github = require('./routes/github')
   , tincan = require('./routes/tincan')
@@ -309,6 +308,7 @@ function addDatabaseMiddleware(req, res, next) {
     app.get( '/courses/', function( req, res ) { res.redirect('/course/'); });
 
     app.get( '/certificate/:certificate/:signature', certificate.view );
+    
     app.get( '/course/:commit([0-9a-fA-F]+)/certificate', course.xourseFromCommit, certificate.xourse );
     app.get( '/course/:username/:repository/certificate', course.xourseFromUserAndRepo, certificate.xourse );
     app.get( '/course/:username/:repository/:branch/certificate', course.xourseFromUserAndRepo, certificate.xourse );
@@ -318,7 +318,7 @@ function addDatabaseMiddleware(req, res, next) {
     app.get( '/course/:username/:repository/:branch/', course.xourseFromUserAndRepo, course.tableOfContents );
 
     app.get( '/labels/:commit([0-9a-fA-F]+)/:label', course.getLabel );
-    
+
     var appXimera = function( regexp, callback ) {
 	app.get( '/:noun(course|activity)/:commit([0-9a-fA-F]+)/:path(' + regexp + ')', course.objectFromCommit, callback );
 	app.get( '/:noun(course|activity)/:username/:repository/:path(' + regexp + ')', course.objectFromUserAndRepo, callback );
@@ -414,20 +414,6 @@ function addDatabaseMiddleware(req, res, next) {
         res.send(200);
     });
 
-    app.get('/about', about.index);
-    app.get('/about/team', about.team);
-    app.get('/about/workshop', about.workshop);
-    app.get('/about/contact', about.contact);
-    app.get('/about/faq', about.faq);
-    app.get('/about/lti-failed', about.ltiFailed);    
-    app.get('/about/who', about.who);
-    app.get('/about/plans', about.plans);
-    app.get('/about/xarma', about.xarma);
-    app.get('/about/xudos', about.xudos);
-    app.get('/about/m2o2c2', about.m2o2c2);
-    app.get('/about/supporters', function( req, res ) { res.redirect('/about/support'); });
-    app.get('/about/support', about.support);
-
     //app.get('/template/:templateFile', template.renderTemplate);
     //app.get('/template/forum/:templateFile', template.renderForumTemplate);
 
@@ -435,12 +421,50 @@ function addDatabaseMiddleware(req, res, next) {
     app.get('/state/:activityHash', state.get);
     app.put('/state/:activityHash', state.put);
     app.delete('/state/:activityHash', state.remove);
-    app.put('/completion/:activityHash', state.completion);
 
+    app.put('/completion/:activityHash', state.completion);
     app.get('/users/:id/completions', state.getCompletions);
     
     app.get('/image/:hash', mongoImage.get);
 
+    // BADBAD: this is where we'll put the NEW routes
+
+    app.get( '/:repository/:path(*)/certificate',
+	     gitBackend.repository,
+	     gitBackend.recentCommitsOnMaster,
+	     gitBackend.findPossibleActivityFromCommits,
+	     gitBackend.chooseMostRecentBlob,
+	     gitBackend.render );
+
+    // BADBAD: i also need to serve pngs and pdfs and such from the repo here
+
+    var serveContent = function( regexp, callback ) {
+	app.get( '/:repository/:path(' + regexp + ')',
+	     gitBackend.repository,
+		 gitBackend.recentCommitsOnMaster,
+		 gitBackend.findPossibleActivityFromCommits,
+		 callback );
+    };
+
+    serveContent( '*.svg', gitBackend.serve('image/svg+xml') );
+    serveContent( '*.png', gitBackend.serve('image/png') );
+    serveContent( '*.pdf', gitBackend.serve('image/pdf') );
+    serveContent( '*.jpg', gitBackend.serve('image/jpeg') );
+    serveContent( '*.js',  gitBackend.serve('text/javascript') );
+
+    app.get( '/:repository/:path(*)',
+	     gitBackend.repository,
+	     gitBackend.recentCommitsOnMaster, gitBackend.findPossibleActivityFromCommits,
+	     gitBackend.chooseMostRecentBlob,
+	     gitBackend.render );    
+
+    // BADBAD: serve source too
+    //appXimera( '*.tex', course.source );
+
+    // SVG files will only be rendered if they are sent with content type image/svg+xml
+
+    // app.get( '/:repository/:path(*)', gitBackend.repository, gitBackend.publishedCommitOnMaster, gitBackend.getEntry, gitBackend.render );
+    
     app.locals.Color = require('color');
     app.locals.moment = require('moment');
     app.locals._ = require('underscore');

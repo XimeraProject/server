@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "annotator": "^2.0.0-alpha.3",
-    "async": "2.0.0",
+    "async": "2.4.0",
     "body-parser": "1.13.3",
     "bootstrap": "3.3.4",
     "brush-javascript": "4.0.0",

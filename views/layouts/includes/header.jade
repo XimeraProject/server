@@ -65,7 +65,7 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
               li
                 a(href="https://github.com/kisonecat/ximera/issues/new?title=#{path}") Report error with website      
 
-        if activity && activity.commitUpdated
+        if activity && (activity.commitUpdated || activity.freshestCommit)
           li
               button.btn-margin.navbar-btn.pull-right.btn.btn-sm.btn-warning.pulsate(type="button",data-toggle="modal", data-target="#updateWarningModal")
                 | <i class="fa fa-level-up"></i> Update

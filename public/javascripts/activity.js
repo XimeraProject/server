@@ -78,14 +78,26 @@ $.fn.extend({
     recordCompletion: function(proportionComplete) {
 	var hash = $(this).activityHash();
 
+	var payload = {complete: proportionComplete};
+	
 	if (hash != undefined) {
+	    var repositoryName = $(this).repositoryName();
+	    if (repositoryName) {
+		payload.repositoryName = repositoryName;
+	    }
+
+	    var activityPath = $(this).activityPath();
+	    if (activityPath) {
+		payload.activityPath = activityPath;
+	    }	    
+	    
 	    $.ajax({
 		url: '/completion/' + hash,
 		type: 'PUT',
-		data: JSON.stringify({complete: proportionComplete}),
+		data: JSON.stringify(payload),
 		contentType: 'application/json',
 		success: function( result ) {
-		    console.log( "recording completion for " + hash );
+		    console.log( "recording completion " + JSON.stringify(payload) + " for " + hash );
 		},
 	    });
 	}
