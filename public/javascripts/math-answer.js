@@ -19,15 +19,15 @@ var buttonlessTemplate = '<form class="form-inline mathjaxed-input" style="displ
 
 var template = '<form class="form-inline mathjaxed-input" style="display: inline-block;">' +
 	'<span class="input-group">' +
-   	'<input class="form-control" type="text"/>' +
+   	'<input class="form-control" aria-label="answer" type="text"/>' +
 	'<span class="input-group-btn">' +
-	'<button class="btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Correct answer!" style="display: none; z-index: 1;">' +
+	'<button class="btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Correct answer!" style="display: none; z-index: 1;" aria-label="correct answer" aria-live="assertive">' +
 	'<i class="fa fa-fw fa-check"/>' +
 	'</button>' +
-	'<button class="btn btn-danger btn-ximera-incorrect" data-toggle="tooltip" data-placement="top" title="Incorrect.  Try again!" style="display: none; z-index: 1;">' +
+	'<button class="btn btn-danger btn-ximera-incorrect" data-toggle="tooltip" data-placement="top" title="Incorrect.  Try again!" style="display: none; z-index: 1;" aria-label="incorrect!  try again" aria-live="assertive">' +
 	'<i class="fa fa-fw fa-times"/>' +
 	'</button>' +
-	'<button class="btn btn-primary btn-ximera-submit" data-toggle="tooltip" data-placement="top" title="Click to check your answer." style="z-index: 1;">' +
+	'<button class="btn btn-primary btn-ximera-submit" aria-label="check work" data-toggle="tooltip" data-placement="top" title="Click to check your answer." style="z-index: 1;">' +
 	'<i class="fa fa-fw fa-question"/>' +
 	'</button>' +
 	'</span>' +

@@ -15,8 +15,8 @@ mixin regularXourseCard(locator, url, card)
      a.activity-card(class=card.cssClass, href=locator + "/" + url, data-repository-name=repositoryName, data-path=url, style=style, data-hashes=JSON.stringify(card.hashes))
        div.progress
          div.progress-bar.progress-bar-success(role="progressbar", style="width: 0%;")
-       h2 !{card.title}
-       h3 !{card.summary}
+       div.card-title !{card.title}
+       div.card-summary !{card.summary}
 
 mixin xourseCard(repositoryName, xourseUrl, url, card)
    - var locator = '/' + repositoryName + '/' + xourseUrl;
@@ -43,8 +43,8 @@ mixin regularCard(locator, url, card)
      a.activity-card(class=card.cssClass, href="/course/" + locator + "/" + url, data-path=url, style=style, data-hashes=JSON.stringify(card.hashes))
        div.progress
          div.progress-bar.progress-bar-success(role="progressbar", style="width: 0%;")
-       h2 !{card.title}
-       h3 !{card.summary}
+       div.card-title !{card.title}
+       div.card-summary !{card.summary}
 
 mixin activityCard(locator, url, card)
    if (card.cssClass) && (card.cssClass.match( /practice/ ))

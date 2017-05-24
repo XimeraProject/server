@@ -9,14 +9,14 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
         span.icon-bar
       if (atOhioState)
         a.navbar-brand(href="/")
-          | <span style="font-weight: 200;">XIMERA.</span><span style="font-weight: 700;">OSU</span><span style="font-weight: 200;">.EDU</span>
+          | <span aria-label="ximera" style="font-weight: 200;">XIMERA.</span><span aria-label="ohio state" style="font-weight: 700;">OSU</span><span style="font-weight: 200;">.EDU</span>
       else
         if (atColoradoState)
           a.navbar-brand(href="http://www.math.colostate.edu/~calc/MATH160/index.html")
             | <span style="font-weight: 700;">COLOSTATE</span><span style="font-weight: 200;">.EDU</span>
         else
           a.navbar-brand(href="/")
-            | <span style="font-weight: 200;">THE </span><span style="font-weight: 700;">XIMERA</span><span style="font-weight: 200;"> PROJECT</span>        
+            | <span style="font-weight: 200;">THE </span><span aria-label="chimera" style="font-weight: 700;">XIMERA</span><span style="font-weight: 200;"> PROJECT</span>        
     .navbar-collapse.collapse
       ul.nav.navbar-nav.navbar-right
 
@@ -55,13 +55,14 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
                      | <i class="fa fa-bar-chart"></i> Data dump
                    
         li.dropdown
-             a.dropdown-toggle(href="#",data-toggle="dropdown")
+             a.dropdown-toggle(href="#",data-toggle="dropdown",aria-haspopup="true",aria-expanded="false")
                | <i class="fa fa-bug"></i> Bug
                b.caret
              ul(id="bug-menu").dropdown-menu
-              if activity
+              if activity && activity.path && repositoryMetadata && repositoryMetadata.github              
                 li
-                  a(href="https://github.com/#{activity.ownerName}/#{activity.repositoryName}/issues/new?title=#{activity.title}&body=%0A%0ASee%20[#{activity.path}.tex](https://github.com/#{activity.ownerName}/#{activity.repositoryName}/blob/#{activity.commit}/#{activity.path}.tex)") Report error in content  
+                  // BADBAD: instead of master, perhaps should have activity.commit
+                  a(href="https://github.com/#{repositoryMetadata.github.owner}/#{repositoryMetadata.github.repository}/issues/new?title=#{activity.title}&body=%0A%0ASee%20[#{activity.path}.tex](https://github.com/#{repositoryMetadata.github.owner}/#{repositoryMetadata.github.repository}/blob/master/#{activity.path}.tex)") Report error in content  
               li
                 a(href="https://github.com/kisonecat/ximera/issues/new?title=#{path}") Report error with website      
 
@@ -73,9 +74,9 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
           li
               button.btn-margin.navbar-btn.pull-right.btn.btn-sm.btn-danger(type="button",data-toggle="modal", data-target="#resetWarningModal")
                 | <i class="fa fa-eraser"></i> Erase
-        if (activity) && (activity.ownerName) && (activity.repositoryName) && (activity.branchName) && (activity.path)
+        if activity && activity.path && repositoryMetadata && repositoryMetadata.github
           li
-              button.btn-margin.pull-right.btn.navbar-btn.btn-default.btn-sm(role="button",onclick="location.href = \"https://github.com/#{activity.ownerName}/#{activity.repositoryName}/edit/#{activity.branchName}/#{activity.path}.tex\";")
+              button.btn-margin.pull-right.btn.navbar-btn.btn-default.btn-sm(role="button",onclick="location.href = \"https://github.com/#{repositoryMetadata.github.owner}/#{repositoryMetadata.github.repository}/edit/master/#{activity.path}.tex\";")
                 | <i class="fa fa-pencil"></i> Edit
         if activity                                
           li
@@ -117,7 +118,7 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
                  a(href="/logout") <i class='fa fa-sign-out'></i> Logout
          else
            li.dropdown
-             a.dropdown-toggle(href="#",data-toggle="dropdown")
+             a.dropdown-toggle(href="#",data-toggle="dropdown",aria-haspopup="true",aria-expanded="false")
                | <i class="fa fa-sign-in"></i> Sign In
                b.caret
              ul(id="signin-menu").dropdown-menu

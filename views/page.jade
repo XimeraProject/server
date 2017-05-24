@@ -1,0 +1,128 @@
+extends layouts/main
+include ./activity-card.jade
+
+block title
+  if activity.title
+    | #{activity.title}
+  else
+    | Activity
+
+block activity
+   div.activity-content
+      | !{activity.html}
+
+block updateModal
+  div.modal.fade#updateWarningModal(tabindex="-1",role="dialog",aria-labelledby="updateWarningModal")
+      div.modal-dialog(role="document")
+        div.modal-content<div class="modal-content">
+          div.modal-header
+            button(type="button", class="close", data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="true") &times;
+            h4(class="modal-title",id="updateModalLabel") Updated Version Available
+          div.modal-body
+            p There is an <strong>updated version</strong> of this activity, but if you update to the most recent version of this activity, then you will lose your work and have to start over with the new version.  How would you like to proceed?
+          div.modal-footer
+            button#update-version-button(type="button",class="btn btn-default", data-dismiss="modal")
+              | <i class="fa fa-level-down"></i>&nbsp;Keep the old version.
+            a#update-version-button(href="#{url}?#{activity.freshestCommit}",class="btn btn-warning")
+              | <i class="fa fa-level-up"></i>&nbsp;Delete my work and update to the new version.
+
+block resetModal
+  div.modal.fade#resetWarningModal(tabindex="-1",role="dialog",aria-labelledby="resetWarningModal")
+      div.modal-dialog(role="document")
+        div.modal-content<div class="modal-content">
+          div.modal-header
+            button(type="button", class="close", data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="true") &times;
+            h4(class="modal-title",id="resetModalLabel") Warning
+          div.modal-body
+            p You are about to <strong>erase your work</strong> on this activity.  Are you sure you want to do this?
+          div.modal-footer
+            button(type="button", class="btn btn-default", data-dismiss="modal") No, keep my work.
+            button#reset-work-button(type="button",class="btn btn-danger", data-dismiss="modal")
+              | <i class="fa fa-eraser"></i>&nbsp;Yes, delete my work.
+
+block modals
+  div
+    block resetModal
+  div
+    block updateModal
+
+block content
+  // BADBAD: shouldn't this be removed now that htlatex is working
+  // fine? No!  Apparently htlatex still doesn't support two optional
+  // arguments like this.
+  script(type="math/tex")
+    | \newcommand{\dd}[2][]{\frac{d #1}{d #2}}
+    | \newcommand{\pp}[2][]{\frac{\partial #1}{\partial #2}}
+    | \newcommand{\veci}{\vec{\hat{\bf\imath}}}
+    | \newcommand{\vecj}{\vec{\hat{\bf\jmath}}}
+    | \newcommand{\utan}{\vec{\hat{t}}}
+    | \newcommand{\unormal}{\vec{\hat{n}}}
+    | \newenvironment{amatrix}[1]{%
+    |   \begin{bmatrix}
+    | }{%
+    |   \end{bmatrix}
+    | }
+  div.container
+        // BADBAD: only display navigation if the item can be found IN a navigation list
+        if (activity.xourse.activityList.length > 0)
+          nav(role="navigation",aria-label="textbook")
+            .row
+              .col-md-12
+                div.course-navigation(data-commit=activity.commit, data-user=user._id.toString())
+                  div.frame
+                    ul.items.pagination
+                      for activityUrl in activity.xourse.activityList
+                        li(class=( activityUrl == activity.path ) ? "active" : undefined)
+                          +xourseCard(repositoryName, activity.xourse.path, activityUrl, activity.xourse.activities[activityUrl])
+                  div.scrollbar
+                    div.handle
+        .row
+          .col-md-12
+            if activity.xourse.title
+              nav(aria-label="breadcrumb",role="navigation")
+                ol.breadcrumb
+                  - var level = 0;
+                  if activity.xourse
+                    li.breadcrumb-item
+                      - level = level + 1;
+                      a(href="/" + repositoryName + "/" + activity.xourse.path,aria-level=level)
+                        if (activity.xourse.title) && (activity.xourse.title != '')
+                          | !{activity.xourse.title}
+                        else
+                          | Home
+                  if activity.chapter
+                    - level = level + 1;                  
+                    li.breadcrumb-item
+                      a(href="/" + repositoryName + "/" + activity.xourse.path + "/" + activity.chapter.href,aria-level=level) !{activity.chapter.title}
+                  - level = level + 1;                                        
+                  li.breadcrumb-item.active(aria-current="page",aria-level=level)                  
+                    if activity.title
+                      | !{activity.title}
+                    else
+                      | Activity
+                  
+        .row
+          main.col-md-offset-2.col-md-8.activity(id="theActivity", data-activity=activity.hash, data-repository-name=repositoryName, data-commit=activity.commit, data-path=activity.path, data-title=activity.title, role="main")
+            .row.activity-body#page-content
+              block activity
+        if previousActivity || nextActivity
+          nav(aria-label="page navigation")
+            .row
+              .col-md-offset-2.col-md-8
+                ul.pager
+                 li.previous#previous-activity(class=(previousActivity ? undefined : "disabled"))
+                   if previousActivity
+                     a(href="/" + repositoryName + "/" + activity.xourse.path + "/" + previousActivity,aria-label="previous activity")              
+                       | &larr; Previous Activity
+                   else
+                     span(aria-label="previous activity")              
+                       | &larr; Previous Activity               
+                 li.next#next-activity(class=(nextActivity ? undefined : "disabled"),completion-blink="",aria-label="next activity")
+                   if nextActivity
+                     a(href="/" + repositoryName + "/" + activity.xourse.path + "/" + nextActivity)
+                       | <span id="next-activity-label">Next Activity</span> &rarr;
+                   else
+                     span(aria-label="next activity")              
+                       | <span id="next-activity-label">Next Activity</span> &rarr;

@@ -199,7 +199,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 			    right: parseFloat(keys.xmax),
 			    top: parseFloat(keys.ymax),
 			    bottom: parseFloat(keys.ymin) });
-		    }
+		    }a
 		    if( keys.polar !== undefined ) {
 			calculator.setGraphSettings({polarMode:true});
 		    }
@@ -301,7 +301,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
 		// the \answer{contents} get placed in a data-answer attribute
 		getMathML( MML(text), function( mml ) {
-		    input.setAttribute("data-answer", mml);			    		
+		    input.setAttribute("data-answer", mml);
 		});
 	    }
 	    

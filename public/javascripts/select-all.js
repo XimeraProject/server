@@ -9,11 +9,11 @@ var TinCan = require('./tincan');
 
 var buttonTemplate = _.template( '<label class="btn btn-default <%= correct %>" id="<%= id %>"></label>' );
 
-var answerHtml = '<div class="btn-group" style="vertical-align: bottom; ">' +
+var answerHtml = '<div class="btn-group" style="vertical-align: bottom;" aria-live="assertive">' +
 	'<button class="btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Correct answer!" style="display: none">' +
 	'<i class="fa fa-check"/>&nbsp;Correct' +
 	'</button></div>' +
-	'<div class="btn-group" style="vertical-align: bottom; ">' +
+	'<div class="btn-group" style="vertical-align: bottom;" aria-live="assertive">' +
 	'<button class="btn btn-danger btn-ximera-incorrect" data-toggle="tooltip" data-placement="top" title="Incorrect.  Try again!" style="display: none">' +
 	'<i class="fa fa-times"/>&nbsp;Try again' +
 	'</button></div>' +

@@ -7,11 +7,11 @@ var Javascript = require('./javascript');
 
 var buttonTemplate = _.template( '<label class="btn btn-default <%= correct %>" id="<%= id %>"></label>' );
 
-var answerHtml = '<div class="btn-group" style="vertical-align: bottom; ">' +
+var answerHtml = '<div class="btn-group" style="vertical-align: bottom; " aria-live="assertive">' +
 	'<button class="btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Correct answer!" style="display: none">' +
 	'<i class="fa fa-check"/>&nbsp;Correct' +
 	'</button></div>' +
-	'<div class="btn-group" style="vertical-align: bottom; ">' +
+	'<div class="btn-group" style="vertical-align: bottom; " aria-live="assertive">' +
 	'<button class="btn btn-danger btn-ximera-incorrect" data-toggle="tooltip" data-placement="top" title="Incorrect.  Try again!" style="display: none">' +
 	'<i class="fa fa-times"/>&nbsp;Try again' +
 	'</button></div>' +
@@ -37,7 +37,7 @@ function assignGlobalVariable( multipleChoice, choice ) {
 var createMultipleChoice = function() {
     var multipleChoice = $(this);
 
-    multipleChoice.wrapInner( '<div class="ximera-horizontal"><div class="btn-group-vertical" role="group" data-toggle="buttons" style="padding-right: 1em;"></div></div>' );
+    multipleChoice.wrapInner( '<div class="ximera-horizontal"><div class="btn-group-vertical" role="radiogroup" data-toggle="buttons" style="padding-right: 1em;"></div></div>' );
     
     $('.ximera-horizontal', multipleChoice).append( $(answerHtml) );
 
@@ -79,9 +79,11 @@ var createMultipleChoice = function() {
     
     multipleChoice.persistentData(function(event) {
 	multipleChoice.find( 'label').removeClass('active');
+	multipleChoice.find( '#' + multipleChoice.persistentData('chosen') ).find( 'input' ).attr( 'aria-checked', false );
 	
 	if (multipleChoice.persistentData('chosen')) {
 	    multipleChoice.find( '#' + multipleChoice.persistentData('chosen') ).addClass('active');
+	    multipleChoice.find( '#' + multipleChoice.persistentData('chosen') ).find( 'input' ).attr( 'aria-checked', true );
 	    multipleChoice.find( '.btn-group button' ).removeClass('disabled');
 	    multipleChoice.find( '.btn-group .btn-ximera-submit' ).addClass('pulsate');
 
@@ -152,15 +154,22 @@ var createMultipleChoice = function() {
     $(this).find( ".btn-ximera-incorrect" ).click( checkAnswer );
     
     $(this).find( "label" ).each( function() {
+	var id = $(this).attr('id');
 	$(this).click( function() {
-	    multipleChoice.persistentData('chosen', $(this).attr('id'));
-
+	    multipleChoice.persistentData('chosen', id);
 	    assignGlobalVariable( multipleChoice, $(this) );
+	});
+
+	$(this).find( "input" ).each( function() {
+	    $(this).change( function() {
+		if ($(this).prop('checked')) {
+		    multipleChoice.persistentData('chosen', id);
+		    assignGlobalVariable( multipleChoice, $(this) );
+		}
+	    });
 	});
     });
 
-
-    
 };
 
 $.fn.extend({

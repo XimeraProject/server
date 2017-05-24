@@ -1,14 +1,15 @@
 mixin breadcrumbs(links,titles)
-  ul.breadcrumb
-    li
-      a(href="/")
-        | Home
-    - var i = 0;
-    - var linkCount = links.length
-    - while ( i < linkCount - 1 )
+  nav(aria-label="Breadcrumb",class="breadcrumb")
+    ul.breadcrumb
       li
-        a(href="#{links[i]}")
-          | #{titles[i]}
-      - i++;
-    li.active
-      | #{titles[linkCount - 1]}
+        a(href="/")
+          | Home
+      - var i = 0;
+      - var linkCount = links.length
+      - while ( i < linkCount - 1 )
+        li
+          a(href="#{links[i]}")
+            | #{titles[i]}
+        - i++;
+      li.active(aria-current="page")
+        | #{titles[linkCount - 1]}
