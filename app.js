@@ -452,12 +452,18 @@ function addDatabaseMiddleware(req, res, next) {
     serveContent( '*.jpg', gitBackend.serve('image/jpeg') );
     serveContent( '*.js',  gitBackend.serve('text/javascript') );
 
+    app.get( '/:repository/:path(*.tex)',
+	     gitBackend.repository,
+	     gitBackend.recentCommitsOnMaster, gitBackend.findPossibleActivityFromCommits,
+	     gitBackend.source );    
+    
     app.get( '/:repository/:path(*)',
 	     gitBackend.repository,
 	     gitBackend.recentCommitsOnMaster, gitBackend.findPossibleActivityFromCommits,
 	     gitBackend.chooseMostRecentBlob,
+	     gitBackend.fetchMetadata,	     
 	     gitBackend.render );    
-
+    
     // BADBAD: serve source too
     //appXimera( '*.tex', course.source );
 

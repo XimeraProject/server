@@ -3,11 +3,11 @@ var _ = require('underscore');
 var database = require('./database');
 
 var answerHtml = '<div class="btn-group" style="vertical-align: center;">' +
-	'<button  type="button" class="btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Correct answer!" style="display: none">' +
+	'<button  type="button" class="btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Correct answer!" style="display: none" aria-label="correct answer" aria-live="assertive">' +
 	'<i class="fa fa-check"/>&nbsp;Correct' +
 	'</button></div>' +
 	'<div class="btn-group" style="vertical-align: center;">' +
-	'<button  type="button" class="btn btn-danger btn-ximera-incorrect" data-toggle="tooltip" data-placement="top" title="Incorrect.  Try again!" style="display: none">' +
+	'<button  type="button" class="btn btn-danger btn-ximera-incorrect" data-toggle="tooltip" data-placement="top" title="Incorrect.  Try again!" style="display: none" aria-label="incorrect!  try again" aria-live="assertive">' +
 	'<i class="fa fa-times"/>&nbsp;Try again' +
 	'</button></div>' +
 	'<div class="btn-group" style="vertical-align: center;">' +

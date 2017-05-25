@@ -17,7 +17,7 @@ var cheerio = require('cheerio');
 var gitRepositoriesRoot = process.env.GIT_REPOSITORIES_ROOT;
 
 function normalizeRepositoryName( name ) {
-    return name.replace( /[^0-9A-Za-z]/, '' ).toLowerCase();
+    return name.replace( /[^0-9A-Za-z-]/, '' ).toLowerCase();
 }
 
 function authorization(req,res,next) {
@@ -380,9 +380,11 @@ exports.render = function(req, res, next) {
 			    }
 			}
 		    }
-		    
+
+		    console.log("req.repositoryMetadata=",req.repositoryMetadata);
 		    res.render('page', { activity: activity,
 					 repositoryName: req.repositoryName,
+					 repositoryMetadata: req.repositoryMetadata,
 					 nextActivity: nextActivity,
 					 previousActivity: previousActivity,
 					 url: req.url });		    
@@ -391,6 +393,7 @@ exports.render = function(req, res, next) {
 		activity.xourse = {};
 		activity.xourse.activityList = [];
 		res.render('page', { activity: activity,
+				     repositoryMetadata: req.repositoryMetadata,				     
 				     url: req.url
 				   });
 	    }
@@ -516,6 +519,14 @@ exports.serve = function( mimetype ) {
     };
 };
 
+exports.source = function(req, res) {
+    var file = req.activities[0];
+    file.data = file.blob.content();
+    file.path = file.entry.path();
+    res.render('source', { file: file });
+};
+
+
 // We should be caching this somewhere, and then invalidating the
 // cache whenever we push something to the given repo.
 exports.findPossibleActivityFromCommits = function(req, res, next) {
@@ -538,9 +549,17 @@ exports.findPossibleActivityFromCommits = function(req, res, next) {
 	activities,
 	function(activity, callback) {
 	    activity.commit.getTree().then(function(tree) {
+		activity.tree = tree;
 		async.detectSeries(possiblePaths, function(item, callback) {
 		    tree.getEntry(item.remainder).then(function(treeEntry) {
 			activity.entry = treeEntry;
+
+			
+			if (treeEntry.isTree()) {
+			    console.log("****************************************************************");
+			    console.log("TREE =", item.remainder);
+			}
+			
 			// BADBAD: assuming it is a blob and not a tree!
 			// a directory of activities would be a tree!
 			treeEntry.getBlob().then(function(blob) {
@@ -569,4 +588,15 @@ exports.findPossibleActivityFromCommits = function(req, res, next) {
 	    req.activities = results;
 	    next();
 	});
+};
+
+exports.fetchMetadata = function(req, res, next) {
+    var activity = req.activity;
+
+    activity.tree.getEntry("metadata.json").then(function(treeEntry) {
+	treeEntry.getBlob().then(function(blob) {
+	    req.repositoryMetadata = JSON.parse(blob.content());
+	    next();
+	});
+    });
 };
