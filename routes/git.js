@@ -12,9 +12,12 @@ var spawn = require('child_process').spawn;
 var nodegit = require("nodegit");
 var fse = require("fs-extra");
 var fs = require('fs');
+var url = require('url');
 var cheerio = require('cheerio');
 
 var gitRepositoriesRoot = process.env.GIT_REPOSITORIES_ROOT;
+
+exports.rootUrl = "";
 
 function normalizeRepositoryName( name ) {
     return name.replace( /[^0-9A-Za-z-]/, '' ).toLowerCase();
@@ -524,6 +527,25 @@ exports.source = function(req, res) {
     file.data = file.blob.content();
     file.path = file.entry.path();
     res.render('source', { file: file });
+};
+
+exports.ltiConfig = function(req, res) {
+    var file = req.activities[0];
+    
+    //file.data = file.blob.content();
+    //file.path = file.entry.path();
+    
+    var hash = {
+	title: 'Ximera ' + file.entry.path().replace(/\.html$/,''),
+	description: '',
+	launchUrl: exports.rootUrl + '/lti',
+	xourse: { repositoryName: req.repositoryName,
+		  path: file.entry.path().replace(/\.html$/,'')
+		},
+	domain: url.parse(exports.rootUrl).hostname
+    };
+        
+    res.render('lti/config', hash);
 };
 
 

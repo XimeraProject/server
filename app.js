@@ -81,12 +81,12 @@ app.set('port', process.env.PORT || 3000);
 
 var rootUrl = 'http://localhost:' + app.get('port');
 if (process.env.DEPLOYMENT === 'production') {
-    rootUrl = 'http://ximera.osu.edu';
+    rootUrl = 'https://ximera.osu.edu';
 } else {
     // Temporarily use NGROK for the server    
     rootUrl = 'http://127.0.0.1:3000';
 }
-
+gitBackend.rootUrl = rootUrl;
 
 app.use(logger('dev'));
 app.use(favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
@@ -438,6 +438,11 @@ function addDatabaseMiddleware(req, res, next) {
 
     // BADBAD: i also need to serve pngs and pdfs and such from the repo here
 
+    app.get( '/:repository/:path/lti.xml',
+	     gitBackend.repository,
+	     gitBackend.recentCommitsOnMaster, gitBackend.findPossibleActivityFromCommits,
+	     gitBackend.ltiConfig );
+    
     var serveContent = function( regexp, callback ) {
 	app.get( '/:repository/:path(' + regexp + ')',
 	     gitBackend.repository,
