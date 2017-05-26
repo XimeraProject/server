@@ -90,6 +90,9 @@ module.exports.ltiStrategy = function (rootUrl) {
     }, function (req, identifier, profile, done) {
 	var displayName = 'Remote User';
 
+	console.log( "LTI ****************" );
+	console.log( profile );
+
 	if ('lis_person_name_full' in profile)
 	    displayName = profile.lis_person_name_full;
 	var email = '';
