@@ -305,7 +305,7 @@ var createMathAnswer = function() {
 		}
 	    } else {
 		if (format !== 'expression') {
-		    console.log( "copare ", correctAnswer, " and ", studentAnswer );
+		    console.log( "compare ", correctAnswer, " and ", studentAnswer );
 		    correct = (correctAnswer == studentAnswer);
 		} else
 		    correct = studentAnswer.equals( correctAnswer );
