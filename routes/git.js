@@ -26,8 +26,7 @@ function normalizeRepositoryName( name ) {
 function authorization(req,res,next) {
     if (req.get('Authorization')) {
 	var authorization = req.get('Authorization');
-	var token = authorization.split(' ').reverse()[0].replace(":","");
-	console.log("token=",token);
+	var token = authorization.split(' ').reverse()[0];
 	var repositoryName = normalizeRepositoryName(req.params.repository);	
 	var repositoryPath = path.resolve(gitRepositoriesRoot, repositoryName + '.git');
 
@@ -105,6 +104,7 @@ exports.git = function(req, res) {
 
     req.pipe(backend(req.url, function(err, service) {
 	if (err) {
+	    console.log("err=",err);
 	    res.statusCode = 500;
 	    res.end(err + '\n');
 	    return;
