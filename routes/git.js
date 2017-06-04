@@ -34,7 +34,10 @@ function authorization(req,res,next) {
     }
 
     if (authorization === undefined) {
-	res.status(500).send('Bearer token is missing.');	
+	res.statusCode = 401;
+	var realm = "Authorization required";
+	res.setHeader('WWW-Authenticate', 'Basic realm="' + realm + '"');
+	res.end('Unauthorized');	
     } else {
 	var token = "";
 	var parts = authorization.split(' ');
