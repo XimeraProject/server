@@ -24,9 +24,29 @@ function normalizeRepositoryName( name ) {
 }
 
 function authorization(req,res,next) {
-    if (req.get('Authorization')) {
-	var authorization = req.get('Authorization');
-	var token = authorization.split(' ').reverse()[0];
+    var authorization = undefined;
+    var token = undefined;
+    
+    if (req.headers.authorization) {
+	authorization = req.headers.authorization;
+    } else if (req.get('Authorization')) {
+	authorization = req.get('Authorization');	
+    }
+
+    if (authorization === undefined) {
+	res.status(500).send('Bearer token is missing.');	
+    } else {
+	var token = "";
+	var parts = authorization.split(' ');
+	
+	if (parts[0].match(/Bearer/)) {
+	    token = parts.reverse()[0];
+	}
+	
+	if (parts.match(/Basic/)) {
+	    token = new Buffer(parts[1], 'base64').toString();
+	}
+	
 	var repositoryName = normalizeRepositoryName(req.params.repository);	
 	var repositoryPath = path.resolve(gitRepositoriesRoot, repositoryName + '.git');
 
@@ -44,9 +64,7 @@ function authorization(req,res,next) {
 	}).catch(function(e) {
 	    res.status(404).send('Repository ' + repositoryName + '.git not found.');
 	});
-    } else {
-	res.status(500).send('Bearer token is missing.');	    
-    }    
+    }
 };
 
 function sendToken( repository, req, res ) {
