@@ -102,6 +102,8 @@ exports.git = function(req, res) {
     var repo = req.params.repository;
     var dir = path.join(gitRepositoriesRoot, repo + '.git');
 
+    console.log(req);
+    
     req.pipe(backend(req.url, function(err, service) {
 	if (err) {
 	    console.log("err=",err);
