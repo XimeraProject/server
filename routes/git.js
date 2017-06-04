@@ -46,7 +46,7 @@ function authorization(req,res,next) {
 	    token = parts.reverse()[0];
 	}
 	
-	if (parts.match(/Basic/)) {
+	if (parts[0].match(/Basic/)) {
 	    token = new Buffer(parts[1], 'base64').toString();
 	}
 	
