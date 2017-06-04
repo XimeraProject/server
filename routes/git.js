@@ -27,6 +27,7 @@ function authorization(req,res,next) {
     if (req.get('Authorization')) {
 	var authorization = req.get('Authorization');
 	var token = authorization.split(' ').reverse()[0].replace(":","");
+	console.log("token=",token);
 	var repositoryName = normalizeRepositoryName(req.params.repository);	
 	var repositoryPath = path.resolve(gitRepositoriesRoot, repositoryName + '.git');
 
