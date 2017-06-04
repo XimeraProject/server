@@ -48,9 +48,8 @@ function authorization(req,res,next) {
 	
 	if (parts[0].match(/Basic/)) {
 	    token = new Buffer(parts[1], 'base64').toString();
+	    token = token.split(":").reverse()[0];
 	}
-
-	console.log("token=",token);
 	
 	var repositoryName = normalizeRepositoryName(req.params.repository);	
 	var repositoryPath = path.resolve(gitRepositoriesRoot, repositoryName + '.git');
