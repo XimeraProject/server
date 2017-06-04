@@ -49,6 +49,8 @@ function authorization(req,res,next) {
 	if (parts[0].match(/Basic/)) {
 	    token = new Buffer(parts[1], 'base64').toString();
 	}
+
+	console.log("token=",token);
 	
 	var repositoryName = normalizeRepositoryName(req.params.repository);	
 	var repositoryPath = path.resolve(gitRepositoriesRoot, repositoryName + '.git');
@@ -123,8 +125,6 @@ exports.git = function(req, res) {
     var repo = req.params.repository;
     var dir = path.join(gitRepositoriesRoot, repo + '.git');
 
-    console.log(req);
-    
     req.pipe(backend(req.url, function(err, service) {
 	if (err) {
 	    console.log("err=",err);
