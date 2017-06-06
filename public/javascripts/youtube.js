@@ -42,10 +42,23 @@ function videoStarted( target, container ) {
     videoVerb( target, container, "http://activitystrea.ms/schema/1.0/play", "played" );
 }
 
-function videoPaused( target, container ) {
-    videoVerb( target, container, "http://id.tincanapi.com/verb/paused", "paused" );
+function videoPaused( target, container, finish ) {
+    TinCan.recordStatement({
+        verb: {
+            id: "http://id.tincanapi.com/verb/paused",
+            display: {'en-US': "paused"}
+        },
+        object: videoObject( target ),
+	context: {
+            extensions: {
+		"http://id.tincanapi.com/extension/ending-point": finish
+            },
+	    contextActivities: {
+		parent: TinCan.activityHashToActivityObject( $(container).activityHash() )
+	    }
+        }
+    });
 }
-
 
 function videoEnded( target, container ) {
     videoVerb( target, container, "http://activitystrea.ms/schema/1.0/complete", "completed" );
@@ -119,7 +132,7 @@ function onPlayerStateChange(event, container, videoId) {
 	    // BADBAD: I am not getting this to fire, ever. Oh well.
             videoSkipped(event.target, container, lastPlayerTime, event.target.getCurrentTime());
         }
-        videoPaused(event.target, container);
+        videoPaused(event.target, container, event.target.getCurrentTime());
         break;
 	
     case (YT.PlayerState.ENDED):
