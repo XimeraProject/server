@@ -38,8 +38,22 @@ function videoVerb( target, container, verb, word )
     });
 }
 
-function videoStarted( target, container ) {
-    videoVerb( target, container, "http://activitystrea.ms/schema/1.0/play", "played" );
+function videoStarted( target, container, start ) {
+    TinCan.recordStatement({
+        verb: {
+            id: "http://activitystrea.ms/schema/1.0/play",
+            display: {'en-US': "played"}
+        },
+        object: videoObject( target ),
+	context: {
+            extensions: {
+		"http://id.tincanapi.com/extension/starting-point": start
+            },
+	    contextActivities: {
+		parent: TinCan.activityHashToActivityObject( $(container).activityHash() )
+	    }
+        }
+    });
 }
 
 function videoPaused( target, container, finish ) {
@@ -122,7 +136,7 @@ function onPlayerStateChange(event, container, videoId) {
     console.log( "state = " + event.data );
     switch (event.data) {
     case (YT.PlayerState.PLAYING):
-        videoStarted(event.target, container);
+        videoStarted(event.target, container, event.target.getCurrentTime());
         break;
 	
     case (YT.PlayerState.PAUSED):
