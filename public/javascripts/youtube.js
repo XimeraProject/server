@@ -128,12 +128,9 @@ function videoWatched(target, container, start, finish) {
 function onPlayerStateChange(event, container, videoId) {
     var container = $('#' + container);
     
-    console.log(event);
-    
     var lastPlayerState = container.data('lastPlayerState');
     var lastPlayerTime = container.data('lastPlayerTime');
     
-    console.log( "state = " + event.data );
     switch (event.data) {
     case (YT.PlayerState.PLAYING):
         videoStarted(event.target, container, event.target.getCurrentTime());
