@@ -14,7 +14,7 @@
     "bootstrap": "3.3.4",
     "brush-javascript": "4.0.0",
     "brush-python": "4.0.0",
-    "bufferutil": "1.2.1",
+    "bufferutil": "^3.0.1",
     "chai": "3.5.0",
     "cheerio": "0.19.0",
     "color": "0.11.3",
