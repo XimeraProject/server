@@ -82,6 +82,7 @@ module.exports.localStrategy = function(rootUrl) {
     });
 }
 
+// DEPRECATED: should use the /lms endpoint instead
 module.exports.ltiStrategy = function (rootUrl) {
     return new LtiStrategy({
         returnURL: '/just-logged-in',
@@ -102,7 +103,19 @@ module.exports.ltiStrategy = function (rootUrl) {
 
         addUserAccount(req, 'ltiId', identifier, displayName, email, profile.custom_ximera, done);
     });
+};
+
+
+module.exports.lmsStrategy = function (rootUrl) {
+    return new LtiStrategy({
+        returnURL: '/just-logged-in',
+        consumerKey: process.env.LTI_KEY,
+        consumerSecret: process.env.LTI_SECRET,
+    }, function (req, identifier, profile, done) {
+        addLmsAccount(req, identifier, profile, done);
+    });
 }
+
 
 // Add guest users account if not logged in.
 // TODO: Clean these out occasionally.
@@ -278,4 +291,60 @@ function addUserAccount(req, authField, authId, name, email, course, done) {
 	    });
         }
     }
+}
+
+// Test this with  http://lti.tools/test/tc.php
+function addLmsAccount(req, identifier, profile, done) {
+    console.log(profile);
+    
+    async.waterfall( [
+	// See if we have already logged in with this identifier	
+	function(callback) {
+	    console.log("Looking up bridge for ", identifier);
+	    mdb.LtiBridge.findOne( {ltiId: identifier}, callback );	    
+	},
+	// Create a bridge if we aren't already logged in
+	function(bridge, callback) {
+	    console.log("Found bridge = ", bridge);
+	    if (bridge) {
+		// use this bridge
+		callback(null,bridge);
+	    } else {
+		// make a new bridge
+		bridge = new mdb.LtiBridge({
+                    user: req.user._id,
+		    ltiId: identifier,
+		    data: profile
+		});
+		console.log("new bridge =", bridge);
+		bridge.save(function(err) {
+		    if (err)
+			callback(err);
+		    else
+			callback(null,bridge);
+		});
+	    }
+	},
+	// Update the current user object
+	function(bridge,callback) {
+	    var updates = { isGuest: false };
+
+	    if ('lis_person_name_full' in profile)
+		updates.name = profile.lis_person_name_full;
+
+	    if ('lis_person_contact_email_primary' in profile)	
+		updates.email = profile.lis_person_contact_email_primary;
+	    
+    	    mdb.User.findOneAndUpdate({_id: bridge.user},
+				      updates,
+				      callback);
+	}
+    ], function(err, result) {
+	if (err)
+	    done(err,null);
+	else {
+	    console.log("lms with user._id =", result._id);
+	    done(null, result);
+	}
+    });
 }

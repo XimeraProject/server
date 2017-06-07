@@ -419,7 +419,8 @@ exports.render = function(req, res, next) {
 		activity.xourse = {};
 		activity.xourse.activityList = [];
 		res.render('page', { activity: activity,
-				     repositoryMetadata: req.repositoryMetadata,				     
+				     repositoryMetadata: req.repositoryMetadata,
+				     repositoryName: req.repositoryName,
 				     url: req.url
 				   });
 	    }
@@ -598,7 +599,6 @@ exports.findPossibleActivityFromCommits = function(req, res, next) {
 		async.detectSeries(possiblePaths, function(item, callback) {
 		    tree.getEntry(item.remainder).then(function(treeEntry) {
 			activity.entry = treeEntry;
-
 			
 			if (treeEntry.isTree()) {
 			    console.log("****************************************************************");
@@ -615,11 +615,15 @@ exports.findPossibleActivityFromCommits = function(req, res, next) {
 				treeEntry.getBlob().then(function(blob) {
 				    activity.xourse.blob = blob;
 				    callback(null,true);
+				}).catch(function(err) {
+				    callback(null,false);
 				});
 			    }).catch(function(err) {
-				callback(null,true);
+				callback(null,false);
 			    });
-			});			    
+			}).catch(function(err) {
+			    callback(null,false);
+			});;			    
 		    }).catch( function(err) {
 			callback(null,false);
 		    });
@@ -630,6 +634,8 @@ exports.findPossibleActivityFromCommits = function(req, res, next) {
 		callback(err, null);		
 	    });
 	}, function(err, results) {
+	    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" );
+	    console.log(results);
 	    req.activities = results;
 	    next();
 	});

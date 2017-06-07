@@ -162,8 +162,11 @@ mdb.initialize(function (err) {
 passport.use(login.localStrategy(rootUrl));
 passport.use(login.googleStrategy(rootUrl));
 passport.use(login.twitterStrategy(rootUrl));
-passport.use(login.ltiStrategy(rootUrl));
+passport.use('lms', login.lmsStrategy(rootUrl));    
 passport.use(login.githubStrategy(rootUrl));
+// DEPRECATED LTI
+passport.use(login.ltiStrategy(rootUrl));
+
 
 // Only store the user _id in the session
 passport.serializeUser(function(user, done) {
@@ -263,13 +266,17 @@ function addDatabaseMiddleware(req, res, next) {
     app.get('/install.sh', function(req, res) {
 	res.sendFile('views/install.sh', { root: __dirname });
     });
-    
+
     // TODO: Move to separate file.
     app.get('/users/xarma', score.getXarma);
     app.get('/users/xudos', score.getXudos);
     app.post('/users/xarma', score.postXarma);
     app.post('/users/xudos', score.postXudos);
 
+    // TinCan (aka Experience) API
+    app.post('/xAPI/statements', function(req,res) { res.status(200).send('ignored statemtents without a repository.'); } );
+    app.post('/:repository/xAPI/statements', tincan.postStatements);    
+    
     // Requires the rawBody middleware above
     github.secret = process.env.GITHUB_WEBHOOK_SECRET;
     app.post('/github', github.github);
@@ -352,9 +359,6 @@ function addDatabaseMiddleware(req, res, next) {
     //app.head( '/activity/:commit/:path(*.svg)', course.imageHead );    
     app.head( '/activity/:commit/:path(*)', course.activityByHashHead );
     
-    // TinCan (aka Experience) API
-    app.post('/xAPI/statements', tincan.postStatements);
-    
     // Instructor paths
     app.get(/^\/instructor\/course\/(.+)\/activity\/(.+)\/$/, instructor.instructorActivity );
     app.get('/instructor/activity-analytics/:id', instructor.activityAnalytics);
@@ -391,6 +395,11 @@ function addDatabaseMiddleware(req, res, next) {
     // LTI login
     app.post('/lti', passport.authenticate('lti', { successRedirect: '/just-logged-in',
 						    failureRedirect: '/about/lti-failed'}));
+
+    app.post('/lms', passport.authenticate('lms', { successRedirect: '/just-logged-in',
+						    failureRedirect: '/',
+						    failureFlash: true}));
+    
     app.get('/logout', function (req, res) {
         req.logout();
         res.redirect('/');

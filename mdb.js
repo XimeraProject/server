@@ -208,7 +208,19 @@ exports.initialize = function initialize(callback) {
     UserSchema.index( { lastSeen: -1 } );
     
     exports.User = mongoose.model("User", UserSchema);
-
+    
+    exports.LtiBridge = mongoose.model("LtiBridge",
+                                   new mongoose.Schema({
+                                       user: {type: ObjectId, index: true, ref:"User"},
+                                       ltiId: {type: String, index: true, unique: true, sparse: true},
+                                       gradeReturn: String,
+				       repository: {type: String, index: true},
+				       path: String,
+                                       data: Mixed				       
+                                   }, {
+                                       minimize: false
+                                   }));
+    
     exports.State = mongoose.model("State",
                                    new mongoose.Schema({
                                        activityHash: {type: String, index: true},

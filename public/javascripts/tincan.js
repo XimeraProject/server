@@ -135,8 +135,13 @@ exports.experience = function(element) {
 var queue = [];
 
 var uploadQueue = _.throttle( function() {
+    var repositoryName = $("#theActivity").attr( 'data-repository-name' );
+    
+    if (repositoryName === undefined)
+	repositoryName = '';
+    console.log("REPOSITROYNAME=",repositoryName);
     $.ajax({
-	url: '/xAPI/statements',
+	url: "/" + repositoryName + '/xAPI/statements',
 	type: 'POST',
 	data: JSON.stringify(queue),
 	contentType: 'application/json',

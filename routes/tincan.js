@@ -1,5 +1,52 @@
 var mdb = require('../mdb');
 var winston = require('winston');
+var snappy = require('snappy');
+var path = require('path');
+var async = require('async');
+var fs        = require("fs");
+
+var lrsRoot = process.env.GIT_REPOSITORIES_ROOT;
+
+var logFiles = {};
+function logFile( name, callback ) {
+    console.log("logFile = ",name);
+    var filename = path.join( lrsRoot, name + ".git", "learning-record-store" );
+    if (logFiles[filename]) {
+	callback(null, logFiles[filename]);
+    } else {
+	// BADBAD: this SHOULD be O_DIRECT to ensure atomicity
+	fs.open(filename, fs.constants.O_CREAT | fs.constants.O_WRONLY | fs.constants.O_APPEND, function(err, fd) {
+	    if (err) {
+		callback(err);
+	    } else {
+		logFiles[filename] = fd;
+		callback(null, fd);
+	    }
+	});
+    }
+}
+
+function recordStatement( repository, statement, callback ) {
+    async.parallel([
+	function(callback)  {
+	    snappy.compress(JSON.stringify(statement), callback);
+	},
+	function(callback)  {
+	    logFile( repository, callback );
+	},
+    ], function(err, results) {
+	if (err) {
+	    console.log(err);
+	    callback(err);
+	} else {
+	    var fd = results[1];
+	    var buffer = results[0];
+	    var length = Buffer.alloc(4);
+	    length.writeUInt32LE(buffer.length, 0);
+	    fs.write( fd, Buffer.concat( [length, buffer] ), callback );
+	}
+    });
+}
 
 function escapeKeys(obj) {
     if (!(Boolean(obj) && typeof obj == 'object'
@@ -29,8 +76,7 @@ function escapeKeys(obj) {
 exports.postStatements = function(req, res) {
     if (!req.user) {
         res.status(500).send("");
-    }
-    else {
+    } else {
 	req.body.forEach( function(data) {
 	    var statement = {};
 
@@ -64,22 +110,18 @@ exports.postStatements = function(req, res) {
 	    statement.attachments = [];
 
 	    // Mongo forbids dots and dollar signs in key names, so we
-	    // replace them with full width unicode replacements
-	    escapeKeys( statement );
+	    // replace them with full width unicode replacements But
+	    // good news!  Our new backend doesn't have this
+	    // restriction.
+	    // 
+	    // escapeKeys( statement );
 	    
-	    mdb.LearningRecord.create( statement, function(err) {
-		/*
-		if (err) {
-		    res.status(500).json({ok: false, err: err});
-		    console.log(err);
-		} else {
-		}*/
-		
-		//console.log( JSON.stringify( statement, null, 4 ) );
-		return;
+	    var repository = req.params.repository;
+	    
+	    recordStatement( repository, statement, function(err) {
+		// I just ignore whether they are successful or not
 	    });
 	});
-	// BADBAD: this needs to happen ONCE 
-	res.status(200).json({ok: true});
-    }    
+	res.status(200).json({ok: true});		    
+    }
 };
