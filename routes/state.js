@@ -56,7 +56,7 @@ module.exports = function(io) {
 			 repositoryName: req.body.repositoryName,
 			 user: req.user._id};
 	    }
-	    console.log("query=",query);
+
             mdb.Completion.update(query, {$set: {complete: req.body.complete, date: new Date()}}, {upsert: true}, function (err, affected, raw) {
 		if (err) {
 		    res.status(500).json(err);
