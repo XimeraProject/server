@@ -335,6 +335,11 @@ function addLmsAccount(req, identifier, profile, done) {
 	    if ('lis_person_contact_email_primary' in profile)	
 		updates.email = profile.lis_person_contact_email_primary;
 
+	    if (('custom_repository' in profile) && ('custom_xourse' in profile))
+		updates.course = '/' + profile.custom_repository + '/' + profile.custom_xourse;	    
+
+	    console.log(updates);
+	    
     	    mdb.User.findOneAndUpdate({_id: bridge.user},
 				      updates,
 				      callback);
@@ -343,9 +348,8 @@ function addLmsAccount(req, identifier, profile, done) {
 	if (err)
 	    done(err,null);
 	else {
-	    var user = result;
-	    user.course = '/' + profile.custom_repository + '/' + profile.custom_xourse;
 	    console.log("lms with user._id =", result._id);
+	    
 	    done(null, result);
 	}
     });
