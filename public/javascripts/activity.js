@@ -45,6 +45,9 @@ var createActivity = function() {
 		console.log("End Process (1st time)");
 		$(".mathjax-input", activity).mathAnswer();
 		firstTime = false;
+
+		// BADBAD: Arguably this should happen AFTER some of the other set up below?
+		ProgressBar.monitorActivity( activity );
 	    }
 	});
 
@@ -65,8 +68,6 @@ var createActivity = function() {
 	connectInteractives();
 	
 	$('.activity-card').activityCard();
-
-	ProgressBar.monitorActivity( activity );
     });
 };
 
