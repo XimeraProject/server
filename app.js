@@ -38,6 +38,7 @@ var express = require('express')
   , rateLimit = require('express-rate-limit')
   , methodOverride = require('method-override')
   , errorHandler = require('errorhandler')
+  , sendSeekable = require('send-seekable')
   ;
 
 // Check for presence of appropriate environment variables.
@@ -210,14 +211,16 @@ function addDatabaseMiddleware(req, res, next) {
     app.get( '/gpg/tokens/:keyid', keyserver.token );
     app.post( '/pks/add', keyserver.add );
 
-    app.get( '/hello', keyserver.authorization );
-    app.get( '/hello', function(req,res) { res.status(200).send('i love you'); });
-    
     app.post( '/:repository.git', keyserver.authorization );
     app.post( '/:repository.git', hashcash.hashcash );
     app.post( '/:repository.git', gitBackend.create );
+
+    app.use( '/:repository.git/log.sz', gitBackend.authorization );
+    app.use( '/:repository.git/log.sz', sendSeekable );
+    app.get( '/:repository.git/log.sz', tincan.get );
     
     app.use( '/:repository.git', gitBackend.git );
+    
     
     //app.use(versionator.middleware);
     app.use('/public', express.static(path.join(__dirname, 'public')));
@@ -302,13 +305,6 @@ function addDatabaseMiddleware(req, res, next) {
     // BADBAD: this should probably be a PUT since it changes state
     app.get('/users/:id/courses/:owner/:repo', function( req, res ) { user.courses( req, res ); } );
     
-    app.get( '/course/calculus-one/', function( req, res ) { res.redirect('/about/plans'); });
-    app.get( '/course/calculus-one', function( req, res ) { res.redirect('/about/plans'); });
-    app.get( '/course/calculus-two/', function( req, res ) { res.redirect('/about/plans'); });
-    app.get( '/course/calculus-two', function( req, res ) { res.redirect('/about/plans'); });
-    app.get( '/course/multivariable/', function( req, res ) { res.redirect('/about/m2o2c2'); });
-    app.get( '/course/multivariable', function( req, res ) { res.redirect('/about/m2o2c2'); });
-
     //app.get('/course/', course.index );
     app.get( '/course', function( req, res ) { res.redirect(req.url + '/'); });
     app.get( '/courses', function( req, res ) { res.redirect('/course/'); });
@@ -491,97 +487,56 @@ function addDatabaseMiddleware(req, res, next) {
     app.locals.deployment = process.env.DEPLOYMENT;
     app.locals.version = app.version;
 
-    // Setup blogs
-    var Poet = require('poet')
-    var poet = Poet(app, {
-        posts: './blog/',  // Directory of posts
-        postsPerPage: 5,     // Posts per page in pagination
-        readMoreLink: function (post) {
-            // readMoreLink is a function that
-            // takes the post object and formats an anchor
-            // to be used to append to a post's preview blurb
-            // and returns the anchor text string
-            return '<a href="' + post.url + '">Read More &raquo;</a>';
-        },
-        readMoreTag: '<!--more-->', // tag used to generate the preview. More in 'preview' section
-
-        routes: {
-            '/blog/post/:post': 'blog/post',
-            '/blog/page/:page': 'blog/page',
-            '/blog/tag/:tag': 'blog/tag',
-            '/blog/category/:category': 'blog/category'
-         }
-    });
-
-    app.get( '/blog', function ( req, res ) { res.render( 'blog/index' ); });
-
-    poet.init().then( function() {
     // Start HTTP server for fully configured express App.
-        var server = http.createServer(app);
+    var server = http.createServer(app);
 
-	var ios = require('socket.io-express-session');
-	var io = require('socket.io')(server);
-	io.use(ios(theSession, cookieParser(cookieSecret)));
+    var ios = require('socket.io-express-session');
+    var io = require('socket.io')(server);
+    io.use(ios(theSession, cookieParser(cookieSecret)));
 	
-	// Setup forum rooms
-	/*
-	var forum = require('./routes/forum.js')(socket);
-	app.post('/forum/upvote/:post', forum.upvote);
-	app.post('/forum/flag/:post', forum.flag);
-	app.get(/\/forum\/(.+)/, forum.get);
-	app.post(/\/forum\/(.+)/, forum.post);
-	app.put('/forum/:post', forum.put);
-	app.delete('/forum/:post', forum.delete);
-	*/
-
-	if(!module.parent){
-            server.listen(app.get('port'), function(stream){
-		console.log('Express server listening on port ' + app.get('port'));
-            });		    
-	}
-
-	
-	io.on('connection', function (socket) {
-	    // join to room and save the room name
-	    socket.on('join room', function (room) {
-		socket.join(room);
-	    });
-	    
-	    socket.on('send', function (data) {
-		socket.sockets.emit('message', data);
-	    });
-
-	    socket.on('activity', function (activityHash) {
-		var userId = socket.handshake.session.guestUserId;
-		if (socket.handshake.session.passport) {
-		    userId = socket.handshake.session.passport.userId || userId;
-		}
-		socket.join(activityHash + '/' + userId);
-	    });
-
-	    /*
-	    socket.on('persistent-data', function (data) {
-		var userId = socket.handshake.session.guestUserId;
-		if (socket.handshake.session.passport) {
-		    userId = socket.handshake.session.passport.userId || userId;
-		}
-		
-		if (socket.handshake.session.userdata)
-		    socket.handshake.session.userdata = socket.handshake.session.userdata + 1;
-		else
-		    socket.handshake.session.userdata = 0;
-
-		socket.to(data.activityHash + '/' + userId).emit('persistent-data', data);
-	    });
-	    */
-	});
-	
-	// If nothing else matches, it is a 404
-	app.use(function(req, res, next){
-            res.render('404', { status: 404, url: req.url });
-	});
-	
+    if(!module.parent){
+        server.listen(app.get('port'), function(stream){
+	    console.log('Express server listening on port ' + app.get('port'));
+        });		    
+    }
     
-});
-
+    io.on('connection', function (socket) {
+	// join to room and save the room name
+	socket.on('join room', function (room) {
+	    socket.join(room);
+	});
+	
+	socket.on('send', function (data) {
+	    socket.sockets.emit('message', data);
+	});
+	
+	socket.on('activity', function (activityHash) {
+	    var userId = socket.handshake.session.guestUserId;
+	    if (socket.handshake.session.passport) {
+		userId = socket.handshake.session.passport.userId || userId;
+	    }
+	    socket.join(activityHash + '/' + userId);
+	});
+	
+	/*
+	  socket.on('persistent-data', function (data) {
+	  var userId = socket.handshake.session.guestUserId;
+	  if (socket.handshake.session.passport) {
+	  userId = socket.handshake.session.passport.userId || userId;
+	  }
+	  
+	  if (socket.handshake.session.userdata)
+	  socket.handshake.session.userdata = socket.handshake.session.userdata + 1;
+	  else
+	  socket.handshake.session.userdata = 0;
+	  
+	  socket.to(data.activityHash + '/' + userId).emit('persistent-data', data);
+	  });
+	*/
     });
+    
+    // If nothing else matches, it is a 404
+    app.use(function(req, res, next){
+        res.render('404', { status: 404, url: req.url });
+    });
+});

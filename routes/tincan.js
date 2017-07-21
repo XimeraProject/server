@@ -4,6 +4,10 @@ var snappy = require('snappy');
 var path = require('path');
 var async = require('async');
 var fs        = require("fs");
+var buffer24        = require("buffer24");
+var uint32 = require('uint32');
+var crc32 = require('fast-crc32c');
+
 
 var lrsRoot = process.env.GIT_REPOSITORIES_ROOT;
 
@@ -15,9 +19,25 @@ function logFile( name, callback ) {
 	callback(null, logFiles[filename]);
     } else {
 	// BADBAD: this SHOULD be O_DIRECT to ensure atomicity
-	fs.open(filename, fs.constants.O_CREAT | fs.constants.O_WRONLY | fs.constants.O_APPEND, function(err, fd) {
+	fs.open(filename, fs.constants.O_WRONLY | fs.constants.O_APPEND, function(err, fd) {
 	    if (err) {
-		callback(err);
+		// File doesn't exist, so create it
+		fs.open(filename, fs.constants.O_CREAT | fs.constants.O_WRONLY | fs.constants.O_APPEND, function(err, fd) {
+		    if (err) {
+			callback(err);
+		    } else {
+			// And include the initial chunk that says sNaPpY
+			var firstChunk =  Buffer.from([0xff,0x06,0x00,0x00,0x73,0x4e,0x61,0x50,0x70,0x59]);
+			fs.write( fd, firstChunk, function(err) {
+			    if (err) {
+				callback(err);				
+			    } else {		
+				logFiles[filename] = fd;		
+				callback(null, fd);
+			    }
+			});
+		    }
+		});
 	    } else {
 		logFiles[filename] = fd;
 		callback(null, fd);
@@ -27,9 +47,11 @@ function logFile( name, callback ) {
 }
 
 function recordStatement( repository, statement, callback ) {
+    var stringified = JSON.stringify(statement);
+    
     async.parallel([
 	function(callback)  {
-	    snappy.compress(JSON.stringify(statement), callback);
+	    snappy.compress(stringified, callback);
 	},
 	function(callback)  {
 	    logFile( repository, callback );
@@ -39,11 +61,23 @@ function recordStatement( repository, statement, callback ) {
 	    console.log(err);
 	    callback(err);
 	} else {
+	    // https://github.com/google/snappy/blob/master/framing_format.txt
+	    // BADBAD
+	    
 	    var fd = results[1];
 	    var buffer = results[0];
-	    var length = Buffer.alloc(4);
-	    length.writeUInt32LE(buffer.length, 0);
-	    fs.write( fd, Buffer.concat( [length, buffer] ), callback );
+	    
+	    var chunkType = Buffer.from([0x00]);
+	    // three-byte little-endian length of the chunk in bytes
+	    var length = Buffer.alloc(3);
+	    length.writeUInt24LE(buffer.length + 4, 0);
+
+	    var checksum = crc32.calculate(stringified, 0);
+	    var maskedChecksum = uint32.addMod32( uint32.rotateRight(checksum, 15), 0xa282ead8 );
+	    var checksumBuffer = Buffer.alloc(4);
+	    checksumBuffer.writeUInt32LE(maskedChecksum, 0);
+	    
+	    fs.write( fd, Buffer.concat( [chunkType, length, checksumBuffer, buffer] ), callback );
 	}
     });
 }
@@ -72,6 +106,20 @@ function escapeKeys(obj) {
     });
     return true;
 }
+
+exports.get = function(req, res) {
+    var filename = path.join( lrsRoot, req.params.repository + ".git", "learning-record-store" );
+    console.log(filename);
+    var stream = fs.createReadStream(filename);
+    fs.stat(filename, function(err, stat) {
+	if (err) {
+            res.status(500).send(err);	    
+	} else {
+	    res.sendSeekable(stream, {length: stat.size,
+				      type: 'application/x-snappy-framed' });
+	}
+    });
+};
 
 exports.postStatements = function(req, res) {
     if (!req.user) {
