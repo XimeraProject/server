@@ -4,7 +4,6 @@
 
 var express = require('express')
   , routes = require('./routes')
-  , activity = require('./routes/activity')
   , course = require('./routes/course')
   , certificate = require('./routes/certificate')
   , user = require('./routes/user')
