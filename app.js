@@ -8,7 +8,6 @@ var express = require('express')
   , course = require('./routes/course')
   , certificate = require('./routes/certificate')
   , user = require('./routes/user')
-  , score = require('./routes/score')
   , github = require('./routes/github')
   , tincan = require('./routes/tincan')
   , instructor = require('./routes/instructor')
@@ -242,12 +241,6 @@ function addDatabaseMiddleware(req, res, next) {
     app.get('/install.sh', function(req, res) {
 	res.sendFile('views/install.sh', { root: __dirname });
     });
-
-    // TODO: Move to separate file.
-    app.get('/users/xarma', score.getXarma);
-    app.get('/users/xudos', score.getXudos);
-    app.post('/users/xarma', score.postXarma);
-    app.post('/users/xudos', score.postXudos);
 
     // TinCan (aka Experience) API
     app.post('/xAPI/statements', function(req,res) { res.status(200).send('ignored statemtents without a repository.'); } );

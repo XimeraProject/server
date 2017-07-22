@@ -20,7 +20,6 @@ var ProgressBar = require('./progress-bar');
 var userProfile = require('./user/profile');
 var MailingList = require('./mailing-list' );
 var StickyScroll = require('./sticky-scroll' );
-var score = require('./score');
 
 var xourse = require('./xourse');
 var navigation = require('./navigation');
