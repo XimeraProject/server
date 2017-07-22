@@ -55,9 +55,10 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
                      | <i class="fa fa-bar-chart"></i> Data dump
                    
         li.dropdown
-             a.dropdown-toggle(href="#",data-toggle="dropdown",aria-haspopup="true",aria-expanded="false")
-               | <i class="fa fa-bug"></i> Bug
-               b.caret
+             if !landingPage
+               a.dropdown-toggle(href="#",data-toggle="dropdown",aria-haspopup="true",aria-expanded="false")
+                 | <i class="fa fa-bug"></i> Bug
+                 b.caret
              ul(id="bug-menu").dropdown-menu
               if activity && activity.path && repositoryMetadata && repositoryMetadata.github              
                 li

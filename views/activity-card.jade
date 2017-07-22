@@ -2,7 +2,7 @@
 // This is the new version
 
 mixin practiceXourseCard(locator, url, card)
-  a.activity-card(class=card.cssClass, href=locator + "/" + url,  data-repository-name=repositoryName, data-path=url, style=style, data-hashes=JSON.stringify(card.hashes))
+  a.activity-card(class=card.cssClass, data-weight=card.weight, href=locator + "/" + url,  data-repository-name=repositoryName, data-path=url, style=style, data-hashes=JSON.stringify(card.hashes))
     div.progress.vertical
       div.progress-bar.progress-bar-success(role="progressbar", style="width: 0%;")
 
@@ -12,7 +12,7 @@ mixin regularXourseCard(locator, url, card)
    else
      - var style = "background-image: linear-gradient( rgba(255,255,255,0.75), rgba(255,255,255,0.75) );";
      - if (card.splashImage) style = "background-image: linear-gradient( rgba(255,255,255,0.75), rgba(255,255,255,0.75) ) url(/activity/" + locator + '/' + card.splashImage + ');';
-     a.activity-card(class=card.cssClass, href=locator + "/" + url, data-repository-name=repositoryName, data-path=url, style=style, data-hashes=JSON.stringify(card.hashes))
+     a.activity-card(class=card.cssClass,data-weight=card.weight, href=locator + "/" + url, data-repository-name=repositoryName, data-path=url, style=style, data-hashes=JSON.stringify(card.hashes))
        div.progress
          div.progress-bar.progress-bar-success(role="progressbar", style="width: 0%;")
        div.card-title !{card.title}
@@ -30,7 +30,7 @@ mixin xourseCard(repositoryName, xourseUrl, url, card)
 // This is the old version
 
 mixin practiceCard(locator, url, card)
-  a.activity-card(class=card.cssClass, href="/course/" + locator + "/" + url, data-path=url, style=style, data-hashes=JSON.stringify(card.hashes))
+  a.activity-card(class=card.cssClass,data-weight=card.weight,  href="/course/" + locator + "/" + url, data-path=url, style=style, data-hashes=JSON.stringify(card.hashes))
     div.progress.vertical
       div.progress-bar.progress-bar-success(role="progressbar", style="width: 0%;")
 
@@ -40,7 +40,7 @@ mixin regularCard(locator, url, card)
    else
      - var style = "background-image: linear-gradient( rgba(255,255,255,0.75), rgba(255,255,255,0.75) );";
      - if (card.splashImage) style = "background-image: linear-gradient( rgba(255,255,255,0.75), rgba(255,255,255,0.75) ) url(/activity/" + locator + '/' + card.splashImage + ');';
-     a.activity-card(class=card.cssClass, href="/course/" + locator + "/" + url, data-path=url, style=style, data-hashes=JSON.stringify(card.hashes))
+     a.activity-card(class=card.cssClass, data-weight=card.weight, href="/course/" + locator + "/" + url, data-path=url, style=style, data-hashes=JSON.stringify(card.hashes))
        div.progress
          div.progress-bar.progress-bar-success(role="progressbar", style="width: 0%;")
        div.card-title !{card.title}

@@ -27,7 +27,7 @@ var createActivityCard = function() {
     var activityCard = $(this);
     var href = activityCard.attr('data-path');
 
-    // This is the historical method for storing completion data
+    // This is the new method for storing completion data
     var repositoryName = activityCard.attr('data-repository-name');
     var activityPath = activityCard.attr('data-path');
     if (repositoryName) {
@@ -42,6 +42,7 @@ var createActivityCard = function() {
 	    });
 	    
 	    displayProgress( activityCard, maxCompletion );
+	    activityCard.attr('data-max-completion', maxCompletion );
 	});
 
 	return;

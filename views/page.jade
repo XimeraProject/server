@@ -70,7 +70,7 @@ block content
           nav(role="navigation",aria-label="textbook")
             .row
               .col-md-12
-                div.course-navigation(data-commit=activity.commit, data-user=user._id.toString())
+                div.course-navigation(data-commit=activity.commit, data-user=user._id.toString(),data-points=activity.xourse.totalPoints)
                   div.frame
                     ul.items.pagination
                       for activityUrl in activity.xourse.activityList

@@ -51,7 +51,9 @@ function authorization(req,res,next) {
 	    token = token.split(":").reverse()[0];
 	}
 	
-	var repositoryName = normalizeRepositoryName(req.params.repository);	
+	var repositoryName = normalizeRepositoryName(req.params.repository);
+	req.params.repository = repositoryName;
+	
 	var repositoryPath = path.resolve(gitRepositoriesRoot, repositoryName + '.git');
 
 	nodegit.Repository.openBare(repositoryPath).then(function(repository) {
@@ -63,13 +65,15 @@ function authorization(req,res,next) {
 			res.status(500).send('Bearer token is invalid.');
 		}).catch(function(e) {
 		    res.status(404).send('Repository ' + repositoryName + '.git is missing a Ximera token.');
-		});;
+		});
 	    });
 	}).catch(function(e) {
 	    res.status(404).send('Repository ' + repositoryName + '.git not found.');
 	});
     }
-};
+}
+
+exports.authorization = authorization;
 
 function sendToken( repository, req, res ) {
     repository.config().then(function(config) {
@@ -301,28 +305,63 @@ function parseXourseDocument( $, callback ) {
     var xourse = { kind: 'xourse' };
     xourse.activityList = [];
     xourse.activities = {};
-        
+
+    $('.activity').each( function() {
+	$(this).attr('data-weight','1');
+    });
+
+    $('.graded').each( function() {
+	var graded = $(this);
+
+	var total = 0;
+	$(this).children( '[data-weight]' ).each( function() {
+	    var child = $(this);
+	    total = total + parseInt( child.attr('data-weight') );
+	});
+
+	graded.attr( 'data-weight-children', total );
+    });
+    
     $('.card').each( function() {
 	var card = {};
+
+	var element = $(this);
+
+	var weight = 1.0;
+	element.parents( '.graded' ).each( function() {
+	    var parent = $(this);
+	    if (parseFloat(parent.attr('data-weight-children')) != 0) {
+		weight = weight * parseFloat(parent.attr('data-weight')) / parseFloat(parent.attr('data-weight-children'));
+	    } else {
+		weight = 0.0;
+	    }
+	});
+	card.weight = weight;
+	
 	card.title = $('h2',this).html();
 	if (card.title === null) {
-	    card.title = $(this).html();
+	    card.title = element.html();
 	}
 	
 	card.summary = $('h3',this).html();
-	card.cssClass = $(this).attr('class').replace('activity','');
+	card.cssClass = element.attr('class').replace('activity','');
 	    
 	// BADBAD: these hashes need to be found, or we need to
 	// replace how we store progress
 	card.hashes = [];
 	
-	card.href = $(this).attr('href');
+	card.href = element.attr('href');
 	if (card.href === undefined) {
-	    card.href = '#' + $(this).attr('id');
+	    card.href = '#' + element.attr('id');
 	}
-	
+
 	xourse.activities[card.href] = card;
 	xourse.activityList.push( card.href );
+    });
+
+    xourse.totalPoints = 0.0;
+    $('[data-weight]:not([data-weight] [data-weight])').each( function() {
+	xourse.totalPoints = xourse.totalPoints + parseFloat($(this).attr('data-weight'));
     });
     
     xourse.title = $('title').html();

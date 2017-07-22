@@ -1,6 +1,8 @@
 // bootstrap is expecting a global jQuery object
 var $ = window.$ = window.jQuery = require('jquery');
 var jqueryUI = require('jquery-ui');
+var jqueryTransit = require('jquery.transit');
+var waypoint = require('waypoints/lib/jquery.waypoints.min.js');
 var bootstrap = require('bootstrap');
 
 var syntaxHighlighter = require('syntaxhighlighter');

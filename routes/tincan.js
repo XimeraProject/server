@@ -8,7 +8,6 @@ var buffer24        = require("buffer24");
 var uint32 = require('uint32');
 var crc32 = require('fast-crc32c');
 
-
 var lrsRoot = process.env.GIT_REPOSITORIES_ROOT;
 
 var logFiles = {};

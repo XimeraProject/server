@@ -17,7 +17,7 @@ block content
                
       h1(role="banner") #{xourse.title}
         
-    div(class="xourse", data-commit=xourse.commit, data-user=user._id.toString())
+    div(class="xourse", data-commit=xourse.commit, data-user=user._id.toString(),data-points=xourse.totalPoints)
       for activityUrl in xourse.activityList
         +xourseCard(repositoryName, xourse.path, activityUrl, xourse.activities[activityUrl])
     hr

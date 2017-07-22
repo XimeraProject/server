@@ -25,7 +25,8 @@ exports.progressProportion = function(proportion) {
     var percent = Math.round(proportion*10000)/100;
 
     $('.navbar-progress-bar').show();
-    
+
+    // Progress bar on top of screen
     var progressBar = $('div.progress.completion-meter div.progress-bar.progress-bar-success');
     
     progressBar.attr('aria-valuenow', Math.round(percent));
@@ -35,12 +36,15 @@ exports.progressProportion = function(proportion) {
 
     progressBar.toggleClass('progress-bar-striped', proportion > 0.9999);
 
+    // Progress bar in xourse    
     var otherProgressBar = $('li.active a.activity-card div.progress-bar.progress-bar-success');
     
     otherProgressBar.attr('aria-valuenow', Math.round(percent));
     otherProgressBar.attr('aria-valuemax', 100);
     otherProgressBar.css('width', percent.toString() + '%' );
-    $('span', otherProgressBar).text('');	
+    $('span', otherProgressBar).text('');
+
+    // the activity card get attribute 'max-completion' set
 };    
 
 
@@ -94,8 +98,12 @@ var update = _.debounce( function() {
     
     // Store the progress as the "score" in the database
     $(activityToMonitor).persistentData( 'score', value );
+    
     // and in a separate "completion" table
     $(activityToMonitor).recordCompletion( value );
+
+    // BADBAD: total the points in the course (if there is one)
+    
 }, 300 );
 
 exports.monitorActivity = function( activity ) {

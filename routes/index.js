@@ -7,5 +7,5 @@ var remember = require('../remember');
 
 exports.index = function(req, res){
     remember(req);
-    res.render('index', { title: 'Home' });
+    res.render('index', { title: 'Home', landingPage: true });
 };

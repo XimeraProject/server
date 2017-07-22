@@ -1,6 +1,151 @@
+* multipleChoice isn't triggering begin feedback?
+   file:~/ximera/sample/completions.tex
+
+* TODO fix links like \ref and \cite
+
+* TODO complete activities should become stripey
+* TODO randomly chosen activity from a directory
+* TODO grade passback
+** TODO multiple LTI links for a single student
+** TODO grade passback via LTI
+** TODO grade return via LTI 1.1 -- return either homework score OR a specific activity
+
+* TODO prevent duplicated mathjax answer blanks
+
+* TODO accessibility for select all
+
+* TODO certificate pages in new regime
+
+* TODO repo page in new regime
+
+* TODO populate internal a href with abstract and such descriptions; a \link command should just have a tex file reference
+* TODO xourses should have a "priority" tag
+
+* TODO "Email my instructor" button from the student
+
+* TODO use express-rate-limit
+
+* TODO bootstrap buttons need aria tags? https://github.com/twbs/bootstrap/issues/14635 field set and legend
+
+* TODO onkey events for enter and space for the focused ones
+
+* TODO add accessible label for graphs
+* TODO turn off IE7 and IE8
+
+* TODO accordian top-level sections -- if they're buttons, they'll respond to spae and enter and add aria-expanded=false
+
+* TODO aria hidden=true and sr-only link for tables
+
+* TODO use git to handle collaborators
+* TODO fake a link to mathinsight
+* TODO list of all xourses
+* DONE pushing the back button quickly gives you full credit
+  CLOSED: [2017-06-12 Mon 18:05]
+* TODO make outcomes visible
+* TODO applet should know that validator was clicked to provide feedback
+* TODO duplicate forms are being created by \answer
+  probably remove math $(".mathjax-input", activity).mathAnswer();
+* TODO threejs support!
+* TODO db updates should be INSTNAT locally so you can write widgets that update db and then update view
+* TODO protect data from LTI: don't overwrite data
+* TODO safeexambrowser key in preamble  \safeexambrowser{salkfjskldfsd}
+
+* randomized questions via sage?
+* TODO geoblocking via \ipaddress{192.154.234.255/} in preamble
+* TODO \begin{validator} should UNVALIDATE
+* TODO \begin{points}{100}...\end{points} to set the number of points
+* TODO math palette
+* TODO search for multiple duplicate pages
+* in mapreduce the dotted field is not valid for storage
+* TODO function expressing different graders; mastery?  90% for a second chance.
+* TODO get tuples for the validator
+* TODO fix mathinsight like http://mathinsight.org/assess/math2241/eigenvalues_eigenvectors
+* TODO feedback for videos
+* TODO "points" score
+
+* TODO github wiki?
+* TODO problem bank that uncovered
+* TODO automaticaly drpo into box
+* TODO fix learning record with hash
+* TODO .csv output in order
+* TODO sign error search
+
+* TODO edit distance
+* TODO constant multipliers
+* TODO rounding errors
+
+* TODO db should give a diff to see what changed
+* TODO a "page" object that can get text fields and such
+* TODO let x's leak out
+* TODO sagecell exporting
+* TODO unitTest
+\isCorrect[id=x]{5x^2}
+\isIncorrect[id=x]{x^10}
+* TODO 3js (and VERSIONING), jsxgraph
+* TODO checkWork
+
+\answer[id=f]{}
+\begin{validator}
+f.derivative('x').equals( expression('x^2') );
+\end{validator}
+\answer[validator=exactString]{CAT}
+\answer[validator=significantFigures(3)]{0.00312}
+\answer[id=f]{} \answer[id=g]{}
+\begin{validator}
+f.equals(g);
+\end{validator}
+\answer[validator=stack(sigFigs(3), signErrors)]{blahblah}
+
+You\include interactive[stable=(2,3,1),unstable=4]{file.js}
+10:41 AMYou \includeinteractive[function=x^2]{file.js}
+10:41 AMYou \begin{interactive}[file.js]
+10:41 AMYou f = 'blah blah';
+10:41 AMYou \end{interactive}
+10:41 AMYou db
+10:45 AMYou db.name = 'hello!'
+10:45 AMYou  target.persistentData(function(event) { blah blah } )
+10:46 AMYou https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
+10:48 AMYou db( function() { blah balh } )
+10:51 AMYou db.object = blah
+10:52 AMYou blah.x = 5
+10:52 AMYou db.object.x = 5
+10:52 AMYou var x = {};
+10:54 AMYou x.x = x;
+10:54 AMYou db
+10:56 AMYou db.x = 'blah';
+10:56 AMYou db( function(event) { update the page from the db } )
+10:56 AMYou onCheckw
+10:58 AMYou onCheckWork( function(err) {
+10:58 AMYou incorrect('You need to put the points where they are supposd to be!')
+10:59 AMYou correct('You have located the point.')
+11:00 AMYou score(0.5, "You found half of them!")
+11:02 AMYou correct(string) == score(1, string)
+
+
+* TODO validator syntax
+\begin{validator}
+  some javascript code
+\end{validator}
+this does static code analysis to match identifiers with the IDs of
+\answer boxes.  if there are multiple answer boxes involved, then
+those boxes get its "check work" box disabled and a "check work"
+button is created.
+
+* TODO \answer should trigger an error outside of environment
+* TODO no more .tex.tex errors
+
+
+* TODO tincan error reporting should be happening
+* TODO font awesome icons not appearing on Safari
+* TODO replace colons with dashes in the labels and refs to avoid jQuery from interpreting the colon as a pseudoselector
+* DONE branding for colorado state
+  CLOSED: [2017-02-25 Sat 16:47]
+* TODO answer-specific feedback?
+* TODO multiple choice questions with control over # of attempts 
+
+* fix the syntax highlighter
 * rss feed for comments
 * making a forum post when selected text
 * edit your own forum posts bug: socketio isn't updating
 * youtube: can I include the youtube javascript code in my requirejs package?
 * forum post relative dates should be triggered to update
-* landing page has horizontal scroller
