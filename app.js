@@ -21,7 +21,6 @@ var express = require('express')
   , path = require('path')
   , winston = require('winston')
   , template = require('./routes/template')
-  , mongoImage = require('./routes/mongo-image')
   , gitBackend = require('./routes/git')
   , keyserver = require('./routes/gpg')
   , hashcash = require('./routes/hashcash')
@@ -385,9 +384,6 @@ function addDatabaseMiddleware(req, res, next) {
         res.send(200);
     });
 
-    //app.get('/template/:templateFile', template.renderTemplate);
-    //app.get('/template/forum/:templateFile', template.renderForumTemplate);
-
     var state = require('./routes/state.js')(null);
     app.get('/state/:activityHash', state.get);
     app.put('/state/:activityHash', state.put);
@@ -396,8 +392,6 @@ function addDatabaseMiddleware(req, res, next) {
     app.put('/completion/:activityHash', state.completion);
     app.get('/users/:id/completions', state.getCompletions);
     
-    app.get('/image/:hash', mongoImage.get);
-
     // BADBAD: this is where we'll put the NEW routes
 
     app.get( '/:repository/:path(*)/certificate',
