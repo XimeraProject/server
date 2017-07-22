@@ -8,7 +8,6 @@ var express = require('express')
   , course = require('./routes/course')
   , certificate = require('./routes/certificate')
   , user = require('./routes/user')
-  , api = require('./routes/api')
   , score = require('./routes/score')
   , github = require('./routes/github')
   , tincan = require('./routes/tincan')
@@ -196,7 +195,6 @@ function addDatabaseMiddleware(req, res, next) {
 
     app.version = require('./package.json').version;
 
-
     var limiter = new rateLimit({
 	windowMs: 15*60*1000, // 15 minutes 
 	max: 100, // limit each IP to 100 requests per windowMs 
@@ -221,7 +219,6 @@ function addDatabaseMiddleware(req, res, next) {
     
     app.use( '/:repository.git', gitBackend.git );
     
-    
     //app.use(versionator.middleware);
     app.use('/public', express.static(path.join(__dirname, 'public')));
     app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
@@ -230,32 +227,8 @@ function addDatabaseMiddleware(req, res, next) {
 
     //console.log( versionator.versionPath('/template/test') );
 
-    app.use(api.authenticateViaHMAC);    
     app.use(passport.initialize());
     app.use(passport.session());
-
-    //app.get('/xake', api.authenticateViaHMAC);
-    //app.get('/api/xake', api.xake);
- 
-    //app.put( '/activity/:commit/:path(*)', api.authenticateViaHMAC);
-    app.put( '/activity/:commit/:path(*.png)', api.putFile );
-    app.put( '/activity/:commit/:path(*.css)', api.putFile );
-    app.put( '/activity/:commit/:path(*.js)', api.putFile );
-    app.put( '/activity/:commit/:path(*.tex)', api.putFile );
-    app.put( '/activity/:commit/:path(*.jpg)', api.putFile );
-    app.put( '/activity/:commit/:path(*.pdf)', api.putFile );
-    app.put( '/activity/:commit/:path(*.svg)', api.putFile );    
-
-    app.put( '/activity/:commit/:path(*)', api.putActivity );
-    app.put( '/course/:commit/:path(*)', api.putXourse );
-    
-    app.put( '/repos/:owner/:repo/git/commits/:sha', api.verifyCollaborator );
-    app.put( '/repos/:owner/:repo/git/commits/:sha', api.putCommit );
-
-    app.put( '/commits/:sha', api.putBareCommit );
-    
-    //app.put( '/activity/:commit/:path(*.tex)', api.authenticateViaHMAC);
-    //app.put( '/activity/:commit/:path(*.tex)', api.putTex );
     
     app.use(login.guestUserMiddleware);
     app.use(addDatabaseMiddleware);
