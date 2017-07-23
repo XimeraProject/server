@@ -38,9 +38,8 @@ var express = require('express')
 // Check for presence of appropriate environment variables.
 if (!process.env.XIMERA_COOKIE_SECRET ||
     !process.env.XIMERA_MONGO_DATABASE ||
-    !process.env.XIMERA_MONGO_URL ||
-    !process.env.GITHUB_WEBHOOK_SECRET)
-    {
+    !process.env.XIMERA_MONGO_URL)
+{
         throw "Appropriate environment variables not set.";
     }
 
@@ -112,6 +111,7 @@ app.use(function(req, res, next) {
     });*/
 
 app.use(function(req, res, next) {
+    // BADBAD: do I actually need this rawbody middleware?
     req.rawBody = '';
     
     req.on('data', function(chunk) { 
@@ -242,17 +242,14 @@ function addDatabaseMiddleware(req, res, next) {
     app.post('/xAPI/statements', function(req,res) { res.status(200).send('ignored statemtents without a repository.'); } );
     app.post('/:repository/xAPI/statements', tincan.postStatements);    
     
-    // Requires the rawBody middleware above
-    github.secret = process.env.GITHUB_WEBHOOK_SECRET;
-    app.post('/github', github.github);
-
     app.get('/', function(req,res) {
 	res.render('index', { title: 'Home', landingPage: true });
     });
 
+    ////////////////////////////////////////////////////////////////
+    // User identity
+    
     app.get('/users/me', user.getCurrent);
-    //app.get('/users/profile', user.currentProfile);
-    //app.get('/users/:id/profile', user.profile);
     app.get('/users/:id', user.get);
     app.get('/users/:id/edit', user.edit);
     app.post('/users/:id', user.update);
@@ -266,59 +263,40 @@ function addDatabaseMiddleware(req, res, next) {
 
     app.put('/users/:id/secret', function( req, res ) { user.putSecret( req, res ); } );
 
-    //app.get('/course/', course.index );
+    ////////////////////////////////////////////////////////////////
+    // BADBAD: some permanent redirects for OSU courses from old URLs
     app.get( '/course', function( req, res ) { res.redirect(req.url + '/'); });
     app.get( '/courses', function( req, res ) { res.redirect('/course/'); });
     app.get( '/courses/', function( req, res ) { res.redirect('/course/'); });
-
+    app.get( '/course/mooculus/mooculus/:path(*)', function( req, res ) { 
+	res.set( 'location', '/mooculus/calculus1/' + req.params.path );
+	res.status(301).send();
+    });
+    app.get( '/course/mooculus/:path(*)', function( req, res ) { 
+	res.set( 'location', '/mooculus/' + req.params.path );
+	res.status(301).send();
+    });
+    app.get( '/course/:path(*)', function( req, res ) { 
+	res.set( 'location', '/' + req.params.path );
+	res.status(301).send();
+    });
+    app.get( '/activity/:path(*)', function( req, res ) { 
+	res.set( 'location', '/' + req.params.path );
+	res.status(301).send();
+    });    
+    
     app.get( '/certificate/:certificate/:signature', certificate.view );
-    
-    app.get( '/course/:commit([0-9a-fA-F]+)/certificate', course.xourseFromCommit, certificate.xourse );
-    app.get( '/course/:username/:repository/certificate', course.xourseFromUserAndRepo, certificate.xourse );
-    app.get( '/course/:username/:repository/:branch/certificate', course.xourseFromUserAndRepo, certificate.xourse );
-    
-    app.get( '/course/:commit([0-9a-fA-F]+)/', course.xourseFromCommit, course.tableOfContents );
-    app.get( '/course/:username/:repository/', course.xourseFromUserAndRepo, course.tableOfContents );
-    app.get( '/course/:username/:repository/:branch/', course.xourseFromUserAndRepo, course.tableOfContents );
 
-    app.get( '/labels/:commit([0-9a-fA-F]+)/:label', course.getLabel );
+    // app.get( '/course/:commit([0-9a-fA-F]+)/certificate', course.xourseFromCommit, certificate.xourse );
+    // app.get( '/course/:username/:repository/certificate', course.xourseFromUserAndRepo, certificate.xourse );
+    // app.get( '/course/:username/:repository/:branch/certificate', course.xourseFromUserAndRepo, certificate.xourse );
+    // app.get( '/labels/:commit([0-9a-fA-F]+)/:label', course.getLabel );
+    // app.get( '/statistics/:commit/:hash/answers', course.answers );
+    // app.get( '/statistics/:commit/:hash/successes', course.successes );
+    // app.get( '/progress/:username/:repository', course.progress );    
 
-    var appXimera = function( regexp, callback ) {
-	app.get( '/:noun(course|activity)/:commit([0-9a-fA-F]+)/:path(' + regexp + ')', course.objectFromCommit, callback );
-	app.get( '/:noun(course|activity)/:username/:repository/:path(' + regexp + ')', course.objectFromUserAndRepo, callback );
-	app.get( '/:noun(course|activity)/:username/:repository/:branch/:path(' + regexp + ')', course.objectFromUserAndRepo, callback );
-    };
-
-    appXimera( '*.tex', course.source );
-
-    // SVG files will only be rendered if they are sent with content type image/svg+xml
-    appXimera( '*.svg', course.file('image/svg+xml') );
-    appXimera( '*.png', course.file('image/png') );
-    appXimera( '*.pdf', course.file('image/pdf') );
-    appXimera( '*.jpg', course.file('image/jpeg') );
-    appXimera( '*.js',  course.file('text/javascript') );
-    appXimera( '*.css', course.file('text/css') );                
-
-    appXimera( '*', course.activity );
-
-    app.get( '/course/:commit([0-9a-fA-F]+)$' ,function( req, res ) { res.redirect(req.url + '/'); });
-    app.get( '/course/:username/:repository', function( req, res ) { res.redirect(req.url + '/'); });
-    app.get( '/course/:username/:repository/:branch', function( req, res ) { res.redirect(req.url + '/'); });
-
-    app.get( '/statistics/:commit/:hash/answers', course.answers );
-    app.get( '/statistics/:commit/:hash/successes', course.successes );
-    
-    app.get( '/progress/:username/:repository', course.progress );    
-
-    //app.head( '/activity/:commit/:path(*.png)', course.imageHead );
-    //app.head( '/activity/:commit/:path(*.jpg)', course.imageHead );
-    //app.head( '/activity/:commit/:path(*.pdf)', course.imageHead );
-    //app.head( '/activity/:commit/:path(*.svg)', course.imageHead );    
-    app.head( '/activity/:commit/:path(*)', course.activityByHashHead );
-    
-    // Instructor paths
-    app.get(/^\/instructor\/course\/(.+)\/activity\/(.+)\/$/, instructor.instructorActivity );
-    app.get('/instructor/activity-analytics/:id', instructor.activityAnalytics);
+    ////////////////////////////////////////////////////////////////
+    // Logins
 
     // Google login.
     app.get('/auth/google', passport.authenticate('google-openidconnect'));
@@ -374,6 +352,9 @@ function addDatabaseMiddleware(req, res, next) {
 	}
     });
 
+    ////////////////////////////////////////////////////////////////
+    // State storage    
+    
     var state = require('./routes/state.js')(null);
     app.get('/state/:activityHash', state.get);
     app.put('/state/:activityHash', state.put);
@@ -381,8 +362,9 @@ function addDatabaseMiddleware(req, res, next) {
 
     app.put('/completion/:activityHash', state.completion);
     app.get('/users/:id/completions', state.getCompletions);
-    
-    // BADBAD: this is where we'll put the NEW routes
+
+    ////////////////////////////////////////////////////////////////
+    // Activity page rendering
 
     app.get( '/:repository/:path(*)/certificate',
 	     gitBackend.repository,
@@ -424,9 +406,6 @@ function addDatabaseMiddleware(req, res, next) {
 	     gitBackend.fetchMetadata,	     
 	     gitBackend.render );    
     
-    // BADBAD: serve source too
-    //appXimera( '*.tex', course.source );
-
     // SVG files will only be rendered if they are sent with content type image/svg+xml
 
     // app.get( '/:repository/:path(*)', gitBackend.repository, gitBackend.publishedCommitOnMaster, gitBackend.getEntry, gitBackend.render );
