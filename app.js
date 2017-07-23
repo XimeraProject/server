@@ -6,7 +6,6 @@ var express = require('express')
   , course = require('./routes/course')
   , certificate = require('./routes/certificate')
   , user = require('./routes/user')
-  , github = require('./routes/github')
   , tincan = require('./routes/tincan')
   , instructor = require('./routes/instructor')
   , http = require('http')
@@ -109,17 +108,6 @@ app.use(function(req, res, next) {
     }
     
     });*/
-
-app.use(function(req, res, next) {
-    // BADBAD: do I actually need this rawbody middleware?
-    req.rawBody = '';
-    
-    req.on('data', function(chunk) { 
-	req.rawBody += chunk;
-    });
-    
-    next();
-});
 
 app.use(function(req, res, next) {
     res.locals.path = req.path;    
