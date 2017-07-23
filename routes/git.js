@@ -15,7 +15,8 @@ var fs = require('fs');
 var url = require('url');
 var cheerio = require('cheerio');
 
-var gitRepositoriesRoot = process.env.GIT_REPOSITORIES_ROOT;
+var config = require('../config');
+var gitRepositoriesRoot = config.repositories.root;
 
 exports.rootUrl = "";
 

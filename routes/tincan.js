@@ -82,31 +82,6 @@ function recordStatement( repository, statement, callback ) {
     });
 }
 
-function escapeKeys(obj) {
-    if (!(Boolean(obj) && typeof obj == 'object'
-      && Object.keys(obj).length > 0)) {
-        return false;
-    }
-    Object.keys(obj).forEach(function(key) {
-        if (typeof(obj[key]) == 'object') {
-            escapeKeys(obj[key]);
-        } else {
-            if (key.indexOf('.') !== -1) {
-                var newkey = key.replace(/\./g, '．');
-                obj[newkey] = obj[key];
-                delete obj[key];
-            }
-            if (key.indexOf('$') !== -1) {
-                var newkey = key.replace(/\$/g, '＄');
-                obj[newkey] = obj[key];
-                delete obj[key];
-            }
-
-        }
-    });
-    return true;
-}
-
 exports.get = function(req, res) {
     var filename = path.join( lrsRoot, req.params.repository + ".git", "learning-record-store" );
     console.log(filename);
