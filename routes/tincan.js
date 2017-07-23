@@ -7,8 +7,9 @@ var fs        = require("fs");
 var buffer24        = require("buffer24");
 var uint32 = require('uint32');
 var crc32 = require('fast-crc32c');
+var config = require('../config');
 
-var lrsRoot = process.env.GIT_REPOSITORIES_ROOT;
+var lrsRoot = config.repositories.root;
 
 var logFiles = {};
 function logFile( name, callback ) {

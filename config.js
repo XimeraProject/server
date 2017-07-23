@@ -42,7 +42,7 @@ config.root = process.env.ROOT_URL || ('http://localhost:' + config.port);
 config.gpg               = {}
 config.gpg.home          = process.env.GNUPGHOME || (path.join(__dirname, 'gnupg'));
 config.repositories      = {}
-config.repositories.root = process.env.GNUPGHOME || (path.join(__dirname, 'repositories'));
+config.repositories.root = process.env.GIT_REPOSITORIES_ROOT || (path.join(__dirname, 'repositories'));
 
 /**
  * Database Configuration
