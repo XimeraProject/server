@@ -266,9 +266,6 @@ function addDatabaseMiddleware(req, res, next) {
 
     app.put('/users/:id/secret', function( req, res ) { user.putSecret( req, res ); } );
 
-    // BADBAD: this should probably be a PUT since it changes state
-    app.get('/users/:id/courses/:owner/:repo', function( req, res ) { user.courses( req, res ); } );
-    
     //app.get('/course/', course.index );
     app.get( '/course', function( req, res ) { res.redirect(req.url + '/'); });
     app.get( '/courses', function( req, res ) { res.redirect('/course/'); });

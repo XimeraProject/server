@@ -297,7 +297,7 @@ exports.update = function(req, res){
     mdb.User.findOne({_id: new mongo.ObjectID(id)}, function(err,document) {
         if (document) {
 	    if ( ! hasPermissionToEdit( req.user, document )) {
-		res.status(500).send('No permission to access other users.');
+		res.status(403).send('No permission to access other users.');
 		return;			
 	    } else {	    
 		if (req.user._id.toString() == id)
@@ -321,8 +321,8 @@ exports.update = function(req, res){
 		else
 		    document.email = hash.email = '';		
 		
-		if ((req.body.homepage) && (validator.isURL(req.body.homepage)))
-		    document.website = hash.website = req.body.homepage;
+		if ((req.body.website) && (validator.isURL(req.body.website)))
+		    document.website = hash.website = req.body.website;
 		else
 		    document.website = hash.website = '';	
 		
@@ -389,72 +389,6 @@ exports.update = function(req, res){
         else {
 	    res.status(404).json({});
         }
-    });
-};
-
-exports.courses = function(req, res){
-    var id = req.params.id;
-    var owner = req.params.owner;
-    var repo = req.params.repo;
-    
-    mdb.User.findOne({_id: new mongo.ObjectID(id)}, function(err,instructor) {    
-	if ((err) || (! instructor)) {
-            res.status(500).send('No such person.');
-	    return;		    
-	} else {
-	    if (!(instructor.githubAccessToken)) {
-		res.status(500).send('Instructor is not linked to GitHub.');
-		return;
-	    } else {
-		var github = new githubApi({version: "3.0.0"});
-		
-		github.authenticate({
-		    type: "oauth",
-		    token: instructor.githubAccessToken
-		});
-
-		// BADBAD: check if a user is a collaborator
-		github.user.get({}, function(err, githubUser) {
-		    if (err) {
-			res.status(500).send(err);
-			return;
-		    } else {
-			var githubId = githubUser.id;
-
-			github.repos.getCollaborator({user: owner, repo: repo, collabuser: githubUser.login}, function(err, collaborators) {
-			    if (err) {
-				res.status(500).send(err);
-				return;
-			    } else {
-				// No error means we're a collaborator
-
-				mdb.Branch.find( { owner: owner, repository: repo },
-						 { commit: 1, _id: 0 },
-						 function(err, branches) {
-						     if (err) {
-							 res.status(500).send(err);
-							 return;						 
-						     } else {
-							 var commits = branches.map( function(branch) { return branch.commit; } );
-							 
-							 // BADBAD: REALLY should add and uniqueify here, otherwise we're clobbering old hashes
-							 var hash = { instructor: commits };
-							 
-							 mdb.User.update( {_id: instructor._id }, {$set: hash},
-									  function(err, document) {
-									      if (err)
-										  res.status(500).send(err);
-									      else
-										  res.status(200).json(commits);
-									  });
-						     }
-						 });
-			    }
-			});
-		    }			
-		});
-	    }
-	}
     });
 };
 
