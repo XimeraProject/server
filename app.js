@@ -218,9 +218,9 @@ function addUserImplicitly(req, res, next) {
     app.get('/users/', user.index);
     app.get('/users/page/:page', user.index); // pagination in Mongo is fairly slow
     
-    app.delete('/users/:id/google', function( req, res ) { user.deleteLinkedAccount( req, res, 'google' ); } );
-    app.delete('/users/:id/github', function( req, res ) { user.deleteLinkedAccount( req, res, 'github' ); } );
-    app.delete('/users/:id/twitter', function( req, res ) { user.deleteLinkedAccount( req, res, 'twitter' ); } );
+    app.delete('/users/:id/google', function( req, res, next ) { user.deleteLinkedAccount( req, res, next, 'google' ); } );
+    app.delete('/users/:id/github', function( req, res, next ) { user.deleteLinkedAccount( req, res, next, 'github' ); } );
+    app.delete('/users/:id/twitter', function( req, res, next ) { user.deleteLinkedAccount( req, res, next, 'twitter' ); } );
 
     app.put('/users/:id/secret', function( req, res ) { user.putSecret( req, res ); } );
 

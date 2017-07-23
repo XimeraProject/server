@@ -76,7 +76,7 @@ exports.profile = function(req, res){
     res.render('user', { userId: req.params.id, user: req.user, editable: editable, title: 'Profile' } );
 };
 
-exports.putSecret = function(req, res){
+exports.putSecret = function(req, res, next){
     var id = req.params.id;
 
     if (!req.user) {
@@ -85,7 +85,8 @@ exports.putSecret = function(req, res){
 
     // BADBAD: should include more nuanced security here
     if (req.user._id.toString() != id) {
-        res.status(500).send('No permission to access other users.');
+        res.status(500);
+	next(new Error('No permission to access other users.'));
 	return;	
     }
 
@@ -106,7 +107,7 @@ exports.putSecret = function(req, res){
 
 ////////////////////////////////////////////////////////////////
 // delete an account, unless it is the last linked account
-exports.deleteLinkedAccount = function(req, res, account){
+exports.deleteLinkedAccount = function(req, res, next, account){
     var id = req.params.id;
     
     if (!req.user) {
@@ -162,10 +163,11 @@ exports.deleteLinkedAccount = function(req, res, account){
 			{},
 			function(err,result,status) {
 			    if (err)
-				res.status(500).send("Unknown error.");
+				next(err);
 			    else {
 				if (result.n <= 0) {
-				    res.status(404).send("No other account available; you cannot delete the only linked account.");
+				    res.status(404);
+				    next(new Error("No other account available; you cannot delete the only linked account."));
 				} else {
 				    res.status(200).send("Successfully removed " + account);
 				}
@@ -175,7 +177,7 @@ exports.deleteLinkedAccount = function(req, res, account){
     return;
 }
 
-exports.get = function(req, res){
+exports.get = function(req, res, next){
     var id = req.params.id;
 
     if (!req.user) {
@@ -186,7 +188,7 @@ exports.get = function(req, res){
         if (document) {
 	    var viewerPermission = hasPermissionToView( req.user, document );
 	    if ( ! viewerPermission ) {
-		res.status(500).send('No permission to access other users.');
+		next(new Error('No permission to access other users.'));
 		return;			
 	    } else {
 		// Add one view to the count of profileViews
@@ -241,7 +243,7 @@ exports.get = function(req, res){
     });
 };
 
-exports.edit = function(req, res){
+exports.edit = function(req, res, next){
     var id = req.params.id;
 
     if (!req.user) {
@@ -251,7 +253,8 @@ exports.edit = function(req, res){
     mdb.User.findOne({_id: new mongo.ObjectID(id)}, function(err,document) {
         if (document) {
 	    if ( ! hasPermissionToEdit( req.user, document )) {
-		res.status(500).send('No permission to edit that user.');
+		res.status(500);
+		next(new Error('No permission to edit that user.'));
 		return;
 	    } else {
 		if (document.email)
@@ -287,7 +290,7 @@ exports.edit = function(req, res){
     });
 };
 
-exports.update = function(req, res){
+exports.update = function(req, res, next){
     var id = req.params.id;
 
     if (!req.user) {
@@ -297,7 +300,8 @@ exports.update = function(req, res){
     mdb.User.findOne({_id: new mongo.ObjectID(id)}, function(err,document) {
         if (document) {
 	    if ( ! hasPermissionToEdit( req.user, document )) {
-		res.status(403).send('No permission to access other users.');
+		res.status(403);
+		next(new Error('No permission to access other users.'));
 		return;			
 	    } else {	    
 		if (req.user._id.toString() == id)
@@ -392,13 +396,15 @@ exports.update = function(req, res){
     });
 };
 
-exports.index = function(req, res) {
+exports.index = function(req, res, next) {
     var page = req.params.page;
     var pageSize = 10;
     var pageCount = 1;
 
     if (!(('user' in req) && (req.user.superuser))) {
-	res.status(403).render('fail', { title: "Users not visible", message: "You are not a superuser." });
+	res.status(403);
+	next(new Error('You are not a superuser.'));
+	    //.render('fail', { title: "Users not visible", message: "You are not a superuser." });
 	return;
     }
     
@@ -418,7 +424,7 @@ exports.index = function(req, res) {
 	    },
 	], function(err, users) {
 	    if (err) {
-		res.status(500).send(err);
+		next(err);
 	    } else {
 		users.forEach( function(user) {
 		    if (user.email)

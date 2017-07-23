@@ -62,7 +62,7 @@ function authorization(req,res,next) {
 		    if (buf == token) {
 			next();
 		    } else
-			res.status(500).send('Bearer token is invalid.');
+			next(new Error('Bearer token is invalid.'));
 		}).catch(function(e) {
 		    res.status(404).send('Repository ' + repositoryName + '.git is missing a Ximera token.');
 		});
@@ -102,7 +102,7 @@ exports.create = function(req, res) {
 		if (keyid == req.keyid)
 		    sendToken( repository, req, res );
 		else
-		    res.status(500).send('You do not own the repository.');
+		    res.status(403).send('You do not own the repository.');
 	    }).catch(function(e) {
 		res.status(404).send('Repository ' + repositoryName + '.git is missing a GPG key fingerprint.');
 	    });;
@@ -269,7 +269,7 @@ exports.getEntry = function(req, res, next) {
 	    });
 	}, function(err) {
 	    if (err) {
-		res.status(500).send(err);
+		next(err);
 	    } else {
 		next();
 	    }
