@@ -329,7 +329,6 @@ function addDatabaseMiddleware(req, res, next) {
             passport.authenticate('google-openidconnect', { successRedirect: '/just-logged-in',
 							    failureRedirect: '/auth/google'}));
 
-
     // Permit local logins when on a test machine
     if (app.locals.deployment != 'production') {
 	app.post('/auth/local', 
@@ -376,11 +375,6 @@ function addDatabaseMiddleware(req, res, next) {
 	    } else
 		res.redirect('/');
 	}
-    });
-
-    app.get('/mailing-list', function( req, res ) {
-        fs.appendFile( 'emails.txt', req.query['email'] + "\n", function(err) { return; });
-        res.send(200);
     });
 
     var state = require('./routes/state.js')(null);
@@ -496,6 +490,6 @@ function addDatabaseMiddleware(req, res, next) {
     
     // If nothing else matches, it is a 404
     app.use(function(req, res, next){
-        res.render('404', { status: 404, url: req.url });
+        res.status(404).render('404', { status: 404, url: req.url });
     });
 });
