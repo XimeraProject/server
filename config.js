@@ -39,9 +39,9 @@ config.environment    = process.env.NODE_ENV || 'development';
 config.port = process.env.PORT || 3000;
 config.root = process.env.ROOT_URL || ('http://localhost:' + config.port);
 
-config.gpg               = {}
+config.gpg               = {};
 config.gpg.home          = process.env.GNUPGHOME || (path.join(__dirname, 'gnupg'));
-config.repositories      = {}
+config.repositories      = {};
 config.repositories.root = process.env.GIT_REPOSITORIES_ROOT || (path.join(__dirname, 'repositories'));
 
 /**
