@@ -3,7 +3,6 @@
  */
 
 var express = require('express')
-  , routes = require('./routes')
   , course = require('./routes/course')
   , certificate = require('./routes/certificate')
   , user = require('./routes/user')
@@ -247,7 +246,9 @@ function addDatabaseMiddleware(req, res, next) {
     github.secret = process.env.GITHUB_WEBHOOK_SECRET;
     app.post('/github', github.github);
 
-    app.get('/', routes.index);
+    app.get('/', function(req,res) {
+	res.render('index', { title: 'Home', landingPage: true });
+    });
 
     app.get('/users/me', user.getCurrent);
     //app.get('/users/profile', user.currentProfile);
