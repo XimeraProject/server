@@ -7,7 +7,6 @@ var express = require('express')
   , certificate = require('./routes/certificate')
   , user = require('./routes/user')
   , tincan = require('./routes/tincan')
-  , instructor = require('./routes/instructor')
   , http = require('http')
   , path = require('path')
   , mdb = require('./mdb')
@@ -147,6 +146,7 @@ passport.use(login.googleStrategy(rootUrl));
 passport.use(login.twitterStrategy(rootUrl));
 passport.use('lms', login.lmsStrategy(rootUrl));    
 passport.use(login.githubStrategy(rootUrl));
+
 // DEPRECATED LTI
 passport.use(login.ltiStrategy(rootUrl));
 
