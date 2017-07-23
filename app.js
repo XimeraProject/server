@@ -10,6 +10,7 @@ var express = require('express')
   , http = require('http')
   , path = require('path')
   , mdb = require('./mdb')
+  , config = require('./config')
   , login = require('./login')
   , passport = require('passport')
   , mongo = require('mongodb')
@@ -32,14 +33,6 @@ var express = require('express')
   , errorHandler = require('errorhandler')
   , sendSeekable = require('send-seekable')
   ;
-
-// Check for presence of appropriate environment variables.
-if (!process.env.XIMERA_COOKIE_SECRET ||
-    !process.env.XIMERA_MONGO_DATABASE ||
-    !process.env.XIMERA_MONGO_URL)
-{
-        throw "Appropriate environment variables not set.";
-    }
 
 // Some filters for Jade; admittedly, Jade comes with its own Markdown
 // filter, but I want to run everything through a filter to add
@@ -69,16 +62,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 // all environments
-app.set('port', process.env.PORT || 3000);
+app.set('port', config.port);
 
-var rootUrl = 'http://localhost:' + app.get('port');
-if (process.env.DEPLOYMENT === 'production') {
-    rootUrl = 'https://ximera.osu.edu';
-} else {
-    // Temporarily use NGROK for the server    
-    rootUrl = 'http://127.0.0.1:3000';
-}
-gitBackend.rootUrl = rootUrl;
+gitBackend.rootUrl = config.root;
 
 app.use(logger('dev'));
 app.use(favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
@@ -94,8 +80,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride());
 
-cookieSecret = process.env.XIMERA_COOKIE_SECRET;
-app.use(cookieParser(cookieSecret));
+app.use(cookieParser(config.session.secret));
 
 // Common mongodb initializer for the app server and the activity service
 mdb.initialize(function (err) {
@@ -105,7 +90,7 @@ mdb.initialize(function (err) {
     var MongoStore = require('connect-mongo')(session);
     
     var theSession = session({
-	secret: cookieSecret,
+	secret: config.session.secret,
 	resave: false,
 	saveUninitialized: false,
 	store: new MongoStore({ mongooseConnection: mdb.mongoose.connection })
@@ -115,15 +100,11 @@ mdb.initialize(function (err) {
 
     console.log( "Session setup." );
 
-passport.use(login.localStrategy(rootUrl));
-passport.use(login.googleStrategy(rootUrl));
-passport.use(login.twitterStrategy(rootUrl));
-passport.use('lms', login.lmsStrategy(rootUrl));    
-passport.use(login.githubStrategy(rootUrl));
-
-// DEPRECATED LTI
-passport.use(login.ltiStrategy(rootUrl));
-
+passport.use(login.localStrategy(config.root));
+passport.use(login.googleStrategy(config.root));
+passport.use(login.twitterStrategy(config.root));
+passport.use('lms', login.lmsStrategy(config.root));    
+passport.use(login.githubStrategy(config.root));
 
 // Only store the user _id in the session
 passport.serializeUser(function(user, done) {
@@ -265,8 +246,7 @@ function addUserImplicitly(req, res, next) {
             passport.authenticate('google-openidconnect', { successRedirect: '/just-logged-in',
 							    failureRedirect: '/auth/google'}));
 
-    // Permit local logins when on a test machine
-    if (app.locals.deployment != 'production') {
+    if (config.localAuth) {
 	app.post('/auth/local', 
 		 passport.authenticate('local', { failureRedirect: '/' }),
 		 function(req, res) {
@@ -275,25 +255,28 @@ function addUserImplicitly(req, res, next) {
     }
     
     // Twitter login.
-    app.get('/auth/twitter', passport.authenticate('twitter'));
-    app.get('/auth/twitter/callback',
-            passport.authenticate('twitter', { successRedirect: '/just-logged-in',
-					       failureRedirect: '/auth/twitter'}));    
+    if (config.twitterAuth) {
+	app.get('/auth/twitter', passport.authenticate('twitter'));
+	app.get('/auth/twitter/callback',
+		passport.authenticate('twitter', { successRedirect: '/just-logged-in',
+						   failureRedirect: '/auth/twitter'}));
+    }
 
     // GitHub login.
-    app.get('/auth/github', passport.authenticate('oauth2'));
-    app.get('/auth/github/callback',
-            passport.authenticate('oauth2', { successRedirect: '/just-logged-in',
-				              failureRedirect: '/',
-					      failureFlash: true}));
+    if (config.githubAuth) {
+	app.get('/auth/github', passport.authenticate('oauth2'));
+	app.get('/auth/github/callback',
+		passport.authenticate('oauth2', { successRedirect: '/just-logged-in',
+						  failureRedirect: '/',
+						  failureFlash: true}));
+    }
 
     // LTI login
-    app.post('/lti', passport.authenticate('lti', { successRedirect: '/just-logged-in',
-						    failureRedirect: '/about/lti-failed'}));
-
-    app.post('/lms', passport.authenticate('lms', { successRedirect: '/just-logged-in',
-						    failureRedirect: '/',
-						    failureFlash: true}));
+    if (config.ltiAuth) {
+	app.post('/lms', passport.authenticate('lms', { successRedirect: '/just-logged-in',
+							failureRedirect: '/',
+							failureFlash: true}));
+    }
     
     app.get('/logout', function (req, res) {
         req.logout();
@@ -373,7 +356,7 @@ function addUserImplicitly(req, res, next) {
     app.locals.Color = require('color');
     app.locals.moment = require('moment');
     app.locals._ = require('underscore');
-    app.locals.deployment = process.env.DEPLOYMENT;
+    app.locals.config = config;
     app.locals.version = app.version;
 
     // Start HTTP server for fully configured express App.
@@ -381,7 +364,7 @@ function addUserImplicitly(req, res, next) {
     
     var ios = require('socket.io-express-session');
     var io = require('socket.io')(server);
-    io.use(ios(theSession, cookieParser(cookieSecret)));
+    io.use(ios(theSession, cookieParser(config.session.secret)));
     
     if(!module.parent){
         server.listen(app.get('port'), function(stream){
@@ -433,7 +416,8 @@ function addUserImplicitly(req, res, next) {
     // Present errors to the user
     
     if ('development' == app.get('env')) {
-	// Middleware for development only
+	// Middleware for development only, since this will dump a
+	// stack trace
 	errorHandler.title = 'Ximera';
         app.use(errorHandler());
     }
@@ -442,8 +426,8 @@ function addUserImplicitly(req, res, next) {
 	if (res.headersSent) {
 	    return next(err);
 	}
-	res.status(500).render('500', {
+	res.render('500', {
 	    message: err
-	} );
-    });    
+	});
+    });
 });

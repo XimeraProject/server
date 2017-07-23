@@ -129,7 +129,7 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
                  a(href="/auth/twitter") <i class='fa fa-twitter'></i> Sign In with Twitter
                li
                  a(href="/auth/github") <i class='fa fa-github'></i> Sign In with GitHub
-               if deployment != 'production'
+               if config.localAuth
                  li.divider(role="presentation")
                  li
                    form.navbar-form#form-login(action="/auth/local",method="post")

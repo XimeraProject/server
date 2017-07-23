@@ -29,18 +29,18 @@ This creates a directory containing BSON and JSON files
 
         git clone https://github.com/kisonecat/ximera
 
-6. Create file `env.sh` with content:
+6. Create file `.env` with content:
 
-        export XIMERA_MONGO_URL=127.0.0.1
-        export XIMERA_MONGO_DATABASE=test
-        export XIMERA_COOKIE_SECRET=thisismysecretcookieyoushouldchangethis
-        export COURSERA_CONSUMER_KEY=thisisacourserakey
-        export COURSERA_CONSUMER_SECRET=courserasecretkey
-        export LTI_KEY=myltikey
-        export LTI_SECRET=myltisecret
-        export GITHUB_WEBHOOK_SECRET=githubwebhooksecret
+        XIMERA_MONGO_URL=127.0.0.1
+        XIMERA_MONGO_DATABASE=test
+        XIMERA_COOKIE_SECRET=thisismysecretcookieyoushouldchangethis
+        COURSERA_CONSUMER_KEY=thisisacourserakey
+        COURSERA_CONSUMER_SECRET=courserasecretkey
+        LTI_KEY=myltikey
+        LTI_SECRET=myltisecret
+        GITHUB_WEBHOOK_SECRET=githubwebhooksecret
 
-Type `source env.sh` to execute those commands
+This file will be loaded by the `dotenv` package.
 
 Note that if you used a different database name, you should set XIMERA_MONGO_DATABASE to the name of your database.
 

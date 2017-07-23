@@ -1,6 +1,7 @@
 var Grid = require('gridfs-stream');
 var mongoose = require('mongoose');
 var fstream = require('fstream');
+var config = require('./config');
 var fs = require("fs");
 var winston = require("winston");
 var _ = require("underscore");
@@ -10,8 +11,7 @@ exports = module.exports;
 var ObjectId = mongoose.Schema.ObjectId;
 var Mixed = mongoose.Schema.Types.Mixed;
 
-var url = 'mongodb://' + process.env.XIMERA_MONGO_URL + "/" +
-                 process.env.XIMERA_MONGO_DATABASE;
+var url = 'mongodb://' + config.mongodb.url + "/" + config.mongodb.database;
 
 exports.mongoose = mongoose;
 

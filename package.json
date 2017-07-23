@@ -24,6 +24,7 @@
     "crypto": "0.0.3",
     "csv": "0.4.6",
     "domino": "1.0.19",
+    "dotenv": "^4.0.0",
     "eonasdan-bootstrap-datetimepicker": "4.15.35",
     "errorhandler": "1.4.2",
     "express": "4.13.3",

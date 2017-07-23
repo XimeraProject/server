@@ -5,6 +5,7 @@ var GoogleStrategy = require('passport-google-openidconnect').Strategy
   , OAuth2Strategy = require('passport-oauth2').Strategy
   , async = require('async')
   , mdb =  require('./mdb')
+  , config =  require('./config')
   , githubApi = require('github')
   , path = require('path');
 
@@ -12,8 +13,8 @@ module.exports.githubStrategy = function(rootUrl) {
     return new OAuth2Strategy({
 	authorizationURL: 'https://github.com/login/oauth/authorize',
 	tokenURL: 'https://github.com/login/oauth/access_token',
-	clientID: process.env.GITHUB_CLIENT_ID,
-	clientSecret: process.env.GITHUB_CLIENT_SECRET,
+	clientID: config.github.clientID,
+	clientSecret: config.github.clientSecret,
 	scope: "repo:status,public_repo,repo_deployment,write:repo_hook",
 	callbackURL: rootUrl + "/auth/github/callback",
 	passReqToCallback: true
@@ -41,8 +42,8 @@ module.exports.githubStrategy = function(rootUrl) {
 module.exports.googleStrategy = function (rootUrl) {
     return new GoogleStrategy({
         callbackURL: rootUrl + '/auth/google/callback',
-	clientID: process.env.GOOGLE_CLIENT_ID,
-	clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+	clientID: config.google.clientID,
+	clientSecret: config.google.clientSecret,
 	scope: "email",
         passReqToCallback: true
     }, function(req, iss, sub, profile, accessToken, refreshToken, done) {
@@ -54,8 +55,8 @@ module.exports.googleStrategy = function (rootUrl) {
 
 module.exports.twitterStrategy = function(rootUrl) {
     return new  TwitterStrategy({
-	consumerKey: process.env.TWITTER_CONSUMER_KEY,
-	consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+	consumerKey: config.twitter.consumerKey,
+	consumerSecret: config.twitter.consumerSecret,
 	callbackURL: rootUrl + "/auth/twitter/callback",
 	passReqToCallback: true
     }, function(req, token, tokenSecret, profile, done) {
@@ -82,35 +83,11 @@ module.exports.localStrategy = function(rootUrl) {
     });
 }
 
-// DEPRECATED: should use the /lms endpoint instead
-module.exports.ltiStrategy = function (rootUrl) {
-    return new LtiStrategy({
-        returnURL: '/just-logged-in',
-        consumerKey: process.env.LTI_KEY,
-        consumerSecret: process.env.LTI_SECRET,
-    }, function (req, identifier, profile, done) {
-	var displayName = 'Remote User';
-
-	console.log( "LTI ****************" );
-	console.log( profile );
-
-	if ('lis_person_name_full' in profile)
-	    displayName = profile.lis_person_name_full;
-	var email = '';
-
-	if ('lis_person_contact_email_primary' in profile)	
-	    email = profile.lis_person_contact_email_primary;
-
-        addUserAccount(req, 'ltiId', identifier, displayName, email, profile.custom_ximera, done);
-    });
-};
-
-
 module.exports.lmsStrategy = function (rootUrl) {
     return new LtiStrategy({
         returnURL: '/just-logged-in',
-        consumerKey: process.env.LTI_KEY,
-        consumerSecret: process.env.LTI_SECRET,
+        consumerKey: config.lti.key,
+        consumerSecret: config.lti.secret,	
     }, function (req, identifier, profile, done) {
         addLmsAccount(req, identifier, profile, done);
     });

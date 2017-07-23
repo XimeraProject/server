@@ -24,3 +24,4 @@ components
 bower_components
 
 environment.sh
+.env
