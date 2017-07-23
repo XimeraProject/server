@@ -12,3 +12,12 @@ describe('index page', function () {
 	    .expect(200, done);
     });
 });
+
+describe('missing routes', function () {
+    it('should provide an error', function (done) {
+	request(app)
+	    .get('/nothing-is-here')
+	    .set('Accept', 'text/html')	
+	    .expect(404, done);
+    });
+});
