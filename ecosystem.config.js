@@ -11,7 +11,8 @@ module.exports = {
     env_production : {
 	"NODE_ENV": "production",
 	"DEPLOYMENT": "production",
-	"XIMERA_MONGO_DATABASE": "production"
+	"XIMERA_MONGO_DATABASE": "production",
+	"ROOT_URL": "https://ximera.osu.edu"
     }
   }]
 }
