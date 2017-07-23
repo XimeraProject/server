@@ -28,7 +28,7 @@ function logFile( name, callback ) {
 		    } else {
 			// And include the initial chunk that says sNaPpY
 			var firstChunk =  Buffer.from([0xff,0x06,0x00,0x00,0x73,0x4e,0x61,0x50,0x70,0x59]);
-			fs.write( fd, firstChunk, function(err) {
+			fs.write( fd, firstChunk, 0, firstChunk.length, function(err) {
 			    if (err) {
 				callback(err);				
 			    } else {		
