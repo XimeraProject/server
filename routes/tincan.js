@@ -13,8 +13,8 @@ var lrsRoot = config.repositories.root;
 
 var logFiles = {};
 function logFile( name, callback ) {
-    console.log("logFile = ",name);
     var filename = path.join( lrsRoot, name + ".git", "learning-record-store" );
+    console.log("logFile = ",filename);
     if (logFiles[filename]) {
 	callback(null, logFiles[filename]);
     } else {
@@ -142,7 +142,11 @@ exports.postStatements = function(req, res) {
 	    var repository = req.params.repository;
 	    
 	    recordStatement( repository, statement, function(err) {
-		// I just ignore whether they are successful or not
+		if (err) {
+		    console.log(err);
+		    // I just ignore whether they are successful or
+		    // not, in the sense that I don't tell the caller
+		}
 	    });
 	});
 	res.status(200).json({ok: true});		    
