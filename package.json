@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
+    "test": "mocha",
     "install": "napa MSchmidt/jquery-fullsizable tchapi/pagedown-bootstrap"
   },
   "dependencies": {
