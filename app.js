@@ -42,7 +42,7 @@ if (!process.env.XIMERA_COOKIE_SECRET ||
     }
 
 // Some filters for Jade; admittedly, Jade comes with its own Markdown
-// filter, but I want to run everything through the a filter to add
+// filter, but I want to run everything through a filter to add
 // links to Ximera
 var jade = require('jade');
 var md = require("markdown");
@@ -83,31 +83,6 @@ gitBackend.rootUrl = rootUrl;
 app.use(logger('dev'));
 app.use(favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
 
-/*
-app.use(function(req, res, next) {
-    var contentType = req.headers['content-type'] || ''
-    , mime = contentType.split(';')[0];
-
-    console.log(mime);
-    if ((mime != 'text/plain') && (mime != 'image/svg+xml'))
-	next();
-    else {
-	req.chunks = [];
-	req.on('data', function(chunk) {
-	    console.log( "new data = ", chunk.length );
-	    req.chunks.push( new Buffer(chunk) );
-	});
-	req.on('end', function(chunk) {
-	    req.chunks.push( new Buffer(chunk) );  OR NOT?
-	    console.log( "req.chunks.length = ", req.chunks.length );
-	    req.rawBody = Buffer.concat( req.chunks );
-	    console.log( "rawBody length = ", req.rawBody.length );
-	    next();
-	});    
-    }
-    
-    });*/
-
 app.use(function(req, res, next) {
     res.locals.path = req.path;    
     next();
@@ -120,7 +95,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride());
 
 cookieSecret = process.env.XIMERA_COOKIE_SECRET;
-
 app.use(cookieParser(cookieSecret));
 
 // Common mongodb initializer for the app server and the activity service
@@ -162,10 +136,7 @@ passport.deserializeUser(function(id, done) {
    });
 });
 
-// Middleware for all environments
-function addDatabaseMiddleware(req, res, next) {
-    //req.db = db;
-
+function addUserImplicitly(req, res, next) {
     if ('user' in req)
 	res.locals.user = req.user;
     else {
@@ -175,9 +146,11 @@ function addDatabaseMiddleware(req, res, next) {
     next();
 }
 
-
     app.version = require('./package.json').version;
 
+    ////////////////////////////////////////////////////////////////
+    // API endpoints for the xake tool
+    
     var limiter = new rateLimit({
 	windowMs: 15*60*1000, // 15 minutes 
 	max: 100, // limit each IP to 100 requests per windowMs 
@@ -201,39 +174,39 @@ function addDatabaseMiddleware(req, res, next) {
     app.get( '/:repository.git/log.sz', tincan.get );
     
     app.use( '/:repository.git', gitBackend.git );
+
+    ////////////////////////////////////////////////////////////////
+    // Static content    
     
     //app.use(versionator.middleware);
     app.use('/public', express.static(path.join(__dirname, 'public')));
     app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
-
     //app.locals.versionPath = versionator.versionPath;
-
-    //console.log( versionator.versionPath('/template/test') );
 
     app.use(passport.initialize());
     app.use(passport.session());
     
     app.use(login.guestUserMiddleware);
-    app.use(addDatabaseMiddleware);
+    app.use(addUserImplicitly);
     
-    // Middleware for development only
-    if ('development' == app.get('env')) {
-        app.use(errorHandler());
-    }
-
-    // Setup routes.
+    ////////////////////////////////////////////////////////////////
+    // Landing page and associated routes
+    
     app.get('/install.sh', function(req, res) {
 	res.sendFile('views/install.sh', { root: __dirname });
     });
 
-    // TinCan (aka Experience) API
-    app.post('/xAPI/statements', function(req,res) { res.status(200).send('ignored statemtents without a repository.'); } );
-    app.post('/:repository/xAPI/statements', tincan.postStatements);    
-    
     app.get('/', function(req,res) {
 	res.render('index', { title: 'Home', landingPage: true });
     });
+    
+    ////////////////////////////////////////////////////////////////
+    // TinCan (aka Experience) API
 
+    app.post('/xAPI/statements', function(req,res) { res.status(200).send('ignoring statements without a repository.'); } );
+    
+    app.post('/:repository/xAPI/statements', tincan.postStatements);    
+    
     ////////////////////////////////////////////////////////////////
     // User identity
     
@@ -395,7 +368,6 @@ function addDatabaseMiddleware(req, res, next) {
 	     gitBackend.render );    
     
     // SVG files will only be rendered if they are sent with content type image/svg+xml
-
     // app.get( '/:repository/:path(*)', gitBackend.repository, gitBackend.publishedCommitOnMaster, gitBackend.getEntry, gitBackend.render );
     
     app.locals.Color = require('color');
@@ -406,11 +378,11 @@ function addDatabaseMiddleware(req, res, next) {
 
     // Start HTTP server for fully configured express App.
     var server = http.createServer(app);
-
+    
     var ios = require('socket.io-express-session');
     var io = require('socket.io')(server);
     io.use(ios(theSession, cookieParser(cookieSecret)));
-	
+    
     if(!module.parent){
         server.listen(app.get('port'), function(stream){
 	    console.log('Express server listening on port ' + app.get('port'));
@@ -456,4 +428,22 @@ function addDatabaseMiddleware(req, res, next) {
     app.use(function(req, res, next){
         res.status(404).render('404', { status: 404, url: req.url });
     });
+
+    ////////////////////////////////////////////////////////////////
+    // Present errors to the user
+    
+    if ('development' == app.get('env')) {
+	// Middleware for development only
+	errorHandler.title = 'Ximera';
+        app.use(errorHandler());
+    }
+
+    app.use(function(err, req, res, next){
+	if (res.headersSent) {
+	    return next(err);
+	}
+	res.status(500).render('500', {
+	    message: err
+	} );
+    });    
 });
