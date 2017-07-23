@@ -76,8 +76,9 @@ function recordStatement( repository, statement, callback ) {
 	    var maskedChecksum = uint32.addMod32( uint32.rotateRight(checksum, 15), 0xa282ead8 );
 	    var checksumBuffer = Buffer.alloc(4);
 	    checksumBuffer.writeUInt32LE(maskedChecksum, 0);
+	    var block = Buffer.concat( [chunkType, length, checksumBuffer, buffer] );
 	    
-	    fs.write( fd, Buffer.concat( [chunkType, length, checksumBuffer, buffer] ), callback );
+	    fs.write( fd, block, 0, block.length, callback );
 	}
     });
 }
