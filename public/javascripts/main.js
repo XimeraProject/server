@@ -36,8 +36,6 @@ var rowclick = require('./rowclick');
 var references = require('./references');
 var Desmos = require('./desmos');
 
-var qrcode = require('./qrcode');
-
 var Javascript = require('./javascript');
 
 MathJax.Hub.Config(
@@ -335,8 +333,6 @@ $(document).ready(function() {
     MathJax.Hub.Startup.onload();
 
     $(".activity").activity();
-
-    $(".qrcode").qrcode();    
 });
 
 console.log("done.");
