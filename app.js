@@ -315,7 +315,8 @@ function addUserImplicitly(req, res, next) {
 	     gitBackend.recentCommitsOnMaster,
 	     gitBackend.findPossibleActivityFromCommits,
 	     gitBackend.chooseMostRecentBlob,
-	     gitBackend.render );
+	     gitBackend.parseActivity,	     
+	     certificate.xourse );
 
     // BADBAD: i also need to serve pngs and pdfs and such from the repo here
 
@@ -347,7 +348,8 @@ function addUserImplicitly(req, res, next) {
 	     gitBackend.repository,
 	     gitBackend.recentCommitsOnMaster, gitBackend.findPossibleActivityFromCommits,
 	     gitBackend.chooseMostRecentBlob,
-	     gitBackend.fetchMetadata,	     
+	     gitBackend.fetchMetadata,
+	     gitBackend.parseActivity,
 	     gitBackend.render );    
     
     // SVG files will only be rendered if they are sent with content type image/svg+xml

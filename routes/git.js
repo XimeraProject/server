@@ -14,6 +14,7 @@ var fse = require("fs-extra");
 var fs = require('fs');
 var url = require('url');
 var cheerio = require('cheerio');
+var _ = require('underscore');
 
 var config = require('../config');
 var gitRepositoriesRoot = config.repositories.root;
@@ -383,97 +384,103 @@ function parseXourseBlob( blob, callback ) {
     parseXourseDocument( $, callback );
 }
 
-exports.render = function(req, res, next) {
+exports.parseActivity = function(req,res,next) {
     if (req.activity.entry) {
 	parseActivityBlob( req.activity.blob, function(err, activity) {
 	    
-	    if (activity.kind == 'xourse') {
-		var xourse = activity;
-		xourse.path = req.activity.entry.path();
-		if (xourse.path) {
-		    xourse.path = xourse.path.replace(/\.html$/,'')
-		}		
-		xourse.hash = req.activity.blob.id().toString();
-		res.render('xourse', { xourse: xourse,
-				       repositoryName: req.repositoryName });
-		return;
-	    }
-
-	    activity.freshestCommit = req.activity.freshestCommit;
-	    activity.commit = req.activity.sourceSha;
-	    activity.path = req.activity.entry.path();
-	    if (activity.path) {
-		activity.path = activity.path.replace(/\.html$/,'')
-	    }
-	    
-	    if (req.activity.xourse) {
-		console.log("req.activity.xourse=",req.activity.xourse);
-		parseXourseBlob( req.activity.xourse.blob, function(err,xourse) {
-		    xourse.path = req.activity.xourse.entry.path();
-		    xourse.hash = req.activity.xourse.blob.id().toString();
-		    
-		    if (xourse.path) {
-			xourse.path = xourse.path.replace(/\.html$/,'')
-		    }		    
-		    activity.xourse = xourse;
-
-		    var nextActivity = null;
-		    var previousActivity = null;
-		    if (activity && (activity.xourse) && (activity.xourse.activityList)) {
-			var list = activity.xourse.activityList.filter( function(s) { return !(s.match(/^#/)); } );
-			var i = list.indexOf( activity.path );
-			if (i >= 0)
-			    nextActivity = list[i+1];
-			if (i > 0)
-			    previousActivity = list[i-1];
-		    }
-
-		    var xourseActivity = activity.xourse.activities[activity.path];
-		    if (xourseActivity) {
-			var cssClass = xourseActivity.cssClass;
-			
-			// If we aren't currently in a chapter..
-			if ( ! (cssClass && (cssClass.match(/chapter/)))) {
-			    // Find the current activity
-			    var i = activity.xourse.activityList.indexOf( activity.path );
-			    // Walk backwards...
-			    var j;
-			    for( j = i; j >= 0; j-- ) {
-				// Until we find a 'chapter' activity
-				if (activity.xourse.activities[activity.xourse.activityList[j]].cssClass) {
-				    if (activity.xourse.activities[activity.xourse.activityList[j]].cssClass.match(/chapter/))  {
-					activity.chapter = activity.xourse.activities[activity.xourse.activityList[j]];
-					break;
-				    }
-				}
-			    }
-			}
-		    }
-
-		    console.log("req.repositoryMetadata=",req.repositoryMetadata);
-		    res.render('page', { activity: activity,
-					 repositoryName: req.repositoryName,
-					 repositoryMetadata: req.repositoryMetadata,
-					 nextActivity: nextActivity,
-					 previousActivity: previousActivity,
-					 url: req.url });		    
-		});
-	    } else {
-		activity.xourse = {};
-		activity.xourse.activityList = [];
-		res.render('page', { activity: activity,
-				     repositoryMetadata: req.repositoryMetadata,
-				     repositoryName: req.repositoryName,
-				     url: req.url
-				   });
-	    }
+	    req.activity = _.extend( req.activity, activity );
+	    next();
 	});
-	
     } else {
 	res.status(500).send('missing entry');	
     }
-	
 };
+
+exports.render = function(req, res, next) {
+    var activity = req.activity;
+	    
+    if (activity.kind == 'xourse') {
+	var xourse = activity;
+	xourse.path = req.activity.entry.path();
+	if (xourse.path) {
+	    xourse.path = xourse.path.replace(/\.html$/,'')
+	}		
+	xourse.hash = req.activity.blob.id().toString();
+	res.render('xourse', { xourse: xourse,
+			       repositoryName: req.repositoryName });
+	return;
+    }
+    
+    activity.freshestCommit = req.activity.freshestCommit;
+    activity.commit = req.activity.sourceSha;
+    activity.path = req.activity.entry.path();
+    if (activity.path) {
+	activity.path = activity.path.replace(/\.html$/,'')
+    }
+    
+    if (req.activity.xourse) {
+	console.log("req.activity.xourse=",req.activity.xourse);
+	parseXourseBlob( req.activity.xourse.blob, function(err,xourse) {
+	    xourse.path = req.activity.xourse.entry.path();
+	    xourse.hash = req.activity.xourse.blob.id().toString();
+	    
+	    if (xourse.path) {
+		xourse.path = xourse.path.replace(/\.html$/,'')
+	    }		    
+	    activity.xourse = xourse;
+	    
+	    var nextActivity = null;
+	    var previousActivity = null;
+	    if (activity && (activity.xourse) && (activity.xourse.activityList)) {
+		var list = activity.xourse.activityList.filter( function(s) { return !(s.match(/^#/)); } );
+		var i = list.indexOf( activity.path );
+		if (i >= 0)
+		    nextActivity = list[i+1];
+		if (i > 0)
+		    previousActivity = list[i-1];
+	    }
+	    
+	    var xourseActivity = activity.xourse.activities[activity.path];
+	    if (xourseActivity) {
+		var cssClass = xourseActivity.cssClass;
+		
+		// If we aren't currently in a chapter..
+		if ( ! (cssClass && (cssClass.match(/chapter/)))) {
+		    // Find the current activity
+		    var i = activity.xourse.activityList.indexOf( activity.path );
+		    // Walk backwards...
+		    var j;
+		    for( j = i; j >= 0; j-- ) {
+			// Until we find a 'chapter' activity
+			if (activity.xourse.activities[activity.xourse.activityList[j]].cssClass) {
+			    if (activity.xourse.activities[activity.xourse.activityList[j]].cssClass.match(/chapter/))  {
+				activity.chapter = activity.xourse.activities[activity.xourse.activityList[j]];
+				break;
+			    }
+			}
+		    }
+		}
+	    }
+	    
+	    console.log("req.repositoryMetadata=",req.repositoryMetadata);
+	    res.render('page', { activity: activity,
+				 repositoryName: req.repositoryName,
+				 repositoryMetadata: req.repositoryMetadata,
+				 nextActivity: nextActivity,
+				 previousActivity: previousActivity,
+				 url: req.url });		    
+	});
+    } else {
+	activity.xourse = {};
+	activity.xourse.activityList = [];
+	res.render('page', { activity: activity,
+			     repositoryMetadata: req.repositoryMetadata,
+			     repositoryName: req.repositoryName,
+			     url: req.url
+			   });
+    }
+};
+
 
 exports.recentCommitsOnBranch = function(branch, req, res, next) {
     console.log("Searching for recent commits on " + branch);

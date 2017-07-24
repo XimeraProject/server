@@ -97,23 +97,23 @@ exports.xourse = function(req, res) {
     remember(req);
 
     var user = req.user;
-    var xourse = req.xourse;
+    var xourse = req.activity;
+    console.log(xourse);
+    // I need to basically do use
+    xourse.path = req.activity.entry.path();
+    xourse.locator = '/' + req.repositoryName + '/' + xourse.path;
+    xourse.locator = xourse.locator.replace( '.html', '' );
     
-    xourse.locator = req.locator;
-
-    var activityHashes = _.uniq( _.flatten( _.values(xourse.activities).map( function(activity) { return activity.hashes; } ) ) );
-    
-    mdb.Completion.find({user: req.user._id, activityHash: { $in: activityHashes }}).exec(
+    mdb.Completion.find({user: req.user._id, repositoryName: req.repositoryName}).exec(
 	function( err, completions ) {
 	    if (err) {
 		renderError( res, err );
 	    } else {
 		var activityCount = 0;
 		var completionTotal = 0;
-		
+
 		xourse.activityList.forEach( function(activityPath) {
 		    var url = pathJoin( xourse.locator,
-					dirname( xourse.path ),
 					activityPath
 				      );
 
@@ -129,7 +129,7 @@ exports.xourse = function(req, res) {
 
 		    xourse.activities[activityPath].completion = 
 			_.max( _.filter( completions,
-					 function(c) { return _.contains( xourse.activities[activityPath].hashes, c.activityHash ); } )
+					 function(c) { return c.activityPath == activityPath } )
 			       .map(
 				   function(c) { return c.complete; } ) );
 
@@ -150,6 +150,7 @@ exports.xourse = function(req, res) {
 		    user: "ximera.osu.edu/users/" + req.user._id,
 		    date: new Date(),
 		    course: xourse.locator,
+		    title: xourse.title,
 		    score: score
 		};
 
