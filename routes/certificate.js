@@ -15,62 +15,81 @@ var zlib = require("zlib");
 var querystring = require('querystring');
 var url = require('url');
 
+var privateKey = undefined;
+var publicKey = undefined;
+
 var absolutePathToPrivateKey = path.resolve("private_key.pem");
-var privateKey = fs.readFileSync(absolutePathToPrivateKey, "utf8").toString();
+if(fs.existsSync(absolutePathToPrivateKey)) {
+    privateKey = fs.readFileSync(absolutePathToPrivateKey, "utf8").toString();
+} else {
+    console.log( "Missing private key file",absolutePathToPrivateKey );
+}
 
 var absolutePathToPublicKey = path.resolve("public_key.pem");
-var publicKey = fs.readFileSync(absolutePathToPublicKey, "utf8").toString();
+if(fs.existsSync(absolutePathToPublicKey)) {
+    publicKey = fs.readFileSync(absolutePathToPublicKey, "utf8").toString();
+} else {
+    console.log( "Missing pubilc key file",absolutePathToPublicKey );
+}
 
 function renderError( res, err ) {
     res.status(500).render('fail', { title: "Internal Error", message: err });
 }
 
 function certificateToCode(certificate, callback) {
-    var p = JSON.stringify(certificate);
+    if (privateKey === undefined) {
+	callback( 'Missing private key.' );
+    } else {
+	var p = JSON.stringify(certificate);
     
-    zlib.gzip(p, {level: zlib.Z_BEST_COMPRESSION}, (err, buffer) => {
-	if (err) {
-	    callback(err);
-	} else {
-	    const sign = crypto.createSign('RSA-SHA256');
-
-	    sign.write(buffer);
-	    sign.end();
-
-	    var signature = sign.sign(privateKey);
-	    console.log( signature );
-	    callback( null,
-		      buffer.toString('base64'),
-		      signature.toString('base64') );
-	}
-    });
+	zlib.gzip(p, {level: zlib.Z_BEST_COMPRESSION}, (err, buffer) => {
+	    if (err) {
+		callback(err);
+	    } else {
+		const sign = crypto.createSign('RSA-SHA256');
+		
+		sign.write(buffer);
+		sign.end();
+		
+		var signature = sign.sign(privateKey);
+		console.log( signature );
+		callback( null,
+			  buffer.toString('base64'),
+			  signature.toString('base64') );
+	    }
+	});
+    }
 
     return;
 }
 
 function codeToCertificate(code, signature, callback) {
-    const verify = crypto.createVerify('RSA-SHA256');
-    var buffer = new Buffer(code, 'base64');
-
-    verify.write(buffer);
-    verify.end();
-
-    if (verify.verify(publicKey, signature, 'base64')) {
-	zlib.gunzip(buffer, (err, buffer) => {
-	    if (err) {
-		callback(err);
-	    } else {
-		var result = {};
-		try {
-		    result = JSON.parse(buffer.toString("utf8"));
-		} catch (e) {
-		}
-		
-		callback( null, result );
-	    }
-	});
+    if (publicKey === undefined) {
+	callback( 'Missing public key.' );
     } else {
-	callback( 'Invalid signature.' );
+	const verify = crypto.createVerify('RSA-SHA256');
+	var buffer = new Buffer(code, 'base64');
+
+	verify.write(buffer);
+	verify.end();
+	
+	if (verify.verify(publicKey, signature, 'base64')) {
+	    zlib.gunzip(buffer, (err, buffer) => {
+		if (err) {
+		    callback(err);
+		} else {
+		    var result = {};
+		    try {
+			result = JSON.parse(buffer.toString("utf8"));
+		    } catch (e) {
+		    }
+		    
+		    callback( null, result );
+		}
+	    });
+	} else {
+	    callback( 'Invalid signature.' );
+	}
     }
 }
 

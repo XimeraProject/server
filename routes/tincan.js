@@ -14,7 +14,7 @@ var lrsRoot = config.repositories.root;
 var logFiles = {};
 function logFile( name, callback ) {
     var filename = path.join( lrsRoot, name + ".git", "learning-record-store" );
-    console.log("logFile = ",filename);
+
     if (logFiles[filename]) {
 	callback(null, logFiles[filename]);
     } else {
@@ -31,7 +31,7 @@ function logFile( name, callback ) {
 			fs.write( fd, firstChunk, 0, firstChunk.length, function(err) {
 			    if (err) {
 				callback(err);				
-			    } else {		
+			    } else {
 				logFiles[filename] = fd;		
 				callback(null, fd);
 			    }
@@ -58,11 +58,9 @@ function recordStatement( repository, statement, callback ) {
 	},
     ], function(err, results) {
 	if (err) {
-	    console.log(err);
 	    callback(err);
 	} else {
 	    // https://github.com/google/snappy/blob/master/framing_format.txt
-	    // BADBAD
 	    
 	    var fd = results[1];
 	    var buffer = results[0];
@@ -77,7 +75,10 @@ function recordStatement( repository, statement, callback ) {
 	    var checksumBuffer = Buffer.alloc(4);
 	    checksumBuffer.writeUInt32LE(maskedChecksum, 0);
 	    var block = Buffer.concat( [chunkType, length, checksumBuffer, buffer] );
-	    
+
+	    // I'm usually not waiting for the callback before writing
+	    // more, but I don't care -- these can be appended to the
+	    // log in ANY order
 	    fs.write( fd, block, 0, block.length, callback );
 	}
     });
@@ -85,7 +86,7 @@ function recordStatement( repository, statement, callback ) {
 
 exports.get = function(req, res) {
     var filename = path.join( lrsRoot, req.params.repository + ".git", "learning-record-store" );
-    console.log(filename);
+
     var stream = fs.createReadStream(filename);
     fs.stat(filename, function(err, stat) {
 	if (err) {
@@ -144,7 +145,6 @@ exports.postStatements = function(req, res) {
 	    
 	    recordStatement( repository, statement, function(err) {
 		if (err) {
-		    console.log(err);
 		    // I just ignore whether they are successful or
 		    // not, in the sense that I don't tell the caller
 		}

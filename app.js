@@ -3,7 +3,6 @@
  */
 
 var express = require('express')
-  , course = require('./routes/course')
   , certificate = require('./routes/certificate')
   , user = require('./routes/user')
   , tincan = require('./routes/tincan')
@@ -233,6 +232,7 @@ function addUserImplicitly(req, res, next) {
     // app.get( '/course/:username/:repository/certificate', course.xourseFromUserAndRepo, certificate.xourse );
     // app.get( '/course/:username/:repository/:branch/certificate', course.xourseFromUserAndRepo, certificate.xourse );
     // app.get( '/labels/:commit([0-9a-fA-F]+)/:label', course.getLabel );
+    
     // app.get( '/statistics/:commit/:hash/answers', course.answers );
     // app.get( '/statistics/:commit/:hash/successes', course.successes );
     // app.get( '/progress/:username/:repository', course.progress );    
