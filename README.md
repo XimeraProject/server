@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/XimeraProject/server.svg?branch=master)](https://travis-ci.org/XimeraProject/server)
+
 The XIMERA Project
 ==================
 LaTeX to online interactive materials. 
