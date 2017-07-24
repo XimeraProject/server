@@ -1,6 +1,0 @@
-div
-  div.btn-toolbar(role="toolbar")
-    div.btn-group
-      button.btn(ng-click="replying = !replying", ng-class="{active:replying}", ng-show="!replying && (user.current)")  <i class="fa fa-reply"></i>&nbsp;Ask a question.  Make a comment.
-  div(reply="",ng-if="replying",parent="", forum-name="{{forum}}", reply-done="$parent.replying = false;")
-  div.forum(thread="", posts="toplevel", parent="", forum-name="{{forum}}")
