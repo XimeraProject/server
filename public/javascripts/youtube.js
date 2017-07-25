@@ -39,7 +39,7 @@ function videoVerb( target, container, verb, word )
 }
 
 function videoStarted( target, container, start ) {
-    console.log("verb: started", start);
+
     TinCan.recordStatement({
         verb: {
             id: "http://activitystrea.ms/schema/1.0/play",
@@ -58,7 +58,6 @@ function videoStarted( target, container, start ) {
 }
 
 function videoPaused( target, container, finish ) {
-    console.log("verb: paused", finish);    
     TinCan.recordStatement({
         verb: {
             id: "http://id.tincanapi.com/verb/paused",
@@ -77,7 +76,6 @@ function videoPaused( target, container, finish ) {
 }
 
 function videoEnded( target, container ) {
-    console.log("verb: ended");        
     videoVerb( target, container, "http://activitystrea.ms/schema/1.0/complete", "completed" );
 }
 
@@ -91,7 +89,6 @@ function timeString(seconds) {
 
 
 function videoSkipped(target, container, start, finish) {
-    console.log("verb: skipped", start, finish);        
     TinCan.recordStatement({
         verb: {
             id: "http://id.tincanapi.com/verb/skipped",
@@ -111,7 +108,6 @@ function videoSkipped(target, container, start, finish) {
 }
 
 function videoWatched(target, container, start, finish) {
-    console.log("verb: watched", start, finish);
     TinCan.recordStatement({
         verb: {
             id: "http://activitystrea.ms/schema/1.0/watch",
@@ -135,15 +131,10 @@ function onPlayerStateChange(event, container, videoId) {
     
     var lastPlayerState = container.data('lastPlayerState');
 
-    // BADBAD: this is broken
-    console.log("new state=",event.data);
-    console.log( event );
     switch (event.data) {
     case (YT.PlayerState.PLAYING):
 	container.data( 'lastPlayedTime', event.target.getCurrentTime() );
         videoStarted(event.target, container, event.target.getCurrentTime());
-	
-	
         break;
 	
     case (YT.PlayerState.PAUSED):
@@ -187,11 +178,11 @@ function onPlayerReady(event, container, videoId) {
     // Matt Thomas requests that videos defualt to something with a higher resolution
     target.setPlaybackQuality("hd720");
 
+    // This is the only way I could capture the "watched" events
     container = $('#' + container);
-    
     setInterval( function(){
 	container.data( 'currentTime', target.getCurrentTime() );
-    }, 250);
+    }, 200); // 200ms granularity seems good enough to me
 }
 
 
