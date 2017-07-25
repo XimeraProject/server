@@ -26,8 +26,6 @@ var annotator = require('./annotator');
 var createActivity = function() {
     var activity = $(this);
 
-    console.log("ACTIVITY");
-
     //$('.activity-body', this).annotator();
     
     activity.fetchData( function(db) {

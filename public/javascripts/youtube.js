@@ -39,6 +39,7 @@ function videoVerb( target, container, verb, word )
 }
 
 function videoStarted( target, container, start ) {
+    console.log("verb: started", start);
     TinCan.recordStatement({
         verb: {
             id: "http://activitystrea.ms/schema/1.0/play",
@@ -57,6 +58,7 @@ function videoStarted( target, container, start ) {
 }
 
 function videoPaused( target, container, finish ) {
+    console.log("verb: paused", finish);    
     TinCan.recordStatement({
         verb: {
             id: "http://id.tincanapi.com/verb/paused",
@@ -75,6 +77,7 @@ function videoPaused( target, container, finish ) {
 }
 
 function videoEnded( target, container ) {
+    console.log("verb: ended");        
     videoVerb( target, container, "http://activitystrea.ms/schema/1.0/complete", "completed" );
 }
 
@@ -88,6 +91,7 @@ function timeString(seconds) {
 
 
 function videoSkipped(target, container, start, finish) {
+    console.log("verb: skipped", start, finish);        
     TinCan.recordStatement({
         verb: {
             id: "http://id.tincanapi.com/verb/skipped",
@@ -107,6 +111,7 @@ function videoSkipped(target, container, start, finish) {
 }
 
 function videoWatched(target, container, start, finish) {
+    console.log("verb: watched", start, finish);
     TinCan.recordStatement({
         verb: {
             id: "http://activitystrea.ms/schema/1.0/watch",
@@ -129,40 +134,64 @@ function onPlayerStateChange(event, container, videoId) {
     var container = $('#' + container);
     
     var lastPlayerState = container.data('lastPlayerState');
-    var lastPlayerTime = container.data('lastPlayerTime');
-    
+
+    // BADBAD: this is broken
+    console.log("new state=",event.data);
+    console.log( event );
     switch (event.data) {
     case (YT.PlayerState.PLAYING):
+	container.data( 'lastPlayedTime', event.target.getCurrentTime() );
         videoStarted(event.target, container, event.target.getCurrentTime());
+	
+	
         break;
 	
     case (YT.PlayerState.PAUSED):
-        if (lastPlayerState == YT.PlayerState.PLAYING) {
-            videoWatched(event.target, container, lastPlayerTime, event.target.getCurrentTime())
-        } else if (lastPlayerState == YT.PlayerState.PAUSED) {
-	    // BADBAD: I am not getting this to fire, ever. Oh well.
-            videoSkipped(event.target, container, lastPlayerTime, event.target.getCurrentTime());
-        }
-        videoPaused(event.target, container, event.target.getCurrentTime());
+	var timer = setTimeout(
+	    function() {
+		if (lastPlayerState == YT.PlayerState.PLAYING) {
+		    videoWatched(event.target, container, container.data('lastPlayedTime'), event.target.getCurrentTime())
+		}
+		videoPaused(event.target, container, event.target.getCurrentTime());		
+	    }, 250);
+
+	container.data( 'lastPausedTime', event.target.getCurrentTime() );	
+	container.data( 'timer', timer );
         break;
+
+    case (YT.PlayerState.BUFFERING):
+	clearTimeout( container.data( 'timer' ) );
+
+	if (lastPlayerState != YT.PlayerState.UNSTARTED) {
+	    videoWatched(event.target, container, container.data('lastPlayedTime'), container.data('currentTime') );
+	    videoSkipped(event.target, container, container.data('currentTime'), event.target.getCurrentTime());
+	}
+	break;
 	
     case (YT.PlayerState.ENDED):
 	// BADBAD: I'm faking this as if it meant "completed" but it
 	// doesn't necessarily mean the learner watched ALL the video
+        videoWatched(event.target, container, container.data('lastPlayedTime'), event.target.getCurrentTime())	
         videoEnded(event.target, container);
         break;
 	
     case (YT.PlayerState.UNSTARTED):
         break;
     }
-    container.data( 'lastPlayerTime', event.target.getCurrentTime() );
+    
     container.data( 'lastPlayerState', event.data );
 }
 
-function onPlayerReady(event) {
+function onPlayerReady(event, container, videoId) {
     var target = event.target;
     // Matt Thomas requests that videos defualt to something with a higher resolution
     target.setPlaybackQuality("hd720");
+
+    container = $('#' + container);
+    
+    setInterval( function(){
+	container.data( 'currentTime', target.getCurrentTime() );
+    }, 250);
 }
 
 
@@ -194,7 +223,7 @@ var player = {
 		showinfo: 0
 	    },
 	    events: {
-		'onReady': onPlayerReady,
+		'onReady': function( event ) { return onPlayerReady(event, container, videoId); },
 		'onStateChange': function( event ) { return onPlayerStateChange(event, container, videoId); }
 	    }
 	});

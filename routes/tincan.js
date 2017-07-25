@@ -80,6 +80,7 @@ function recordStatement( repository, statement, callback ) {
 	    // more, but I don't care -- these can be appended to the
 	    // log in ANY order
 	    fs.write( fd, block, 0, block.length, callback );
+	    console.log(statement);
 	}
     });
 }

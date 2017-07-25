@@ -36,11 +36,17 @@ exports.activityHashToActivityObject = function(activityHash) {
     if (activityHash == $("#theActivity").attr( 'data-activity' )) {
 	// Then we can grab a bit more information
 	var title = $("#theActivity").attr( 'data-title' );    
-    
+
 	result.definition = {
 	    name: { "en-US": title },
 	    moreInfo: window.location.href
 	};
+
+	// And use a better URL
+	result.id = ximeraUrl +
+	    $(this).repositoryName() + "/" +
+	    $(this).activityPath() + "?" +
+	    activityHash;
     }
 
     return result;
