@@ -40,7 +40,7 @@
     "github": "0.2.4",
     "gpg": "^0.6.0",
     "gridfs-stream": "1.1.1",
-    "gulp-pug-lint": "^0.1.6",
+    "gulp-pug-lint": "akoutmos/gulp-pug-lint",
     "http-proxy-middleware": "0.4.0",
     "ims-lti": "3.0.1",
     "ip": "1.1.3",
