@@ -35,7 +35,7 @@ block content
         p Certificates can be verified with this public key.
         pre #{publicKey.trim()}          
       .col-md-5
-        canvas.qrcode.float-right(style="max-width: 100%;", data-href="https://ximera.osu.edu/certificate/#{escapedCode}/#{escapedSignature}")
+        canvas.qrcode.float-right(style="max-width: 100%;", data-href=`https://ximera.osu.edu/certificate/${escapedCode}/${escapedSignature}`)
         p
-          a(href="/certificate/#{escapedCode}/#{escapedSignature}")
+          a(href=`/certificate/${escapedCode}/${escapedSignature}`)
             span.certificate https://ximera.osu.edu/certificate/#{escapedCode}/#{escapedSignature}

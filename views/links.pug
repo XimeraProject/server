@@ -9,7 +9,7 @@ mixin courseActivityLink(course,activity)
 
 mixin courseLink(course)
   if course
-    a(href="/course/#{course.slug}/")
+    a(href=`/course/${course.slug}/`)
       block
   else
     a(href="#")

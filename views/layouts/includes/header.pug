@@ -49,9 +49,9 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
                 li
                    a(id="instructor-view-statistics", data-commit=activity.commit, data-activity=activity.hash)
                      | <i class="fa fa-bar-chart"></i> Activity statistics
-                   a(href="/progress/#{activity.ownerName}/#{activity.repositoryName}")
+                   a(href=`/progress/${activity.ownerName}/${activity.repositoryName}`)
                      | <i class="fa fa-users"></i> Student progress
-                   a(href="/statistics/#{activity.commit}/#{activity.hash}/answers")
+                   a(href=`/statistics/${activity.commit}/${activity.hash}/answers`)
                      | <i class="fa fa-bar-chart"></i> Data dump
                    
         li.dropdown
@@ -63,9 +63,9 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
               if activity && activity.path && repositoryMetadata && repositoryMetadata.github              
                 li
                   // BADBAD: instead of master, perhaps should have activity.commit
-                  a(href="https://github.com/#{repositoryMetadata.github.owner}/#{repositoryMetadata.github.repository}/issues/new?title=#{activity.title}&body=%0A%0ASee%20[#{activity.path}.tex](https://github.com/#{repositoryMetadata.github.owner}/#{repositoryMetadata.github.repository}/blob/master/#{activity.path}.tex)") Report error in content  
+                  a(href=`https://github.com/${repositoryMetadata.github.owner}/${repositoryMetadata.github.repository}/issues/new?title=${activity.title}&body=%0A%0ASee%20[${activity.path}.tex](https://github.com/${repositoryMetadata.github.owner}/${repositoryMetadata.github.repository}/blob/master/${activity.path}.tex)`) Report error in content  
               li
-                a(href="https://github.com/kisonecat/ximera/issues/new?title=#{path}") Report error with website      
+                a(href=`https://github.com/kisonecat/ximera/issues/new?title=${path}`) Report error with website      
 
         if activity && (activity.commitUpdated || activity.freshestCommit)
           li
@@ -77,7 +77,7 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
                 | <i class="fa fa-eraser"></i> Erase
         if activity && activity.path && repositoryMetadata && repositoryMetadata.github
           li
-              button.btn-margin.pull-right.btn.navbar-btn.btn-default.btn-sm(role="button",onclick="location.href = \"https://github.com/#{repositoryMetadata.github.owner}/#{repositoryMetadata.github.repository}/edit/master/#{activity.path}.tex\";")
+              button.btn-margin.pull-right.btn.navbar-btn.btn-default.btn-sm(role="button",onclick=`location.href = \"https://github.com/${repositoryMetadata.github.owner}/${repositoryMetadata.github.repository}/edit/master/${activity.path}.tex\";`)
                 | <i class="fa fa-pencil"></i> Edit
         if activity                                
           li
@@ -104,38 +104,38 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
               i.fa.fa-thumbs-up 
               | &nbsp;<span id="score-xudos"></span> Xudos
              
-          if (user) && (!user.isGuest)
-            li.dropdown
-              a.dropdown-toggle(href="#",data-toggle="dropdown")
-                if user.name
-                  | <i class="fa fa-user"></i> #{user.name.split(' ')[0]}
-                else
-                  | <i class="fa fa-user"></i> Me
-                b.caret
-              ul(id="login-menu").dropdown-menu
+        if (user) && (!user.isGuest)
+          li.dropdown
+            a.dropdown-toggle(href="#",data-toggle="dropdown")
+              if user.name
+                | <i class="fa fa-user"></i> #{user.name.split(' ')[0]}
+              else
+                | <i class="fa fa-user"></i> Me
+              b.caret
+            ul(id="login-menu").dropdown-menu
+              li
+                a(href=`/users/${user._id}`) <i class='fa fa-cogs'></i> Profile
+              li
+                a(href="/logout") <i class='fa fa-sign-out'></i> Logout
+        else
+          li.dropdown
+            a.dropdown-toggle(href="#",data-toggle="dropdown",aria-haspopup="true",aria-expanded="false")
+              | <i class="fa fa-sign-in"></i> Sign In
+              b.caret
+            ul(id="signin-menu").dropdown-menu
+              li
+                a(href="/auth/google") <i class='fa fa-google'></i> Sign In with Google
+              li
+                a(href="/auth/twitter") <i class='fa fa-twitter'></i> Sign In with Twitter
+              li
+                a(href="/auth/github") <i class='fa fa-github'></i> Sign In with GitHub
+              if config.localAuth
+                li.divider(role="presentation")
                 li
-                  a(href="/users/#{user._id}") <i class='fa fa-cogs'></i> Profile
-                li
-                  a(href="/logout") <i class='fa fa-sign-out'></i> Logout
-          else
-            li.dropdown
-              a.dropdown-toggle(href="#",data-toggle="dropdown",aria-haspopup="true",aria-expanded="false")
-                | <i class="fa fa-sign-in"></i> Sign In
-                b.caret
-              ul(id="signin-menu").dropdown-menu
-                li
-                  a(href="/auth/google") <i class='fa fa-google'></i> Sign In with Google
-                li
-                  a(href="/auth/twitter") <i class='fa fa-twitter'></i> Sign In with Twitter
-                li
-                  a(href="/auth/github") <i class='fa fa-github'></i> Sign In with GitHub
-                if config.localAuth
-                  li.divider(role="presentation")
-                  li
-                    form.navbar-form#form-login(action="/auth/local",method="post")
-                      div.input-group
-                        input.form-control#username(name="username",type="text",placeholder="Username")
-                      div.input-group                     
-                        input.form-control#password(name="password",type="password")
-                      button.btn.btn-primary.btn-default#button-login(type="submit") Sign In
+                  form.navbar-form#form-login(action="/auth/local",method="post")
+                    div.input-group
+                      input.form-control#username(name="username",type="text",placeholder="Username")               
+                    div.input-group                     
+                      input.form-control#password(name="password",type="password")
+                    button.btn.btn-primary.btn-default#button-login(type="submit") Sign In
                       

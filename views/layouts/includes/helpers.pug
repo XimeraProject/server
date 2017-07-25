@@ -8,7 +8,7 @@ mixin breadcrumbs(links,titles)
       - var linkCount = links.length
       - while ( i < linkCount - 1 )
         li
-          a(href="#{links[i]}")
+          a(href=links[i])
             | #{titles[i]}
         - i++;
       li.active(aria-current="page")

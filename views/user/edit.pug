@@ -7,7 +7,7 @@ block content
  .container
   div.row
     .col-md-12
-      form.form-horizontal(method="post",action="/users/#{person._id}")
+      form.form-horizontal(method="post",action=`/users/${person._id}`)
         div.panel.panel-default
           div.panel-heading
             h3.panel-title Public Profile        
@@ -75,7 +75,7 @@ block content
                     div.btn-group
                       button.btn.btn-primary(type="submit") <i class="fa fa-level-up"></i>&nbsp;Update
                     div.btn-group                    
-                      a.btn.btn-danger(href="/users/#{person._id}") <i class="fa fa-close"></i>&nbsp;Cancel
+                      a.btn.btn-danger(href=`/users/${person._id}`) <i class="fa fa-close"></i>&nbsp;Cancel
 
           // birthday
           // biography

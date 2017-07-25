@@ -24,7 +24,7 @@ mixin updateModal
           div.modal-footer
             button#update-version-button(type="button",class="btn btn-default", data-dismiss="modal")
               | <i class="fa fa-level-down"></i>&nbsp;Keep the old version.
-            a#update-version-button(href="#{url}?#{activity.freshestCommit}",class="btn btn-warning")
+            a#update-version-button(href=`${url}?${activity.freshestCommit}`,class="btn btn-warning")
               | <i class="fa fa-level-up"></i>&nbsp;Delete my work and update to the new version.
 
 mixin resetModal

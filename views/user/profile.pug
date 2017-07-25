@@ -16,8 +16,8 @@ block content
  .container
     div.row
       .col-sm-3
-          a(href="http://www.gravatar.com/#{person.gravatar}")
-            img.center-block.img-rounded(src="https://secure.gravatar.com/avatar/#{person.gravatar}.jpg?d=retro&s=160")
+          a(href=`http://www.gravatar.com/${person.gravatar}`)
+            img.center-block.img-rounded(src=`https://secure.gravatar.com/avatar/${person.gravatar}.jpg?d=retro&s=160`)
           if person.displayName && person.displayName.length > 0
             h2 #{person.displayName}
               span.small &nbsp;(#{person.name})
@@ -38,7 +38,7 @@ block content
                 a(href="http://maps.google.com/?=q=" + person.location) #{person.location}
             if person.email && person.email.length > 0
               span.list-group-item <i class="fa fa-envelope-o"></i>&nbsp;
-                a.email(href="mailto:#{person.email}") #{person.email}
+                a.email(href=`mailto:${person.email}`) #{person.email}
             if person.birthday                                    
               span.list-group-item <i class="fa fa-birthday-cake"></i>&nbsp;
                 time(class="absolute-date", datetime=person.birthday)
@@ -64,7 +64,7 @@ block content
             if editable
               div.btn-toolbar(style="margin-bottom: 15px;")
                 div.btn-group.pull-right
-                  a.btn.btn-primary(role="button", href="/users/#{person._id}/edit") <i class="fa fa-pencil"></i> Edit Profile
+                  a.btn.btn-primary(role="button", href=`/users/${person._id}/edit`) <i class="fa fa-pencil"></i> Edit Profile
         if person.biography && person.biography.length > 0
           .row
             .col-sm-12
@@ -81,10 +81,10 @@ block content
                   h3.panel-title Linked accounts        
                 div.panel-body
                   div.btn-toolbar(role="toolbar")
-                    mixin linked_account('Google', 'google', 'google', person._id, person.googleOpenId )
-                    mixin linked_account('Coursera', undefined, 'coursera', person._id, person.courseraOAuthId )
-                    mixin linked_account('GitHub', 'github-alt', 'github', person._id, person.githubId )
-                    mixin linked_account('Twitter', 'twitter', 'twitter', person._id, person.twitterOAuthId )
+                    +linked_account('Google', 'google', 'google', person._id, person.googleOpenId )
+                    +linked_account('Coursera', undefined, 'coursera', person._id, person.courseraOAuthId )
+                    +linked_account('GitHub', 'github-alt', 'github', person._id, person.githubId )
+                    +linked_account('Twitter', 'twitter', 'twitter', person._id, person.twitterOAuthId )
         if (user.superuser) || (user._id.equals(person._id))
           .row
             .col-sm-12

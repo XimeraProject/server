@@ -15,11 +15,11 @@ block content
             th Seen
         tbody
           for user in users
-            tr(data-href="/users/#{user.id}")
+            tr(data-href=`/users/${user.id}`)
               th(scope="row")
-                a(href="/users/#{user.id}") &hellip;#{user.id.slice(-5)}
+                a(href=`/users/${user.id}`) &hellip;#{user.id.slice(-5)}
               td
-                img.img-responsive.img-rounded(src="https://secure.gravatar.com/avatar/#{user.gravatar}.jpg?d=retro&s=80")
+                img.img-responsive.img-rounded(src=`https://secure.gravatar.com/avatar/${user.gravatar}.jpg?d=retro&s=80`)
               td #{user.displayName} (#{user.name})
               if user.lastSeen
                 td #{moment(user.lastSeen).fromNow()}

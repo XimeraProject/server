@@ -16,18 +16,18 @@ html(lang="en")
     meta(name="author", content="The Ximera Project")
     meta(name="keywords", content="mathematics, math, maths, courses, course, education, calculus, complex analysis, algebra, geometry, graphs, plots, MOOC")
 
-    link(href="/public/stylesheets/base.css" + "?v=#{version}", rel="stylesheet", media="screen")
+    link(href=`/public/stylesheets/base.css?v=#{version}`, rel="stylesheet", media="screen")
 
     link(rel="stylesheet",href="//www.osu.edu/assets/fonts/webfonts.css")
     
     if stylesheet
-      link(rel="stylesheet/less",type="text/css",href=stylesheet + "?v=#{version}")
+      link(rel="stylesheet/less",type="text/css",href=`${stylesheet}?v=#{version}`)
 
     link(rel="stylesheet",type="text/css",href="https://sagecell.sagemath.org/static/sagecell_embed.css")
       
     script(type="text/javascript",src="/node_modules/mathjax/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured")
     script(type="text/javascript",src="https://sagecell.sagemath.org/static/embedded_sagecell.js")
-    script(type="text/javascript",src="/public/javascripts/main.min.js?v=#{version}")
+    script(type="text/javascript",src=`/public/javascripts/main.min.js?v=#{version}`)
 
     link(rel="apple-touch-icon",sizes="114x114",href="/public/images/icons/favicon-114x114.png")
     link(rel="apple-touch-icon",sizes="72x72",href="/public/images/icons/favicon-72x72.png")
