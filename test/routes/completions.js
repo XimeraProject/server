@@ -49,7 +49,7 @@ describe('completions', function () {
     
     var payload2 = {complete: 0.4,
 		    repositoryName: faker.lorem.word(),
-		    activityPath: faker.system.filePath()
+		    activityPath: faker.lorem.words().split(' ').join('/')
 		  };
     
     var fakeHash2 = faker.random.uuid();
@@ -81,6 +81,13 @@ describe('completions', function () {
 		x.should.have.property('activityPath').which.is.equal( payload.activityPath );
 		x.should.have.property('repositoryName').which.is.equal( payload.repositoryName );
 		x.should.have.property('complete').which.is.equal( payload.complete );
+
+		completions.filter( function(x) { return x.activityHash == fakeHash2 } ).should.have.length(1);
+		var x = completions.filter( function(x) { return x.activityHash == fakeHash2 } )[0];
+		x.should.have.property('activityHash').which.is.equal( fakeHash2 );
+		x.should.have.property('activityPath').which.is.equal( payload2.activityPath );
+		x.should.have.property('repositoryName').which.is.equal( payload2.repositoryName );
+		x.should.have.property('complete').which.is.equal( payload2.complete );		
 
 		done();
 	    });
