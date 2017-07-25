@@ -89,52 +89,53 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
                 span(id="work-save")
                   | <i class="fa fa-save"></i> Save
 
-         li.navbar-progress-bar-item
-           span.navbar-progress-bar
-             div.progress.completion-meter
-               div.progress-bar.progress-bar-success(role="progressbar",aria-valuenow="40",aria-valuemin="0",aria-valuemax="100",style="width: 40%;")
-                 span 40%
+          li.navbar-progress-bar-item
+            span.navbar-progress-bar
+              div.progress.completion-meter
+                div.progress-bar.progress-bar-success(role="progressbar",aria-valuenow="40",aria-valuemin="0",aria-valuemax="100",style="width: 40%;")
+                  span 40%
                  
-         li(class="xarma")
-           a(href="/about/xarma")
-             i.fa.fa-gift
-             | &nbsp;<span id="score-xarma"></span> Xarma
-         li(class="xudos")
-           a(href="/about/xudos")
-             i.fa.fa-thumbs-up 
-             | &nbsp;<span id="score-xudos"></span> Xudos
+          li(class="xarma")
+            a(href="/about/xarma")
+              i.fa.fa-gift
+              | &nbsp;<span id="score-xarma"></span> Xarma
+          li(class="xudos")
+            a(href="/about/xudos")
+              i.fa.fa-thumbs-up 
+              | &nbsp;<span id="score-xudos"></span> Xudos
              
-         if (user) && (!user.isGuest)
-           li.dropdown
-             a.dropdown-toggle(href="#",data-toggle="dropdown")
-               if user.name
-                 | <i class="fa fa-user"></i> #{user.name.split(' ')[0]}
-               else
-                 | <i class="fa fa-user"></i> Me
-               b.caret
-             ul(id="login-menu").dropdown-menu
-               li
-                 a(href="/users/#{user._id}") <i class='fa fa-cogs'></i> Profile
-               li
-                 a(href="/logout") <i class='fa fa-sign-out'></i> Logout
-         else
-           li.dropdown
-             a.dropdown-toggle(href="#",data-toggle="dropdown",aria-haspopup="true",aria-expanded="false")
-               | <i class="fa fa-sign-in"></i> Sign In
-               b.caret
-             ul(id="signin-menu").dropdown-menu
-               li
-                 a(href="/auth/google") <i class='fa fa-google'></i> Sign In with Google
-               li
-                 a(href="/auth/twitter") <i class='fa fa-twitter'></i> Sign In with Twitter
-               li
-                 a(href="/auth/github") <i class='fa fa-github'></i> Sign In with GitHub
-               if config.localAuth
-                 li.divider(role="presentation")
-                 li
-                   form.navbar-form#form-login(action="/auth/local",method="post")
-                     div.input-group
-                       input.form-control#username(name="username",type="text",placeholder="Username")
-                     div.input-group                     
-                       input.form-control#password(name="password",type="password")
-                     button.btn.btn-primary.btn-default#button-login(type="submit") Sign In
+          if (user) && (!user.isGuest)
+            li.dropdown
+              a.dropdown-toggle(href="#",data-toggle="dropdown")
+                if user.name
+                  | <i class="fa fa-user"></i> #{user.name.split(' ')[0]}
+                else
+                  | <i class="fa fa-user"></i> Me
+                b.caret
+              ul(id="login-menu").dropdown-menu
+                li
+                  a(href="/users/#{user._id}") <i class='fa fa-cogs'></i> Profile
+                li
+                  a(href="/logout") <i class='fa fa-sign-out'></i> Logout
+          else
+            li.dropdown
+              a.dropdown-toggle(href="#",data-toggle="dropdown",aria-haspopup="true",aria-expanded="false")
+                | <i class="fa fa-sign-in"></i> Sign In
+                b.caret
+              ul(id="signin-menu").dropdown-menu
+                li
+                  a(href="/auth/google") <i class='fa fa-google'></i> Sign In with Google
+                li
+                  a(href="/auth/twitter") <i class='fa fa-twitter'></i> Sign In with Twitter
+                li
+                  a(href="/auth/github") <i class='fa fa-github'></i> Sign In with GitHub
+                if config.localAuth
+                  li.divider(role="presentation")
+                  li
+                    form.navbar-form#form-login(action="/auth/local",method="post")
+                      div.input-group
+                        input.form-control#username(name="username",type="text",placeholder="Username")
+                      div.input-group                     
+                        input.form-control#password(name="password",type="password")
+                      button.btn.btn-primary.btn-default#button-login(type="submit") Sign In
+                      

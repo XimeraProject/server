@@ -1,5 +1,5 @@
 extends layouts/main
-include ./activity-card.jade
+include ./activity-card.pug
 
 block title
   if activity.title
@@ -7,14 +7,14 @@ block title
   else
     | Activity
 
-block activity
-   div.activity-content
-      | !{activity.html}
+mixin activitycontent
+  div.activity-content
+   | !{activity.html}
 
-block updateModal
+mixin updateModal
   div.modal.fade#updateWarningModal(tabindex="-1",role="dialog",aria-labelledby="updateWarningModal")
       div.modal-dialog(role="document")
-        div.modal-content<div class="modal-content">
+        div.modal-content
           div.modal-header
             button(type="button", class="close", data-dismiss="modal", aria-label="Close")
               span(aria-hidden="true") &times;
@@ -27,10 +27,10 @@ block updateModal
             a#update-version-button(href="#{url}?#{activity.freshestCommit}",class="btn btn-warning")
               | <i class="fa fa-level-up"></i>&nbsp;Delete my work and update to the new version.
 
-block resetModal
+mixin resetModal
   div.modal.fade#resetWarningModal(tabindex="-1",role="dialog",aria-labelledby="resetWarningModal")
       div.modal-dialog(role="document")
-        div.modal-content<div class="modal-content">
+        div.modal-content
           div.modal-header
             button(type="button", class="close", data-dismiss="modal", aria-label="Close")
               span(aria-hidden="true") &times;
@@ -44,9 +44,9 @@ block resetModal
 
 block modals
   div
-    block resetModal
+    +resetModal
   div
-    block updateModal
+    +updateModal
 
 block content
   // BADBAD: shouldn't this be removed now that htlatex is working
@@ -106,7 +106,7 @@ block content
         .row
           main.col-md-offset-2.col-md-8.activity(id="theActivity", data-activity=activity.hash, data-repository-name=repositoryName, data-commit=activity.commit, data-path=activity.path, data-title=activity.title, role="main")
             .row.activity-body#page-content
-              block activity
+              +activitycontent
         if previousActivity || nextActivity
           nav(aria-label="page navigation")
             .row

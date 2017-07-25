@@ -33,20 +33,20 @@ var express = require('express')
   , sendSeekable = require('send-seekable')
   ;
 
-// Some filters for Jade; admittedly, Jade comes with its own Markdown
+// Some filters for Pug; admittedly, Pug comes with its own Markdown
 // filter, but I want to run everything through a filter to add
 // links to Ximera
-var jade = require('jade');
+var pug = require('pug');
 var md = require("markdown");
-jade.filters.ximera = function(str){
+pug.filters.ximera = function(str){
     return str
 	.replace(/Ximera/g, '<a class="ximera" href="/">Ximera</a>')
 	.replace(/---/g, '&mdash;')
 	.replace(/--/g, '&ndash;')
     ;
 };
-jade.filters.markdown = function(str){
-    return jade.filters.ximera(md.parse(str));
+pug.filters.markdown = function(str){
+    return pug.filters.ximera(md.parse(str));
 };
 
 // Create Express 4 app to configure.
@@ -56,9 +56,9 @@ exports.app = app;
 // Because I care about trailing slashes
 app.enable('strict routing');
 
-// Use Jade as our templating engine
+// Use Pug as our templating engine
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 // all environments
 app.set('port', config.port);
