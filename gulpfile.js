@@ -5,7 +5,7 @@ var argv = require('yargs').argv,
     gulp       = require('gulp'),
     gutil      = require('gulp-util'),
     gulpif     = require('gulp-if'),
-
+    puglint    = require('gulp-pug-lint'),
     source     = require('vinyl-source-stream'),
     buffer     = require('vinyl-buffer'),
     sourcemaps = require('gulp-sourcemaps'),
@@ -17,6 +17,10 @@ var argv = require('yargs').argv,
     less       = require('gulp-less'),
     minifyCSS  = require('gulp-minify-css'),
     assign     = require('lodash.assign');
+
+
+
+
 
 // Directory where static files are found. Don't forget the slash at the end.
 var staticDirectoryCSS = './public/stylesheets/';
@@ -92,6 +96,12 @@ gulp.task('watchify', function() {
 
 gulp.task('csswatch', function () {
     gulp.watch(cssFiles, ['css']);
+});
+
+gulp.task('lint', function () {
+    return gulp
+	.src('views/**/*.pug')
+	.pipe(puglint());
 });
 
 gulp.task('watch', ['watchify', 'csswatch']);
