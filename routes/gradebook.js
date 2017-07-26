@@ -53,7 +53,7 @@ exports.record = function(req, res, next) {
 			data: {
 			    oauth_callback: "about:blank"
 			},
-			includeBodyHash: true
+			//includeBodyHash: true
 		    };
 
 		    var oauth = OAuth({
@@ -63,7 +63,7 @@ exports.record = function(req, res, next) {
 			    return crypto.createHmac('sha1', key).update(base_string).digest('base64');
 			}
 		    });		    
-		    
+		    /*
 		    request.post({
 			url: requestData.url,
 			method: requestData.method,
@@ -72,7 +72,7 @@ exports.record = function(req, res, next) {
 		    }, function(err, response, body) {
 			console.log(err);
 			//process your data here 
-		    });
+		    });*/
 		});
 	    }
 	});
