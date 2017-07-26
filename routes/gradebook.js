@@ -12,6 +12,8 @@ var passback = pug.compileFile(path.join(__dirname,'../views/lti/passback.pug'))
 exports.record = function(req, res, next) {
     var repositoryName = gitBackend.normalizeRepositoryName(req.params.repository);
 
+    console.log( {user: req.user._id, repository: repositoryName, path:req.params.path } );
+    
     if (!req.user) {
 	next('No user logged in.');
     } else {
