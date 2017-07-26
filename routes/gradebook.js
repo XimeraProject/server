@@ -49,7 +49,8 @@ exports.record = function(req, res, next) {
 		    var requestData = {
 			url: url,
 			method: 'POST',
-			data: pox
+			//data: pox,
+			includeBodyHash: true
 		    };
 
 		    var oauth = OAuth({
@@ -63,7 +64,7 @@ exports.record = function(req, res, next) {
 		    request.post({
 			url: requestData.url,
 			method: requestData.method,
-			form: pox,
+			body: pox,
 			headers: oauth.toHeader(oauth.authorize(requestData, token))
 		    }, function(err, response, body) {
 			console.log(err);
