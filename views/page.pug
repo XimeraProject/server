@@ -50,7 +50,7 @@ block modals
 
 block content
   // BADBAD: shouldn't this be removed now that htlatex is working
-  // fine? No!  Apparently htlatex still doesn't support two optional
+  // fine? No! Apparently htlatex still doesn't support two optional
   // arguments like this.
   script(type="math/tex")
     | \newcommand{\dd}[2][]{\frac{d #1}{d #2}}
@@ -70,7 +70,7 @@ block content
           nav(role="navigation",aria-label="textbook")
             .row
               .col-md-12
-                div.course-navigation(data-commit=activity.commit, data-user=user._id.toString(),data-points=activity.xourse.totalPoints)
+                div.course-navigation(data-commit=activity.commit, data-user=user._id.toString(),data-points=activity.xourse.totalPoints, data-xourse-url=`${repositoryName}/${activity.xourse.path}`)
                   div.frame
                     ul.items.pagination
                       for activityUrl in activity.xourse.activityList

@@ -1,5 +1,6 @@
 var $ = require('jquery');
 var _ = require('underscore');
+var gradebook = require('./gradebook');
 
 var completions = $.Deferred();
 
@@ -30,8 +31,8 @@ var createActivityCard = function() {
     // This is the new method for storing completion data
     var repositoryName = activityCard.attr('data-repository-name');
     var activityPath = activityCard.attr('data-path');
+    
     if (repositoryName) {
-
 	$.when(completions).done(function(completions) {
 	    var maxCompletion = 0;
 	    
@@ -43,31 +44,9 @@ var createActivityCard = function() {
 	    
 	    displayProgress( activityCard, maxCompletion );
 	    activityCard.attr('data-max-completion', maxCompletion );
-	});
-
-	return;
-    } // else
-
-    // DEPRECATED: This is the historical method for storing completion data
-    var hashes = activityCard.attr('data-hashes');
-    
-    if (hashes) {
-	hashes = JSON.parse(hashes);
-	
-	$.when(completions).done(function(completions) {
-	    var maxCompletion = 0;
-	    
-	    _.each( completions, function(c) {
-		if (_.contains(hashes, c.activityHash))
-		    if (c.complete > maxCompletion)
-			maxCompletion = c.complete;
-	    });
-	    
-	    displayProgress( activityCard, maxCompletion );
+	    gradebook.update();
 	});
     }
-
-    // BADBAD: now we also try to load the data some other way
 };
 
 $.fn.extend({

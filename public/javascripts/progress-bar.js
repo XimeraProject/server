@@ -1,5 +1,6 @@
 var $ = require('jquery');
 var _ = require('underscore');
+var gradebook = require('./gradebook');
 
 exports.progress = function(n,d) {
     var percent = Math.round(n*100 / d);
@@ -36,7 +37,7 @@ exports.progressProportion = function(proportion) {
 
     progressBar.toggleClass('progress-bar-striped', proportion > 0.9999);
 
-    // Progress bar in xourse    
+    // Progress bar in xourse
     var otherProgressBar = $('li.active a.activity-card div.progress-bar.progress-bar-success');
     
     otherProgressBar.attr('aria-valuenow', Math.round(percent));
@@ -45,6 +46,8 @@ exports.progressProportion = function(proportion) {
     $('span', otherProgressBar).text('');
 
     // the activity card get attribute 'max-completion' set
+    var activityCard = $('li.active a.activity-card');
+    activityCard.attr('data-max-completion', proportion );
 };    
 
 
@@ -102,8 +105,8 @@ var update = _.debounce( function() {
     // and in a separate "completion" table
     $(activityToMonitor).recordCompletion( value );
 
-    // BADBAD: total the points in the course (if there is one)
-    
+    // total the points in the course (if there is one)
+    gradebook.update();
 }, 300 );
 
 exports.monitorActivity = function( activity ) {

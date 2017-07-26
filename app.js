@@ -5,6 +5,7 @@
 var express = require('express')
   , certificate = require('./routes/certificate')
   , user = require('./routes/user')
+  , gradebook = require('./routes/gradebook')
   , tincan = require('./routes/tincan')
   , http = require('http')
   , path = require('path')
@@ -307,6 +308,11 @@ function addUserImplicitly(req, res, next) {
     app.put('/completion/:activityHash', state.completion);
     app.get('/users/:id/completions', state.getCompletions);
 
+    app.get( '/:repository/:path(*)/gradebook',
+	     gradebook.record );
+    app.put( '/:repository/:path(*)/gradebook',
+	     gradebook.record );    
+    
     ////////////////////////////////////////////////////////////////
     // Activity page rendering
 

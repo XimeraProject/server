@@ -102,6 +102,6 @@ $.fn.extend({
 	}
 
 	return;
-    },
+    }
 });    
 

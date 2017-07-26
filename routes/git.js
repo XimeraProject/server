@@ -25,6 +25,8 @@ function normalizeRepositoryName( name ) {
     return name.replace( /[^0-9A-Za-z-]/, '' ).toLowerCase();
 }
 
+exports.normalizeRepositoryName = normalizeRepositoryName;
+
 function authorization(req,res,next) {
     var authorization = undefined;
     var token = undefined;

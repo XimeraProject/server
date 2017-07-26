@@ -1,7 +1,7 @@
 {
   "name": "ximera",
   "description": "Ximera interactive textbook server",
-  "version": "0.0.54",
+  "version": "0.0.55",
   "private": true,
   "scripts": {
     "start": "node app.js",
@@ -63,6 +63,7 @@
     "morgan": "1.6.1",
     "node-uuid": "1.4.7",
     "nodegit": "^0.18.3",
+    "oauth-1.0a": "^2.2.0",
     "passport": "0.2.2",
     "passport-google-openidconnect": "0.0.4",
     "passport-local": "1.0.0",

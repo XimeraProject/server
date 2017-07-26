@@ -42,11 +42,13 @@ exports.activityHashToActivityObject = function(activityHash) {
 	    moreInfo: window.location.href
 	};
 
-	// And use a better URL
+	// And use a better URL?  Maybe not.
+	/*
 	result.id = ximeraUrl +
 	    $(this).repositoryName() + "/" +
 	    $(this).activityPath() + "?" +
 	    activityHash;
+	*/
     }
 
     return result;
@@ -145,7 +147,7 @@ var uploadQueue = _.throttle( function() {
     
     if (repositoryName === undefined)
 	repositoryName = '';
-    console.log("REPOSITROYNAME=",repositoryName);
+
     $.ajax({
 	url: "/" + repositoryName + '/xAPI/statements',
 	type: 'POST',

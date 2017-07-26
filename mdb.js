@@ -130,4 +130,5 @@ exports.initialize = function initialize(callback) {
     mongoose.connect(url, {}, function (err) {
 	callback(err);
     });
-}
+};
+
