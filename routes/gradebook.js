@@ -21,8 +21,6 @@ exports.record = function(req, res, next) {
 	    if (err) {
 		next(err);
 	    } else {
-		console.log( "bridges = ", bridges );
-		
 		res.status(200).json({ok: true});
 		
 		bridges.forEach( function(bridge) {
@@ -63,11 +61,12 @@ exports.record = function(req, res, next) {
 		    });		    
 		    
 		    request.post({
-			url: url,
+			url: requestData.url,
+			method: requestData.method,
 			form: pox,
-			headers: oauth.toHeader(oauth.authorize(requestData, token))
-		    }, function(error, response, body) {
-			console.log(response);
+			headers: oauth.toHeader(oauth.authorize(pox, token))
+		    }, function(err, response, body) {
+			console.log(err);
 			//process your data here 
 		    });
 		});
