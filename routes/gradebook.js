@@ -19,9 +19,9 @@ exports.record = function(req, res, next) {
 	    if (err) {
 		next(err);
 	    } else {
-		res.status(200).send(bridges);
+		res.status(200).json({ok: true});
+		
 		bridges = bridges.filter( function(bridge) {
-		    console.log(bridge);
 		    if (bridge.data.custom_repository === undefined)
 			return false;
 		    if (req.params.repository != gitBackend.normalizeRepositoryName( bridge.data.custom_repository ))
@@ -34,6 +34,7 @@ exports.record = function(req, res, next) {
 		});
 
 		bridges.forEach( function(bridge) {
+		    console.log(bridge);
 		    var pointsPossible = parseInt(bridge.data.custom_canvas_assignment_points_possible);
 		    var resultScore = parseFloat(req.body.pointsEarned) / parseFloat(req.body.pointsPossible);
 		    var resultTotalScore = resultScore * pointsPossible;
