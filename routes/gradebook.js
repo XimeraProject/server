@@ -15,25 +15,12 @@ exports.record = function(req, res, next) {
     if (!req.user) {
 	next('No user logged in.');
     } else {
-	mdb.LtiBridge.find( {user: req.user._id}, function(err, bridges) {
+	mdb.LtiBridge.find( {user: req.user._id, repository: repositoryName, path:req.params.path }, function(err, bridges) {
 	    if (err) {
 		next(err);
 	    } else {
 		res.status(200).json({ok: true});
 		
-		bridges = bridges.filter( function(bridge) {
-		    console.log(bridges);
-		    if (bridge.data.custom_repository === undefined)
-			return false;
-		    if (req.params.repository != gitBackend.normalizeRepositoryName( bridge.data.custom_repository ))
-			return false;
-		    if (bridge.data.custom_xourse === undefined)
-			return false;		    
-		    if (req.params.path != bridge.data.custom_xourse )
-			return false;
-		    return true;
-		});
-
 		bridges.forEach( function(bridge) {
 		    console.log(bridge);
 		    var pointsPossible = parseInt(bridge.data.custom_canvas_assignment_points_possible);

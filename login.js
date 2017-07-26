@@ -270,15 +270,25 @@ function addUserAccount(req, authField, authId, name, email, course, done) {
     }
 }
 
+function normalizeRepositoryName( name ) {
+    return name.replace( /[^0-9A-Za-z-]/, '' ).toLowerCase();
+}
+
 // Test this with  http://lti.tools/test/tc.php
 function addLmsAccount(req, identifier, profile, done) {
     console.log(profile);
+
+    if (profile.custom_repository)
+	profile.custom_repository = normalizeRepositoryName(profile.custom_repository);
     
     async.waterfall( [
 	// See if we have already logged in with this identifier	
 	function(callback) {
 	    console.log("Looking up bridge for ", identifier);
-	    mdb.LtiBridge.findOne( {ltiId: identifier}, callback );	    
+	    mdb.LtiBridge.findOne( {ltiId: identifier,
+				    repository: profile.custom_repository,
+				    path: profile.custom_xourse
+				   }, callback );
 	},
 	// Create a bridge if we aren't already logged in
 	function(bridge, callback) {
@@ -291,6 +301,8 @@ function addLmsAccount(req, identifier, profile, done) {
 		bridge = new mdb.LtiBridge({
                     user: req.user._id,
 		    ltiId: identifier,
+		    repository: profile.custom_repository,
+		    path: profile.custom_xourse,
 		    data: profile
 		});
 		console.log("new bridge =", bridge);

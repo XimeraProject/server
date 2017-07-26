@@ -77,9 +77,8 @@ exports.initialize = function initialize(callback) {
                                    new mongoose.Schema({
                                        user: {type: ObjectId, index: true, ref:"User"},
                                        ltiId: {type: String, index: true, unique: true, sparse: true},
-                                       gradeReturn: String,
 				       repository: {type: String, index: true},
-				       path: String,
+				       path: {type: String, index: true},
                                        data: Mixed				       
                                    }, {
                                        minimize: false
