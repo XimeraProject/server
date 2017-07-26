@@ -64,7 +64,7 @@ exports.record = function(req, res, next) {
 			url: requestData.url,
 			method: requestData.method,
 			form: pox,
-			headers: oauth.toHeader(oauth.authorize(pox, token))
+			headers: oauth.toHeader(oauth.authorize(requestData, token))
 		    }, function(err, response, body) {
 			console.log(err);
 			//process your data here 
