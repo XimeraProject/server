@@ -50,6 +50,9 @@ exports.record = function(req, res, next) {
 			url: url,
 			method: 'POST',
 			//data: pox,
+			data: {
+			    oauth_callback: "about:blank"
+			},
 			includeBodyHash: true
 		    };
 
