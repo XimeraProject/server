@@ -22,6 +22,7 @@ exports.record = function(req, res, next) {
 		res.status(200).json({ok: true});
 		
 		bridges = bridges.filter( function(bridge) {
+		    console.log(bridges);
 		    if (bridge.data.custom_repository === undefined)
 			return false;
 		    if (req.params.repository != gitBackend.normalizeRepositoryName( bridge.data.custom_repository ))
