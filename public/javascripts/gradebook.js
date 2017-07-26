@@ -22,9 +22,9 @@ exports.update = _.debounce( function() {
 	pointsEarned: pointsEarned,
 	pointsPossible: pointsPossible	
     };
-    
+
     $.ajax({
-	url: xourseUrl + '/gradebook',
+	url: '/' + xourseUrl + '/gradebook',
 	type: 'PUT',
 	data: JSON.stringify(payload),	
 	success: function( result ) {
