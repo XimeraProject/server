@@ -19,6 +19,8 @@ exports.record = function(req, res, next) {
 	    if (err) {
 		next(err);
 	    } else {
+		console.log( "bridges = ", bridges );
+		
 		res.status(200).json({ok: true});
 		
 		bridges.forEach( function(bridge) {
