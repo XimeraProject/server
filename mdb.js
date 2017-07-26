@@ -76,7 +76,7 @@ exports.initialize = function initialize(callback) {
     exports.LtiBridge = mongoose.model("LtiBridge",
                                    new mongoose.Schema({
                                        user: {type: ObjectId, index: true, ref:"User"},
-                                       ltiId: {type: String, index: true, unique: true, sparse: true},
+                                       ltiId: {type: String, index: true, sparse: true},
 				       repository: {type: String, index: true},
 				       path: {type: String, index: true},
                                        data: Mixed				       
