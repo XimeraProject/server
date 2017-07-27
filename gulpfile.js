@@ -43,7 +43,7 @@ var options = {
 	[babelify, {
 	    global: true,
 	    ignore: /\/node_modules\/(?!syntaxhighlighter|brush-)/,
-	    presets: ["es2015", "react"]
+	    presets: ["es2015"]
 	}]
     ],
     extensions: ['.js'],
