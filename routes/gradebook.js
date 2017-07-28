@@ -3,19 +3,13 @@ var gitBackend = require('./git');
 var request = require('request');
 var pug = require('pug');
 var path = require('path');
-var OAuth = require('oauth-1.0a');
 var config = require('../config');
-var crypto  = require('crypto');
-
-var fs  = require('fs');
 
 var passback = pug.compileFile(path.join(__dirname,'../views/lti/passback.pug'));
 
 exports.record = function(req, res, next) {
     var repositoryName = gitBackend.normalizeRepositoryName(req.params.repository);
 
-    console.log( {user: req.user._id, repository: repositoryName, path:req.params.path } );
-    
     if (!req.user) {
 	next('No user logged in.');
     } else {
@@ -26,60 +20,43 @@ exports.record = function(req, res, next) {
 		res.status(200).json({ok: true});
 		
 		bridges.forEach( function(bridge) {
-		    console.log(bridge);
 		    var pointsPossible = parseInt(bridge.data.custom_canvas_assignment_points_possible);
 		    var resultScore = parseFloat(req.body.pointsEarned) / parseFloat(req.body.pointsPossible);
 		    var resultTotalScore = resultScore * pointsPossible;
-
+		    
 		    var pox = passback({
 			resultScore: resultScore,
 			resultTotalScore: resultTotalScore,
 			sourcedId: bridge.data.lis_result_sourcedid
 		    });
 
-		    var url = bridge.data.ext_ims_lis_basic_outcome_url;
+		    var url = bridge.data.lis_outcome_service_url;
 		    
-		    var token = {
-			key: bridge.data.oauth_consumer_key,
-			secret: config.lti.secret
+		    var oauth = {
+			callback: "about:blank",
+			body_hash: true,			
+			consumer_key: bridge.data.oauth_consumer_key,
+			consumer_secret: config.lti.secret,
+			signature_method: bridge.data.oauth_signature_method
 		    };
 
-		    if (token.key != config.lti.key) {
-			// BADBAD: error handling?
+		    if (oauth.consumer_key != config.lti.key) {
+			console.log("WRONG KEY");
 		    }
-
-		    var requestData = {
-			url: url,
-			method: 'POST',
-			//data: pox,
-			data: {
-			    oauth_callback: "about:blank"
-			},
-			//includeBodyHash: true
-		    };
-
-		    var oauth = OAuth({
-			consumer: token,
-			signature_method: bridge.data.oauth_signature_method,
-			hash_function: function(base_string, key) {
-			    return crypto.createHmac('sha1', key).update(base_string).digest('base64');
-			}
-		    });		    
-
+		    
 		    request.post({
-			url: requestData.url,
-			method: requestData.method,
+			url: url,
 			body: pox,
-			headers: oauth.toHeader(oauth.authorize(requestData, token))
+			oauth: oauth,
+			headers: {
+			    'Content-Type': 'application/xml',
+			}
 		    }, function(err, response, body) {
-			console.log(err);
-			fs.writeFile("/tmp/response.txt", response, function(err) {
-			    if(err) {
-				console.log(err);
-			    }
-			    
-			    console.log("The file was saved!");
-			}); 
+			if (err) {
+			    res.status(500).json(err);			    
+			} else {
+			    res.json({ok: true});			    
+			}
 		    });
 		});
 	    }
