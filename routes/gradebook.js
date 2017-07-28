@@ -4,6 +4,7 @@ var request = require('request');
 var pug = require('pug');
 var path = require('path');
 var config = require('../config');
+const uuidv1 = require('uuid/v1');
 
 var passback = pug.compileFile(path.join(__dirname,'../views/lti/passback.pug'));
 
@@ -25,6 +26,8 @@ exports.record = function(req, res, next) {
 		    var resultTotalScore = resultScore * pointsPossible;
 		    
 		    var pox = passback({
+			messageIdentifier: uuidv1(),
+			resultDataUrl: config.root + '/' + repositoryName + '/' + req.params.path,
 			resultScore: resultScore,
 			resultTotalScore: resultTotalScore,
 			sourcedId: bridge.data.lis_result_sourcedid

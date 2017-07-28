@@ -3,16 +3,23 @@ imsx_POXEnvelopeRequest(xmlns="http://www.imsglobal.org/services/ltiv1p1/xsd/ims
   imsx_POXHeader
     imsx_POXRequestHeaderInfo
       imsx_version V1.0
-      imsx_messageIdentifier 999999123
+      if messageIdentifier
+        imsx_messageIdentifier #{messageIdentifier}
   imsx_POXBody
     replaceResultRequest
       resultRecord
-        sourcedGUID
-          sourcedId #{sourcedId}
+        if sourcedId
+          sourcedGUID
+            sourcedId #{sourcedId}
         result
-          resultTotalScore
-            language en
-            textString #{resultTotalScore}
-          resultScore
-            language en
-            textString #{resultScore}
+          if resultDataUrl
+            resultData
+              url #{resultDataUrl}
+          if resultTotalScore
+            resultTotalScore
+              language en
+              textString #{resultTotalScore}
+          if resultScore
+            resultScore
+              language en
+              textString #{resultScore}
