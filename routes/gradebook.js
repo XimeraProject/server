@@ -18,8 +18,6 @@ exports.record = function(req, res, next) {
 	    if (err) {
 		next(err);
 	    } else {
-		res.status(200).json({ok: true});
-		
 		bridges.forEach( function(bridge) {
 		    var pointsPossible = parseInt(bridge.data.custom_canvas_assignment_points_possible);
 		    var resultScore = parseFloat(req.body.pointsEarned) / parseFloat(req.body.pointsPossible);
@@ -27,7 +25,7 @@ exports.record = function(req, res, next) {
 		    
 		    var pox = passback({
 			messageIdentifier: uuidv1(),
-			resultDataUrl: config.root + '/' + repositoryName + '/' + req.params.path,
+			resultDataUrl: config.root + '/users/' + req.user._id + '/' + repositoryName + '/' + req.params.path,
 			resultScore: resultScore,
 			resultTotalScore: resultTotalScore,
 			sourcedId: bridge.data.lis_result_sourcedid
