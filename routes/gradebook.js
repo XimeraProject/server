@@ -7,6 +7,8 @@ var OAuth = require('oauth-1.0a');
 var config = require('../config');
 var crypto  = require('crypto');
 
+var fs  = require('fs');
+
 var passback = pug.compileFile(path.join(__dirname,'../views/lti/passback.pug'));
 
 exports.record = function(req, res, next) {
@@ -63,7 +65,7 @@ exports.record = function(req, res, next) {
 			    return crypto.createHmac('sha1', key).update(base_string).digest('base64');
 			}
 		    });		    
-		    /*
+
 		    request.post({
 			url: requestData.url,
 			method: requestData.method,
@@ -71,8 +73,14 @@ exports.record = function(req, res, next) {
 			headers: oauth.toHeader(oauth.authorize(requestData, token))
 		    }, function(err, response, body) {
 			console.log(err);
-			//process your data here 
-		    });*/
+			fs.writeFile("/tmp/response.txt", response, function(err) {
+			    if(err) {
+				console.log(err);
+			    }
+			    
+			    console.log("The file was saved!");
+			}); 
+		    });
 		});
 	    }
 	});

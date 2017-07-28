@@ -280,6 +280,9 @@ function addLmsAccount(req, identifier, profile, done) {
 
     if (profile.custom_repository)
 	profile.custom_repository = normalizeRepositoryName(profile.custom_repository);
+
+    // BADBAD: should match ltiId since that is a user+context to
+    // ensure that we aren't merging different humans
     
     async.waterfall( [
 	// See if we have already logged in with this identifier	

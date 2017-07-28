@@ -123,12 +123,15 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
               | <i class="fa fa-sign-in"></i> Sign In
               b.caret
             ul(id="signin-menu").dropdown-menu
-              li
-                a(href="/auth/google") <i class='fa fa-google'></i> Sign In with Google
-              li
-                a(href="/auth/twitter") <i class='fa fa-twitter'></i> Sign In with Twitter
-              li
-                a(href="/auth/github") <i class='fa fa-github'></i> Sign In with GitHub
+              if config.googleAuth
+                li
+                  a(href="/auth/google") <i class='fa fa-google'></i> Sign In with Google
+              if config.twitterAuth
+                li
+                  a(href="/auth/twitter") <i class='fa fa-twitter'></i> Sign In with Twitter
+              if config.githubAuth
+                li
+                  a(href="/auth/github") <i class='fa fa-github'></i> Sign In with GitHub
               if config.localAuth
                 li.divider(role="presentation")
                 li
