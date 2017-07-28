@@ -26,7 +26,8 @@ exports.update = _.debounce( function() {
     $.ajax({
 	url: '/' + xourseUrl + '/gradebook',
 	type: 'PUT',
-	data: JSON.stringify(payload),	
+	data: JSON.stringify(payload),
+	contentType: 'application/json',	
 	success: function( result ) {
 	    console.log( "Recorded gradebook",payload );
 	}	    
