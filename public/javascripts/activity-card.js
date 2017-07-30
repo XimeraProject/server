@@ -21,7 +21,9 @@ $(function() {
 });
 
 var displayProgress = function( card, progress ) {
-    $('.progress-bar', card).css('width', Math.round(progress * 100).toString() + '%' );
+    var progressBar = $('.progress-bar', card);
+    progressBar.css('width', Math.round(progress * 100).toString() + '%' );
+    progressBar.toggleClass('progress-bar-striped', progress > 0.9999);
 };
 
 var createActivityCard = function() {

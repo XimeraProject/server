@@ -44,6 +44,7 @@ exports.progressProportion = function(proportion) {
     otherProgressBar.attr('aria-valuemax', 100);
     otherProgressBar.css('width', percent.toString() + '%' );
     $('span', otherProgressBar).text('');
+    otherProgressBar.toggleClass('progress-bar-striped', proportion > 0.9999);    
 
     // the activity card get attribute 'max-completion' set
     var activityCard = $('li.active a.activity-card');
