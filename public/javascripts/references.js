@@ -81,10 +81,12 @@ $.fn.extend({
 var targetHash = window.location.hash;
 
 // remove hash
-if ((history) && (history.pushState)) {
-    // Get rid of hash
-    history.pushState("", document.title, window.location.pathname
-                      + window.location.search);
+if (window.location.hash) {
+    if ((history) && (history.pushState)) {
+	// Get rid of hash
+	history.pushState("", document.title, window.location.pathname
+			  + window.location.search);
+    }
 }
 
 exports.highlightTarget = function() {
