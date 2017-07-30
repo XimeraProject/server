@@ -1,0 +1,11 @@
+extends ../layouts/main
+
+block title
+  | #{repositoryName}
+  
+block content
+ .container
+   div.row
+     for xourse in xourses
+       h1 
+         a(href=`/${repositoryName}/${xourse.path}`) #{xourse.title}

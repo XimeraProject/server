@@ -84,6 +84,10 @@ block content
               nav(aria-label="breadcrumb",role="navigation")
                 ol.breadcrumb
                   - var level = 0;
+                  li.breadcrumb-item
+                    - level = level + 1;
+                    a(href="/" + repositoryName, aria-level=level)
+                        | !{repositoryName}
                   if activity.xourse
                     li.breadcrumb-item
                       - level = level + 1;

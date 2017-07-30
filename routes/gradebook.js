@@ -24,6 +24,10 @@ exports.record = function(req, res, next) {
 				var pointsPossible = parseInt(bridge.data.custom_canvas_assignment_points_possible);
 				var resultScore = parseFloat(req.body.pointsEarned) / parseFloat(req.body.pointsPossible);
 				var resultTotalScore = resultScore * pointsPossible;
+
+				// BADBAD: should round these two a couple decimal places to avoid some weird appearances on canvas
+
+				// BADBAD: should only send updates to canvas if the grade is going up
 				
 				var pox = passback({
 				    messageIdentifier: uuidv1(),

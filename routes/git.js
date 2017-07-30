@@ -408,7 +408,7 @@ exports.render = function(req, res, next) {
 	    xourse.path = xourse.path.replace(/\.html$/,'')
 	}		
 	xourse.hash = req.activity.blob.id().toString();
-	res.render('xourse', { xourse: xourse,
+	res.render('xourses/view', { xourse: xourse,
 			       repositoryName: req.repositoryName });
 	return;
     }
@@ -694,12 +694,17 @@ exports.findPossibleActivityFromCommits = function(req, res, next) {
 };
 
 exports.fetchMetadata = function(req, res, next) {
-    var activity = req.activity;
-
-    activity.tree.getEntry("metadata.json").then(function(treeEntry) {
-	treeEntry.getBlob().then(function(blob) {
-	    req.repositoryMetadata = JSON.parse(blob.content());
-	    next();
+    var readMetadata = function(tree) {
+	tree.getEntry("metadata.json").then(function(treeEntry) {
+	    treeEntry.getBlob().then(function(blob) {
+		req.repositoryMetadata = JSON.parse(blob.content());
+		next();
+	    });
 	});
-    });
+    };
+
+    if (req.activity)
+	readMetadata(req.activity.tree);
+    else if (req.commits && req.commits[0] && req.commits[0].commit)
+	req.commits[0].commit.getTree().then(readMetadata);
 };

@@ -57,15 +57,23 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
         li.dropdown
              if !landingPage
                a.dropdown-toggle(href="#",data-toggle="dropdown",aria-haspopup="true",aria-expanded="false")
-                 | <i class="fa fa-bug"></i> Bug
+                 | <i class="fa fa-hand-paper-o"></i> Get Help
                  b.caret
              ul(id="bug-menu").dropdown-menu
-              if activity && activity.path && repositoryMetadata && repositoryMetadata.github              
-                li
-                  // BADBAD: instead of master, perhaps should have activity.commit
-                  a(href=`https://github.com/${repositoryMetadata.github.owner}/${repositoryMetadata.github.repository}/issues/new?title=${activity.title}&body=%0A%0ASee%20[${activity.path}.tex](https://github.com/${repositoryMetadata.github.owner}/${repositoryMetadata.github.repository}/blob/master/${activity.path}.tex)`) Report error in content  
-              li
-                a(href=`https://github.com/kisonecat/ximera/issues/new?title=${path}`) Report error with website      
+               if repositoryName && ((activity && activity.xourse && activity.xourse.path) || (xourse && xourse.path))
+                 li
+                   a(id="contact-instructor", href=`/${repositoryName}/${(activity ? (activity.xourse) : xourse).path}/instructors`)
+                     | <i class="fa fa-envelope-o"></i> Contact my instructor
+                 li.divider(role="separator")
+               if activity && activity.path && repositoryMetadata && repositoryMetadata.github              
+                 li
+                   // BADBAD: instead of master, perhaps should have activity.commit
+                   a(href=`https://github.com/${repositoryMetadata.github.owner}/${repositoryMetadata.github.repository}/issues/new?title=${activity.title}&body=%0A%0ASee%20[${activity.path}.tex](https://github.com/${repositoryMetadata.github.owner}/${repositoryMetadata.github.repository}/blob/master/${activity.path}.tex)`) 
+                     | <i class="fa fa-exclamation-triangle"></i> Report error to authors
+               if path
+                 li
+                   a(href=`https://github.com/kisonecat/ximera/issues/new?title=${path}`)
+                     | <i class="fa fa-bug"></i> Report bug to programmers
 
         if activity && (activity.commitUpdated || activity.freshestCommit)
           li
@@ -133,7 +141,7 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
                 li
                   a(href="/auth/github") <i class='fa fa-github'></i> Sign In with GitHub
               if config.localAuth
-                li.divider(role="presentation")
+                li.divider(role="separator")
                 li
                   form.navbar-form#form-login(action="/auth/local",method="post")
                     div.input-group

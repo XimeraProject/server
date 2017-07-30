@@ -6,6 +6,8 @@ var express = require('express')
   , certificate = require('./routes/certificate')
   , user = require('./routes/user')
   , gradebook = require('./routes/gradebook')
+  , xourses = require('./routes/xourses')
+  , instructors = require('./routes/instructors')
   , tincan = require('./routes/tincan')
   , http = require('http')
   , path = require('path')
@@ -205,11 +207,14 @@ function addUserImplicitly(req, res, next) {
 
     app.put('/users/:id/secret', function( req, res ) { user.putSecret( req, res ); } );
 
+    
+    
     ////////////////////////////////////////////////////////////////
     // BADBAD: some permanent redirects for OSU courses from old URLs
-    app.get( '/course', function( req, res ) { res.redirect(req.url + '/'); });
-    app.get( '/courses', function( req, res ) { res.redirect('/course/'); });
-    app.get( '/courses/', function( req, res ) { res.redirect('/course/'); });
+    app.get( '/course', function( req, res ) { res.redirect('/mooculus'); });
+    app.get( '/courses', function( req, res ) { res.redirect('/mooculus'); });
+    app.get( '/courses/', function( req, res ) { res.redirect('/mooculus'); });
+    
     app.get( '/course/mooculus/mooculus/:path(*)', function( req, res ) { 
 	res.set( 'location', '/mooculus/calculus1/' + req.params.path );
 	res.status(301).send();
@@ -337,6 +342,12 @@ function addUserImplicitly(req, res, next) {
 		 gitBackend.recentCommitsOnMaster,
 		 gitBackend.findPossibleActivityFromCommits,
 		 callback );
+
+	app.get( '/users/:masqueradingUserId/:repository/:path(' + regexp + ')',
+	     gitBackend.repository,
+		 gitBackend.recentCommitsOnMaster,
+		 gitBackend.findPossibleActivityFromCommits,
+		 callback );	
     };
 
     serveContent( '*.svg', gitBackend.serve('image/svg+xml') );
@@ -348,15 +359,42 @@ function addUserImplicitly(req, res, next) {
     app.get( '/:repository/:path(*.tex)',
 	     gitBackend.repository,
 	     gitBackend.recentCommitsOnMaster, gitBackend.findPossibleActivityFromCommits,
-	     gitBackend.source );    
+	     gitBackend.source );
     
-    app.get( '/:repository/:path(*)',
+    /*
+    app.get( '/users/:masqueradingUserId/:repository/:path(*)',
+	     supervising.findUser,
 	     gitBackend.repository,
 	     gitBackend.recentCommitsOnMaster, gitBackend.findPossibleActivityFromCommits,
 	     gitBackend.chooseMostRecentBlob,
 	     gitBackend.fetchMetadata,
 	     gitBackend.parseActivity,
 	     gitBackend.render );    
+    */
+
+    app.get( '/:repository/:path/instructors',
+	     gitBackend.repository,
+	     gitBackend.recentCommitsOnMaster,
+	     gitBackend.findPossibleActivityFromCommits,
+	     gitBackend.chooseMostRecentBlob,
+	     gitBackend.fetchMetadata,
+	     gitBackend.parseActivity,	     
+	     instructors.index );
+    
+    app.get( '/:repository/:path(*)',
+	     gitBackend.repository,
+	     gitBackend.recentCommitsOnMaster,
+	     gitBackend.findPossibleActivityFromCommits,
+	     gitBackend.chooseMostRecentBlob,
+	     gitBackend.fetchMetadata,
+	     gitBackend.parseActivity,
+	     gitBackend.render );
+
+    app.get( '/:repository',
+	     gitBackend.repository,
+	     gitBackend.recentCommitsOnMaster,
+	     gitBackend.fetchMetadata,
+	     xourses.index );
     
     // SVG files will only be rendered if they are sent with content type image/svg+xml
     // app.get( '/:repository/:path(*)', gitBackend.repository, gitBackend.publishedCommitOnMaster, gitBackend.getEntry, gitBackend.render );
