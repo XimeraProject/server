@@ -23,18 +23,6 @@ exports.ObjectId = mongoose.Types.ObjectId;
 exports.initialize = function initialize(callback) {
     winston.info("Initializing Mongo");
 
-    exports.Answers = mongoose.model("Answers",
-				     {
-					 _id: {type: String, index: true},
-					 value: Mixed
-				    });
-
-    exports.Successes = mongoose.model("Successes",
-				     {
-					 _id: {type: String, index: true},
-					 value: Mixed
-				    });
-
     var UserSchema = new mongoose.Schema(
                                   {
                                       googleOpenId: {type: String, index: true, unique: true, sparse: true},
