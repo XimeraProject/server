@@ -1,0 +1,30 @@
+extends layouts/main
+
+block title
+  if xourse && xourse.title
+    | #{xourse.title} &mdash; Instructors
+  else
+    | Instructors
+  
+block content
+ .container
+  .page-header
+     h1 Instructional Staff
+       if xourse && xourse.title
+         small &nbsp;for #{xourse.title}
+  div.row
+    nav(aria-label="breadcrumb",role="navigation")
+      ol.breadcrumb
+        li.breadcrumb-item
+          a(href="/" + repositoryName, aria-level=0)
+              | !{repositoryName}
+        if xourse
+          li.breadcrumb-item
+            a(href="/" + repositoryName + "/" + xourse.path,aria-level=1)
+              if xourse && xourse.title            
+                | !{xourse.title}
+              else
+                | Xourse
+          li.breadcrumb-item.active(aria-current="page",aria-level=2)
+            | Instructors
+            

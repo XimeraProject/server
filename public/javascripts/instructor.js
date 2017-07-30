@@ -1,6 +1,6 @@
 var $ = require('jquery');
     
-function announce( hash, kind, answers ) {
+function announce( hash, answers ) {
     var selector = function(hash, problem, answerable) {
 	return "[data-activity='" + hash + "'] " + "#" + problem + " #" + answerable; 
     };
@@ -10,33 +10,27 @@ function announce( hash, kind, answers ) {
 	    var element = $(selector(hash, problem, answerable));
 	    var statistics = answers[problem][answerable];
 
-	    element.trigger( "ximera:statistics:" + kind, statistics );
+	    element.trigger( "ximera:statistics:answers", statistics.responses );
+	    element.trigger( "ximera:statistics:successes", statistics.successes );	    
 	});
     });
 }
 
 $(function() {
     $("#instructor-view-statistics").click( function() {
-	var commit = $(this).attr('data-commit');
-	var hash = $(this).attr('data-activity');
-
+	$("#instructor-view-statistics").hide();
+	
+	var url = $(this).attr('data-activity-url');
+	var hash = $(this).attr('data-activity-hash');
+	
 	$.ajax({
-	    url: '/statistics/' + commit + '/' + hash + '/answers',
+	    url: '/statistics/' + url + '/' + hash,
 	    type: 'GET',
 	    success: function(result) {
 		if (result)
-		    announce( hash, 'answers', result );
+		    announce( hash, result );
 	    }
 	});
-
-	$.ajax({
-	    url: '/statistics/' + commit + '/' + hash + '/successes',
-	    type: 'GET',
-	    success: function(result) {
-		if (result)
-		    announce( hash, 'successes', result );			
-	    }
-	});	    
     });
 });
     

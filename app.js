@@ -6,6 +6,7 @@ var express = require('express')
   , certificate = require('./routes/certificate')
   , user = require('./routes/user')
   , gradebook = require('./routes/gradebook')
+  , statistics = require('./routes/statistics')
   , xourses = require('./routes/xourses')
   , instructors = require('./routes/instructors')
   , tincan = require('./routes/tincan')
@@ -239,7 +240,10 @@ function addUserImplicitly(req, res, next) {
     // app.get( '/course/:username/:repository/:branch/certificate', course.xourseFromUserAndRepo, certificate.xourse );
     // app.get( '/labels/:commit([0-9a-fA-F]+)/:label', course.getLabel );
     
-    // app.get( '/statistics/:commit/:hash/answers', course.answers );
+    app.get( '/statistics/:repository/:path(*)/:activityHash',
+	     // include some sort of authorization here -- being an LTI "instuctor" in any xourse in the repo suffices
+	     statistics.get );
+    
     // app.get( '/statistics/:commit/:hash/successes', course.successes );
     // app.get( '/progress/:username/:repository', course.progress );    
 
