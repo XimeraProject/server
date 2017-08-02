@@ -162,9 +162,10 @@ exports.repository = function(req, res, next) {
     console.log( repositoryPath );
     fs.stat(repositoryPath, function (err, stats){
 	if (err || !stats.isDirectory()) {
-	    if (err)
-		next(err);
-	    else
+	    if (err) {
+		res.status(404).render('404', { status: 404, url: req.url });
+		return;
+	    } else
 		next(new Error('The repository is not a directory.'));
 	} else {
 	    nodegit.Repository.openBare(repositoryPath).then(function(repository) {
