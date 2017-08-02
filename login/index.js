@@ -4,8 +4,8 @@ var GoogleStrategy = require('passport-google-openidconnect').Strategy
   , LtiStrategy = require('./passport-lti').Strategy
   , OAuth2Strategy = require('passport-oauth2').Strategy
   , async = require('async')
-  , mdb =  require('./mdb')
-  , config =  require('./config')
+  , mdb =  require('.,/mdb')
+  , config =  require('../config')
   , githubApi = require('github')
   , path = require('path');
 
@@ -81,7 +81,7 @@ module.exports.localStrategy = function(rootUrl) {
 	    return done(null, user);
 	});
     });
-}
+};
 
 module.exports.lmsStrategy = function (rootUrl) {
     return new LtiStrategy({
@@ -91,47 +91,6 @@ module.exports.lmsStrategy = function (rootUrl) {
     }, function (req, identifier, profile, done) {
         addLmsAccount(req, identifier, profile, done);
     });
-}
-
-
-// Add guest users account if not logged in.
-// TODO: Clean these out occasionally.
-module.exports.guestUserMiddleware = function(req, res, next) {
-    if (!req.user) {
-        if (!req.session.guestUserId) {
-            var userAgent = req.headers['user-agent'];
-            var remoteAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
-
-            req.user = new mdb.User({
-                isGuest: true,
-                name: "Guest User",
-                userAgent: userAgent,
-                remoteAddress: remoteAddress
-            });
-            req.session.guestUserId = req.user._id;
-            req.user.save(next);
-        }
-        else {
-            mdb.User.findOne({_id: req.session.guestUserId}, function (err, user) {
-                if (err) {
-                    next(err);
-                }
-                else if (user) {
-                    req.user = user;
-                    next();
-                }
-                else {
-                    console.log(req.session.guestUserId);
-                    req.session.guestUserId = null;
-                    next("Unable to find guest user.");
-                }
-            });
-        }
-    }
-    else {
-        req.session.guestUserId = null;
-        next();
-    }
 };
 
 
@@ -285,38 +244,110 @@ function addLmsAccount(req, identifier, profile, done) {
     // ensure that we aren't merging different humans
     
     async.waterfall( [
-	// See if we have already logged in with this identifier	
+	// Assuming that ltiId's are globally unique (!), see if a
+	// user for this ltiId has already logged in
 	function(callback) {
-	    console.log("Looking up bridge for ", identifier);
-	    mdb.LtiBridge.findOne( {ltiId: identifier,
-				    repository: profile.custom_repository,
-				    path: profile.custom_xourse
-				   }, callback );
+	    console.log("Looking up user for ltiId = ", identifier);
+	    mdb.LtiBridge.findOne( {ltiId: identifier}, callback );
 	},
-	// Create a bridge if we aren't already logged in
+	
+	// Load the associated user (or use the current one, if there
+	// isn't already a bridge associated with anyone)
 	function(bridge, callback) {
-	    console.log("Found bridge = ", bridge);
 	    if (bridge) {
-		// use this bridge
-		callback(null,bridge);
+		if (bridge.user == req.user._id) {
+		    callback(null, req.user);
+		} else {
+    		    mdb.User.findOne({ _id: bridge.user }, callback );
+		}
+	    } else {
+		callback(null, req.user);
+	    }
+	},
+	
+	// See if we have already logged in with this narrow context
+	function(callback) {
+	    console.log("Looking up bridge for ltiId = ", identifier);
+	    
+	    var hash = {ltiId: identifier,
+			repository: profile.custom_repository,
+			path: profile.custom_xourse
+		       };
+
+	    if (profile.tool_consumer_instance_guid)
+		hash.toolConsumerInstanceGuid = profile.tool_consumer_instance_guid;
+
+	    if (profile.context_id)
+		hash.contextId = profile.context_id;
+
+	    if (profile.resource_link_id)
+		hash.resourceLinkId = profile.resource_link_id;
+	    
+	    mdb.LtiBridge.findOne( hash, callback );
+	},
+	
+	// Update the bridge, or create a bridge if there isn't
+	// already a specific enough one
+	function(bridge, callback) {
+	    // Find roles
+	    var roles = [];
+	    var instructionalStaff = false;		
+	    if (profile.ext_roles) {
+		roles = profile.ext_roles.split(',');
+		if ((profile.ext_roles.match(/Instructor/)) || (profile.ext_roles.match(/TeachingAssistant/)))
+		    instructionalStaff = true;
+	    } else {
+		if (profile.roles) {
+		    roles = profile.roles.split(',');
+		    if ((profile.roles.match(/Instructor/)) || (profile.roles.match(/TeachingAssistant/)))
+			instructionalStaff = true;			
+		}
+	    }
+	    
+	    if (bridge) {
+		// update the bridge, roles, etc.
+		bridge.roles = roles;
+		bridge.dueDate = profile.custom_due_at;
+		bridge.untilDate = profile.custom_lock_at;
+		bridge.lisResultSourcedid = profile.lis_result_sourcedid;
+		
 	    } else {
 		// make a new bridge
 		bridge = new mdb.LtiBridge({
-                    user: req.user._id,
 		    ltiId: identifier,
+		    
+		    toolConsumerInstanceGuid: profile.tool_consumer_instance_guid,
+		    toolConsumerInstanceName: profile.tool_consumer_instance_name,
+		    contextId: profile.context_id,
+		    contextLabel: profile.context_label,
+		    contextTitle: profile.context_title,
+		    
+		    resourceLinkId: profile.resource_link_id,
+                    dueDate: profile.custom_due_at,
+                    untilDate: profile.custom_lock_at,
+		    oauthConsumerKey: profile.oauth_consumer_key,
+		    oauthSignatureMethod: profile.oauth_signature_method,
+		    lisResultSourcedid: profile.lis_result_sourcedid,
+		    lisOutcomeServiceUrl: profile.lis_outcome_service_url,
+
+		    instructionalStaff: instructionalStaff,
+		    
 		    repository: profile.custom_repository,
-		    path: profile.custom_xourse,
-		    data: profile
-		});
-		console.log("new bridge =", bridge);
-		bridge.save(function(err) {
-		    if (err)
-			callback(err);
-		    else
-			callback(null,bridge);
+		    path: profile.custom_xourse,		    
+		    
+                    user: req.user._id,
+		    roles: roles
 		});
 	    }
+
+	    bridge.save(function(err) {
+		if (err)
+		    callback(err);
+		else
+		    callback(null,bridge);
+	    });
 	},
+	
 	// Update the current user object
 	function(bridge,callback) {
 	    var updates = { isGuest: false };
@@ -330,7 +361,8 @@ function addLmsAccount(req, identifier, profile, done) {
 	    if (('custom_repository' in profile) && ('custom_xourse' in profile))
 		updates.course = '/' + profile.custom_repository + '/' + profile.custom_xourse;	    
 
-	    console.log(updates);
+	    if ('user_image' in profile)
+		updates.imageUrl = profile.user_image
 	    
     	    mdb.User.findOneAndUpdate({_id: bridge.user},
 				      updates,
