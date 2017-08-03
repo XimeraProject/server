@@ -16,8 +16,9 @@ mixin displayBridge(bridge)
     // Maybe display something different fro instructors?
     // if bridge.instructionalStaff
     div.btn-group.pull-right
-      button.btn.btn-danger.delete-bridge(type="button",data-userId=userId,data-bridge=bridge._id,data-toggle="modal", data-target="#confirm-delete")
-        | <i class="fa fa-trash"></i><i class="fa fa-spinner fa-spin" style="display: none;"></i> Delete
+      if editable    
+        button.btn.btn-danger.delete-bridge(type="button",data-userId=userId,data-bridge=bridge._id,data-toggle="modal", data-target="#confirm-delete")
+          | <i class="fa fa-trash"></i><i class="fa fa-spinner fa-spin" style="display: none;"></i> Delete
     h4 #{bridge.contextTitle}
       if bridge.contextLabel || bridge.toolConsumerInstanceName
         small &nbsp;
