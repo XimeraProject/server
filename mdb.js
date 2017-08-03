@@ -75,7 +75,9 @@ exports.initialize = function initialize(callback) {
 					   
 					   resourceLinkId: String,
                                            dueDate: Date,
-                                           untilDate: Date,					   
+                                           untilDate: Date,
+					   pointsPossible: Number,
+					   
 					   oauthConsumerKey: String,
 					   oauthSignatureMethod: String,
 					   lisResultSourcedid: String,

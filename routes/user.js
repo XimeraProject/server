@@ -174,70 +174,134 @@ exports.deleteLinkedAccount = function(req, res, next, account){
 			});
     
     return;
-}
+};
+
+////////////////////////////////////////////////////////////////
+// Delete the LTI bridge
+exports.deleteBridge = function(req, res, next){
+    var id = req.params.id;
+    var bridgeId = req.params.bridge;    
+    
+    if (!req.user) {
+	res.send(401);
+	return;
+    }
+
+    mdb.User.findOne({_id: new mongo.ObjectID(id)}, function(err, user) {
+	if (err) {
+	    next(err);
+	    return;	    
+	}
+	
+	if (!hasPermissionToEdit(req.user, user)) {
+	    next(new Error("You are not permited to edit this user."));
+	    return;
+	}
+
+	mdb.LtiBridge.findOne({_id: new mongo.ObjectID(bridgeId)}, function(err, bridge) {
+	    if (err) {
+		next(err);
+		return;	    
+	    }
+
+	    if (bridge.user != id) {
+		next(new Error("That bridge does not belong to the given user."));
+		return;
+	    }
+
+	    bridge.remove( function(err) {
+		if (err)
+		    next(err);
+		else
+		    res.status(200).send("Removed " + bridge._id);		    
+	    });
+	});
+    });
+    
+    return;
+};
+
 
 exports.get = function(req, res, next){
     var id = req.params.id;
 
     if (!req.user) {
 	res.send(401);
+	return;
     }
 
-    mdb.User.findOne({_id: new mongo.ObjectID(id)}, function(err,document) {
-        if (document) {
-	    var viewerPermission = hasPermissionToView( req.user, document );
-	    if ( ! viewerPermission ) {
-		next(new Error('No permission to access other users.'));
-		return;			
+    async.parallel(
+	[
+	    function(callback) {
+		mdb.User.findOne({_id: new mongo.ObjectID(id)}, callback);
+	    },
+	    function(callback) {
+		mdb.LtiBridge.find({user: req.user._id}, callback);
+	    }
+	],
+	function(err, results) {
+	    if (err) {
+		next(err);
 	    } else {
-		// Add one view to the count of profileViews
-		mdb.User.update({_id: new mongo.ObjectID(id)},
-				{ $inc: { profileViews: 1 } });
-
+		var document = results[0];
+		var bridges = results[1];
 		
-		if (document.email)
-	    	    document.gravatar = crypto.createHash('md5').update(validator.normalizeEmail(document.email)).digest("hex");
-
-		if (document.birthday) {
-		    document.formattedBirthday = moment(new Date(document.birthday)).format('MMMM D, YYYY');
-		}	    
-	    
-		if (req.user._id.equals(document._id))
-		    document.pronouned = "me";
-		else
-		    document.pronouned = document.name;		
-
-		if (!hasPermissionToEdit(req.user, document)) {
-		    document.googleOpenId = undefined;
-		    document.courseraOAuthId = undefined;
-		    document.githubId = undefined;
-		    document.twitterOAuthId = undefined;
-		    document.apiKey = "";
-		    document.apiSecret = "";
-		    document.password = "";
+		if (!document) {
+		    res.status(404).render('404', { status: 404, url: req.url });
+		    return;
 		}
 		
-		res.format({
-		    html: function(){
-			res.render('user/profile', { userId: req.params.id,
-						     user: req.user,
-						     script: "user/profile",
-						     person: document,
-						     whyVisible: "Visible to you because " + viewerPermission,
-						     editable: hasPermissionToEdit(req.user, document),
-						     title: 'Profile' } );
-		    },
+		var viewerPermission = hasPermissionToView( req.user, document );
+		if ( ! viewerPermission ) {
+		    next(new Error('No permission to access other users.'));
+		    return;			
+		} else {
+		    // Add one view to the count of profileViews
+		    mdb.User.update({_id: new mongo.ObjectID(id)},
+				    { $inc: { profileViews: 1 } });
 
-		    json: function(){
-			res.json(document);
+		
+		    if (document.email)
+	    		document.gravatar = crypto.createHash('md5').update(validator.normalizeEmail(document.email)).digest("hex");
+
+		    if (document.birthday) {
+			document.formattedBirthday = moment(new Date(document.birthday)).format('MMMM D, YYYY');
+		    }	    
+	    
+		    if (req.user._id.equals(document._id))
+			document.pronouned = "me";
+		    else
+			document.pronouned = document.name;		
+		    
+		    if (!hasPermissionToEdit(req.user, document)) {
+			document.googleOpenId = undefined;
+			document.courseraOAuthId = undefined;
+			document.githubId = undefined;
+			document.twitterOAuthId = undefined;
+			document.apiKey = "";
+			document.apiSecret = "";
+			document.password = "";
 		    }
-		});
-	    }
-        }
-        else {
-	    res.status(404).json({});
-        }
-    });
+		    
+		    res.format({
+			html: function(){
+			    res.render('user/profile', { userId: req.params.id,
+							 user: req.user,
+							 script: "user/profile",
+							 person: document,
+							 bridges: bridges,
+							 whyVisible: "Visible to you because " + viewerPermission,
+							 editable: hasPermissionToEdit(req.user, document),
+							 title: 'Profile' } );
+			},
+			
+			json: function(){
+			    res.json(document);
+			}
+		    });
+		}
+            }
+	});
 };
 
 exports.edit = function(req, res, next){

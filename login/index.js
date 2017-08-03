@@ -266,7 +266,7 @@ function addLmsAccount(req, identifier, profile, done) {
 	},
 	
 	// See if we have already logged in with this narrow context
-	function(callback) {
+	function(user, callback) {
 	    console.log("Looking up bridge for ltiId = ", identifier);
 	    
 	    var hash = {ltiId: identifier,
@@ -308,6 +308,7 @@ function addLmsAccount(req, identifier, profile, done) {
 		// update the bridge, roles, etc.
 		bridge.roles = roles;
 		bridge.dueDate = profile.custom_due_at;
+		bridge.pointsPossible = profile.custom_canvas_assignment_points_possible;
 		bridge.untilDate = profile.custom_lock_at;
 		bridge.lisResultSourcedid = profile.lis_result_sourcedid;
 		
@@ -325,6 +326,8 @@ function addLmsAccount(req, identifier, profile, done) {
 		    resourceLinkId: profile.resource_link_id,
                     dueDate: profile.custom_due_at,
                     untilDate: profile.custom_lock_at,
+		    pointsPossible: profile.custom_canvas_assignment_points_possible,
+		    
 		    oauthConsumerKey: profile.oauth_consumer_key,
 		    oauthSignatureMethod: profile.oauth_signature_method,
 		    lisResultSourcedid: profile.lis_result_sourcedid,

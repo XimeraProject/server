@@ -12,8 +12,56 @@ mixin linked_account(name, icon, shortname, userId, token)
 block title
   #{title}
   
+mixin displayBridge(bridge)
+    // Maybe display something different fro instructors?
+    // if bridge.instructionalStaff
+    div.btn-group.pull-right
+      button.btn.btn-danger.delete-bridge(type="button",data-userId=userId,data-bridge=bridge._id,data-toggle="modal", data-target="#confirm-delete")
+        | <i class="fa fa-trash"></i><i class="fa fa-spinner fa-spin" style="display: none;"></i> Delete
+    h4 #{bridge.contextTitle}
+      if bridge.contextLabel || bridge.toolConsumerInstanceName
+        small &nbsp;
+          if bridge.contextLabel
+            | #{bridge.contextLabel}
+          if bridge.toolConsumerInstanceName
+            | &nbsp;at #{bridge.toolConsumerInstanceName}
+      if bridge.lisResultSourcedid && bridge.lisOutcomeServiceUrl && bridge.pointsPossible
+        | &nbsp;<span class="label label-success">#{bridge.pointsPossible} points</span>       
+    p
+      if bridge.roles.filter( f => f.match( /Instructor/ ) )
+        <span class="label label-default">Instructor</span>&nbsp;            
+      else
+        if bridge.roles.filter( f => f.match( /TeachingAssistant/ ) )
+          <span class="label label-default">Instructor</span>&nbsp;             
+        else    
+          for role in bridge.roles 
+            <span class="label label-default">#{role}</span>&nbsp;
+      | in&nbsp;
+      a(href=`/${bridge.repository}/${bridge.path}`)
+        code #{bridge.repository}/#{bridge.path}
+
+    if bridge.lisResultSourcedid && bridge.lisOutcomeServiceUrl
+      p #{bridge.dueDate}
+
+
+					   
+  
 block content
- .container
+  div.modal.fade#confirm-delete(tabindex="-1",role="dialog",aria-labelledby="confirm-delete")
+      div.modal-dialog(role="document")
+        div.modal-content
+          div.modal-header
+            button(type="button", class="close", data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="true") &times;
+            h4(class="modal-title") Confirm Deletion
+          div.modal-body
+            p Are you sure you want to disconnect your account from your Learning Management System?
+          div.modal-footer
+            button.btn.btn-default(type="button", data-dismiss="modal")
+              | <i class="fa fa-link"></i>&nbsp;No, I want to stay connected
+            button.btn.btn-warning#disconnect-button
+              | <i class="fa fa-chain-broken"></i>&nbsp;Yes, disconnect my account.
+  .container
     div.row
       .col-sm-3
           if person.imageUrl
@@ -88,6 +136,18 @@ block content
                     +linked_account('Coursera', undefined, 'coursera', person._id, person.courseraOAuthId )
                     +linked_account('GitHub', 'github-alt', 'github', person._id, person.githubId )
                     +linked_account('Twitter', 'twitter', 'twitter', person._id, person.twitterOAuthId )
+        if bridges.length > 0
+          .row
+            .col-sm-12
+              div.panel.panel-default
+                div.panel-heading
+                  h3.panel-title Learning Management Systems
+                div.panel-body        
+                  for bridge in bridges
+                    div(id=`bridge-${bridge._id}`)
+                      +displayBridge(bridge)
+                      if bridges.indexOf(bridge) < (bridges.length - 1)
+                        hr
         if (user.superuser) || (user._id.equals(person._id))
           .row
             .col-sm-12
@@ -104,9 +164,9 @@ block content
                           | Create Secret
                     div.btn-group
                       if person.apiKey
-                        | Connect to your account with the command <kbd>xake login</kbd>.
+                        | Connect to your account using these credentials.
                       else
-                        | Create a key and secret in order to connect to your account using command-line tools like <code>xake</code>.
+                        | Create a key and secret in order to connect to your account using command-line tools.
                   dl.dl-horizontal
                     dt Key
                     dd.select-all#api-key #{person.apiKey}

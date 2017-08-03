@@ -210,6 +210,7 @@ function addUserImplicitly(req, res, next) {
 
     app.put('/users/:id/secret', function( req, res ) { user.putSecret( req, res ); } );
 
+    app.delete('/users/:id/bridges/:bridge', function( req, res, next ) { user.deleteBridge( req, res, next ); } );    
     
     
     ////////////////////////////////////////////////////////////////

@@ -134,4 +134,37 @@ $(document).ready(function() {
 	    window.location.href = "/auth/" + $(this).attr("id");
 	}
     });
+
+    ////////////////////////////////////////////////////////////////
+    // User interface to disconnect LTI bridges
+    
+    $('.delete-bridge').click( function() {
+	var button = this;
+	
+	// Connect the modal to the button which opened it
+	$('#confirm-delete').on('show.bs.modal', function(e) {
+	    $(this).find('#disconnect-button').attr('data-userId', $(e.relatedTarget).attr('data-userId'));
+	    $(this).find('#disconnect-button').attr('data-bridge', $(e.relatedTarget).attr('data-bridge'));
+	});
+    });
+
+    $('#confirm-delete').on('click', '#disconnect-button', function(e) {
+	var button = $(this);
+	
+	// Close the modal
+	$('#confirm-delete').modal('hide');
+
+	// Display spinner
+	$('button .fa', '#bridge-' + button.attr("data-bridge")).hide();
+	$('button .fa-spinner', '#bridge-' + button.attr("data-bridge")).show();
+
+	$.ajax({
+	    url: '/users/' + button.attr("data-userId") + '/bridges/' + button.attr("data-bridge"),
+	    type: 'DELETE',
+	    success: function(result) {
+		$('#bridge-' + button.attr("data-bridge")).fadeOut(500, function() { $(this).remove(); });
+	    }
+	});
+    });
+    
 });
