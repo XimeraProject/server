@@ -10,7 +10,6 @@ var validator = require('validator');
 var moment = require('moment');
 var async = require('async');
 var mdb = require('../mdb');
-var remember = require('../remember');
 var githubApi = require('github');
 
 function hasPermissionToView( viewer, viewee ) {
@@ -220,8 +219,6 @@ exports.get = function(req, res, next){
 		
 		res.format({
 		    html: function(){
-			remember(req);
-			
 			res.render('user/profile', { userId: req.params.id,
 						     user: req.user,
 						     script: "user/profile",
@@ -271,7 +268,6 @@ exports.edit = function(req, res, next){
 		
 		res.format({
 		    html: function(){
-			remember(req);
 			console.log(document);
 			res.render('user/edit', { userId: req.params.id,
 						  user: req.user,

@@ -19,7 +19,10 @@ block content
               th(scope="row")
                 a(href=`/users/${user.id}`) &hellip;#{user.id.slice(-5)}
               td
-                img.img-responsive.img-rounded(src=`https://secure.gravatar.com/avatar/${user.gravatar}.jpg?d=retro&s=80`)
+                if user.imageUrl
+                  img.img-responsive.img-rounded(src=user.imageUrl)
+                else
+                  img.img-responsive.img-rounded(src=`https://secure.gravatar.com/avatar/${user.gravatar}.jpg?d=retro&s=80`)
               td #{user.displayName} (#{user.name})
               if user.lastSeen
                 td #{moment(user.lastSeen).fromNow()}

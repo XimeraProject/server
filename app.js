@@ -12,9 +12,11 @@ var express = require('express')
   , tincan = require('./routes/tincan')
   , http = require('http')
   , path = require('path')
+  , remember = require('./remember')
   , mdb = require('./mdb')
   , config = require('./config')
   , login = require('./login')
+  , guests = require('./login/guests')
   , passport = require('passport')
   , mongo = require('mongodb')
   , http = require('http')
@@ -170,7 +172,7 @@ function addUserImplicitly(req, res, next) {
     app.use(passport.initialize());
     app.use(passport.session());
     
-    app.use(login.guestUserMiddleware);
+    app.use(guests.middleware);
     app.use(addUserImplicitly);
     
     ////////////////////////////////////////////////////////////////
@@ -386,6 +388,7 @@ function addUserImplicitly(req, res, next) {
 	     instructors.index );
     
     app.get( '/:repository/:path(*)',
+	     remember,
 	     gitBackend.repository,
 	     gitBackend.recentCommitsOnMaster,
 	     gitBackend.findPossibleActivityFromCommits,

@@ -45,6 +45,7 @@ exports.initialize = function initialize(callback) {
 				      biography: String,
 				      xudos: Number,
 				      xarma: Number,
+				      imageUrl: String,
 				      profileViews: Number,
 				      userAgent: String,
 				      visibility: String,
@@ -60,18 +61,37 @@ exports.initialize = function initialize(callback) {
     UserSchema.index( { lastSeen: -1 } );
     
     exports.User = mongoose.model("User", UserSchema);
-    
+
     exports.LtiBridge = mongoose.model("LtiBridge",
-                                   new mongoose.Schema({
-                                       user: {type: ObjectId, index: true, ref:"User"},
-                                       ltiId: {type: String, index: true, sparse: true},
-				       repository: {type: String, index: true},
-				       path: {type: String, index: true},
-                                       data: Mixed				       
-                                   }, {
-                                       minimize: false
-                                   }));
-    
+                                       new mongoose.Schema({
+					   ltiId: {type: String, index: true},
+					   
+					   toolConsumerInstanceGuid: {type: String, index: true},
+					   toolConsumerInstanceName: String,
+					   
+					   contextId: {type: String, index: true},
+					   contextLabel: String,
+					   contextTitle: String,
+					   
+					   resourceLinkId: String,
+                                           dueDate: Date,
+                                           untilDate: Date,					   
+					   oauthConsumerKey: String,
+					   oauthSignatureMethod: String,
+					   lisResultSourcedid: String,
+					   lisOutcomeServiceUrl: String,
+
+					   instructionalStaff: Boolean,
+					   
+					   repository: {type: String, index: true},
+					   path: {type: String, index: true},					   
+					   
+					   user: {type: ObjectId, index: true, ref:"User"},
+					   roles: [String]
+                                       }, {
+					   minimize: false
+                                       }));
+        
     exports.State = mongoose.model("State",
                                    new mongoose.Schema({
                                        activityHash: {type: String, index: true},

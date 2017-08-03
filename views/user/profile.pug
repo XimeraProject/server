@@ -16,8 +16,11 @@ block content
  .container
     div.row
       .col-sm-3
-          a(href=`http://www.gravatar.com/${person.gravatar}`)
-            img.center-block.img-rounded(src=`https://secure.gravatar.com/avatar/${person.gravatar}.jpg?d=retro&s=160`)
+          if person.imageUrl
+            img.center-block.img-rounded(src=person.imageUrl)
+          else
+            a(href=`http://www.gravatar.com/${person.gravatar}`)
+              img.center-block.img-rounded(src=`https://secure.gravatar.com/avatar/${person.gravatar}.jpg?d=retro&s=160`)
           if person.displayName && person.displayName.length > 0
             h2 #{person.displayName}
               span.small &nbsp;(#{person.name})

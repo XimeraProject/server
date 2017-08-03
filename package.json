@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "annotator": "^2.0.0-alpha.3",
+    "artillery": "^1.6.0-2",
     "async": "2.4.0",
     "body-parser": "1.13.3",
     "bootstrap": "^3.3.7",

@@ -1,5 +1,4 @@
 var mdb = require('../mdb'),
-    remember = require('../remember'),
     async = require('async'),
     _ = require('underscore'),    
     path = require('path'),
@@ -94,8 +93,6 @@ function codeToCertificate(code, signature, callback) {
 }
 
 exports.xourse = function(req, res) {
-    remember(req);
-
     var user = req.user;
     var xourse = req.activity;
     console.log(xourse);

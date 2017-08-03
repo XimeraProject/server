@@ -1,5 +1,4 @@
 var mdb = require('../mdb'),
-    remember = require('../remember'),
     async = require('async'),
     _ = require('underscore'),    
     path = require('path'),
