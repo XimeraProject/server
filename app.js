@@ -69,8 +69,6 @@ app.set('view engine', 'pug');
 // all environments
 app.set('port', config.port);
 
-gitBackend.rootUrl = config.root;
-
 app.use(logger('dev'));
 app.use(favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
 
@@ -340,12 +338,13 @@ function addUserImplicitly(req, res, next) {
 
     app.get( '/:repository/:path/lti.xml',
 	     gitBackend.repository,
-	     gitBackend.recentCommitsOnMaster, gitBackend.findPossibleActivityFromCommits,
+	     gitBackend.recentCommitsOnMaster,
+	     gitBackend.findPossibleActivityFromCommits,
 	     gitBackend.ltiConfig );
     
     var serveContent = function( regexp, callback ) {
 	app.get( '/:repository/:path(' + regexp + ')',
-	     gitBackend.repository,
+		 gitBackend.repository,
 		 gitBackend.recentCommitsOnMaster,
 		 gitBackend.findPossibleActivityFromCommits,
 		 callback );
@@ -365,7 +364,8 @@ function addUserImplicitly(req, res, next) {
 
     app.get( '/:repository/:path(*.tex)',
 	     gitBackend.repository,
-	     gitBackend.recentCommitsOnMaster, gitBackend.findPossibleActivityFromCommits,
+	     gitBackend.recentCommitsOnMaster,
+	     gitBackend.findPossibleActivityFromCommits,
 	     gitBackend.source );
     
     /*

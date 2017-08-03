@@ -18,8 +18,7 @@ var _ = require('underscore');
 
 var config = require('../config');
 var gitRepositoriesRoot = config.repositories.root;
-
-exports.rootUrl = "";
+var rootUrl = config.root;
 
 function normalizeRepositoryName( name ) {
     return name.replace( /[^0-9A-Za-z-]/, '' ).toLowerCase();
