@@ -108,7 +108,7 @@ exports.create = function(req, res) {
 		    res.status(403).send('You do not own the repository.');
 	    }).catch(function(e) {
 		res.status(404).send('Repository ' + repositoryName + '.git is missing a GPG key fingerprint.');
-	    });;
+	    });
 	});
     }).catch(function(e) {
 	fse.ensureDir(repositoryPath, function(err) {
@@ -193,44 +193,6 @@ exports.newestPublishedCommit = function(req, res, next) {
 	    next();
 	});
     });
-};
-
-exports.publishedCommitOnBranch = function(branch, req, res, next) {
-    var repository = req.repository;
-    var revwalk = nodegit.Revwalk.create(repository);
-    var result = revwalk.pushRef("refs/heads/" + branch);
-    revwalk.sorting(nodegit.Revwalk.SORT.TOPOLOGICAL | nodegit.Revwalk.SORT.TIME);
-
-    var commit = undefined;
-    
-    async.doDuring(
-	function (callback) {
-	    revwalk.next().then(function(oid) {
-		repository.getCommit(oid).then(function(commit) {
-		    callback(null, commit);
-		});
-	    }).catch(callback);
-	},
-	function (commit, callback) {
-	    nodegit.Reference.lookup(repository, "refs/tags/publications/" + commit.sha()).then(function(reference) {
-		var oid = reference.target();
-		repository.getCommit(oid).then(function(commit) {
-		    req.commit = commit;
-		    callback(null, false);
-		});
-	    }).catch( function(err) {
-		callback(null, true);		
-	    });
-	},
-	function (err) {
-	    next();
-	}
-    );
-};
-
-// This also needs to deal with whatever the most recent state is for the user
-exports.publishedCommitOnMaster = function(req, res, next) {
-    return exports.publishedCommitOnBranch("master", req, res, next);
 };
 
 exports.getEntry = function(req, res, next) {
@@ -675,7 +637,7 @@ exports.findPossibleActivityFromCommits = function(req, res, next) {
 			    });
 			}).catch(function(err) {
 			    callback(null,false);
-			});;			    
+			});
 		    }).catch( function(err) {
 			callback(null,false);
 		    });
