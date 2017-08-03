@@ -4,10 +4,42 @@ The XIMERA Project
 ==================
 LaTeX to online interactive materials. 
 
+To set up a server on arch, one can as root
+```
+pacman -S nodejs npm git mongodb nginx
+systemctl enable mongodb
+systemctl start mongodb
+systemctl enable nginx
+systemctl start nginx
+```
+and then as a regular user
+```
+git clone https://github.com/XimeraProject/server.git
+cd server
+npm install
+```
+
+
+To quickly set up a server using Ubuntu Linux 16.04 LTS (which is availble on AWS and a t2.small is sufficient), you can:
+
+```
+sudo apt-get install nginx mongodb libcurl4-gnutls-dev libgit2-dev
+curl -sL https://deb.nodesource.com/setup_7.x -o nodesource_setup.sh
+sudo bash nodesource_setup.sh
+sudo apt-get install nodejs
+sudo ln /usr/bin/nodejs /usr/bin/node
+git clone https://github.com/XimeraProject/server.git
+cd server
+npm install
+BUILD_ONLY=true npm install nodegit
+```
+
 
 Setting up a server
 ===================
 If you want to install it on Windows, set 'Setting up a server on Windows' below.
+
+
 
 1. Install `g++`, `nodejs` and `mongodb` on your computer (under Debian, may also need `nodejs-legacy` package)
 2. Run an instance of mongo server:
