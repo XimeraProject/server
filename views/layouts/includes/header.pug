@@ -71,10 +71,10 @@ nav#scroller.navbar.navbar-default.navbar-fixed-top.affix-top(role='navigation')
                    a(id="contact-instructor", href=`/${repositoryName}/${(activity ? (activity.xourse) : xourse).path}/instructors`)
                      | <i class="fa fa-envelope-o"></i> Contact my instructor
                  li.divider(role="separator")
-               if activity && activity.path && repositoryMetadata && repositoryMetadata.github              
+               if activity && activity.path && activity.title && repositoryMetadata && repositoryMetadata.github              
                  li
                    // BADBAD: instead of master, perhaps should have activity.commit
-                   a(href=`https://github.com/${repositoryMetadata.github.owner}/${repositoryMetadata.github.repository}/issues/new?title=${activity.title}&body=%0A%0ASee%20[${activity.path}.tex](https://github.com/${repositoryMetadata.github.owner}/${repositoryMetadata.github.repository}/blob/master/${activity.path}.tex)`) 
+                   a(href=`https://github.com/${repositoryMetadata.github.owner}/${repositoryMetadata.github.repository}/issues/new?title=${activity.title.replace(/ +/,' ')}&body=%0A%0ASee%20[${activity.path}.tex](https://github.com/${repositoryMetadata.github.owner}/${repositoryMetadata.github.repository}/blob/master/${activity.path}.tex)`) 
                      | <i class="fa fa-exclamation-triangle"></i> Report error to authors
                li
                  a(href="mailto:ximera-help@osu.edu" + (path ? `?Subject=${path}` : ""))
