@@ -1,12 +1,13 @@
 {
   "name": "ximera",
   "description": "Ximera interactive textbook server",
-  "version": "0.0.59",
+  "version": "0.0.60",
   "private": true,
   "scripts": {
     "start": "node app.js",
     "test": "mocha",
-    "install": "napa MSchmidt/jquery-fullsizable tchapi/pagedown-bootstrap"
+    "install": "napa MSchmidt/jquery-fullsizable tchapi/pagedown-bootstrap",
+    "build": "gulp"
   },
   "dependencies": {
     "annotator": "^2.0.0-alpha.3",
