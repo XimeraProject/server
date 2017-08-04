@@ -31,13 +31,6 @@ client.on('error', function (err) {
     console.log("Error " + err);
 });
 
-
-function normalizeRepositoryName( name ) {
-    return name.replace( /[^0-9A-Za-z-]/, '' ).toLowerCase();
-}
-
-exports.normalizeRepositoryName = normalizeRepositoryName;
-
 var repositoryCache = {};
 
 function invalidateRepositoryCache(repositoryName) {

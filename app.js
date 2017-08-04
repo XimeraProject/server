@@ -133,6 +133,25 @@ function addUserImplicitly(req, res, next) {
 
     app.version = require('./package.json').version;
 
+    function redirectUnnormalizeRepositoryName( req, res, next ) {
+	if (req.params.repository) {
+	    var normalized = req.params.repository.replace( /[^0-9A-Za-z-]/, '' ).toLowerCase();
+	    if (req.params.repository != normalized) {
+		var splitted = req.url.split('/');
+		splitted[1] = normalized;
+		res.redirect(301, splitted.join('/'));
+		return;
+	    }
+	}
+	next();
+    }
+    
+    function normalizeRepositoryName( req, res, next ) {
+	if (req.params.repository)
+	    req.params.repository = req.params.repository.replace( /[^0-9A-Za-z-]/, '' ).toLowerCase();
+	next();
+    }
+    
     ////////////////////////////////////////////////////////////////
     // API endpoints for the xake tool
     
@@ -144,21 +163,21 @@ function addUserImplicitly(req, res, next) {
 
     app.use( '/gpg/', limiter );
     app.use( '/pks/', limiter );
-    app.use( '/:repository.git', limiter );
+    app.use( '/:repository.git', normalizeRepositoryName, limiter );
     
     app.get( '/gpg/token/:keyid', keyserver.token );
     app.get( '/gpg/tokens/:keyid', keyserver.token );
     app.post( '/pks/add', keyserver.add );
 
-    app.post( '/:repository.git', keyserver.authorization );
-    app.post( '/:repository.git', hashcash.hashcash );
-    app.post( '/:repository.git', gitBackend.create );
+    app.post( '/:repository.git', normalizeRepositoryName, keyserver.authorization );
+    app.post( '/:repository.git', normalizeRepositoryName, hashcash.hashcash );
+    app.post( '/:repository.git', normalizeRepositoryName, gitBackend.create );
 
-    app.use( '/:repository.git/log.sz', gitBackend.authorization );
-    app.use( '/:repository.git/log.sz', sendSeekable );
-    app.get( '/:repository.git/log.sz', tincan.get );
+    app.use( '/:repository.git/log.sz', normalizeRepositoryName, gitBackend.authorization );
+    app.use( '/:repository.git/log.sz', normalizeRepositoryName, sendSeekable );
+    app.get( '/:repository.git/log.sz', normalizeRepositoryName, tincan.get );
     
-    app.use( '/:repository.git', repositories.git );
+    app.use( '/:repository.git', normalizeRepositoryName, repositories.git );
 
     ////////////////////////////////////////////////////////////////
     // Static content    
@@ -190,7 +209,7 @@ function addUserImplicitly(req, res, next) {
 
     app.post('/xAPI/statements', function(req,res) { res.status(200).send('ignoring statements without a repository.'); } );
     
-    app.post('/:repository/xAPI/statements', tincan.postStatements);    
+    app.post('/:repository/xAPI/statements', normalizeRepositoryName, tincan.postStatements);    
     
     ////////////////////////////////////////////////////////////////
     // User identity
@@ -244,6 +263,7 @@ function addUserImplicitly(req, res, next) {
     
     app.get( '/statistics/:repository/:path(*)/:activityHash',
 	     // include some sort of authorization here -- being an LTI "instuctor" in any xourse in the repo suffices
+	     normalizeRepositoryName,
 	     statistics.get );
     
     // app.get( '/statistics/:commit/:hash/successes', course.successes );
@@ -320,14 +340,17 @@ function addUserImplicitly(req, res, next) {
     app.get('/users/:id/completions', state.getCompletions);
 
     app.get( '/:repository/:path(*)/gradebook',
+	     normalizeRepositoryName,
 	     gradebook.record );
     app.put( '/:repository/:path(*)/gradebook',
+	     normalizeRepositoryName,
 	     gradebook.record );    
     
     ////////////////////////////////////////////////////////////////
     // Activity page rendering
 
     app.get( '/:repository/:path(*)/certificate',
+	     redirectUnnormalizeRepositoryName,	     
 	     gitBackend.activitiesFromRecentCommitsOnMaster,
 	     gitBackend.chooseMostRecentBlob,
 	     gitBackend.parseActivity,
@@ -336,15 +359,18 @@ function addUserImplicitly(req, res, next) {
     // BADBAD: i also need to serve pngs and pdfs and such from the repo here
 
     app.get( '/:repository/:path/lti.xml',
+	     redirectUnnormalizeRepositoryName,	     	     
 	     gitBackend.activitiesFromRecentCommitsOnMaster,
 	     gitBackend.ltiConfig );
     
     var serveContent = function( regexp, callback ) {
 	app.get( '/:repository/:path(' + regexp + ')',
+		 redirectUnnormalizeRepositoryName,
 		 gitBackend.activitiesFromRecentCommitsOnMaster,
 		 callback );
 
 	app.get( '/users/:masqueradingUserId/:repository/:path(' + regexp + ')',
+		 normalizeRepositoryName,
 		 gitBackend.activitiesFromRecentCommitsOnMaster,		 		 
 		 callback );	
     };
@@ -356,6 +382,7 @@ function addUserImplicitly(req, res, next) {
     serveContent( '*.js',  gitBackend.serve('text/javascript') );
 
     app.get( '/:repository/:path(*.tex)',
+	     redirectUnnormalizeRepositoryName,	     
 	     gitBackend.activitiesFromRecentCommitsOnMaster,
 	     gitBackend.source );
     
@@ -379,6 +406,7 @@ function addUserImplicitly(req, res, next) {
     
     // Instructors should be based around a context instead?
     app.get( '/:repository/:path/instructors',
+	     redirectUnnormalizeRepositoryName,	     	     
 	     gitBackend.activitiesFromRecentCommitsOnMaster,
 	     gitBackend.chooseMostRecentBlob,
 	     parallel([gitBackend.fetchMetadataFromActivity,
@@ -387,6 +415,7 @@ function addUserImplicitly(req, res, next) {
 
     app.get( '/:repository/:path(*)',
 	     remember,
+	     redirectUnnormalizeRepositoryName,	     	     
 	     gitBackend.activitiesFromRecentCommitsOnMaster,
 	     gitBackend.chooseMostRecentBlob,
 	     parallel([gitBackend.fetchMetadataFromActivity,
@@ -394,6 +423,7 @@ function addUserImplicitly(req, res, next) {
 	     gitBackend.render );
 
     app.get( '/:repository',
+	     redirectUnnormalizeRepositoryName,	     	     
 	     gitBackend.mostRecentMetadata,
 	     xourses.index );
 

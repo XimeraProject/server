@@ -1,5 +1,4 @@
 var mdb = require('../mdb');
-var gitBackend = require('./git');
 var request = require('request');
 var pug = require('pug');
 var path = require('path');
@@ -10,7 +9,7 @@ const uuidv1 = require('uuid/v1');
 var passback = pug.compileFile(path.join(__dirname,'../views/lti/passback.pug'));
 
 exports.record = function(req, res, next) {
-    var repositoryName = gitBackend.normalizeRepositoryName(req.params.repository);
+    var repositoryName = req.params.repository;
 
     if (!req.user) {
 	next('No user logged in.');
