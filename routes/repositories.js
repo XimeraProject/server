@@ -40,8 +40,8 @@ function invalidateRepositoryCache(repositoryName) {
 		  function (err, items) {
 		      if (err) {
 		      } else {
-			  client.del(items);
-			  client.del("activities:" + repositoryName);
+			  client.unlink(items);
+			  client.unlink("activities:" + repositoryName);
 		      }
 		  });
 };
@@ -245,7 +245,7 @@ exports.cachedActivitiesFromRecentCommits = function(repositoryName, branchName,
 		} else {
 		    exports.activitiesFromRecentCommits(repositoryName, branchName, pathname)
 			.then( function(activities) {
-			    client.set(key, JSON.stringify(activities) );
+			    client.setex(key, 31557600, JSON.stringify(activities) );
 			    client.sadd("activities:" + repositoryName, key);
 			    resolve(activities);
 			})

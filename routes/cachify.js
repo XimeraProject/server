@@ -20,7 +20,7 @@ exports.json = function( key, f, callback ) {
 		    if (err) {
 			callback( err );
 		    } else {
-			client.set( key, JSON.stringify(result) );
+			client.setex( key, 31557600, JSON.stringify(result) );
 			callback( null, result );
 		    }
 		});
@@ -41,7 +41,7 @@ exports.string = function( key, f, callback ) {
 		    if (err) {
 			callback( err );
 		    } else {
-			client.set( key, result );
+			client.setex( key, 31557600, result );
 			callback( null, result );
 		    }
 		});
