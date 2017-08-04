@@ -31,6 +31,7 @@
     "express": "4.13.3",
     "express-rate-limit": "^2.7.0",
     "express-session": "1.11.3",
+    "express-winston": "^2.4.0",
     "faker": "^4.1.0",
     "fast-crc32c": "^1.0.4",
     "file": "0.2.2",

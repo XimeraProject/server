@@ -21,6 +21,7 @@ var express = require('express')
   , mongo = require('mongodb')
   , http = require('http')
   , path = require('path')
+  , expressWinston    = require('express-winston')
   , winston = require('winston')
   , repositories = require('./routes/repositories')
   , gitBackend = require('./routes/git')
@@ -104,6 +105,19 @@ mdb.initialize(function (err) {
 
     console.log( "Session setup." );
 
+    if (config.logging) {
+	app.use(expressWinston.logger({
+	    transports: [
+		new winston.transports.Console({
+		    json: true,
+		    colorize: true
+		})	    
+	    ],
+	    expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
+	    colorize: true, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
+	}));
+    }
+    
 passport.use(login.localStrategy(config.root));
 passport.use(login.googleStrategy(config.root));
 passport.use(login.twitterStrategy(config.root));
