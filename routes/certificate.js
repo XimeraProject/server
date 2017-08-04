@@ -97,7 +97,7 @@ exports.xourse = function(req, res) {
     var xourse = req.activity;
     console.log(xourse);
     // I need to basically do use
-    xourse.path = req.activity.entry.path();
+    xourse.path = req.activity.path;
     xourse.locator = '/' + req.repositoryName + '/' + xourse.path;
     xourse.locator = xourse.locator.replace( '.html', '' );
     

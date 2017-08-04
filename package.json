@@ -67,6 +67,7 @@
     "passport-twitter": "1.0.3",
     "pug": "^2.0.0-rc.2",
     "pug-lint": "^2.4.0",
+    "redis": "^2.7.1",
     "requirejs": "2.1.20",
     "send-seekable": "^1.0.4",
     "serve-favicon": "2.3.0",

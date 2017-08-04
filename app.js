@@ -22,6 +22,7 @@ var express = require('express')
   , http = require('http')
   , path = require('path')
   , winston = require('winston')
+  , repositories = require('./routes/repositories')
   , gitBackend = require('./routes/git')
   , keyserver = require('./routes/gpg')
   , hashcash = require('./routes/hashcash')
@@ -157,7 +158,7 @@ function addUserImplicitly(req, res, next) {
     app.use( '/:repository.git/log.sz', sendSeekable );
     app.get( '/:repository.git/log.sz', tincan.get );
     
-    app.use( '/:repository.git', gitBackend.git );
+    app.use( '/:repository.git', repositories.git );
 
     ////////////////////////////////////////////////////////////////
     // Static content    
@@ -327,32 +328,24 @@ function addUserImplicitly(req, res, next) {
     // Activity page rendering
 
     app.get( '/:repository/:path(*)/certificate',
-	     gitBackend.repository,
-	     gitBackend.recentCommitsOnMaster,
-	     gitBackend.findPossibleActivityFromCommits,
+	     gitBackend.activitiesFromRecentCommitsOnMaster,
 	     gitBackend.chooseMostRecentBlob,
-	     gitBackend.parseActivity,	     
+	     gitBackend.parseActivity,
 	     certificate.xourse );
 
     // BADBAD: i also need to serve pngs and pdfs and such from the repo here
 
     app.get( '/:repository/:path/lti.xml',
-	     gitBackend.repository,
-	     gitBackend.recentCommitsOnMaster,
-	     gitBackend.findPossibleActivityFromCommits,
+	     gitBackend.activitiesFromRecentCommitsOnMaster,
 	     gitBackend.ltiConfig );
     
     var serveContent = function( regexp, callback ) {
 	app.get( '/:repository/:path(' + regexp + ')',
-		 gitBackend.repository,
-		 gitBackend.recentCommitsOnMaster,
-		 gitBackend.findPossibleActivityFromCommits,
+		 gitBackend.activitiesFromRecentCommitsOnMaster,
 		 callback );
 
 	app.get( '/users/:masqueradingUserId/:repository/:path(' + regexp + ')',
-	     gitBackend.repository,
-		 gitBackend.recentCommitsOnMaster,
-		 gitBackend.findPossibleActivityFromCommits,
+		 gitBackend.activitiesFromRecentCommitsOnMaster,		 		 
 		 callback );	
     };
 
@@ -363,49 +356,49 @@ function addUserImplicitly(req, res, next) {
     serveContent( '*.js',  gitBackend.serve('text/javascript') );
 
     app.get( '/:repository/:path(*.tex)',
-	     gitBackend.repository,
-	     gitBackend.recentCommitsOnMaster,
-	     gitBackend.findPossibleActivityFromCommits,
+	     gitBackend.activitiesFromRecentCommitsOnMaster,
 	     gitBackend.source );
     
     /*
     app.get( '/users/:masqueradingUserId/:repository/:path(*)',
 	     supervising.findUser,
-	     gitBackend.repository,
 	     gitBackend.recentCommitsOnMaster, gitBackend.findPossibleActivityFromCommits,
 	     gitBackend.chooseMostRecentBlob,
-	     gitBackend.fetchMetadata,
+	     gitBackend.fetchMetadataFromActivity,
 	     gitBackend.parseActivity,
 	     gitBackend.render );    
     */
 
-    app.get( '/:repository/:path/instructors',
-	     gitBackend.repository,
-	     gitBackend.recentCommitsOnMaster,
-	     gitBackend.findPossibleActivityFromCommits,
-	     gitBackend.chooseMostRecentBlob,
-	     gitBackend.fetchMetadata,
-	     gitBackend.parseActivity,	     
-	     instructors.index );
+    function parallel(middlewares) {
+	return function (req, res, next) {
+	    async.each(middlewares, function (mw, cb) {
+		mw(req, res, cb);
+	    }, next);
+	};
+    }    
     
+    // Instructors should be based around a context instead?
+    app.get( '/:repository/:path/instructors',
+	     gitBackend.activitiesFromRecentCommitsOnMaster,
+	     gitBackend.chooseMostRecentBlob,
+	     parallel([gitBackend.fetchMetadataFromActivity,
+		       gitBackend.parseActivity]),	     
+	     instructors.index );
+
     app.get( '/:repository/:path(*)',
 	     remember,
-	     gitBackend.repository,
-	     gitBackend.recentCommitsOnMaster,
-	     gitBackend.findPossibleActivityFromCommits,
+	     gitBackend.activitiesFromRecentCommitsOnMaster,
 	     gitBackend.chooseMostRecentBlob,
-	     gitBackend.fetchMetadata,
-	     gitBackend.parseActivity,
+	     parallel([gitBackend.fetchMetadataFromActivity,
+		       gitBackend.parseActivity]),
 	     gitBackend.render );
 
     app.get( '/:repository',
-	     gitBackend.repository,
-	     gitBackend.recentCommitsOnMaster,
-	     gitBackend.fetchMetadata,
+	     gitBackend.mostRecentMetadata,
 	     xourses.index );
+
     
     // SVG files will only be rendered if they are sent with content type image/svg+xml
-    // app.get( '/:repository/:path(*)', gitBackend.repository, gitBackend.publishedCommitOnMaster, gitBackend.getEntry, gitBackend.render );
     
     app.locals.Color = require('color');
     app.locals.moment = require('moment');
