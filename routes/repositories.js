@@ -36,7 +36,7 @@ var repositoryCache = {};
 function invalidateRepositoryCache(repositoryName) {
     delete repositoryCache[repositoryName];
 
-    client.smembers("activities:" + repositoryName, 0, -1,
+    client.smembers("activities:" + repositoryName, 
 		  function (err, items) {
 		      if (err) {
 		      } else {
