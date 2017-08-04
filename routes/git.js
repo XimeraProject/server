@@ -255,6 +255,8 @@ exports.serve = function( mimetype ) {
 	    .then( function(blob) {
 		file.data = blob;
 		res.contentType( mimetype );
+		res.set({ 'ETag': '"sha:' + file.hash + '"' });
+		res.set('Cache-Control', 'must-revalidate, max-age=600');
 		res.end( blob, 'binary' );		
 	    })
 	    .catch( function(err) {
