@@ -10,6 +10,7 @@ var url = require('url');
 var _ = require('underscore');
 var repositories = require('./repositories');
 var metadata = require('./metadata');
+var ETag = require('./etag');
 
 var config = require('../config');
 
@@ -248,20 +249,25 @@ exports.chooseMostRecentBlob = function(req, res, next) {
 	});
 };
 
-exports.serve = function( mimetype ) {
+
+exports.serve = function( mimetype ){
     return function(req, res, next) {    
 	var file = req.activities[0];
-	repositories.readBlob( req.repositoryName, file.hash )
-	    .then( function(blob) {
-		file.data = blob;
-		res.contentType( mimetype );
-		res.set({ 'ETag': '"sha:' + file.hash + '"' });
-		res.set('Cache-Control', 'must-revalidate, max-age=600');
-		res.end( blob, 'binary' );		
-	    })
-	    .catch( function(err) {
-		next(new Error(err));
-	    });
+	var etag = 'sha:' + file.hash;
+
+	ETag.checkIfNoneMatch( req, res, etag,
+			       function( setETag ) {
+				   repositories.readBlob( req.repositoryName, file.hash )
+				       .then( function(blob) {
+					   file.data = blob;
+					   res.contentType( mimetype );
+					   setETag( res );
+					   res.end( blob, 'binary' );		
+				       })
+				       .catch( function(err) {
+					   next(new Error(err));
+				       });
+			       });
     };
 };
 

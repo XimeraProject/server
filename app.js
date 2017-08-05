@@ -440,7 +440,6 @@ function addUserImplicitly(req, res, next) {
 	     redirectUnnormalizeRepositoryName,	     	     
 	     gitBackend.mostRecentMetadata,
 	     xourses.index );
-
     
     // SVG files will only be rendered if they are sent with content type image/svg+xml
     
