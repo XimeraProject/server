@@ -69,6 +69,7 @@
     "passport-local": "1.0.0",
     "passport-oauth2": "1.1.2",
     "passport-twitter": "1.0.3",
+    "pm2": "^2.6.1",
     "pug": "^2.0.0-rc.2",
     "pug-lint": "^2.4.0",
     "redis": "^2.7.1",
