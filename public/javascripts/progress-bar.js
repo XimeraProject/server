@@ -7,7 +7,7 @@ exports.progress = function(n,d) {
 
     $('.navbar-progress-bar').show();
     
-    var progressBar = $('div.progress.completion-meter div.progress-bar.progress-bar-success');
+    var progressBar = $('div.progress.completion-meter div.progress-bar');
     
     progressBar.attr('aria-valuenow', n);
     progressBar.attr('aria-valuemax', d);
@@ -28,7 +28,7 @@ exports.progressProportion = function(proportion) {
     $('.navbar-progress-bar').show();
 
     // Progress bar on top of screen
-    var progressBar = $('div.progress.completion-meter div.progress-bar.progress-bar-success');
+    var progressBar = $('div.progress.completion-meter div.progress-bar');
     
     progressBar.attr('aria-valuenow', Math.round(percent));
     progressBar.attr('aria-valuemax', 100);
@@ -38,7 +38,7 @@ exports.progressProportion = function(proportion) {
     progressBar.toggleClass('progress-bar-striped', proportion > 0.9999);
 
     // Progress bar in xourse
-    var otherProgressBar = $('li.active a.activity-card div.progress-bar.progress-bar-success');
+    var otherProgressBar = $('.activity-card.active div.progress-bar');
     
     otherProgressBar.attr('aria-valuenow', Math.round(percent));
     otherProgressBar.attr('aria-valuemax', 100);
@@ -47,7 +47,7 @@ exports.progressProportion = function(proportion) {
     otherProgressBar.toggleClass('progress-bar-striped', proportion > 0.9999);    
 
     // the activity card get attribute 'max-completion' set
-    var activityCard = $('li.active a.activity-card');
+    var activityCard = $('.activity-card.active');
     activityCard.attr('data-max-completion', proportion );
 };    
 

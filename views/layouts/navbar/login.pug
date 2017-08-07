@@ -1,0 +1,29 @@
+if (user) && (!user.isGuest)
+  li.nav-item.dropdown
+    a.nav-link.dropdown-toggle(id="navbarLogin",data-toggle="dropdown",aria-haspopup="true",aria-expanded="false")
+      if user.name
+        | <i class="fa fa-user"></i> #{user.name.split(' ')[0]}
+      else
+        | <i class="fa fa-user"></i> Me
+    div.dropdown-menu.dropdown-menu-right(aria-labelledby="navbarLogin")
+      a.dropdown-item(href=`/users/${user._id}`) <i class='fa fa-cogs'></i> Profile
+      a.dropdown-item(href="/logout") <i class='fa fa-sign-out'></i> Logout
+else
+  li.nav-item.dropdown
+    a.nav-link.dropdown-toggle(id="navbarLogin",data-toggle="dropdown",aria-haspopup="true",aria-expanded="false")
+      | <i class="fa fa-sign-in"></i> Sign In
+    div.dropdown-menu.dropdown-menu-right(aria-labelledby="navbarLogin")
+      if config.googleAuth
+        a.dropdown-item(href="/auth/google") <i class='fa fa-google'></i> Sign In with Google
+      if config.twitterAuth
+        a.dropdown-item(href="/auth/twitter") <i class='fa fa-twitter'></i> Sign In with Twitter
+      if config.githubAuth
+        a.dropdown-item(href="/auth/github") <i class='fa fa-github'></i> Sign In with GitHub
+      if config.localAuth
+        div.dropdown-divider
+        form#form-login(action="/auth/local",method="post")
+          div.input-group
+            input.form-control#username(name="username",type="text",placeholder="Username")               
+          div.input-group                     
+            input.form-control#password(name="password",type="password")
+          button.btn.btn-primary.btn-default#button-login(type="submit") Sign In

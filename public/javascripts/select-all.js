@@ -7,7 +7,7 @@ var database = require('./database');
 var TinCan = require('./tincan');
 
 
-var buttonTemplate = _.template( '<label class="btn btn-default <%= correct %>" id="<%= id %>"></label>' );
+var buttonTemplate = _.template( '<button class="btn btn-default <%= correct %>" id="<%= id %>"></label>' );
 
 var answerHtml = '<div class="btn-group" style="vertical-align: bottom;" aria-live="assertive">' +
 	'<button class="btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Correct answer!" style="display: none">' +
@@ -47,7 +47,7 @@ var createSelectAll = function() {
     selectAll.trigger( 'ximera:answer-needed' );
     
     selectAll.persistentData(function(event) {
-	selectAll.find( 'label').removeClass('active');
+	selectAll.find( 'button').removeClass('active');
 	
 	if (selectAll.persistentData('chosen')) {
 	    selectAll.persistentData('chosen').forEach( function(id) {
@@ -66,10 +66,10 @@ var createSelectAll = function() {
 	    selectAll.find( '.btn-group button' ).hide();
 	    selectAll.find( '.btn-group .btn-ximera-correct' ).show();
 	    
-	    selectAll.find( 'label' ).not( '.correct' ).addClass( 'disabled' );
-	    selectAll.find( 'label .correct' ).removeClass('disabled');
+	    selectAll.find( 'button' ).not( '.correct' ).addClass( 'disabled' );
+	    selectAll.find( 'button .correct' ).removeClass('disabled');
 	} else {
-	    selectAll.find( 'label' ).removeClass( 'disabled' );
+	    selectAll.find( 'button' ).removeClass( 'disabled' );
 	    
 	    selectAll.find( '.btn-group button' ).hide();
 
@@ -83,8 +83,8 @@ var createSelectAll = function() {
 	    }
 	}
 
-	selectAll.find( '.btn-ximera-submit' ).prop( 'disabled', ! selectAll.find( 'label' ).hasClass( 'active' ) );
-	selectAll.find( '.btn-ximera-incorrect' ).prop( 'disabled', ! selectAll.find( 'label' ).hasClass( 'active' ) );
+	selectAll.find( '.btn-ximera-submit' ).prop( 'disabled', ! selectAll.find( 'button' ).hasClass( 'active' ) );
+	selectAll.find( '.btn-ximera-incorrect' ).prop( 'disabled', ! selectAll.find( 'button' ).hasClass( 'active' ) );
     });
 
     var checkAnswer = function() {
@@ -94,7 +94,7 @@ var createSelectAll = function() {
 	    var chosen = selectAll.persistentData('chosen');
 
 	    var correct = true;
-	    selectAll.find('label').each( function() {
+	    selectAll.find('button').each( function() {
 		var id = $(this).attr('id');
 		
 		if ($(this).hasClass('correct') !== _.contains( chosen, id ))
@@ -117,8 +117,12 @@ var createSelectAll = function() {
     $(this).find( ".btn-ximera-submit" ).click( checkAnswer );
     $(this).find( ".btn-ximera-incorrect" ).click( checkAnswer );
     
-    $(this).find( "label" ).each( function() {
+    $(this).find( "button" ).each( function() {
 	$(this).click( function() {
+	    if (($(this).hasClass('disabled'))) {
+		return false;
+	    }
+	    
 	    if (selectAll.persistentData('correct'))
 		return false;
 	    

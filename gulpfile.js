@@ -14,7 +14,7 @@ var argv = require('yargs').argv,
     uglify     = require('gulp-uglify'),
     aliasify   = require('aliasify'),
     babelify   = require('babelify'),
-    less       = require('gulp-less'),
+    sass       = require('gulp-sass'),
     minifyCSS  = require('gulp-minify-css'),
     assign     = require('lodash.assign');
 
@@ -31,9 +31,9 @@ var staticDirectoryJavascripts = './public/javascripts';
 var jsMainFile      = './public/javascripts/main.js';
 var jsBundleFile    = 'main.min.js';
 
-// Source and target LESS files
-var cssMainFile     = './public/stylesheets/base.less';
-var cssFiles        = './public/stylesheets/**/*.less';
+// Source and target SCSS files
+var cssMainFile     = './public/stylesheets/base.scss';
+var cssFiles        = './public/stylesheets/**/*.scss';
 
 // Browserify bundler
 var options = {
@@ -73,7 +73,7 @@ gulp.task('js', function() {
 // Build CSS
 gulp.task('css', function(){
     return gulp.src(cssMainFile)
-        .pipe(less())
+        .pipe(sass())
         .pipe(gulpif(argv.production, minifyCSS({keepBreaks:true})))
         .pipe(gulp.dest(staticDirectoryCSS));
 });

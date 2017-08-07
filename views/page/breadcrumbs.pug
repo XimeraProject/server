@@ -1,0 +1,25 @@
+nav.dragscroll(aria-label="breadcrumb",role="navigation")
+  ol.breadcrumb
+    - var level = 0;
+    li.breadcrumb-item
+      - level = level + 1;
+      a(href="/" + repositoryName, aria-level=level)
+          | !{repositoryName}
+    if activity.xourse
+      li.breadcrumb-item
+        - level = level + 1;
+        a(href="/" + repositoryName + "/" + activity.xourse.path,aria-level=level)
+          if (activity.xourse.title) && (activity.xourse.title != '')
+            | !{activity.xourse.title}
+          else
+            | Home
+    if activity.chapter
+      - level = level + 1;                  
+      li.breadcrumb-item
+        a(href="/" + repositoryName + "/" + activity.xourse.path + "/" + activity.chapter.href,aria-level=level) !{activity.chapter.title}
+    - level = level + 1;                                        
+    li.breadcrumb-item.active(aria-current="page",aria-level=level)                  
+      if activity.title
+        | !{activity.title}
+      else
+        | Activity

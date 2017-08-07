@@ -1,0 +1,14 @@
+.modal.fade#updateWarningModal(tabindex="-1",role="dialog",aria-labelledby="updateWarningModal")
+  .modal-dialog(role="document")
+    .modal-content
+      .modal-header
+        h5(class="modal-title",id="updateModalLabel") Updated Version Available
+        button.close(type="button",data-dismiss="modal",aria-label="Close")
+          span(aria-hidden="true") &times;          
+      .modal-body
+          p There is an <strong>updated version</strong> of this activity. If you update to the most recent version of this activity, then your current progress on this activity will be erased. Regardless, your record of completion will remain.  How would you like to proceed?
+      .modal-footer
+        button.btn.btn-default(type="button",data-dismiss="modal")
+          | <i class="fa fa-level-down"></i>&nbsp;Keep the old version.
+        a.btn.btn-warning#update-version-button(href=`${url}?${activity.freshestCommit}`)
+          | <i class="fa fa-level-up"></i>&nbsp;Delete my work and update to the new version.

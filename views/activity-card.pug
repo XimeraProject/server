@@ -1,25 +1,37 @@
-mixin practiceXourseCard(locator, url, card)
+mixin practiceXourseCardOld(locator, url, card, active)
   a.activity-card(class=card.cssClass, data-weight=card.weight, href=locator + "/" + url,  data-repository-name=repositoryName, data-path=url, style=style, data-hashes=JSON.stringify(card.hashes))
     div.progress.vertical
       div.progress-bar.progress-bar-success(role="progressbar", style="width: 0%;")
+      
+mixin practiceXourseCard(locator, url, card, active)
+  .activity-card.text-center(class=card.cssClass + (active ? " active" : ""),data-weight=card.weight, href=locator + "/" + url, data-repository-name=repositoryName, data-path=url, style=style, data-hashes=JSON.stringify(card.hashes))
+    a(href=locator + "/" + url)  
+    div.progress.vertical
+      div.progress-bar.bg-success(role="progressbar", style="width: 0%;")
 
-mixin regularXourseCard(locator, url, card)   
-   if url.match(/^#/)
-     h1.activity-card(class=card.cssClass) #{card.title}
-   else
-     - var style = "background-image: linear-gradient( rgba(255,255,255,0.75), rgba(255,255,255,0.75) );";
-     - if (card.splashImage) style = "background-image: linear-gradient( rgba(255,255,255,0.75), rgba(255,255,255,0.75) ) url(/activity/" + locator + '/' + card.splashImage + ');';
-     a.activity-card(class=card.cssClass,data-weight=card.weight, href=locator + "/" + url, data-repository-name=repositoryName, data-path=url, style=style, data-hashes=JSON.stringify(card.hashes))
+mixin titleXourseCard(locator, url, card, active)
+  .activity-card.card-sectionheading(class=card.cssClass)
+    div.card-block
+      h4.card-title !{card.title}
+       
+mixin regularXourseCard(locator, url, card, active)   
+  .activity-card(class=card.cssClass + (active ? " active" : ""),data-weight=card.weight, href=locator + "/" + url, data-repository-name=repositoryName, data-path=url, style=style, data-hashes=JSON.stringify(card.hashes))
+    a(href=locator + "/" + url)  
+    div.card-header.p-2
        div.progress
-         div.progress-bar.progress-bar-success(role="progressbar", style="width: 0%;")
-       div.card-title !{card.title}
-       div.card-summary !{card.summary}
-
-mixin xourseCard(repositoryName, xourseUrl, url, card)
+         div.progress-bar.bg-success(role="progressbar", style="width: 0%;")
+    div.card-block
+      h4.card-title !{card.title}
+      div.card-text !{card.summary}
+             
+mixin xourseCard(repositoryName, xourseUrl, url, card, active)
    - var locator = '/' + repositoryName + '/' + xourseUrl;
    if (card.cssClass) && (card.cssClass.match( /practice/ ))
-     +practiceXourseCard( locator, url, card )
+     +practiceXourseCard( locator, url, card, active )
    else
-     +regularXourseCard( locator, url, card )
+     if url.match(/^#/)
+       +titleXourseCard( locator, url, card, active )     
+     else
+       +regularXourseCard( locator, url, card, active )
 
 

@@ -17,21 +17,22 @@ var buttonlessTemplate = '<form class="form-inline mathjaxed-input" style="displ
 //	'</span>' +
 	'</form>';
 
+// add labels for screenreader
 var template = '<form class="form-inline mathjaxed-input" style="display: inline-block;">' +
-	'<span class="input-group">' +
+    '<div class="input-group">' +
    	'<input class="form-control" aria-label="answer" type="text"/>' +
 	'<span class="input-group-btn">' +
-	'<button class="btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Correct answer!" style="display: none; z-index: 1;" aria-label="correct answer" aria-live="assertive">' +
+	'<button class="px-0 btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Correct answer!" style="display: none; z-index: 1;" aria-label="correct answer" aria-live="assertive">' +
 	'<i class="fa fa-fw fa-check"/>' +
 	'</button>' +
-	'<button class="btn btn-danger btn-ximera-incorrect" data-toggle="tooltip" data-placement="top" title="Incorrect.  Try again!" style="display: none; z-index: 1;" aria-label="incorrect!  try again" aria-live="assertive">' +
+	'<button class="px-0 btn btn-danger btn-ximera-incorrect" data-toggle="tooltip" data-placement="top" title="Incorrect.  Try again!" style="display: none; z-index: 1;" aria-label="incorrect!  try again" aria-live="assertive">' +
 	'<i class="fa fa-fw fa-times"/>' +
 	'</button>' +
-	'<button class="btn btn-primary btn-ximera-submit" aria-label="check work" data-toggle="tooltip" data-placement="top" title="Click to check your answer." style="z-index: 1;">' +
+	'<button class="px-0 btn btn-primary btn-ximera-submit" aria-label="check work" data-toggle="tooltip" data-placement="top" title="Click to check your answer." style="z-index: 1;">' +
 	'<i class="fa fa-fw fa-question"/>' +
 	'</button>' +
 	'</span>' +
-	'</span>' +
+	'</div>' +
         '</form>';
 
 function parseFormattedInput( format, input ) {
@@ -88,9 +89,11 @@ var createMathAnswer = function() {
     });
     
     input.replaceWith( result );
+
+    var buttonWidth = $('.input-group-btn', result).width();
     if (!buttonless)
-	result.find( "input.form-control" ).width( width - (138 - 70) );
-    
+	result.find( "input.form-control" ).width( width - 2*buttonWidth );
+
     // Number the answer boxes in order
     var count = result.parents( ".problem-environment" ).attr( "data-answer-count" );
     if (typeof count === typeof undefined || count === false)

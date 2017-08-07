@@ -1,79 +1,88 @@
 /* Change this value to change the saturation and lightness of the background colors of the theorem environments. 
 The colors that you type below in theoremEnvironments will all get standardized to have the same saturation and lightness. */
-@theoremEnvironmentSaturation: 100%;
-@theoremEnvironmentLightness: 96%;
+$theoremEnvironmentSaturation: 100%;
+$theoremEnvironmentLightness: 95%;
+
+$color-grass: #11FF55;
+$color-sky: #0000FF;
+$color-sun: #FFFF00;
+$color-blood: #AA0000;
 
 /*"Array" of names and colors to select from.
 Be careful that every environment has a color, 
 and don't ever choose white, gray, or black, since the "saturation"
 and "hue" of white and black don't behave well. */
-@theoremEnvironments:
-theorem green,
-axiom green,
-conjecture green,
-corollary green,
-proposition green,
-lemma green,
-claim green,
-condition green,
-idea green,
-definition green,
-conclusion green,
-summary green,
-warning red,
-paradox red,
-example yellow,
-observation yellow,
-fact yellow,
-remark yellow,
-algorithm yellow,
-notation yellow,
-criterion yellow,
-exercise blue,
-problem blue,
-question blue,
-explanation green,
-exploration blue;
+$theoremEnvironments:
+theorem $color-grass,
+axiom $color-grass,
+conjecture $color-grass,
+corollary $color-grass,
+proposition $color-grass,
+lemma $color-grass,
+claim $color-grass,
+condition $color-grass,
+idea $color-grass,
+definition $color-grass,
+conclusion $color-grass,
+summary $color-grass,
+warning $color-blood,
+paradox $color-blood,
+example $color-sun,
+observation $color-sun,
+fact $color-sun,
+remark $color-sun,
+algorithm $color-sun,
+notation $color-sun,
+criterion $color-sun,
+exercise $color-sky,
+problem $color-sky,
+question $color-sky,
+explanation $color-grass,
+exploration $color-sky;
 
 /* This is a faux loop that doesn't end up in the final css. 
 Writing this does not actually cause the loop to be executed; see below
 for that. @index is the counter variable, but .loop is not a keyword!
 We want to stop when the index reaches the end of the list of environments. */
 
-.loop (@index) when (@index =< length(@theoremEnvironments)){
+@for $index from 1 through length($theoremEnvironments) {
 
    /* theoremEnvironments above is a list of lists. Get the correct list: */
-   @thisTheoremEnvironment: extract(@theoremEnvironments, @index);
+   $thisTheoremEnvironment: nth($theoremEnvironments, $index);
 
-   /*Extract from the list the name and color of the class*/
-   @nameOfClass: extract(@thisTheoremEnvironment, 1);
-   @colorOfClass: extract(@thisTheoremEnvironment, 2);
-   @counterToIncrement: @nameOfClass;
+   /*Nth from the list the name and color of the class*/
+   $nameOfClass: nth($thisTheoremEnvironment, 1);
+   $colorOfClass: nth($thisTheoremEnvironment, 2);
+   $counterToIncrement: $nameOfClass;
 
 /* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
 
    body {
-      counter-reset: @counterToIncrement;     /* The body needs to initialize all the counters. */
+      counter-reset: $counterToIncrement;     /* The body needs to initialize all the counters. */
    }
    
-   .@{nameOfClass} { 
-       .well; /* Mix-in the bootstrap .well component */
-       
+   .#{$nameOfClass} {
+       @extend .w-100;
        background-color: #FDFDFD;
        /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
-       //background-color: hsl(hue(@colorOfClass),@theoremEnvironmentSaturation,@theoremEnvironmentLightness);
+       //background-color: hsl(hue($colorOfClass),$theoremEnvironmentSaturation,$theoremEnvironmentLightness);
 
       /* Increment the counter for this theorem type. */
-      counter-increment: @counterToIncrement;
+      counter-increment: $counterToIncrement;
 
+      border: 1px solid hsl(hue($colorOfClass),$theoremEnvironmentSaturation,$theoremEnvironmentLightness);      
+      
       /*These are the things that are common to all environments. */
       padding-left: 24px;
-      margin-top: 12px;
+      margin-top: 12pt;
+
+      padding-top: 6pt;
+      padding-bottom: 12pt;      
    }
 
    /* This produces the lovely colored bar on the right hand side. */
    /* It's ::after because I already used ::before for the environment name. */
-   .@{nameOfClass}::after {
+   .#{$nameOfClass}::after {
        z-index: 1;
        content: "";
        position: absolute;
@@ -82,29 +91,24 @@ We want to stop when the index reaches the end of the list of environments. */
        top: 0px;
        bottom: 0px;
        width: 12px;
-       background-color: hsl(hue(@colorOfClass),@theoremEnvironmentSaturation,@theoremEnvironmentLightness);
+       background-color: hsl(hue($colorOfClass),$theoremEnvironmentSaturation,$theoremEnvironmentLightness);
    } 
    
-   .@{nameOfClass}::before {
+   .#{$nameOfClass}::before {
       /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
-      /* content:"@{nameOfClass} " counter(@counterToIncrement) ". ";*/
-      content:"@{nameOfClass}.";
+      /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+      content:"#{$nameOfClass}.";
       display: inline;
       text-transform: capitalize;   /* CSS here only applies to one word, like "Theorem." or "Example." */
       font-weight: bold;
       padding-right: 0.5em;
    }
    
-   .@{nameOfClass} ul{
+   .#{$nameOfClass} ul{
        padding-left: 1em;
    }
-
-   /* Here we execute loop again for the next entry. */
-   .loop(@index + 1);
 }
 
-/* This calls the loop with @index set to 1, thus starting the loop. Without this, all the code above would never run. */
-.loop(1);
 
 .explanation::before
 {

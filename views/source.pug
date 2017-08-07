@@ -18,11 +18,3 @@ block content
            small &nbsp;source code
       pre(class="brush: latex;")
         | #{file.data}
-      if compileLog
-        hr
-        h1 Compile Log
-        pre
-          | #{compileLog.errorList}        
-        pre
-          | #{compileLog.log}
-        

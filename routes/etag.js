@@ -27,6 +27,5 @@ exports.checkIfNoneMatch = function( req, res, etag, callback ) {
     callback( function( res ) {
 	// And help the callback to set the etag
 	res.set({ 'ETag': '"' + etag + '"' });
-	res.set('Cache-Control', 'must-revalidate, max-age=600');
     });
 }

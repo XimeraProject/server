@@ -32,7 +32,7 @@ function authorization(req,res,next) {
     } else {
 	var token = "";
 	var parts = authorization.split(' ');
-	
+	console.log(authorization);
 	if (parts[0].match(/Bearer/)) {
 	    token = parts.reverse()[0];
 	}
@@ -46,6 +46,8 @@ function authorization(req,res,next) {
 
 	repositories.readRepositoryToken( repositoryName )
 	    .then(function(buf) {
+		console.log("Buf=",buf);
+		console.log("token=",token);		
 		if (buf == token) {
 		    next();
 		} else
@@ -98,9 +100,22 @@ exports.parseActivity = function(req,res,next) {
     }
 };
 
+exports.renderWithETag = function(req, res, next) {
+    var activity = req.activity;
+
+    var etag = 'sha:' + activity.hash + ";user:" + req.user._id;
+    
+    ETag.checkIfNoneMatch( req, res, etag,
+			   function( setETag ) {
+			       setETag(res);
+			       res.set('Cache-Control', 'must-revalidate, max-age=600');
+			       exports.render( req, res, next );
+			   } );
+};
+			       
 exports.render = function(req, res, next) {
     var activity = req.activity;
-	    
+
     if (activity.kind == 'xourse') {
 	var xourse = activity;
 	xourse.path = req.activity.path;
@@ -261,7 +276,8 @@ exports.serve = function( mimetype ){
 				       .then( function(blob) {
 					   file.data = blob;
 					   res.contentType( mimetype );
-					   setETag( res );
+					   setETag( res );	
+					   res.set('Cache-Control', 'public, max-age=600');	
 					   res.end( blob, 'binary' );		
 				       })
 				       .catch( function(err) {

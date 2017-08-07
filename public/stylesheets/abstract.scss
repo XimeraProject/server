@@ -1,0 +1,14 @@
+/* The styling for the abstract */
+.abstract::before {
+  font-weight:bold;
+  content:"Abstract. ";
+  font-style:normal;
+}
+
+.abstract {
+  text-align:justify;
+  font-style:italic;
+  margin-bottom:2em;
+  color: gray;
+}
+

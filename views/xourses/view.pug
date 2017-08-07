@@ -8,16 +8,14 @@ block modals
                 
 block content
   div.container
-    .page-header
-      div.pull-right.btn-toolbar(role="toolbar")            
-          div#search-field
-             div.inner-addon.right-addon
-               i.fa.fa-search
-               input.form-control(id="xourse-search",type="search",placeholder="Search")
-               
+    .row.p-2
       h1(role="banner") #{xourse.title}
-        
-    div(class="xourse", data-commit=xourse.commit, data-user=user._id.toString(),data-points=xourse.totalPoints)
+      .input-group.ml-auto.w-25
+        input.form-control(id="xourse-search",type="search",placeholder="Search for...")
+        span.input-group-addon
+          i.fa.fa-search        
+  
+    div.card-group(class="xourse", data-commit=xourse.commit, data-user=user._id.toString(),data-points=xourse.totalPoints)
       for activityUrl in xourse.activityList
         +xourseCard(repositoryName, xourse.path, activityUrl, xourse.activities[activityUrl])
     hr

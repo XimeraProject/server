@@ -1,0 +1,9 @@
+include ../activity-card.pug
+
+if (activity.xourse.activityList.length > 0)
+  nav(role="navigation",aria-label="textbook")
+        div.kinetic.course-navigation.card-group.scroll(data-commit=activity.commit, data-user=user._id.toString(),data-points=activity.xourse.totalPoints, data-xourse-url=`${repositoryName}/${activity.xourse.path}`)
+          for activityUrl in activity.xourse.activityList
+            +xourseCard(repositoryName, activity.xourse.path, activityUrl, activity.xourse.activities[activityUrl], activityUrl == activity.path)
+          div.scrollbar
+            div.handle

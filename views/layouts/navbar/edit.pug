@@ -1,0 +1,3 @@
+if activity && activity.path && repositoryMetadata && repositoryMetadata.github
+  button.btn.btn-default.mx-1(role="button",onclick=`location.href = \"https://github.com/${repositoryMetadata.github.owner}/${repositoryMetadata.github.repository}/edit/master/${activity.path}.tex\";`)
+    | <i class="fa fa-pencil"></i> Edit

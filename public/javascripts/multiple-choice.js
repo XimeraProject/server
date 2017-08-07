@@ -5,7 +5,7 @@ var database = require('./database');
 var TinCan = require('./tincan');
 var Javascript = require('./javascript');
 
-var buttonTemplate = _.template( '<label class="btn btn-default <%= correct %>" id="<%= id %>"></label>' );
+var buttonTemplate = _.template( '<button class="text-left btn btn-secondary <%= correct %>" id="<%= id %>"></button>' );
 
 var answerHtml = '<div class="btn-group" style="vertical-align: bottom; " aria-live="assertive">' +
 	'<button class="btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Correct answer!" style="display: none">' +
@@ -37,8 +37,7 @@ function assignGlobalVariable( multipleChoice, choice ) {
 var createMultipleChoice = function() {
     var multipleChoice = $(this);
 
-    multipleChoice.wrapInner( '<div class="ximera-horizontal"><div class="btn-group-vertical" role="radiogroup" data-toggle="buttons" style="padding-right: 1em;"></div></div>' );
-    
+    multipleChoice.wrapInner( '<div class="ximera-horizontal"><div class="btn-group-vertical" role="group" data-toggle="buttons" style="padding-right: 1em;"></div></div>' );
     $('.ximera-horizontal', multipleChoice).append( $(answerHtml) );
 
     multipleChoice.find( ".choice" ).each( function() {
@@ -56,7 +55,7 @@ var createMultipleChoice = function() {
 	label.prepend( '<input type="radio"></input>' );
 
 	if (value) {
-	    label.closest('label').attr('data-value', value );
+	    label.closest('button').attr('data-value', value );
 	}
     });
 
@@ -78,7 +77,7 @@ var createMultipleChoice = function() {
     });	
     
     multipleChoice.persistentData(function(event) {
-	multipleChoice.find( 'label').removeClass('active');
+	multipleChoice.find( 'button').removeClass('active');
 	multipleChoice.find( '#' + multipleChoice.persistentData('chosen') ).find( 'input' ).attr( 'aria-checked', false );
 	
 	if (multipleChoice.persistentData('chosen')) {
@@ -98,12 +97,12 @@ var createMultipleChoice = function() {
 	    multipleChoice.find( '.btn-group button' ).hide();
 	    multipleChoice.find( '.btn-group .btn-ximera-correct' ).show();
 	    
-	    multipleChoice.find( 'label' ).not( '.correct' ).addClass( 'disabled' );
-	    multipleChoice.find( 'label .correct' ).removeClass('disabled');
+	    multipleChoice.find( 'button' ).not( '.correct' ).addClass( 'disabled' );
+	    multipleChoice.find( 'button .correct' ).removeClass('disabled');
 	} else {
-	    multipleChoice.find( 'label' ).removeClass( 'disabled' );
+	    multipleChoice.find( 'button' ).removeClass( 'disabled' );
 	    
-	    multipleChoice.find( 'label' ).filter( function() {
+	    multipleChoice.find( 'button' ).filter( function() {
 		var wrongAnswers = multipleChoice.persistentData('wrong');
 		
 		return wrongAnswers && (wrongAnswers[$(this).attr('id')]);
@@ -120,8 +119,8 @@ var createMultipleChoice = function() {
 	    }
 	}
 
-	multipleChoice.find( '.btn-ximera-submit' ).prop( 'disabled', ! multipleChoice.find( 'label' ).hasClass( 'active' ) );
-	multipleChoice.find( '.btn-ximera-incorrect' ).prop( 'disabled', ! multipleChoice.find( 'label' ).hasClass( 'active' ) );
+	multipleChoice.find( '.btn-ximera-submit' ).prop( 'disabled', ! multipleChoice.find( 'button' ).hasClass( 'active' ) );
+	multipleChoice.find( '.btn-ximera-incorrect' ).prop( 'disabled', ! multipleChoice.find( 'button' ).hasClass( 'active' ) );
     });
 
     var checkAnswer = function() {
@@ -153,9 +152,12 @@ var createMultipleChoice = function() {
     $(this).find( ".btn-ximera-submit" ).click( checkAnswer );
     $(this).find( ".btn-ximera-incorrect" ).click( checkAnswer );
     
-    $(this).find( "label" ).each( function() {
+    $(this).find( "button" ).each( function() {
 	var id = $(this).attr('id');
 	$(this).click( function() {
+	    if (($(this).hasClass('disabled'))) {
+		return false;
+	    }
 	    multipleChoice.persistentData('chosen', id);
 	    assignGlobalVariable( multipleChoice, $(this) );
 	});

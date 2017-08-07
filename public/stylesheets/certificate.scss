@@ -1,0 +1,52 @@
+/****************************************************************/
+dl.certificate { width: 100% }
+
+dl.certificate {
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+  width: 100%;      /* set the container width*/
+  overflow: visible;
+}
+dl.certificate dt {
+  flex-basis: 50%;
+  flex-grow: 1;
+  flex-shrink: 0;
+  text-overflow: hidden;
+  overflow: hidden;
+  white-space: nowrap;
+}
+dl.certificate dd {
+  margin-left: auto;
+  text-align: right;
+  flex-basis: content;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+dl.certificate dt.page {
+    padding-left: 1em;
+}
+
+dl.certificate dt.page:after, dl.certificate dt.total:after {
+    content: ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ";
+    color: $gray;
+}
+
+
+span.certificate {
+    width: 100%;
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;    
+}
+
+/******* subparagraphs and paragraphs *****/
+span.subparagraphHead, span.paragraphHead {
+  margin-right: 1em;
+  font-weight: bold;
+}

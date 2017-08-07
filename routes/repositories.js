@@ -10,7 +10,7 @@ var path = require('path');
 var fse = require("fs-extra");
 var fs = require("fs");
 var crypto = require('crypto');
-var git = require('./git');
+var page = require('./page');
 var backend = require('git-http-backend');
 var spawn = require('child_process').spawn;
 
@@ -86,7 +86,7 @@ exports.git = function(req, res) {
 	// If the request is to modify our repository in some form...
 	if (service.cmd !== 'git-upload-pack') {
 	    // Only then do we require that a bearer token be presented
-	    git.authorization( req, res, function(err) {
+	    page.authorization( req, res, function(err) {
 		if (err) {
 		    console.log( err );
 		    res.status(500).send(err);

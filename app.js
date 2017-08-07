@@ -24,7 +24,7 @@ var express = require('express')
   , expressWinston    = require('express-winston')
   , winston = require('winston')
   , repositories = require('./routes/repositories')
-  , gitBackend = require('./routes/git')
+  , page = require('./routes/page')
   , keyserver = require('./routes/gpg')
   , hashcash = require('./routes/hashcash')
   , async = require('async')
@@ -185,9 +185,9 @@ function addUserImplicitly(req, res, next) {
 
     app.post( '/:repository.git', normalizeRepositoryName, keyserver.authorization );
     app.post( '/:repository.git', normalizeRepositoryName, hashcash.hashcash );
-    app.post( '/:repository.git', normalizeRepositoryName, gitBackend.create );
+    app.post( '/:repository.git', normalizeRepositoryName, page.create );
 
-    app.use( '/:repository.git/log.sz', normalizeRepositoryName, gitBackend.authorization );
+    app.use( '/:repository.git/log.sz', normalizeRepositoryName, page.authorization );
     app.use( '/:repository.git/log.sz', normalizeRepositoryName, sendSeekable );
     app.get( '/:repository.git/log.sz', normalizeRepositoryName, tincan.get );
     
@@ -365,49 +365,49 @@ function addUserImplicitly(req, res, next) {
 
     app.get( '/:repository/:path(*)/certificate',
 	     redirectUnnormalizeRepositoryName,	     
-	     gitBackend.activitiesFromRecentCommitsOnMaster,
-	     gitBackend.chooseMostRecentBlob,
-	     gitBackend.parseActivity,
+	     page.activitiesFromRecentCommitsOnMaster,
+	     page.chooseMostRecentBlob,
+	     page.parseActivity,
 	     certificate.xourse );
 
     // BADBAD: i also need to serve pngs and pdfs and such from the repo here
 
     app.get( '/:repository/:path/lti.xml',
 	     redirectUnnormalizeRepositoryName,	     	     
-	     gitBackend.activitiesFromRecentCommitsOnMaster,
-	     gitBackend.ltiConfig );
+	     page.activitiesFromRecentCommitsOnMaster,
+	     page.ltiConfig );
     
     var serveContent = function( regexp, callback ) {
 	app.get( '/:repository/:path(' + regexp + ')',
 		 redirectUnnormalizeRepositoryName,
-		 gitBackend.activitiesFromRecentCommitsOnMaster,
+		 page.activitiesFromRecentCommitsOnMaster,
 		 callback );
 
 	app.get( '/users/:masqueradingUserId/:repository/:path(' + regexp + ')',
 		 normalizeRepositoryName,
-		 gitBackend.activitiesFromRecentCommitsOnMaster,		 		 
+		 page.activitiesFromRecentCommitsOnMaster,		 		 
 		 callback );	
     };
 
-    serveContent( '*.svg', gitBackend.serve('image/svg+xml') );
-    serveContent( '*.png', gitBackend.serve('image/png') );
-    serveContent( '*.pdf', gitBackend.serve('image/pdf') );
-    serveContent( '*.jpg', gitBackend.serve('image/jpeg') );
-    serveContent( '*.js',  gitBackend.serve('text/javascript') );
+    serveContent( '*.svg', page.serve('image/svg+xml') );
+    serveContent( '*.png', page.serve('image/png') );
+    serveContent( '*.pdf', page.serve('image/pdf') );
+    serveContent( '*.jpg', page.serve('image/jpeg') );
+    serveContent( '*.js',  page.serve('text/javascript') );
 
     app.get( '/:repository/:path(*.tex)',
 	     redirectUnnormalizeRepositoryName,	     
-	     gitBackend.activitiesFromRecentCommitsOnMaster,
-	     gitBackend.source );
+	     page.activitiesFromRecentCommitsOnMaster,
+	     page.source );
     
     /*
     app.get( '/users/:masqueradingUserId/:repository/:path(*)',
 	     supervising.findUser,
-	     gitBackend.recentCommitsOnMaster, gitBackend.findPossibleActivityFromCommits,
-	     gitBackend.chooseMostRecentBlob,
-	     gitBackend.fetchMetadataFromActivity,
-	     gitBackend.parseActivity,
-	     gitBackend.render );    
+	     page.recentCommitsOnMaster, page.findPossibleActivityFromCommits,
+	     page.chooseMostRecentBlob,
+	     page.fetchMetadataFromActivity,
+	     page.parseActivity,
+	     page.render );    
     */
 
     function parallel(middlewares) {
@@ -421,24 +421,24 @@ function addUserImplicitly(req, res, next) {
     // Instructors should be based around a context instead?
     app.get( '/:repository/:path/instructors',
 	     redirectUnnormalizeRepositoryName,	     	     
-	     gitBackend.activitiesFromRecentCommitsOnMaster,
-	     gitBackend.chooseMostRecentBlob,
-	     parallel([gitBackend.fetchMetadataFromActivity,
-		       gitBackend.parseActivity]),	     
+	     page.activitiesFromRecentCommitsOnMaster,
+	     page.chooseMostRecentBlob,
+	     parallel([page.fetchMetadataFromActivity,
+		       page.parseActivity]),	     
 	     instructors.index );
 
     app.get( '/:repository/:path(*)',
 	     remember,
 	     redirectUnnormalizeRepositoryName,	     	     
-	     gitBackend.activitiesFromRecentCommitsOnMaster,
-	     gitBackend.chooseMostRecentBlob,
-	     parallel([gitBackend.fetchMetadataFromActivity,
-		       gitBackend.parseActivity]),
-	     gitBackend.render );
+	     page.activitiesFromRecentCommitsOnMaster,
+	     page.chooseMostRecentBlob,
+	     parallel([page.fetchMetadataFromActivity,
+		       page.parseActivity]),
+	     page.renderWithETag );
 
     app.get( '/:repository',
 	     redirectUnnormalizeRepositoryName,	     	     
-	     gitBackend.mostRecentMetadata,
+	     page.mostRecentMetadata,
 	     xourses.index );
     
     // SVG files will only be rendered if they are sent with content type image/svg+xml

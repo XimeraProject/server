@@ -11,7 +11,7 @@ html(lang="en")
         block title
         |  - Ximera
 
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0, shrink-to-fit=no")
     meta(name="description",content="Ximera provides the backend technology for online courses")
     meta(name="author", content="The Ximera Project")
     meta(name="keywords", content="mathematics, math, maths, courses, course, education, calculus, complex analysis, algebra, geometry, graphs, plots, MOOC")
@@ -27,6 +27,7 @@ html(lang="en")
       
     script(type="text/javascript",src="/node_modules/mathjax/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured")
     script(type="text/javascript",src="https://sagecell.sagemath.org/static/embedded_sagecell.js")
+    script(type="text/javascript",src=`/node_modules/dragscroll/dragscroll.js?v=#{version}`)    
     script(type="text/javascript",src=`/public/javascripts/main.min.js?v=#{version}`)
 
     link(rel="apple-touch-icon",sizes="114x114",href="/public/images/icons/favicon-114x114.png")
@@ -72,13 +73,11 @@ html(lang="en")
       script(type="text/javascript",src="/public/javascripts/index.js")
       
   body
+     include navbar/index.pug
      div
        block modals
      if (atOhioState)
        include includes/osu
-     #wrap
-       include includes/header
-       block content
-     .footer
-       include includes/footer
+     block content
+     include footer/index.pug
 

@@ -3,7 +3,10 @@ var $ = window.$ = window.jQuery = require('jquery');
 var jqueryUI = require('jquery-ui');
 var jqueryTransit = require('jquery.transit');
 var waypoint = require('waypoints/lib/jquery.waypoints.min.js');
+var tether = require('tether');
+window.Tether = tether;
 var bootstrap = require('bootstrap');
+var kinetic = require('jquery.kinetic/jquery.kinetic.min.js');
 
 var syntaxHighlighter = require('syntaxhighlighter');
 window.sh = syntaxHighlighter;
@@ -326,6 +329,20 @@ $(document).ready(function() {
     syntaxHighlighter.default.highlight();
 
     rowclick.addClickableTableRows();
+
+    $('.kinetic').kinetic({});
+    var active = $('.activity-card.active');
+    if (active.length > 0) {
+	var left = $('.activity-card.active').position().left;
+	var cardWidth = $('.activity-card.active').width();
+	var windowWidth = $('.kinetic').width();
+	$('.kinetic').scrollLeft( left - windowWidth / 2 + cardWidth / 2 );
+    }
+    $('.activity-card a').mouseup(function(event) {
+	if (( $('.kinetic-moving-left').length > 0 ) || ( $('.kinetic-moving-right').length > 0 )) {
+	    event.preventDefault();
+	}
+    });
     
     $(".dropdown-toggle").dropdown();
 

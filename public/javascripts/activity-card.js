@@ -33,7 +33,7 @@ var createActivityCard = function() {
     // This is the new method for storing completion data
     var repositoryName = activityCard.attr('data-repository-name');
     var activityPath = activityCard.attr('data-path');
-    
+
     if (repositoryName) {
 	$.when(completions).done(function(completions) {
 	    var maxCompletion = 0;
@@ -43,7 +43,7 @@ var createActivityCard = function() {
 		    if (c.complete > maxCompletion)
 			maxCompletion = c.complete;
 	    });
-	    
+
 	    displayProgress( activityCard, maxCompletion );
 	    activityCard.attr('data-max-completion', maxCompletion );
 	    gradebook.update();

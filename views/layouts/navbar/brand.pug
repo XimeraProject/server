@@ -1,0 +1,10 @@
+if (atOhioState)
+  a.navbar-brand(href="/")
+    | <span aria-label="ximera" style="font-weight: 200;">XIMERA.</span><span aria-label="ohio state" style="font-weight: 700;">OSU</span><span style="font-weight: 200;">.EDU</span>
+else
+  if (atColoradoState)
+    a.navbar-brand(href="http://www.math.colostate.edu/~calc/MATH160/index.html")
+      | <span style="font-weight: 700;">COLOSTATE</span><span style="font-weight: 200;">.EDU</span>
+  else
+    a.navbar-brand(href="/")
+      | <span style="font-weight: 200;">THE </span><span aria-label="chimera" style="font-weight: 700;">XIMERA</span><span style="font-weight: 200;"> PROJECT</span>        

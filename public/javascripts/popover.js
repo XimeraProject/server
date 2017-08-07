@@ -59,16 +59,16 @@ exports.displayPopover = function(answer, element) {
 	}
 	
 	var latex = Expression.fromText(answer).tex();
-	
-	$(element).data('bs.popover').options.title = '';	    
-	$(element).data('bs.popover').options.content = '\\(' + latex + '\\)';
+
+	$(element).data('bs.popover').config.title = '';	    
+	$(element).data('bs.popover').config.content = '\\(' + latex + '\\)';
 	$(element).popover('show');
-	MathJax.Hub.Queue(["Typeset", MathJax.Hub, $(element).data('bs.popover').tip()[0]]);
+	MathJax.Hub.Queue(["Typeset", MathJax.Hub, $(element).data('bs.popover').tip[0]]);
     }
     // display errors as popovers, too
     catch (err) {
-	$(element).data('bs.popover').options.title = 'Error';	    
-	$(element).data('bs.popover').options.content = err;
+	$(element).data('bs.popover').config.title = 'Error';	    
+	$(element).data('bs.popover').config.content = err;
 	$(element).popover('show');
     }
 }

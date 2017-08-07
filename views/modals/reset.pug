@@ -1,0 +1,14 @@
+.modal.fade#resetWarningModal(tabindex="-1",role="dialog",aria-labelledby="updateWarningModal")
+  .modal-dialog(role="document")
+    .modal-content
+      .modal-header
+        h5.modal-title Warning
+        button.close(type="button",data-dismiss="modal",aria-label="Close")
+          span(aria-hidden="true") &times;
+      .modal-body
+        p You are about to <strong>erase your work</strong> on this activity.  Are you sure you want to do this?        
+      .modal-footer
+          button.btn.btn-primary(type="button",data-dismiss="modal") 
+            | <i class="fa fa-life-ring"></i>&nbsp;No, keep my work.
+          button.btn.btn-danger#reset-work-button(type="button", data-dismiss="modal")
+            | <i class="fa fa-eraser"></i>&nbsp;Yes, delete my work.

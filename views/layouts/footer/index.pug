@@ -1,45 +1,47 @@
-footer.navbar.navbar-inverse.navbar-static-bottom
+footer.bg-inverse.text-white
     .container
       .row
-        .col-sm-3
+        .col-md-3
           h5
             a(href="/course/") Courses
-          a(href="/mooculus/calculus1") Calculus One
-          a(href="/mooculus/calculus2") Calculus Two
-          a(href="/mooculus/calculus3") Calculus Three
-        .col-sm-3
+          ul
+            a(href="/mooculus/calculus1") Calculus One
+            a(href="/mooculus/calculus2") Calculus Two
+            a(href="/mooculus/calculus3") Calculus Three
+        .col-md-3
           h5
             a(href="/about/overview") About
-          a(href="/about/faq") FAQ
-          a(href="/about/team") Development Team
-          a(href="/about/workshop") Workshop
-        .col-sm-3
+          ul
+            a(href="/about/faq") FAQ
+            a(href="/about/team") Development Team
+            a(href="/about/workshop") Workshop
+        .col-md-3
           h5 Social
-          a(href='https://www.facebook.com/groups/337167309757871/')
-            | Facebook 
-            i.fa.fa-facebook
-          a(href='https://twitter.com/XimeraProject')
-            | Twitter 
-            i.fa.fa-twitter
-       
-          a(href='https://plus.google.com/communities/115767215179468258008')
-            | Google Plus 
-            i.fa.fa-google-plus
-          a(href='https://github.com/kisonecat/ximera')
-            | GitHub 
-            i.fa.fa-github-alt
-          a(href='/about/contact') Contact Us 
-            i.fa.fa-envelope
-        .col-sm-3.address
+          ul
+            a(href='https://www.facebook.com/groups/337167309757871/')
+              | Facebook 
+              i.fa.fa-facebook
+            a(href='https://twitter.com/XimeraProject')
+              | Twitter 
+              i.fa.fa-twitter
+            a(href='https://plus.google.com/communities/115767215179468258008')
+              | Google Plus 
+              i.fa.fa-google-plus
+            a(href='https://github.com/kisonecat/ximera')
+              | GitHub 
+              i.fa.fa-github-alt
+            a(href='/about/contact') Contact Us 
+              i.fa.fa-envelope
+        .col-md-3.address
           p
             :markdown
               Built at [The Ohio State University](http://www.osu.edu/) with [support from](/about/support) [NSF Grant DUE-1245433](http://www.nsf.gov/awardsearch/showAward?AWD_ID=1245433), the [Shuttleworth Foundaton](/about/support), the [Department of Mathematics](http://math.osu.edu/), and the [Affordable Learning Exchange](https://affordablelearning.osu.edu/).
       .row
-        .col-sm-12.osu
+        .col-md-12.osu
           if (atColoradoState)
             img(src="/public/images/colorado-state/logo.png")
           else
-            img(src="/public/images/osu/osu-web-footer-wordmark.png")
+            img(src="/public/images/osu/osu-web-footer-wordmark-rev.png")
           p
             | &copy; 2013&ndash;#{new Date().getFullYear()}, The Ohio State University &mdash; 
             a(href="/about/team") Ximera team
