@@ -1,0 +1,14 @@
+div.modal.fade#confirm-delete(tabindex="-1",role="dialog",aria-labelledby="confirm-delete")
+    div.modal-dialog(role="document")
+      div.modal-content
+        div.modal-header
+          h5(class="modal-title") Confirm Deletion
+          button.close(type="button",data-dismiss="modal",aria-label="Close") 
+            span(aria-hidden="true") &times;                    
+        div.modal-body
+          p Are you sure you want to disconnect your account from your Learning Management System?
+        div.modal-footer
+          button.btn.btn-default(type="button", data-dismiss="modal")
+            | <i class="fa fa-link"></i>&nbsp;No, I want to stay connected
+          button.btn.btn-danger#disconnect-button
+            | <i class="fa fa-chain-broken"></i>&nbsp;Yes, disconnect my account.

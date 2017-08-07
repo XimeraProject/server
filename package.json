@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "test": "mocha",
-    "install": "napa MSchmidt/jquery-fullsizable tchapi/pagedown-bootstrap",
+    "install": "napa tchapi/pagedown-bootstrap",
     "build": "gulp"
   },
   "dependencies": {

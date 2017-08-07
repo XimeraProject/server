@@ -1,9 +1,11 @@
-.profile-picture {
-    float: right;
+#api-secret {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;        
 }
 
-.developer-email {
-  float: right;
-  font-size: 75%;
-  font-weight: 100;
+#api-key {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;    
 }

@@ -60,7 +60,7 @@ about it and choose the background color. */
 // The first (and only) anchor inside a card covers the whole card,
 // making it clickable.
 .activity-card a {
-    z-index: 1039;
+    z-index: 900;
     position: absolute;
     top: 0; left: 0;
     height: 100%; width: 100%;
@@ -136,3 +136,12 @@ div.scroll::-webkit-scrollbar-thumb {
 
 @import "dialogue";
 @import "images";
+
+// This fixes a bug with img-fluid
+.card-img-top.img-fluid {
+min-width: 100%;
+width: auto;
+height: auto;
+}
+
+@import "user";

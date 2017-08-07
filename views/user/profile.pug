@@ -1,13 +1,12 @@
 extends ../layouts/main
 
 mixin linked_account(name, icon, shortname, userId, token)
-  div.btn-group
-    button.btn.btn-default.linked-account(type="button",id=shortname,userId=userId,connected=(token != undefined))
-      if icon
-        i(class="fa fa-" + icon)
-        | &nbsp;<span class="connect">Connect</span><span class="disconnect" style="display: none;">Disconnect</span> #{name}
-      else
-        | <span class="connect">Connect</span><span class="disconnect" style="display: none;">Disconnect</span> #{name}      
+  button.btn.btn-default.linked-account.mx-1.my-1(type="button",id=shortname,userId=userId,connected=(token != undefined))
+    if icon
+      i(class="fa fa-" + icon)
+      | &nbsp;<span class="connect">Connect</span><span class="disconnect" style="display: none;">Disconnect</span> #{name}
+    else
+      | <span class="connect">Connect</span><span class="disconnect" style="display: none;">Disconnect</span> #{name}      
 
 block title
   #{title}
@@ -15,11 +14,14 @@ block title
 mixin displayBridge(bridge)
     // Maybe display something different fro instructors?
     // if bridge.instructionalStaff
-    div.btn-group.pull-right
-      if editable    
+    if editable    
+      div.float-right
         button.btn.btn-danger.delete-bridge(type="button",data-userId=userId,data-bridge=bridge._id,data-toggle="modal", data-target="#confirm-delete")
           | <i class="fa fa-trash"></i><i class="fa fa-spinner fa-spin" style="display: none;"></i> Delete
-    h4 #{bridge.contextTitle}
+    if bridge.contextTitle
+      h4 #{bridge.contextTitle}
+    else
+      h4 Course in a remote Learning Management System
       if bridge.contextLabel || bridge.toolConsumerInstanceName
         small &nbsp;
           if bridge.contextLabel
@@ -27,16 +29,16 @@ mixin displayBridge(bridge)
           if bridge.toolConsumerInstanceName
             | &nbsp;at #{bridge.toolConsumerInstanceName}
       if bridge.lisResultSourcedid && bridge.lisOutcomeServiceUrl && bridge.pointsPossible
-        | &nbsp;<span class="label label-success">#{bridge.pointsPossible} points</span>       
+        | &nbsp;<span class="badge badge-success badge-pill">#{bridge.pointsPossible} points</span>       
     p
       if bridge.roles.filter( f => f.match( /Instructor/ ) )
-        <span class="label label-default">Instructor</span>&nbsp;            
+        <span class="badge badge-default">Instructor</span>&nbsp;            
       else
         if bridge.roles.filter( f => f.match( /TeachingAssistant/ ) )
-          <span class="label label-default">Instructor</span>&nbsp;             
+          <span class="badge badge-default">Instructor</span>&nbsp;             
         else    
           for role in bridge.roles 
-            <span class="label label-default">#{role}</span>&nbsp;
+            <span class="badge badge-default">#{role}</span>&nbsp;
       | in&nbsp;
       a(href=`/${bridge.repository}/${bridge.path}`)
         code #{bridge.repository}/#{bridge.path}
@@ -48,102 +50,79 @@ mixin displayBridge(bridge)
 					   
   
 block content
-  div.modal.fade#confirm-delete(tabindex="-1",role="dialog",aria-labelledby="confirm-delete")
-      div.modal-dialog(role="document")
-        div.modal-content
-          div.modal-header
-            button(type="button", class="close", data-dismiss="modal", aria-label="Close")
-              span(aria-hidden="true") &times;
-            h4(class="modal-title") Confirm Deletion
-          div.modal-body
-            p Are you sure you want to disconnect your account from your Learning Management System?
-          div.modal-footer
-            button.btn.btn-default(type="button", data-dismiss="modal")
-              | <i class="fa fa-link"></i>&nbsp;No, I want to stay connected
-            button.btn.btn-danger#disconnect-button
-              | <i class="fa fa-chain-broken"></i>&nbsp;Yes, disconnect my account.
+  include ../modals/confirm-deletion
   .container
     div.row
       .col-sm-3
+        .card
           if person.imageUrl
-            img.center-block.img-rounded(src=person.imageUrl)
+            img.card-img-top.img-fluid(src=person.imageUrl)
           else
-            a(href=`http://www.gravatar.com/${person.gravatar}`)
-              img.center-block.img-rounded(src=`https://secure.gravatar.com/avatar/${person.gravatar}.jpg?d=retro&s=160`)
-          if person.displayName && person.displayName.length > 0
-            h2 #{person.displayName}
-              span.small &nbsp;(#{person.name})
-          else
-            h2 #{person.name}          
-          div.list-group(data-toggle="tooltip" data-placement="bottom" title=whyVisible)
+            a.img-fluid(href=`http://www.gravatar.com/${person.gravatar}`)
+              img.card-img-top.img-fluid(src=`https://secure.gravatar.com/avatar/${person.gravatar}.jpg?d=retro&s=160`)
+          .card-block
+            if person.displayName && person.displayName.length > 0
+              .card-title #{person.displayName}
+              p.card-text.text-muted (#{person.name})
+            else
+              .card-title #{person.name}          
+          ul.list-group.list-group-flush(data-toggle="tooltip" data-placement="bottom" title=whyVisible)
             if (!(person.visibility )) || (person.visibility == "none")
-              span.list-group-item <i class="fa fa-eye-slash"></i>&nbsp;Only visible to <strong>#{person.pronouned}</strong>
+              li.list-group-item <i class="fa fa-eye-slash"></i>&nbsp;Only visible to&nbsp;<strong>#{person.pronouned}</strong>
             if (person.visibility == "users")
-              span.list-group-item <i class="fa fa-eye"></i>&nbsp;Visible to other <strong>learners</strong>
+              li.list-group-item <i class="fa fa-eye"></i>&nbsp;Visible to other&nbsp;<strong>learners</strong>
             if (person.visibility == "everyone")
-              span.list-group-item <i class="fa fa-eye"></i>&nbsp;Visible to <strong>everyone</strong>
+              li.list-group-item <i class="fa fa-eye"></i>&nbsp;Visible to&nbsp;<strong>everyone</strong>
             if person.website && person.website.length > 0                     
-              span.list-group-item <i class="fa fa-external-link"></i>&nbsp;
+              li.list-group-item <i class="fa fa-external-link"></i>&nbsp;
                 a(href=person.website) #{person.website}
             if person.location && person.location.length > 0           
-              span.list-group-item <i class="fa fa-location-arrow"></i>&nbsp;
+              li.list-group-item <i class="fa fa-location-arrow"></i>&nbsp;
                 a(href="http://maps.google.com/?=q=" + person.location) #{person.location}
             if person.email && person.email.length > 0
-              span.list-group-item <i class="fa fa-envelope-o"></i>&nbsp;
+              li.list-group-item <i class="fa fa-envelope-o"></i>&nbsp;
                 a.email(href=`mailto:${person.email}`) #{person.email}
             if person.birthday                                    
-              span.list-group-item <i class="fa fa-birthday-cake"></i>&nbsp;
+              li.list-group-item <i class="fa fa-birthday-cake"></i>&nbsp;
                 time(class="absolute-date", datetime=person.birthday)
                   | #{person.formattedBirthday}
             if person.lastSeen
-              span.list-group-item <i class="fa fa-calendar"></i>&nbsp;
+              li.list-group-item <i class="fa fa-calendar"></i>&nbsp;
                 time(class="relative-date", datetime=person.lastSeen)
                   | #{person.lastSeen}
             if person.superuser
-              span.list-group-item <i class="fa fa-hashtag"></i>&nbsp;Superuser
+              li.list-group-item <i class="fa fa-hashtag"></i>&nbsp;Superuser
             if person.isAuthor
-              span.list-group-item <i class="fa fa-pencil"></i>&nbsp;Author
+              li.list-group-item <i class="fa fa-pencil"></i>&nbsp;Author
       .col-sm-9
-        .row
-          .col-sm-9
-            if updated
-              div.alert.alert-success(role="alert")
-                button(type="button",class="close",data-dismiss="alert",aria-label="Close")
-                  span(aria-hidden=true) &times;
-                strong Updated.&nbsp;
-                | The public profile has been changed.
-          .col-sm-3                
-            if editable
-              div.btn-toolbar(style="margin-bottom: 15px;")
-                div.btn-group.pull-right
-                  a.btn.btn-primary(role="button", href=`/users/${person._id}/edit`) <i class="fa fa-pencil"></i> Edit Profile
+        .row.my-2
+          if updated      
+            div.alert.alert-success.mr-auto(role="alert")
+              strong Updated.&nbsp;
+              | The public profile has been changed.
+          if editable
+            div.ml-auto
+              a.btn.btn-primary(role="button", href=`/users/${person._id}/edit`) <i class="fa fa-pencil"></i> Edit                    
         if person.biography && person.biography.length > 0
           .row
-            .col-sm-12
-              div.panel.panel-default
-               div.panel-heading
-                  h3.panel-title About
-               div.panel-body
+              div.card.my-2.w-100
+               div.card-header About
+               div.card-block
                   p #{person.biography}
         if (person.googleOpenId || person.courseraOAuthId || person.githubId || person.twitterOAuthId)
           .row
-            .col-sm-12
-              div.panel.panel-default
-                div.panel-heading
-                  h3.panel-title Linked accounts        
-                div.panel-body
-                  div.btn-toolbar(role="toolbar")
-                    +linked_account('Google', 'google', 'google', person._id, person.googleOpenId )
-                    +linked_account('Coursera', undefined, 'coursera', person._id, person.courseraOAuthId )
-                    +linked_account('GitHub', 'github-alt', 'github', person._id, person.githubId )
-                    +linked_account('Twitter', 'twitter', 'twitter', person._id, person.twitterOAuthId )
+              div.card.my-2.w-100            
+                div.card-header Linked accounts        
+                div.card-block.text-center
+                  +linked_account('Google', 'google', 'google', person._id, person.googleOpenId )
+                  +linked_account('Coursera', undefined, 'coursera', person._id, person.courseraOAuthId )
+                  +linked_account('GitHub', 'github-alt', 'github', person._id, person.githubId )
+                  +linked_account('Twitter', 'twitter', 'twitter', person._id, person.twitterOAuthId )
         if bridges.length > 0
           .row
-            .col-sm-12
-              div.panel.panel-default
-                div.panel-heading
-                  h3.panel-title Learning Management Systems
-                div.panel-body        
+              div.card.my-2.w-100                          
+                div.card-header Learning Management Systems
+                div.card-block        
                   for bridge in bridges
                     div(id=`bridge-${bridge._id}`)
                       +displayBridge(bridge)
@@ -151,26 +130,24 @@ block content
                         hr
         if (user.superuser) || (user._id.equals(person._id))
           .row
-            .col-sm-12
-              div.panel.panel-default
-                div.panel-heading
-                  h3.panel-title Secret
-                div.panel-body
-                  div.btn-toolbar(style="margin-bottom: 15px;")
-                    div.btn-group.pull-right
+              div.card.my-2.w-100                                        
+                div.card-header Secret
+                div.card-block
+                  div.btn-toolbar.float-right(style="margin-bottom: 15px;")
+                    div.btn-group
                       button.btn.btn-primary(type="button",userId=userId,id="create-secret") <i class="fa fa-user-secret"></i>&nbsp;
                         if person.apiKey
                           | Recreate Secret
                         else 
                           | Create Secret
-                    div.btn-group
+                  p
                       if person.apiKey
                         | Connect to your account using these credentials.
                       else
                         | Create a key and secret in order to connect to your account using command-line tools.
-                  dl.dl-horizontal
-                    dt Key
-                    dd.select-all#api-key #{person.apiKey}
-                    dt Secret
-                    dd.select-all#api-secret #{person.apiSecret}                
+                  dl.row
+                    dt.col-md-2.text-right Key
+                    dd.col-md-10.select-all#api-key #{person.apiKey}
+                    dt.col-md-2.text-right Secret
+                    dd.col-md-10.select-all#api-secret #{person.apiSecret}                
                   
