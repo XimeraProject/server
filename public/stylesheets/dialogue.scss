@@ -1,0 +1,13 @@
+dl.dialogue {
+    @extend .row;
+}
+
+dl.dialogue dt {
+    @extend .col-md-2;
+    @extend .text-right;
+    
+}
+
+dl.dialogue dd {
+    @extend .col-md-10;
+}

@@ -60,7 +60,7 @@ about it and choose the background color. */
 // The first (and only) anchor inside a card covers the whole card,
 // making it clickable.
 .activity-card a {
-    z-index: 2000;
+    z-index: 1039;
     position: absolute;
     top: 0; left: 0;
     height: 100%; width: 100%;
@@ -68,11 +68,17 @@ about it and choose the background color. */
 
 // The section title cards are highlighted
 .card-sectionheading {
-    background-color: $gray-lightest;
-    border-color: $gray-lightest;
+    background-color: $gray-lighter;
+    border-color: $gray-lighter;
     h4 {
 	font-weight: bold;
     }
+}
+
+// The section title cards are highlighted
+.card.chapter {
+    background-color: $gray-lightest;
+    border-color: $gray-lightest;
 }
 
 // The active card is displayed in an active way
@@ -127,3 +133,5 @@ div.scroll::-webkit-scrollbar-track {
 div.scroll::-webkit-scrollbar-thumb {
     background-color: $gray-dark;
 }
+
+@import "dialogue";
