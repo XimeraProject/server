@@ -72,8 +72,10 @@ module.exports.get = function(element) {
 };
 
 function saveButtonOnlyGrows() {
-    $(SAVE_WORK_BUTTON_ID).css('min-width', $(SAVE_WORK_BUTTON_ID).css('width') );
+  // This is less important when the save button is on the lefthand side
+  // $(SAVE_WORK_BUTTON_ID).css('min-width', $(SAVE_WORK_BUTTON_ID).css('width') );
 }
+
 
 // Commit some changes to the database (which will propagate them to other instances)
 module.exports.commit = _.throttle( function() {

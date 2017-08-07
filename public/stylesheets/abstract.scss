@@ -1,9 +1,9 @@
 /* The styling for the abstract */
-.abstract::before {
+/*.abstract::before {
   font-weight:bold;
   content:"Abstract. ";
   font-style:normal;
-}
+}*/
 
 .abstract {
   text-align:justify;
@@ -12,3 +12,6 @@
   color: gray;
 }
 
+.abstract:empty {
+    display: none;
+}

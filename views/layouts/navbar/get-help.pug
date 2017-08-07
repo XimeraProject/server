@@ -1,6 +1,7 @@
 li.nav-item.dropdown
   a.nav-link.dropdown-toggle(id="navbarGetHelp",data-toggle="dropdown",aria-haspopup="true",aria-expanded="false")
-    | <i class="fa fa-hand-paper-o"></i> Get Help  
+    | <i class="fa fa-hand-paper-o"></i>
+    span.hidden-md-down &nbsp;Get Help
   div.dropdown-menu(aria-labelledby="navbarGetHelp")
     if repositoryName && ((activity && activity.xourse && activity.xourse.path) || (xourse && xourse.path))
       a.dropdown-item(id="contact-instructor", href=`/${repositoryName}/${(activity ? (activity.xourse) : xourse).path}/instructors`)
