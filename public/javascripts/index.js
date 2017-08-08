@@ -13,7 +13,7 @@ $(function() {
     });
     */
 
-    callout.children().css('z-index',2000);
+    callout.children().css('z-index',50);
     
     for (var i = 0; i < 25; i++) {
 	callout.append('<div class="eks">X</div>');
@@ -33,7 +33,7 @@ $(function() {
 		fontSize: 200 + 0.5 * Math.random() * height,
 		fontWeight: 800,
 		opacity: 0.15 + 0.10 * Math.random(),
-		zIndex: 1000,
+		zIndex: 10,
 		'-webkit-user-select': 'none',
 		'-moz-user-select': 'none',
 		'-ms-user-select': 'none',
