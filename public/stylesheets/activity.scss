@@ -39,3 +39,8 @@ span.LATEX .TEX .E {
   margin-right: -0.125em;
   font-size: 1em;
 }
+
+// Some better spacing
+.sectionHead {
+    @extend .mt-5;
+}

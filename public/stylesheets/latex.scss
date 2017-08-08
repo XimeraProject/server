@@ -1,18 +1,19 @@
-.tex sub, .latex sub, .latex sup {
+
+.tex sub, .other-latex sub, .other-latex sup {
   text-transform: uppercase;
 }
 
-.tex sub, .latex sub {
+.tex sub, .other-latex sub {
   vertical-align: 0.15ex;
   margin-left: -0.1667em;
   margin-right: -0.125em;
 }
 
-.tex, .latex, .tex sub, .latex sub {
+.tex, .other-latex, .tex sub, .other-latex sub {
   font-size: 1em;
 }
 
-.latex sup {
+.other-latex sup {
   font-size: 0.75em;
   vertical-align: -0.15em;
   margin-left: -0.36em;
