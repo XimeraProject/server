@@ -8,50 +8,58 @@ block content
   div.row
     .col-md-12
       form.form-horizontal(method="post",action=`/users/${person._id}`)
-        div.panel.panel-default
-          div.panel-heading
-            h3.panel-title Public Profile        
-          div.panel-body
+        div.card.my-2
+          div.card-header Public Profile        
+          div.card-body
+           .container.my-4
             div.form-group
-              label.col-sm-3.control-label(for="displayName") <i class="fa fa-eye"></i>&nbsp;Who can see your profile?
-              div.col-sm-9
+             .row
+              label.col-sm-4.col-form-label.control-label(for="displayName") <i class="fa fa-eye"></i>&nbsp;Who can see your profile?
+              div.col-sm-8
                 div.btn-group(data-toggle="buttons")
-                  label.btn.btn-default(class=(person.visibility=="none") ? "active" : "")
+                  label.btn.btn-secondary(class=(person.visibility=="none") ? "active" : "")
                     input(type="radio",name="visibility",id="none",value="none",data-toggle="button",checked=(person.visibility=="none") ? "checked" : "")
                     | <i class="fa fa-user"></i>&nbsp;Only me
-                  label.btn.btn-default(class=(person.visibility=="users") ? "active" : "")
+                  label.btn.btn-secondary(class=(person.visibility=="users") ? "active" : "")
                     input(type="radio",name="visibility",id="users",value="users",data-toggle="button",checked=(person.visibility=="users") ? "checked" : "")
                     | <i class="fa fa-users"></i>&nbsp;Other learners
-                  label.btn.btn-default(class=(person.visibility=="everyone") ? "active" : "")
+                  label.btn.btn-secondary(class=(person.visibility=="everyone") ? "active" : "")
                     input(type="radio",name="visibility",id="everyone",value="everyone",data-toggle="button",checked=(person.visibility=="everyone") ? "checked" : "")
-                    | <i class="fa fa-globe"></i>&nbsp;Everyone               
+                    | <i class="fa fa-globe"></i>&nbsp;Everyone              
+ 
             div.form-group
-                label.col-sm-3.control-label(for="displayName") <i class="fa fa-user"></i>&nbsp;Public Name
-                div.col-sm-9
+              .row
+                label.col-sm-2.col-form-label.control-label(for="displayName") <i class="fa fa-user"></i>&nbsp;Public Name
+                div.col-sm-10
                   input.form-control(name="displayName",type="text",id="displayName",placeholder="Nickname",value=person.displayName)
             div.form-group
-                label.col-sm-3.control-label(for="email") <i class="fa fa-envelope-o"></i>&nbsp;Email Address
-                div.col-sm-9
+              .row
+                label.col-sm-2.col-form-label.control-label(for="email") <i class="fa fa-envelope-o"></i>&nbsp;Email Address
+                div.col-sm-10
                   input.form-control(name="email",type="email",id="email",placeholder="address@example.com",value=person.email)
             div.form-group
-                label.col-sm-3.control-label(for="website") <i class="fa fa-external-link"></i>&nbsp;Website
-                div.col-sm-9            
+              .row
+                label.col-sm-2.col-form-label.control-label(for="website") <i class="fa fa-external-link"></i>&nbsp;Website
+                div.col-sm-10            
                   input.form-control(type="url",name="website",id="website",placeholder="http://example.com/",value=person.website)
             div.form-group
-                label.col-sm-3.control-label(for="location") <i class="fa fa-location-arrow"></i>&nbsp;Location 
-                div.col-sm-9           
+              .row
+                label.col-sm-2.col-form-label.control-label(for="location") <i class="fa fa-location-arrow"></i>&nbsp;Location 
+                div.col-sm-10           
                   input.form-control(type="text",name="location",id="location",placeholder="Columbus, Ohio",value=person.location)
             div.form-group
-                label.col-sm-3.control-label(for="birthday") <i class="fa fa-birthday-cake"></i>&nbsp;Birthday 
-                div.col-sm-9
+              .row
+                label.col-sm-2.col-form-label.control-label(for="birthday") <i class="fa fa-birthday-cake"></i>&nbsp;Birthday 
+                div.col-sm-10
                   div.input-group.date(id="datepicker")
                     input.form-control(type="text",name="birthday",id="birthday",placeholder="July 17, 1990",value=person.formattedBirthday)
                     span.input-group-addon
                       span.fa.fa-calendar
             if user.superuser
               div.form-group
-                label.col-sm-3.control-label(for="biography") <i class="fa fa-sitemap"></i>&nbsp;Roles
-                div.col-sm-9
+               .row
+                label.col-sm-2.col-form-label.control-label(for="biography") <i class="fa fa-sitemap"></i>&nbsp;Roles
+                div.col-sm-10
                   label.checkbox-inline
                     input#superuser(type="checkbox", name="superuser", checked=person.superuser)
                     | Superuser
@@ -66,17 +74,14 @@ block content
                     | Guest      
                       
             div.form-group
-                label.col-sm-3.control-label(for="biography") <i class="fa fa-file-text-o"></i>&nbsp;Short Biography 
-                div.col-sm-9           
+              .row
+                label.col-sm-2.col-form-label.control-label(for="biography") <i class="fa fa-file-text-o"></i>&nbsp;Short Biography 
+                div.col-sm-10
                   textarea.form-control(rows=3,name="biography",id="biography") #{person.biography}
-            div.form-group
-                div.col-sm-9.col-sm-offset-3
+            div.form-group.float-right
                   div.btn-toolbar
-                    div.btn-group
-                      button.btn.btn-primary(type="submit") <i class="fa fa-level-up"></i>&nbsp;Update
-                    div.btn-group                    
-                      a.btn.btn-danger(href=`/users/${person._id}`) <i class="fa fa-close"></i>&nbsp;Cancel
-
+                      button.btn.btn-primary.ml-2(type="submit") <i class="fa fa-level-up"></i>&nbsp;Update
+                      a.btn.btn-danger.ml-2(href=`/users/${person._id}`) <i class="fa fa-close"></i>&nbsp;Cancel
           // birthday
           // biography
           // displayed name
