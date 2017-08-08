@@ -1,13 +1,16 @@
 /* The styling for the abstract */
-/*.abstract::before {
+.abstract p:first-child:before {
   font-weight:bold;
-  content:"Abstract. ";
+  content:"Abstract.";
   font-style:normal;
-}*/
+  display: inline;
+  padding-right: 0.5em;
+}
 
 .abstract {
   text-align:justify;
   font-style:italic;
+  margin-top:2em;  
   margin-bottom:2em;
   color: gray;
 }
