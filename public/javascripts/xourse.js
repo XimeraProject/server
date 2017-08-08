@@ -18,8 +18,9 @@ var updateSearch = function() {
 	
     xourseIsotope.arrange({
 	filter: function() {
+	    // Bart says do not display these
 	    if ($(this).hasClass('part'))
-		return true;
+		return false;
 	    
 	    var text = $(this).text().toLowerCase();
 	    if (text.match( search.toLowerCase() ))
