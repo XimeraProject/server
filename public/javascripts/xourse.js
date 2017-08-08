@@ -8,14 +8,17 @@ var xourseIsotope = undefined;
 var updateSearch = function() {
     if (!xourseIsotope) return;
     
-    var search = $('#xourse-search').val();    
-    console.log("search =", search);
+    var search = $('#xourse-search').val();
 
     if ((typeof search === 'undefined') || (search.length == 0)) {
 	xourseIsotope.arrange({ filter: '*' });
 	return;
     }
-	
+
+    var regexps = _.map( search.toLowerCase().split(" "), function(word) {
+	return new RegExp(word);
+    });
+    
     xourseIsotope.arrange({
 	filter: function() {
 	    // Bart says do not display these
@@ -23,10 +26,8 @@ var updateSearch = function() {
 		return false;
 	    
 	    var text = $(this).text().toLowerCase();
-	    if (text.match( search.toLowerCase() ))
-		return true;
-	    else
-		return false;
+	    
+	    return _.all( regexps, function(re) { return re.test( text ); } );
 	}
     });   
 };
