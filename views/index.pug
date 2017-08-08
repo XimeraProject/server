@@ -8,6 +8,7 @@ block content
         li(data-target='#myCarousel', data-slide-to='2')
       .carousel-inner(role='listbox')
         .carousel-item.active
+          // I have animations
           //img.first-slide(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', alt='First slide')
           .container
             .carousel-caption.d-none.d-md-block.text-left
@@ -17,6 +18,7 @@ block content
               p
                 a.btn.btn-lg.btn-primary(href='#', role='button') Sign up today
         .carousel-item
+          // ...which are always playing        
           //img.second-slide(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', alt='Second slide')
           .container
             .carousel-caption.d-none.d-md-block
@@ -26,6 +28,7 @@ block content
               p
                 a.btn.btn-lg.btn-primary(href='#', role='button') Learn more
         .carousel-item
+          // ...so much ximera!
           //img.third-slide(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', alt='Third slide')
           .container
             .carousel-caption.d-none.d-md-block.text-right
@@ -40,38 +43,36 @@ block content
       a.carousel-control-next(href='#myCarousel', role='button', data-slide='next')
         span.carousel-control-next-icon(aria-hidden='true')
         span.sr-only Next
-    //
-      Marketing messaging and featurettes
-      ==================================================
-    // Wrap the rest of the page in another container to center all the content.
     .container.marketing
       // Three columns of text below the carousel
       .row
         .col-lg-4
-          img.rounded-circle(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', alt='Generic placeholder image', width='140', height='140')
-          h2 Heading
+          //img.rounded-circle(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', alt='Generic placeholder image', width='140', height='140')
+          i.fa.fa-book.fa-5x.text-muted
+          h2 Educators
+          p Ximera lets you write documents in LaTeX and post them as interactive activities online for your students.
+          p By relying on GitHub to store content, you can easily share activities with your colleagues.          
           p
-            | Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna.
-          p
-            a.btn.btn-secondary(href='#', role='button') View details »
+            a.btn.btn-secondary(href='/about/faq', role='button') View details »
         // /.col-lg-4
         .col-lg-4
-          img.rounded-circle(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', alt='Generic placeholder image', width='140', height='140')
-          h2 Heading
+          //img.rounded-circle(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', alt='Generic placeholder image', width='140', height='140')
+          i.fa.fa-pencil.fa-5x.text-muted          
+          h2 Students
+          p Ximera brings the classroom to you, wherever you are.
+          p You can use your favorite device to study math anywhere, anytime.
           p
-            | Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.
-          p
-            a.btn.btn-secondary(href='#', role='button') View details »
+            a.btn.btn-secondary(href='/about/faq', role='button') View details »
         // /.col-lg-4
         .col-lg-4
-          img.rounded-circle(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', alt='Generic placeholder image', width='140', height='140')
-          h2 Heading
+          //img.rounded-circle(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', alt='Generic placeholder image', width='140', height='140')
+          i.fa.fa-flask.fa-5x.text-muted                    
+          h2 Researchers
+          p Ximera computes statistics on student success, such as point biserials.
+          p By creating branches in GitHub, you can quickly run A/B tests on student performance.
           p
-            | Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
-          p
-            a.btn.btn-secondary(href='#', role='button') View details »
-        // /.col-lg-4
-      // /.row
+            a.btn.btn-secondary(href='/about/faq', role='button') View details »
+            
       // START THE FEATURETTES
       hr.featurette-divider
       .row.featurette
