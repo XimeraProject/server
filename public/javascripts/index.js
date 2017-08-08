@@ -1,31 +1,39 @@
 $(function() {
+    var callout = $("#myCarousel");
+    
+    callout.css('background','black');
 
-    $('.callout').css('background','black');
-
+    
+    /*
     var waypoint = new Waypoint({
 	element: document.getElementById('convert'),
 	handler: function(direction) {
 	    $("#convert").fadeUp();
 	}
     });
+    */
+
+    callout.children().css('z-index',2000);
     
-    
-    for (var i = 0; i < 50; i++) {
-	$('.callout').append('<div class="eks">X</div>');
+    for (var i = 0; i < 25; i++) {
+	callout.append('<div class="eks">X</div>');
     }
 
+    callout.css('overflow', 'hidden');
+    
     $( '.eks' ).each(function( index ) {
 	
 	function start( element ) {
-	    var width = $('.callout').width();
-	    var height = $('.callout').outerHeight();
+	    var width = callout.width();
+	    var height = callout.outerHeight();
 	    
 	    $(element).css({
 		position: 'absolute',
+		color: 'white',
 		fontSize: 200 + 0.5 * Math.random() * height,
 		fontWeight: 800,
 		opacity: 0.15 + 0.10 * Math.random(),
-		zIndex: 0,
+		zIndex: 1000,
 		'-webkit-user-select': 'none',
 		'-moz-user-select': 'none',
 		'-ms-user-select': 'none',

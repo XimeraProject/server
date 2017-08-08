@@ -1,53 +1,107 @@
 extends layouts/main
 
 block content
-  .callout
-     .container
-       .row
-         .col-md-12
-           h1 <span style="font-weight: 200;">The</span> <span style="font-weight: 700;">Ximera</span> <span style="font-weight: 200;">Project</span>
-       .row
-         .col-md-12
-           h2 Open courses.
-           a.btn.btn-primary.btn-lg.pull-right(href="/course/mooculus/calculus1") View Calculus One           
-           h2 Free math.
+    #myCarousel.carousel.slide(data-ride='carousel')
+      ol.carousel-indicators
+        li.active(data-target='#myCarousel', data-slide-to='0')
+        li(data-target='#myCarousel', data-slide-to='1')
+        li(data-target='#myCarousel', data-slide-to='2')
+      .carousel-inner(role='listbox')
+        .carousel-item.active
+          //img.first-slide(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', alt='First slide')
+          .container
+            .carousel-caption.d-none.d-md-block.text-left
+              h1 Example headline.
+              p
+                | Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+              p
+                a.btn.btn-lg.btn-primary(href='#', role='button') Sign up today
+        .carousel-item
+          //img.second-slide(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', alt='Second slide')
+          .container
+            .carousel-caption.d-none.d-md-block
+              h1 Another example headline.
+              p
+                | Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+              p
+                a.btn.btn-lg.btn-primary(href='#', role='button') Learn more
+        .carousel-item
+          //img.third-slide(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', alt='Third slide')
+          .container
+            .carousel-caption.d-none.d-md-block.text-right
+              h1 One more for good measure.
+              p
+                | Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+              p
+                a.btn.btn-lg.btn-primary(href='#', role='button') Browse gallery
+      a.carousel-control-prev(href='#myCarousel', role='button', data-slide='prev')
+        span.carousel-control-prev-icon(aria-hidden='true')
+        span.sr-only Previous
+      a.carousel-control-next(href='#myCarousel', role='button', data-slide='next')
+        span.carousel-control-next-icon(aria-hidden='true')
+        span.sr-only Next
+    //
+      Marketing messaging and featurettes
+      ==================================================
+    // Wrap the rest of the page in another container to center all the content.
+    .container.marketing
+      // Three columns of text below the carousel
+      .row
+        .col-lg-4
+          img.rounded-circle(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', alt='Generic placeholder image', width='140', height='140')
+          h2 Heading
+          p
+            | Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna.
+          p
+            a.btn.btn-secondary(href='#', role='button') View details »
+        // /.col-lg-4
+        .col-lg-4
+          img.rounded-circle(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', alt='Generic placeholder image', width='140', height='140')
+          h2 Heading
+          p
+            | Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.
+          p
+            a.btn.btn-secondary(href='#', role='button') View details »
+        // /.col-lg-4
+        .col-lg-4
+          img.rounded-circle(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', alt='Generic placeholder image', width='140', height='140')
+          h2 Heading
+          p
+            | Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
+          p
+            a.btn.btn-secondary(href='#', role='button') View details »
+        // /.col-lg-4
+      // /.row
+      // START THE FEATURETTES
+      hr.featurette-divider
+      .row.featurette
+        .col-md-7
+          h2.featurette-heading
+            | First featurette heading. 
+            span.text-muted It'll blow your mind.
+          p.lead
+            | Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.
+        .col-md-5
+          img.featurette-image.img-fluid.mx-auto(data-src='holder.js/500x500/auto', alt='Generic placeholder image')
+      hr.featurette-divider
+      .row.featurette
+        .col-md-7.push-md-5
+          h2.featurette-heading
+            | Oh yeah, it's that good. 
+            span.text-muted See for yourself.
+          p.lead
+            | Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.
+        .col-md-5.pull-md-7
+          img.featurette-image.img-fluid.mx-auto(data-src='holder.js/500x500/auto', alt='Generic placeholder image')
+      hr.featurette-divider
+      .row.featurette
+        .col-md-7
+          h2.featurette-heading
+            | And lastly, this one. 
+            span.text-muted Checkmate.
+          p.lead
+            | Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.
+        .col-md-5
+          img.featurette-image.img-fluid.mx-auto(data-src='holder.js/500x500/auto', alt='Generic placeholder image')
 
-  .container
-    .row
-      .col-md-4
-        a.giant-badge(href="/about/who#educators")
-          <i class="fa fa-4x fa-book"></i>
-          h3 For Educators
-          p Ximera lets you write documents in LaTeX and post them as interactive activities online for your students.
-          p By relying on GitHub to store content, you can easily share activities with your colleagues.
-      .col-md-4
-        a.giant-badge(href="/about/who#students")
-          <i class="fa fa-4x fa-pencil"></i>
-          h3 For Students
-          p Ximera brings the classroom to you, wherever you are.
-          p You can use your favorite device to study math anywhere, anytime.
-      .col-md-4
-        a.giant-badge(href="/about/who#researchers")
-          <i class="fa fa-4x fa-flask"></i>
-          h3 For Researchers 
-          p Ximera computes statistics on student success, such as point biserials.
-          p By creating branches in GitHub, you can quickly run A/B tests on student performance.
 
-    hr.frontpage
-    h3.text-center.frontpage#convert Convert LaTeX to Interactive Activities
-    .row
-       .col-md-12
-         p.text-center Ximera converts LaTeX source into interactive, online activities for your students.
-    .row
-      .col-md-5
-        script(type="syntaxhighlighter",class="brush: latex; gutter: false;")
-          include sample.tex
-      .col-md-2
-         h4.text-center(style="padding-top: 9em;") is transformed into
-      .col-md-5
-        div(style="padding-top: 1em;")
-          img.img-responsive.img-thumbnail(src="/public/images/mockup/sample.png")
-
-    hr.frontpage
-    h3.text-center.frontpage Sign up for the Ximera mailing list
-    p.text-center If you are interested in finding out more about Ximera, interested in the <a href="/about/workshop">upcoming workshop</a>, or if you are interested in using Ximera in your own classroom, please <a href="/about/contact">contact us</a> at <a href="mailto:ximera@math.osu.edu">ximera@math.osu.edu</a>.
