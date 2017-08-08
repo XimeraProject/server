@@ -1,4 +1,5 @@
 lib-cov
+ecosystem.config.js
 private_key.pem
 *.seed
 *.log

@@ -373,7 +373,7 @@ function addUserImplicitly(req, res, next) {
     // BADBAD: i also need to serve pngs and pdfs and such from the repo here
 
     app.get( '/:repository/:path/lti.xml',
-	     redirectUnnormalizeRepositoryName,	     	     
+	     redirectUnnormalizeRepositoryName,
 	     page.activitiesFromRecentCommitsOnMaster,
 	     page.ltiConfig );
     
@@ -385,7 +385,7 @@ function addUserImplicitly(req, res, next) {
 
 	app.get( '/users/:masqueradingUserId/:repository/:path(' + regexp + ')',
 		 normalizeRepositoryName,
-		 page.activitiesFromRecentCommitsOnMaster,		 		 
+		 page.activitiesFromRecentCommitsOnMaster,		 
 		 callback );	
     };
 
@@ -400,15 +400,15 @@ function addUserImplicitly(req, res, next) {
 	     page.activitiesFromRecentCommitsOnMaster,
 	     page.source );
     
-    /*
     app.get( '/users/:masqueradingUserId/:repository/:path(*)',
-	     supervising.findUser,
-	     page.recentCommitsOnMaster, page.findPossibleActivityFromCommits,
+	     //supervising.findUser,
+	     remember,
+	     redirectUnnormalizeRepositoryName,	     	     
+	     page.activitiesFromRecentCommitsOnMaster,
 	     page.chooseMostRecentBlob,
-	     page.fetchMetadataFromActivity,
-	     page.parseActivity,
-	     page.render );    
-    */
+	     parallel([page.fetchMetadataFromActivity,
+		       page.parseActivity]),
+	     page.renderWithETag );
 
     function parallel(middlewares) {
 	return function (req, res, next) {
