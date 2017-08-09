@@ -150,7 +150,8 @@ height: auto;
 @import "latex";
 @import "push-down-footer";
 
+/* Pictures shouldn't be so big that they can't be seen on the screen */
 .image-environment img {
-    max-width: 75vw;
-    max-height: 75vh;
+    max-width: 60vw;
+    max-height: 60vh;
 }
