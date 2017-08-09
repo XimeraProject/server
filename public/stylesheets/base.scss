@@ -150,3 +150,7 @@ height: auto;
 @import "latex";
 @import "push-down-footer";
 
+.image-environment img {
+    max-width: 75vw;
+    max-height: 75vh;
+}
