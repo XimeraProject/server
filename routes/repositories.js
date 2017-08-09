@@ -40,8 +40,9 @@ function invalidateRepositoryCache(repositoryName) {
 		  function (err, items) {
 		      if (err) {
 		      } else {
-			  client.unlink(items);
-			  client.unlink("activities:" + repositoryName);
+			  // BADBAD: it'd be better if this were not blocking
+			  client.del(items);
+			  client.del("activities:" + repositoryName);
 		      }
 		  });
 };
@@ -93,6 +94,8 @@ exports.git = function(req, res) {
 		} else {
 		    invalidateRepositoryCache( repositoryName );
 
+		    console.log( service );
+		    
 		    var ps = spawn(service.cmd, service.args.concat(dir));
 		    ps.stdout.pipe(service.createStream()).pipe(ps.stdin);
 		}
