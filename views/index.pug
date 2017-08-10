@@ -1,6 +1,8 @@
 extends layouts/main
 
 block content
+    - var LaTeX = '<span class="other-latex">L<sup>a</sup>T<sub>e</sub>X</span>';
+    - var TeX = '<span class="tex">T<sub>e</sub>X</span>';
     #myCarousel.carousel.slide(data-ride='carousel')
       ol.carousel-indicators
         li.active(data-target='#myCarousel', data-slide-to='0')
@@ -23,8 +25,8 @@ block content
           //img.second-slide(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', alt='Second slide')
           .container
             .carousel-caption.d-none.d-md-block
-              h1 Convert <span class="other-latex">L<sup>a</sup>T<sub>e</sub>X</span> to HTML
-              p Use <code>xake</code> to convert your own <span class="tex">T<sub>e</sub>X</span> documents into interactive computer-graded worksheets.
+              h1 Convert !{LaTeX} to HTML
+              p Use <code>xake</code> to convert your own #{TeX} documents into interactive computer-graded worksheets.
               p
                 a.btn.btn-lg.btn-primary(href='https://github.com/ximeraproject/xake', role='button') 
                   i.fa.fa-download
@@ -53,7 +55,7 @@ block content
           //img.rounded-circle(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', alt='Generic placeholder image', width='140', height='140')
           i.fa.fa-book.fa-5x.text-muted
           h2 Educators
-          p Ximera lets you write documents in <span class="other-latex">L<sup>a</sup>T<sub>e</sub>X</span> and post them as interactive activities online for your students.
+          p Ximera lets you write documents in !{LaTeX} and post them as interactive activities online for your students.
           p By relying on GitHub to store content, you can easily share activities with your colleagues.          
           p
             a.btn.btn-secondary(href="https://github.com/mooculus/calculus", role='button') View GitHub »
@@ -81,31 +83,32 @@ block content
       .row.featurette
         .col-md-7
           h2.featurette-heading
-            | First featurette heading. 
-            span.text-muted It'll blow your mind.
+            | Write once.  Share everywhere. 
+            span.text-muted One source file for both PDF and HTML.
           p.lead
-            | Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.
+            | Write in !{LaTeX} using the <a href="https://github.com/ximeraproject/ximeralatex">Ximera document class</a>.  You can print your document for your own students, or share your document with the world as an online interactive activity.  Authoring in !{LaTeX} combines the power of professional typesetting with modern web technoligy, and while retaining the stability of a tried and true language.
         .col-md-5
-          img.featurette-image.img-fluid.mx-auto(data-src='holder.js/500x500/auto', alt='Generic placeholder image')
+          img.featurette-image.img-fluid.mx-auto(src=versionPath('/public/images/photos/tablet-and-book.jpg'))
       hr.featurette-divider
       .row.featurette
         .col-md-7.push-md-5
           h2.featurette-heading
-            | Oh yeah, it's that good. 
-            span.text-muted See for yourself.
+            | Join the community. 
+            span.text-muted Ximera makes it easy to collaborate.
           p.lead
-            | Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.
+            | Each year, Ohio State holds a <a href="/about/workshop">Ximera Workshop</a>.  This workshop is for both novices and experts.  Novices learn how to use Ximera to make their own content, and experts extend the capabilities of the platform.  
         .col-md-5.pull-md-7
-          img.featurette-image.img-fluid.mx-auto(data-src='holder.js/500x500/auto', alt='Generic placeholder image')
+          img.featurette-image.img-fluid.mx-auto(src=versionPath('/public/images/photos/workshop.jpg'))
       hr.featurette-divider
       .row.featurette
         .col-md-7
           h2.featurette-heading
-            | And lastly, this one. 
-            span.text-muted Checkmate.
+            | Release v1.0 
+            span.text-muted at the 2018 Joint Mathematics Meetings.
           p.lead
-            | Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.
+            | The Ximera Team will be announcing the v1.0 release of Ximera at a <a href="http://jointmathematicsmeetings.org/meetings/national/jmm2018/2197_program_friday.html#2197:WEBSIGIA">WEB SIGMAA lecture at the 2018 Joint Mathematics Meetings.</a>  The lecture is Friday, January 12, 2018 from 6pm - 6:50pm in San Diego, California.
         .col-md-5
-          img.featurette-image.img-fluid.mx-auto(data-src='holder.js/500x500/auto', alt='Generic placeholder image')
+          img.featurette-image.img-fluid.mx-auto(src=versionPath('/public/images/photos/san-diego.jpg'))
+          span.small.text-muted <a href="https://commons.wikimedia.org/w/index.php?curid=26089903">Photo</a> by <a href="//commons.wikimedia.org/wiki/User:Bgag" title="User:Bgag">Bernard Gagnon</a> released under <a href="http://creativecommons.org/licenses/by-sa/3.0" title="Creative Commons Attribution-Share Alike 3.0">CC BY-SA 3.0</a>
 
 
