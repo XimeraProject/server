@@ -71,9 +71,10 @@ We want to stop when the index reaches the end of the list of environments. */
       counter-increment: $counterToIncrement;
 
       border: 1px solid hsl(hue($colorOfClass),$theoremEnvironmentSaturation,$theoremEnvironmentLightness);      
+      border-left: 12px solid hsl(hue($colorOfClass),$theoremEnvironmentSaturation,$theoremEnvironmentLightness);      
       
       /*These are the things that are common to all environments. */
-      padding-left: 24px;
+      padding-left: 12px;
       padding-right: 24px;
       
       margin-top: 12pt;
@@ -84,19 +85,14 @@ We want to stop when the index reaches the end of the list of environments. */
 
    }
 
-   /* This produces the lovely colored bar on the right hand side. */
-   /* It's ::after because I already used ::before for the environment name. */
+   /* Various things get floated inside problem environments, and we don't want floats to float outside their containers */
    .#{$nameOfClass}::after {
-       z-index: 1;
-       content: "";
-       position: absolute;
-       display: inline;
-       left: 0px;
-       top: 0px;
-       bottom: 0px;
-       width: 12px;
-       background-color: hsl(hue($colorOfClass),$theoremEnvironmentSaturation,$theoremEnvironmentLightness);
-   } 
+       content: "."; 
+       visibility: hidden; 
+       display: block; 
+       height: 0; 
+       clear: both;
+   }
    
    .#{$nameOfClass}::before {
       /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */

@@ -1,0 +1,32 @@
+.hint {
+      color: gray;
+      margin-left: 1em;
+}
+
+.btn-reveal-hint {
+    float: right;
+    clear: right;
+    margin-bottom: 1em;
+    margin-left: 0.5em;
+    
+    /* Sometimes mathjax elements cover up the hint collapse button */
+    z-index: 1;
+    position: relative;
+}
+
+.btn-hint-collapse i {
+    transition-duration: 0.2s;
+    transition-property: transform;
+}
+
+.btn-hint-collapse {
+    float: right;
+    // clear: right;
+    margin: 0.25em;
+    margin-right: 0;
+    
+    /* Sometimes mathjax elements cover up the hint collapse button */
+    z-index: 1;
+    position: relative;
+}
+
