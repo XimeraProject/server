@@ -1,7 +1,7 @@
 {
   "name": "ximera",
   "description": "Ximera interactive textbook server",
-  "version": "0.0.67",
+  "version": "0.0.68",
   "private": true,
   "scripts": {
     "start": "node app.js",
@@ -98,7 +98,6 @@
     "uuid": "^3.1.0",
     "validator": "4.5.0",
     "versionator": "^2.0.0",
-    "waypoints": "^4.0.1",
     "winston": "1.0.1",
     "xxhash": "^0.2.4",
     "xxhashjs": "^0.2.1"

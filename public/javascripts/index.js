@@ -3,19 +3,9 @@ $(function() {
     
     callout.css('background','black');
 
-    
-    /*
-    var waypoint = new Waypoint({
-	element: document.getElementById('convert'),
-	handler: function(direction) {
-	    $("#convert").fadeUp();
-	}
-    });
-    */
-
     callout.children().css('z-index',50);
     
-    for (var i = 0; i < 25; i++) {
+    for (var i = 0; i < 30; i++) {
 	callout.append('<div class="eks">X</div>');
     }
 
