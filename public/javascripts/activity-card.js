@@ -4,20 +4,19 @@ var gradebook = require('./gradebook');
 
 var completions = $.Deferred();
 
+var users = require('./users');
+
 $(function() {
     // Load the completion data
-    var userId = $('[data-user]').attr('data-user');
-    
-    if (userId) {
+    users.me().then( function(user) {
 	$.ajax({
-	    url: '/users/' + userId + '/completions' + '?' + (new Date().getTime().toString()),
+	    url: '/users/' + user._id + '/completions' + '?' + (new Date().getTime().toString()),
 	    type: 'GET',
 	    success: function( result ) {
 		completions.resolve( result );
 	    }	    
 	});
-    }
-    
+    });
 });
 
 var displayProgress = function( card, progress ) {

@@ -4,8 +4,8 @@ block title
   #{title}
   
 block content
- .container
-  div.row
+  main.container(data-user-id=person._id)
+   .row
     .col-md-12
       form.form-horizontal(method="post",action=`/users/${person._id}`)
         div.card.my-2

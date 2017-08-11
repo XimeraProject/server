@@ -20,7 +20,8 @@ var activity = require('./activity');
 var mathAnswer = require('./math-answer');
 var ProgressBar = require('./progress-bar');
 
-var userProfile = require('./user/profile');
+var userProfile = require('./profile');
+var users = require('./users');
 var StickyScroll = require('./sticky-scroll' );
 
 var xourse = require('./xourse');

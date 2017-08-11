@@ -103,12 +103,12 @@ exports.parseActivity = function(req,res,next) {
 exports.renderWithETag = function(req, res, next) {
     var activity = req.activity;
 
-    var etag = 'sha:' + activity.hash + ";user:" + req.user._id;
+    var etag = 'sha:' + activity.hash;
     
     ETag.checkIfNoneMatch( req, res, etag,
 			   function( setETag ) {
 			       setETag(res);
-			       res.set('Cache-Control', 'must-revalidate, max-age=600');
+			       res.set('Cache-Control', 'public, max-age=3600');
 			       exports.render( req, res, next );
 			   } );
 };
@@ -277,7 +277,7 @@ exports.serve = function( mimetype ){
 					   file.data = blob;
 					   res.contentType( mimetype );
 					   setETag( res );	
-					   res.set('Cache-Control', 'public, max-age=600');	
+					   res.set('Cache-Control', 'public, max-age=3600');	
 					   res.end( blob, 'binary' );		
 				       })
 				       .catch( function(err) {

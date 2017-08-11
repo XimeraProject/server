@@ -50,7 +50,7 @@ var updateAllRelativeDates = function() {
 };
 
 $(document).ready(function() {
-    /*
+    /* BADBAD: probably should bring back the datepicker someday
     $("#datepicker").datetimepicker({
 	format: "MMMM D, YYYY",
 	icons: {
@@ -63,6 +63,11 @@ $(document).ready(function() {
 	}
     });
      */
+
+    var userId = $('main.container').attr('data-user-id');
+
+    if (!userId)
+	return;
     
     // Update all dates
     updateAllRelativeDates();

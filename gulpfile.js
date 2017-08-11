@@ -43,7 +43,13 @@ var options = {
 	[babelify, {
 	    global: true,
 	    ignore: /\/node_modules\/(?!syntaxhighlighter|brush-)/,
-	    presets: ["es2015"]
+	    "presets": [
+		["env", {
+		    "targets": {
+			"browsers": ["last 2 versions", "safari >= 7"]
+		    }
+		}]
+	    ]
 	}]
     ],
     extensions: ['.js'],

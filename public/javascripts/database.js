@@ -219,6 +219,11 @@ function synchronizePageWithDatabase() {
 }
 
 $(document).ready(function() {
+    var activityHash = findActivityHash();
+
+    if (!activityHash)
+	return;
+    
     try {
 	socket = io.connect();
     } catch (err) {

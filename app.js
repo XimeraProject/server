@@ -136,16 +136,6 @@ passport.deserializeUser(function(id, done) {
    });
 });
 
-function addUserImplicitly(req, res, next) {
-    if ('user' in req)
-	res.locals.user = req.user;
-    else {
-	res.locals.user = req.user = {};
-    }
-    
-    next();
-}
-
     app.version = require('./package.json').version;
 
     function redirectUnnormalizeRepositoryName( req, res, next ) {
@@ -218,7 +208,6 @@ function addUserImplicitly(req, res, next) {
     app.use(passport.session());
     
     app.use(guests.middleware);
-    app.use(addUserImplicitly);
     
     ////////////////////////////////////////////////////////////////
     // Landing page and associated routes

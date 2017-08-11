@@ -43,7 +43,12 @@ function hasPermissionToEdit( viewer, viewee ) {
 
 
 
-exports.getCurrent = function(req, res){
+exports.getCurrent = function(req, res, next){
+    if (req.accepts('html')) {
+	res.redirect(302, '/users/' + req.user._id );
+	return;
+    }
+    
     if (!req.user) {
 	res.json(0);
 	return;
@@ -51,7 +56,7 @@ exports.getCurrent = function(req, res){
 
     if (req.user.email)
 	req.user.gravatar = crypto.createHash('md5').update(req.user.email).digest("hex");
-
+    
     if (req.user.googleOpenId) req.user.googleOpenId = "token";
     if (req.user.courseraOAuthId) req.user.courseraOAuthId = "token";
     if (req.user.githubId) req.user.githubId = "token";

@@ -6,11 +6,13 @@ LaTeX to online interactive materials.
 
 To set up a server on arch, one can as root
 ```
-pacman -S nodejs npm git mongodb nginx
+pacman -S nodejs npm git mongodb nginx redis
 systemctl enable mongodb
 systemctl start mongodb
 systemctl enable nginx
 systemctl start nginx
+systemctl enable redis
+systemctl start redis
 ```
 and then as a regular user
 ```

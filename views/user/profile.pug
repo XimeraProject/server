@@ -51,15 +51,16 @@ mixin displayBridge(bridge)
   
 block content
   include ../modals/confirm-deletion
-  .container
-    div.row
+  main.container(data-user-id=person._id)
+    div.row.mt-3
       .col-sm-3
         .card
           if person.imageUrl
             img.card-img-top.img-fluid(src=person.imageUrl)
           else
-            a.img-fluid(href=`http://www.gravatar.com/${person.gravatar}`)
-              img.card-img-top.img-fluid(src=`https://secure.gravatar.com/avatar/${person.gravatar}.jpg?d=retro&s=160`)
+            if person.gravatar
+              a.img-fluid(href=`http://www.gravatar.com/${person.gravatar}`)
+                img.card-img-top.img-fluid(src=`https://secure.gravatar.com/avatar/${person.gravatar}.jpg?d=retro&s=160`)
           .card-block
             if person.displayName && person.displayName.length > 0
               .card-title #{person.displayName}
