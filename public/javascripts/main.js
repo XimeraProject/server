@@ -21,7 +21,6 @@ var mathAnswer = require('./math-answer');
 var ProgressBar = require('./progress-bar');
 
 var userProfile = require('./user/profile');
-var MailingList = require('./mailing-list' );
 var StickyScroll = require('./sticky-scroll' );
 
 var xourse = require('./xourse');
