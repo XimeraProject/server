@@ -354,8 +354,6 @@ function addLmsAccount(req, identifier, profile, done) {
 		if (profile.lis_result_sourcedid)
 		    hash.lisResultSourcedid = profile.lis_result_sourcedid;		
 
-		console.log(hash.untilDate);
-		
 		bridge = new mdb.LtiBridge(hash);
 	    }
 
