@@ -306,15 +306,10 @@ function addLmsAccount(req, identifier, profile, done) {
 	    
 	    if (bridge) {
 		// update the bridge, roles, etc.
-		bridge.roles = roles;
-		bridge.dueDate = profile.custom_due_at;
-		bridge.pointsPossible = profile.custom_canvas_assignment_points_possible;
-		bridge.untilDate = profile.custom_lock_at;
-		bridge.lisResultSourcedid = profile.lis_result_sourcedid;
 		
 	    } else {
 		// make a new bridge
-		bridge = new mdb.LtiBridge({
+		var hash = {
 		    ltiId: identifier,
 		    
 		    toolConsumerInstanceGuid: profile.tool_consumer_instance_guid,
@@ -324,13 +319,9 @@ function addLmsAccount(req, identifier, profile, done) {
 		    contextTitle: profile.context_title,
 		    
 		    resourceLinkId: profile.resource_link_id,
-                    dueDate: profile.custom_due_at,
-                    untilDate: profile.custom_lock_at,
-		    pointsPossible: profile.custom_canvas_assignment_points_possible,
 		    
 		    oauthConsumerKey: profile.oauth_consumer_key,
 		    oauthSignatureMethod: profile.oauth_signature_method,
-		    lisResultSourcedid: profile.lis_result_sourcedid,
 		    lisOutcomeServiceUrl: profile.lis_outcome_service_url,
 
 		    instructionalStaff: instructionalStaff,
@@ -338,9 +329,21 @@ function addLmsAccount(req, identifier, profile, done) {
 		    repository: profile.custom_repository,
 		    path: profile.custom_xourse,		    
 		    
-                    user: req.user._id,
-		    roles: roles
-		});
+                    user: req.user._id
+		};
+
+		if (roles)
+		    bridge.roles = roles;
+		if (profile.custom_due_at)
+		    bridge.dueDate = profile.custom_due_at;
+		if (profile.custom_canvas_assignment_points_possible)
+		    bridge.pointsPossible = profile.custom_canvas_assignment_points_possible;
+		if (profile.custom_lock_at) 
+		    bridge.untilDate = profile.custom_lock_at;
+		if (profile.lis_result_sourcedid)
+		    bridge.lisResultSourcedid = profile.lis_result_sourcedid;		
+
+		bridge = new mdb.LtiBridge(hash);
 	    }
 
 	    bridge.save(function(err) {
