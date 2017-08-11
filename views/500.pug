@@ -5,6 +5,10 @@ block title
 
 block content
   .container
-    h1.text-center I am so sorry.
-    h3.text-center An internal server error has occurred.
-    p.text-center #{message}
+    .row.d-flex.align-items-center.justify-content-around
+      div.mt-5
+        h1(style="font-size: 100pt;") 500
+        h1.text-muted I am so sorry.
+      div.mt-5
+        h3 An internal server error has occurred.
+        p #{message}

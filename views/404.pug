@@ -5,6 +5,11 @@ block title
 
 block content
   .container
-    h1.text-center I am so sorry.
-    h3.text-center That page does not exist.
-    p.text-center I could not find the page <code>#{url}</code> but we will look into the cause of this error.
+    .row.d-flex.align-items-center.justify-content-around
+      div.mt-5
+        h1(style="font-size: 100pt;") 404
+        h1.text-muted I am so sorry.
+      div.mt-5
+        h3 The page you want could not be found.
+        p I could not find the page <code>#{url}</code> but I will look into the cause of this error.
+        

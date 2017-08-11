@@ -21,6 +21,7 @@ describe('the current user', function () {
     before(function(done){
 	session
 	    .get('/users/me')
+            .set('Accept', 'application/json')
 	    .expect(200, function(err, res) {
 		user = res.body;
 		done();
@@ -65,6 +66,7 @@ describe('the current user', function () {
     it('can be retrieved a second time', function (done) {
 	session
 	    .get('/users/me')
+            .set('Accept', 'application/json')		
 	    .expect(200, function(err, res) {
 		user = res.body;
 		done();

@@ -341,6 +341,10 @@ exports.mostRecentMetadata = function(req, res, next) {
 	    next();	    
 	})
 	.catch( function(err) {
-	    next(err);
+	    // Missing pages fall through
+	    if (err.code == 'ENOENT')
+		next(null);
+	    else
+		next(err);
 	});
 };

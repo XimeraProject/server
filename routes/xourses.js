@@ -2,6 +2,11 @@
 
 exports.index = function(req, res, next) {
     var xourses = [];
+
+    if (req.repositoryMetadata === undefined) {
+	next(null);
+	return;
+    }
     
     Object.keys(req.repositoryMetadata.xourses).forEach( function(xoursePath) {
 	var x = req.repositoryMetadata.xourses[xoursePath];

@@ -508,6 +508,7 @@ passport.deserializeUser(function(id, done) {
 	if (res.headersSent) {
 	    return next(err);
 	}
+
 	res.render('500', {
 	    message: err
 	});
