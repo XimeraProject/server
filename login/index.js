@@ -7,6 +7,7 @@ var GoogleStrategy = require('passport-google-openidconnect').Strategy
   , mdb =  require('../mdb')
   , config =  require('../config')
   , githubApi = require('github')
+  , moment = require('moment')
   , path = require('path');
 
 module.exports.githubStrategy = function(rootUrl) {
@@ -306,7 +307,17 @@ function addLmsAccount(req, identifier, profile, done) {
 	    
 	    if (bridge) {
 		// update the bridge, roles, etc.
-		
+		if (roles)
+		    bridge.roles = roles;
+		if ((profile.custom_due_at) && (moment(profile.custom_due_at).isValid()))
+                    bridge.dueDate = profile.custom_due_at;
+		if (profile.custom_canvas_assignment_points_possible)
+                    bridge.pointsPossible = profile.custom_canvas_assignment_points_possible;
+		if ((profile.custom_lock_at) && (moment(profile.custom_lock_at).isValid()))
+                    bridge.untilDate = profile.custom_lock_at;
+		if (profile.lis_result_sourcedid)	
+                    bridge.lisResultSourcedid = profile.lis_result_sourcedid;
+
 	    } else {
 		// make a new bridge
 		var hash = {
@@ -334,15 +345,17 @@ function addLmsAccount(req, identifier, profile, done) {
 
 		if (roles)
 		    hash.roles = roles;
-		if (profile.custom_due_at)
+		if ((profile.custom_due_at) && (moment(profile.custom_due_at).isValid()))
 		    hash.dueDate = profile.custom_due_at;
 		if (profile.custom_canvas_assignment_points_possible)
 		    hash.pointsPossible = profile.custom_canvas_assignment_points_possible;
-		if (profile.custom_lock_at) 
+		if ((profile.custom_lock_at) && (moment(profile.custom_lock_at).isValid()))
 		    hash.untilDate = profile.custom_lock_at;
 		if (profile.lis_result_sourcedid)
 		    hash.lisResultSourcedid = profile.lis_result_sourcedid;		
 
+		console.log(hash.untilDate);
+		
 		bridge = new mdb.LtiBridge(hash);
 	    }
 
