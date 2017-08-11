@@ -39,6 +39,7 @@ var express = require('express')
   , methodOverride = require('method-override')
   , errorHandler = require('errorhandler')
   , sendSeekable = require('send-seekable')
+  , versionator = require('versionator')
   ;
 
 // Some filters for Pug; admittedly, Pug comes with its own Markdown
@@ -168,10 +169,10 @@ function addUserImplicitly(req, res, next) {
     
     ////////////////////////////////////////////////////////////////
     // API endpoints for the xake tool
-    
+
     var limiter = new rateLimit({
 	windowMs: 15*60*1000, // 15 minutes 
-	max: 100, // limit each IP to 100 requests per windowMs 
+	max: config.rateLimit, // limit each IP to 100 requests per windowMs 
 	delayMs: 0 // disable delaying - full speed until the max limit is reached 
     });
 
@@ -195,11 +196,23 @@ function addUserImplicitly(req, res, next) {
 
     ////////////////////////////////////////////////////////////////
     // Static content    
-    
-    //app.use(versionator.middleware);
-    app.use('/public', express.static(path.join(__dirname, 'public')));
-    app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
-    //app.locals.versionPath = versionator.versionPath;
+
+    versionator = versionator.createBasic('v' + app.version);
+    app.locals.versionPath = function(url) {
+	if (url.match(/^\/public\//)) {
+	    return url.replace(/^\/public\//, '/public/v' + app.version + '/' );
+	}
+	return url;
+	if (url.match(/^\/node_modules\//)) {
+	    return url.replace(/^\/node_modules\//, '/node_modules/v' + app.version + '/' );
+	}
+	return url;	
+    };
+    app.use('/public', versionator.middleware);
+    app.use('/public', express.static(path.join(__dirname, 'public'), {maxAge: '1y'}));;
+    app.use('/node_modules', versionator.middleware);    
+    app.use('/node_modules', express.static(path.join(__dirname, 'node_modules'), {maxAge: '1y'}));
+
 
     app.use(passport.initialize());
     app.use(passport.session());
@@ -341,24 +354,6 @@ function addUserImplicitly(req, res, next) {
 		res.redirect('/');
 	}
     });
-
-    ////////////////////////////////////////////////////////////////
-    // State storage    
-    
-    var state = require('./routes/state.js')(null);
-    app.get('/state/:activityHash', state.get);
-    app.put('/state/:activityHash', state.put);
-    app.delete('/state/:activityHash', state.remove);
-
-    app.put('/completion/:activityHash', state.completion);
-    app.get('/users/:id/completions', state.getCompletions);
-
-    app.get( '/:repository/:path(*)/gradebook',
-	     normalizeRepositoryName,
-	     gradebook.record );
-    app.put( '/:repository/:path(*)/gradebook',
-	     normalizeRepositoryName,
-	     gradebook.record );    
     
     ////////////////////////////////////////////////////////////////
     // Activity page rendering
@@ -417,7 +412,41 @@ function addUserImplicitly(req, res, next) {
 	    }, next);
 	};
     }    
+        
+    // SVG files will only be rendered if they are sent with content type image/svg+xml
     
+    app.locals.moment = require('moment');
+    app.locals._ = require('underscore');
+    app.locals.config = config;
+    app.locals.version = app.version;
+
+    // Start HTTP server for fully configured express App.
+    var server = http.createServer(app);
+
+    // Connect up to socket.io
+    var ios = require('socket.io-express-session');
+    var io = require('socket.io')(server, {
+    });
+    io.use(ios(theSession, cookieParser(config.session.secret)));
+
+    ////////////////////////////////////////////////////////////////
+    // State storage    
+    
+    var state = require('./routes/state.js')(io);
+    app.get('/state/:activityHash', state.get);
+    app.put('/state/:activityHash', state.put);
+    app.delete('/state/:activityHash', state.remove);
+
+    app.put('/completion/:activityHash', state.completion);
+    app.get('/users/:id/completions', state.getCompletions);
+
+    app.get( '/:repository/:path(*)/gradebook',
+	     normalizeRepositoryName,
+	     gradebook.record );
+    app.put( '/:repository/:path(*)/gradebook',
+	     normalizeRepositoryName,
+	     gradebook.record );    
+
     // Instructors should be based around a context instead?
     app.get( '/:repository/:path/instructors',
 	     redirectUnnormalizeRepositoryName,	     	     
@@ -439,22 +468,7 @@ function addUserImplicitly(req, res, next) {
     app.get( '/:repository',
 	     redirectUnnormalizeRepositoryName,	     	     
 	     page.mostRecentMetadata,
-	     xourses.index );
-    
-    // SVG files will only be rendered if they are sent with content type image/svg+xml
-    
-    app.locals.Color = require('color');
-    app.locals.moment = require('moment');
-    app.locals._ = require('underscore');
-    app.locals.config = config;
-    app.locals.version = app.version;
-
-    // Start HTTP server for fully configured express App.
-    var server = http.createServer(app);
-    
-    var ios = require('socket.io-express-session');
-    var io = require('socket.io')(server);
-    io.use(ios(theSession, cookieParser(config.session.secret)));
+	     xourses.index );    
     
     if(!module.parent){
         server.listen(app.get('port'), function(stream){
@@ -463,14 +477,7 @@ function addUserImplicitly(req, res, next) {
     }
     
     io.on('connection', function (socket) {
-	// join to room and save the room name
-	socket.on('join room', function (room) {
-	    socket.join(room);
-	});
-	
-	socket.on('send', function (data) {
-	    socket.sockets.emit('message', data);
-	});
+	/*
 	
 	socket.on('activity', function (activityHash) {
 	    var userId = socket.handshake.session.guestUserId;
@@ -480,20 +487,19 @@ function addUserImplicitly(req, res, next) {
 	    socket.join(activityHash + '/' + userId);
 	});
 	
-	/*
-	  socket.on('persistent-data', function (data) {
-	  var userId = socket.handshake.session.guestUserId;
-	  if (socket.handshake.session.passport) {
-	  userId = socket.handshake.session.passport.userId || userId;
-	  }
-	  
-	  if (socket.handshake.session.userdata)
-	  socket.handshake.session.userdata = socket.handshake.session.userdata + 1;
-	  else
-	  socket.handshake.session.userdata = 0;
-	  
-	  socket.to(data.activityHash + '/' + userId).emit('persistent-data', data);
-	  });
+	socket.on('persistent-data', function (data) {
+	    var userId = socket.handshake.session.guestUserId;
+	    if (socket.handshake.session.passport) {
+		userId = socket.handshake.session.passport.userId || userId;
+	    }
+	    
+	    if (socket.handshake.session.userdata)
+	      socket.handshake.session.userdata = socket.handshake.session.userdata + 1;
+	    else
+		socket.handshake.session.userdata = 0;
+	    
+	    socket.to(data.activityHash + '/' + userId).emit('persistent-data', data);
+	});
 	*/
     });
     
