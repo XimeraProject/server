@@ -11,8 +11,9 @@ $modal-sm:                    400px;
 // A lot of buttons pulsate
 @import "pulsate";
 
-// Use Font Awesome to replace the glypicons from bootstrap
-@import "/node_modules/font-awesome/css/font-awesome.min.css";
+// Font-awesome includes its own cache busting code
+$fa-font-path:        '/node_modules/font-awesome/fonts/';
+@import "./node_modules/font-awesome/scss/font-awesome.scss";
 
 /* The theorem environments live in theorems.scss. If you add more
 theorem environments to ximera.cls, you should tell theorems.scss

@@ -206,14 +206,14 @@ exports.chooseMostRecentBlob = function(req, res, next) {
 
     var shas = Object.keys(req.query);
     var sha = null;
-    
+
     if (shas.length > 0) {
 	sha = shas[0];
 	activities = activities.filter( function(activity) { return activity.sourceSha == sha; });
     }
     
     async.waterfall(
-	[
+	[		
 	    function(callback) {
 		// There may be duplicates here because the same
 		// activity can appear in multiple commits
@@ -251,8 +251,16 @@ exports.chooseMostRecentBlob = function(req, res, next) {
 		if (activities[0].activityHash != activity.activityHash) {
 		    activity.freshestCommit = activities[0].sourceSha;
 		}
-		
-		callback( null, activity );
+
+		// store empty state for it so the next time we visit
+		// the page, we'll go to this sha
+		mdb.State.update({activityHash: activity.activityHash, user: req.user._id},
+				 {$setOnInsert: {data: {}}}, {upsert: true},
+				 function (err, affected, raw) {
+				     console.log("stored state for " + activity.activityHash );
+				     console.log("affected = " + JSON.stringify(affected) );
+				     callback( err, activity );				     
+				 });
 	    },
 	], function(err, activity) {
 	    if (err) {

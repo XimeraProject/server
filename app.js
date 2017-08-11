@@ -192,9 +192,8 @@ passport.deserializeUser(function(id, done) {
 	if (url.match(/^\/public\//)) {
 	    return url.replace(/^\/public\//, '/public/v' + app.version + '/' );
 	}
-	return url;
 	if (url.match(/^\/node_modules\//)) {
-	    return url.replace(/^\/node_modules\//, '/node_modules/v' + app.version + '/' );
+	    return url.replace(/^\/node\_modules\//, '/node_modules/v' + app.version + '/' );
 	}
 	return url;	
     };
