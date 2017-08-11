@@ -25,8 +25,6 @@ module.exports = function(io) {
 		}
 	    }
 	    
-	    winston.info( "heard 'watch' for userId = " + userId );
-	    
 	    socket.userId = userId;
 	    socket.activityHash = activityHash;
 	    
@@ -168,17 +166,6 @@ module.exports = function(io) {
 	}
     };
     
-    exports.remove = function(req, res) {
-	if (!req.user) {
-            res.status(500).send("");
-	}
-	else {
-            mdb.State.update({activityHash: req.params.activityHash, user: req.user._id}, {$set: {data: {}}}, {upsert: true}, function (err, affected, raw) {
-		res.json({ok: true});
-            });
-	}
-    }
-
 
     return exports;
 };
