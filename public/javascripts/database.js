@@ -47,19 +47,29 @@ $.fn.extend({ activityPath: function() {
 }});
 
 
-var differentialSynchronization = _.debounce( function( userId ) {
-    if (!socket) return;
-    
+function differentialSynchronization() {
+    if ((!socket) || (!(socket.connected))) {
+	$(SAVE_WORK_BUTTON_ID).children('span').not('#work-saved-error').hide();
+	$(SAVE_WORK_BUTTON_ID).children('#work-saved-error').show();
+	saveButtonOnlyGrows();    
+	
+	return;
+    }
+
     var delta = jsondiffpatch.diff( SHADOW, DATABASE );
     
     if (delta !== undefined) {
+	$(SAVE_WORK_BUTTON_ID).children('span').not('#work-saving').hide();
+	$(SAVE_WORK_BUTTON_ID).children('#work-saving').show();
+	saveButtonOnlyGrows();    
+	
 	socket.emit( 'patch', delta, checksumObject(SHADOW) );
 	
 	SHADOW = jsondiffpatch.clone(DATABASE);
     }
+}
 
-    clickSaveWorkButton();    
-}, 1000);
+var differentialSynchronizationDebounced = _.debounce( differentialSynchronization, 1000 );
 
 var findRepositoryName = _.memoize( function( element ) {
     if ($(element).hasClass('activity'))
@@ -132,7 +142,7 @@ $.fn.extend({
 		// Trigger a remote update
 		module.exports.commit();
 		element.trigger( 'ximera:database' );
-		differentialSynchronization( null );
+		differentialSynchronizationDebounced();
 	    }
 	});
 	
@@ -158,7 +168,7 @@ $.fn.extend({
 	_.defer( function() {    
 	    module.exports.commit();
 	    element.trigger( 'ximera:database' );
-	    differentialSynchronization( null );
+	    differentialSynchronizationDebounced();
 	});
 	
 	return this;
@@ -217,34 +227,35 @@ $(document).ready(function() {
     }
 
     socket.emit( 'watch', null, findActivityHash() );
-
-    socket.on( 'initial-sync', function(remoteDatabase) {
-	SHADOW = {};
-	DATABASE = {};
-	
-	_.each( remoteDatabase,
-		function( database, identifier, list ) {
-		    SHADOW[identifier] = jsondiffpatch.clone(database);
-		    
-		    // It's possible that, for some reason, I've
-		    // already made changes to the database, so I
-		    // just want to merge in the remote
-		    if (identifier in DATABASE)
-			_.extend( DATABASE[identifier], database );
-		    else {
-			DATABASE[identifier] = database;
-		    }
-		});
-
-	synchronizePageWithDatabase();
-
-	_.each( fetcherCallbacks, function(callback) {
-	    callback(DATABASE);
-	});
-    });    
     
+    socket.on('reconnect', function () { 
+	socket.emit( 'watch', null, findActivityHash() );
+    });
+
     socket.on( 'sync', function(remoteDatabase) {
 	SHADOW = jsondiffpatch.clone(remoteDatabase);
+
+	if (DATABASE === undefined) {
+	    DATABASE = {};
+	
+	    _.each( remoteDatabase,
+		    function( database, identifier, list ) {
+			// It's possible that, for some reason, I've
+			// already made changes to the database, so I
+			// just want to merge in the remote
+			if (identifier in DATABASE)
+			    _.extend( DATABASE[identifier], database );
+			else {
+			    DATABASE[identifier] = database;
+			}
+		    });
+	    
+	    synchronizePageWithDatabase();
+
+	    _.each( fetcherCallbacks, function(callback) {
+		callback(DATABASE);
+	    });
+	}
     });    
     
     socket.on( 'out-of-sync', function() {
@@ -257,6 +268,24 @@ $(document).ready(function() {
     
     socket.on( 'have-differential', function() {
 	wantDifferential();
+    });
+
+    socket.on( 'disconnect', function(err) {
+	$(SAVE_WORK_BUTTON_ID).children('span').not('#work-saved-error').hide();
+	$(SAVE_WORK_BUTTON_ID).children('#work-saved-error').show();
+	saveButtonOnlyGrows();    
+    });
+    
+    socket.on( 'patched', function(err) {
+	if (err) {
+	    $(SAVE_WORK_BUTTON_ID).children('span').not('#work-saved-error').hide();
+	    $(SAVE_WORK_BUTTON_ID).children('#work-saved-error').show();
+	    saveButtonOnlyGrows();    
+	} else {
+	    $(SAVE_WORK_BUTTON_ID).children('span').not('#work-saved').hide();
+	    $(SAVE_WORK_BUTTON_ID).children('#work-saved').show();
+	    saveButtonOnlyGrows();
+	}
     });
     
     socket.on( 'patch', function( delta, checksum ) {
@@ -272,13 +301,8 @@ $(document).ready(function() {
 	} else {
 	    jsondiffpatch.patch(SHADOW, delta);
 	}
-
-	// differentialSynchronization( userId );
     });
 });		
-
-////////////////////////////////////////////////////////////////
-// Code for the "save button" is below
 
 // No need to confirm with the user to delete work---that happens via a Bootstrap Modal
 var clickResetWorkButton = function() {
@@ -294,43 +318,13 @@ var clickResetWorkButton = function() {
 	    });
 
     synchronizePageWithDatabase();
-    
-    differentialSynchronization( null );
-};
-
-// Animate the process of saving the database to the server
-var clickSaveWorkButton = function() {
-    $(SAVE_WORK_BUTTON_ID).children('span').not('#work-saving').hide();
-    $(SAVE_WORK_BUTTON_ID).children('#work-saving').show();
-
-    saveButtonOnlyGrows();
-
-    module.exports.save(function(err){
-	if (err) {
-	    throw "Could not save database.";
-	}
-
-	$(SAVE_WORK_BUTTON_ID).children('span').not('#work-saved').hide();
-	$(SAVE_WORK_BUTTON_ID).children('#work-saved').show();
-
-	saveButtonOnlyGrows();
-    });
+    differentialSynchronization();
 };
 
 // After the document loads, every 7000 milliseconds, make sure the database is saved.
 $(document).ready(function() {
     activityHash = findActivityHash();
-    /*
-    window.setInterval(function(){
-	clickSaveWorkButton();
-    }, 7000);
-    */
     
-    /*
-    window.setInterval(function(){
-	differentialSynchronization( null, activityHash );	
-    }, 500);
-    */
     window.onbeforeunload = function() {
 	// Before the page disappears, let's test to see if there is unsaved data
 	if (jsondiffpatch.diff( SHADOW, DATABASE ) !== undefined) {
@@ -338,7 +332,7 @@ $(document).ready(function() {
 	}
     };
     
-    $(SAVE_WORK_BUTTON_ID).click( clickSaveWorkButton );
+    $(SAVE_WORK_BUTTON_ID).click( differentialSynchronization );
     $(RESET_WORK_BUTTON_ID).click( clickResetWorkButton );
 });
 

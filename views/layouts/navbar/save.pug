@@ -1,5 +1,8 @@
 if activity                                
   button.btn.btn-primary.mx-1(type="button", id="save-work-button")
+    span(style="display: none;", id="work-saved-error")
+      | <i class="fa fa-exclamation-triangle"></i> 
+      span.hidden-md-down &nbsp;Failed
     span(style="display: none;", id="work-saved")
       | <i class="fa fa-save"></i> 
       span.hidden-md-down &nbsp;Saved!      

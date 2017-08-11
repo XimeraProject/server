@@ -38,7 +38,7 @@ module.exports = function(io) {
 		if (err || (!state))
 		    state = {data: {}};
 		socket.shadow = state.data;
-		socket.emit('initial-sync', state.data);
+		socket.emit('sync', state.data);
 	    });
 	});
 
@@ -121,6 +121,8 @@ module.exports = function(io) {
 		}
 		
 		mdb.State.update({activityHash: activityHash, user: userId}, {$set: {data: data}}, {upsert: true}, function (err, affected, raw) {
+		    socket.emit('patched', err);
+		    
 		    // tell other people in the room that we have a differential if they want it
 		    socket.broadcast.to(socket.activity).emit('have-differential');
 		});
