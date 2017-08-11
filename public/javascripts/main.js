@@ -25,7 +25,6 @@ var MailingList = require('./mailing-list' );
 var StickyScroll = require('./sticky-scroll' );
 
 var xourse = require('./xourse');
-var navigation = require('./navigation');
 var imageEnvironment = require('./image-environment');
 
 var youtube = require('./youtube');
