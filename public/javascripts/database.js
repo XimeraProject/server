@@ -377,4 +377,3 @@ $(document).ready(function() {
     $(RESET_WORK_BUTTON_ID).click( clickResetWorkButton );
 });
 
-

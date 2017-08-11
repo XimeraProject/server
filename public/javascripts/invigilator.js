@@ -183,6 +183,7 @@ function shuffle(array) {
 }
 
 $(function() {
+    return;
     var a = $("#theActivity");
     activity.commit = a.attr('data-commit');
     activity.locator = a.attr('data-locator');    
