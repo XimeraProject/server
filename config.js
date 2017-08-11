@@ -41,6 +41,8 @@ config.root = process.env.ROOT_URL || ('http://localhost:' + config.port);
 
 config.logging = false;
 
+config.rateLimit = 1000;
+
 config.gpg               = {};
 config.gpg.home          = process.env.GNUPGHOME || (path.join(__dirname, 'gnupg'));
 config.repositories      = {};
