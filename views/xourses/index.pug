@@ -4,8 +4,13 @@ block title
   | #{repositoryName}
   
 block content
- .container
-   div.row
+  div.container.mt-5
+    .row.p-2
+      h1(role="banner") #{repositoryName}
+  .container.ml-5.p-5
      for xourse in xourses
-       h1 
-         a(href=`/${repositoryName}/${xourse.path}`) #{xourse.title}
+       div.row
+         h2 
+           a(href=`/${repositoryName}/${xourse.path}`) #{xourse.title}
+       if xourses.indexOf(xourse) < xourses.length - 1
+         hr
