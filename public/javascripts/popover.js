@@ -10,6 +10,7 @@ exports.bindPopover = function(element) {
     };
 
     $(element).popover({
+	animation: false,
 	placement: 'right',
 	container: 'body',		
 	//animation: false,
