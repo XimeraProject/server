@@ -108,7 +108,7 @@ exports.renderWithETag = function(req, res, next) {
     ETag.checkIfNoneMatch( req, res, etag,
 			   function( setETag ) {
 			       setETag(res);
-			       res.set('Cache-Control', 'public, max-age=3600');
+			       res.set('Cache-Control', 'private, max-age=3600');
 			       exports.render( req, res, next );
 			   } );
 };
