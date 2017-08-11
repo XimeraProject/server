@@ -1,7 +1,7 @@
 {
   "name": "ximera",
   "description": "Ximera interactive textbook server",
-  "version": "0.0.62",
+  "version": "0.0.63",
   "private": true,
   "scripts": {
     "start": "node app.js",
@@ -83,7 +83,6 @@
     "shipit-cli": "^3.0.0",
     "shipit-deploy": "^2.5.1",
     "shipit-npm": "^0.2.0",
-    "sly": "git://github.com/darsain/sly.git#19c40fe",
     "snappy": "^6.0.0",
     "socket.io": "^2.0.2",
     "socket.io-client": "^2.0.3",
@@ -106,7 +105,6 @@
       "mathjax": "./public/javascripts/mathjax.js",
       "jquery-fullsizable": "./node_modules/jquery-fullsizable/js/jquery-fullsizable.min.js",
       "math-expressions": "./node_modules/math-expressions/lib/math-expressions.js",
-      "sly": "./node_modules/sly/dist/sly.min.js",
       "pagedown-converter": "./node_modules/pagedown-bootstrap/Markdown.Converter.js",
       "pagedown-sanitizer": "./node_modules/pagedown-bootstrap/Markdown.Sanitizer.js",
       "pagedown-editor": "./node_modules/pagedown-bootstrap/Markdown.Editor.js"

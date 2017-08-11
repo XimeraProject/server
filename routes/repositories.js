@@ -41,7 +41,9 @@ function invalidateRepositoryCache(repositoryName) {
 		      if (err) {
 		      } else {
 			  // BADBAD: it'd be better if this were not blocking
-			  client.del(items);
+			  if (items.length > 0)
+			      client.del(items);
+			  
 			  client.del("activities:" + repositoryName);
 		      }
 		  });
@@ -74,6 +76,32 @@ exports.git = function(req, res) {
     var repositoryName = req.params.repository;
     var dir = path.join(gitRepositoriesRoot, repositoryName + '.git');
 
+    if ((req.query) && (req.query.service == 'git-upload-pack')) {
+	req.query = {};
+	req.url = req.url.replace( /\?.*/, '' );
+    }
+    
+    // If they didn't ask for a service, just provide the dumb protocol
+    if ((Object.keys(req.query).length == 0) && (req.method == 'GET')) {
+	if (req.url.match(/^\/objects\/[0-9a-f]{2}\/[0-9a-f]{38}$/) ||
+	    req.url.match(/^\/objects\/pack\/pack-[0-9a-f]{40}.(pack|idx)$/) ||
+	    req.url.match(/^\/objects\/info\/packs$/) ||
+	    req.url.match(/^\/HEAD$/) ||
+	    req.url.match(/^\/info\/refs$/)) {
+	    res.sendFile(path.join(dir + req.url));
+	    return;
+	}
+
+	if (req.url.match(/objects\/info\/http-alternates/)) {
+	    res.status(200).send('');
+	    return;
+	}
+
+	res.sendStatus(500);
+	
+	return;
+    }
+    
     req.pipe(backend(req.url, function(err, service) {
 	if (err) {
 	    console.log("err=",err);
@@ -92,12 +120,36 @@ exports.git = function(req, res) {
 		    console.log( err );
 		    res.status(500).send(err);
 		} else {
-		    invalidateRepositoryCache( repositoryName );
+		    /*
+{ head: '52b5e4474350e7849f289c99380fafe731a289f1',
+  last: '00c30000000000000000000000000000000000000000',
+  refname: 'refs/tags/publications/613cf699885d1e0c4e267ee8f32cb95b41c200cc',
+  ref: 'tags',
+  name: 'publications/613cf699885d1e0c4e267ee8f32cb95b41c200cc',
+  branch: 'publications/613cf699885d1e0c4e267ee8f32cb95b41c200cc' }
 
-		    console.log( service );
+
+{ head: '52b5e4474350e7849f289c99380fafe731a289f1',
+  last: '00c30000000000000000000000000000000000000000',
+  refname: 'refs/tags/publications/613cf699885d1e0c4e267ee8f32cb95b41c200cc',
+  ref: 'tags',
+  name: 'publications/613cf699885d1e0c4e267ee8f32cb95b41c200cc',
+  branch: 'publications/613cf699885d1e0c4e267ee8f32cb95b41c200cc' }
+
+		    */
 		    
 		    var ps = spawn(service.cmd, service.args.concat(dir));
 		    ps.stdout.pipe(service.createStream()).pipe(ps.stdin);
+
+		    ps.on('close', (code) => {
+			// After we've recevied data, we should create the info files
+			spawn("git",
+			      ["update-server-info"],
+			      { cwd: dir });
+
+			// And tell the user that they should reload
+			invalidateRepositoryCache( repositoryName );
+		    });
 		}
 	    });
 	} else {

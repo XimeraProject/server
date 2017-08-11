@@ -433,9 +433,6 @@ function addUserImplicitly(req, res, next) {
     // State storage    
     
     var state = require('./routes/state.js')(io);
-    app.get('/state/:activityHash', state.get);
-    app.put('/state/:activityHash', state.put);
-    app.delete('/state/:activityHash', state.remove);
 
     app.put('/completion/:activityHash', state.completion);
     app.get('/users/:id/completions', state.getCompletions);
