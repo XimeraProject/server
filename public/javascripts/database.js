@@ -25,14 +25,19 @@ var COMPLETIONS = {};
 var completionCallbacks = {};
 
 module.exports.DATABASE = DATABASE;
-    
+
+var wantPageUpdates = [];
+module.exports.onPageUpdate = function(callback) {
+    wantPageUpdates.unshift(callback);
+};
+
 /****************************************************************/
 // At various points in storing page state, we want to refer to the
 // activity by its hash
 var activityHash = undefined;
 
 var findActivityHash = _.memoize( function( ) {
-    return $('main.activity').attr( 'data-activity' );
+    return $('main').attr( 'data-hash' );
 });
 
 $.fn.extend({ activityHash: function() {
@@ -76,7 +81,7 @@ var findRepositoryName = _.memoize( function( element ) {
     if ($(element).hasClass('activity'))
 	return $(element).attr( 'data-repository-name' );
     
-    return $(element).parents( "[data-activity]" ).attr( 'data-repository-name' );
+    return $(element).parents( "[data-hash]" ).attr( 'data-repository-name' );
 });
 
 $.fn.extend({ repositoryName: function() {
@@ -139,7 +144,7 @@ $.fn.extend({
 	
 	// If we change the database...
 	_.defer( function() {
-	    if (jsondiffpatch(db, originalDatabase) !== undefined) {
+	    if (jsondiffpatch.diff(db, originalDatabase) !== undefined) {
 		// Trigger a remote update
 		module.exports.commit();
 		element.trigger( 'ximera:database' );
@@ -195,9 +200,8 @@ function synchronizePageWithDatabase() {
 
 $(document).ready(function() {
     var activityHash = findActivityHash();
-    var xourseHash = $('main.xourse').attr('data-xourse-hash');
     
-    if ((!activityHash) && (!xourseHash))
+    if (!activityHash)
 	return;
     
     try {
@@ -208,10 +212,25 @@ $(document).ready(function() {
     }
 
     socket.emit( 'watch', null, findActivityHash() );
+
+    var repositoryName = $('main').attr('data-repository-name');
+    var filename = $('main').attr('data-path');
+    
+    socket.emit( 'want-commit', repositoryName, filename );
+    socket.on('push', function() {
+	socket.emit( 'want-commit', repositoryName, filename );	
+    });
     
     socket.on('reconnect', function () { 
 	socket.emit( 'watch', null, findActivityHash() );
     });
+
+    socket.on('commit', function (remoteRepositoryName, remoteFilename, commitHash, remoteContentHash) {
+	if (remoteContentHash != activityHash) {
+	    $('#update-version-button').attr('href', window.location.pathname + "?" + commitHash );
+	    $('#pageUpdate').show();
+	}
+    });    
 
     socket.on( 'sync', function(remoteDatabase) {
 	SHADOW = jsondiffpatch.clone(remoteDatabase);
@@ -288,7 +307,6 @@ $(document).ready(function() {
 	_.each( completions, function(c) {
 	    var url = c.repositoryName + '/' + c.activityPath;
 	    var changed = false;
-	    console.log("heard " + c.complete + " about " + url);
 	    if (url in COMPLETIONS) {
 		if (COMPLETIONS[url] < c.complete) {
 		    COMPLETIONS[url] = c.complete;
@@ -301,7 +319,6 @@ $(document).ready(function() {
 
 	    if ((changed) && (completionCallbacks[url])) {
 		_.each( completionCallbacks[url], function(callback) {
-		    console.log("calling back " + url + "with" + c.complete);
 		    callback(c.complete);
 		});
 	    }

@@ -33,7 +33,7 @@ exports.activityHashToActivityObject = function(activityHash) {
     };
 
     // If we are actually talking about the current activity...
-    if (activityHash == $("#theActivity").attr( 'data-activity' )) {
+    if (activityHash == $("#theActivity").attr( 'data-hash' )) {
 	// Then we can grab a bit more information
 	var title = $("#theActivity").attr( 'data-title' );    
 

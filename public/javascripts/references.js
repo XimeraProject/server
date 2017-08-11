@@ -52,7 +52,7 @@ var createReference = function() {
 	    url: "/labels/" + commit + "/" + href,
 	}).done(function(activity) {
 	    // BADBAD: test if I'm on the curent page
-	    if (activity.hash == $("#theActivity").attr('data-activity')) {
+	    if (activity.hash == $("#theActivity").attr('data-hash')) {
 		zoomTo( href );
 	    } else {
 		window.location.href = "/course/" + activity.commit + "/" + activity.path + "#" + href;

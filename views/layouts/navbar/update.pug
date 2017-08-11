@@ -1,3 +1,2 @@
-if activity && (activity.commitUpdated || activity.freshestCommit)
-  button.btn.btn-warning.pulsate.mx-1(type="button",data-toggle="modal", data-target="#updateWarningModal")
-    | <i class="fa fa-level-up"></i> Update
+button.btn.btn-warning.pulsate.mx-1#pageUpdate(type="button",data-toggle="modal", data-target="#updateWarningModal", style="display: none;")
+  | <i class="fa fa-level-up"></i> Update

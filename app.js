@@ -421,7 +421,9 @@ passport.deserializeUser(function(id, done) {
     ////////////////////////////////////////////////////////////////
     // State storage    
     
-    var state = require('./routes/state.js')(io);
+    var state = require('./routes/state.js');
+    state.io = io;
+    io.on( 'connection', state.connection );
 
     app.get( '/:repository/:path(*)/gradebook',
 	     normalizeRepositoryName,
@@ -441,7 +443,7 @@ passport.deserializeUser(function(id, done) {
 
     app.get( '/:repository/:path(*)',
 	     remember,
-	     redirectUnnormalizeRepositoryName,	     	     
+	     redirectUnnormalizeRepositoryName,
 	     page.activitiesFromRecentCommitsOnMaster,
 	     page.chooseMostRecentBlob,
 	     parallel([page.fetchMetadataFromActivity,

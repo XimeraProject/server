@@ -22,6 +22,7 @@ var gitRepositoriesRoot = config.repositories.root;
 // connection to redis (to handle expiry)
 var cachify = require('./cachify');
 var redis = require('redis');
+var state = require('./state');
 
 // create a new redis client and connect to our local redis instance
 var client = redis.createClient();
@@ -45,6 +46,8 @@ function invalidateRepositoryCache(repositoryName) {
 			      client.del(items);
 			  
 			  client.del("activities:" + repositoryName);
+
+			  state.push( repositoryName );
 		      }
 		  });
 };

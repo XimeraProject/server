@@ -2,7 +2,7 @@ var $ = require('jquery');
     
 function announce( hash, answers ) {
     var selector = function(hash, problem, answerable) {
-	return "[data-activity='" + hash + "'] " + "#" + problem + " #" + answerable; 
+	return "[data-hash='" + hash + "'] " + "#" + problem + " #" + answerable; 
     };
     
     Object.keys(answers).forEach( function(problem) {
