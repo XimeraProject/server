@@ -21,6 +21,8 @@ var javascript = require('./javascript');
 
 var connectInteractives = require('./interactives').connectInteractives;
 
+var database = require('./database');
+
 var annotator = require('./annotator');
 
 var createActivity = function() {
@@ -77,28 +79,11 @@ $.fn.extend({
     recordCompletion: function(proportionComplete) {
 	var hash = $(this).activityHash();
 
-	var payload = {complete: proportionComplete};
-	
 	if (hash != undefined) {
 	    var repositoryName = $(this).repositoryName();
-	    if (repositoryName) {
-		payload.repositoryName = repositoryName;
-	    }
-
 	    var activityPath = $(this).activityPath();
-	    if (activityPath) {
-		payload.activityPath = activityPath;
-	    }	    
-	    
-	    $.ajax({
-		url: '/completion/' + hash,
-		type: 'PUT',
-		data: JSON.stringify(payload),
-		contentType: 'application/json',
-		success: function( result ) {
-		    console.log( "recording completion " + JSON.stringify(payload) + " for " + hash );
-		},
-	    });
+
+	    database.setCompletion( repositoryName, activityPath, proportionComplete );
 	}
 
 	return;

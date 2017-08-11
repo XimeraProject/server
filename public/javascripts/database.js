@@ -8,7 +8,6 @@ var async = require('async');
 var io = require('socket.io-client');
 var jsondiffpatch = require('jsondiffpatch');
 
-
 var CANON = require('canon');
 var XXH = require('xxhashjs');
 function checksumObject(object) {
@@ -22,6 +21,8 @@ var RESET_WORK_BUTTON_ID = '#reset-work-button';
 
 var DATABASE = undefined;
 var SHADOW = undefined;
+var COMPLETIONS = {};
+var completionCallbacks = {};
 
 module.exports.DATABASE = DATABASE;
     
@@ -175,32 +176,6 @@ $.fn.extend({
     }
 });
 
-// Upload our local copy (if needed) of the database to the server
-module.exports.save = function(callback) {
-    // No need to save if we agree with the remote
-    if (jsondiffpatch.diff( SHADOW, DATABASE ) === undefined) {
-	callback(null);
-	return;
-    }
-
-    var payload = JSON.stringify( DATABASE );
-    
-    $.ajax({
-	url: '/state/' + activityHash,
-	type: 'PUT',
-	data: JSON.stringify( DATABASE ),
-	contentType: 'application/json',
-	success: function( result ) {
-	    if (result['ok']) {
-		SHADOW = JSON.parse(payload);
-		callback(null);
-	    } else {
-		callback(result);
-	    }
-	}
-    });
-};
-
 var fetcherCallbacks = [];
 
 // activity.js will use this to download the database from the server
@@ -307,7 +282,50 @@ $(document).ready(function() {
 	    jsondiffpatch.patch(SHADOW, delta);
 	}
     });
-});		
+
+    socket.on( 'completions', function(completions) {
+	_.each( completions, function(c) {
+	    var url = c.repositoryName + '/' + c.activityPath;
+	    var changed = false;
+	    console.log("heard " + c.complete + " about " + url);
+	    if (url in COMPLETIONS) {
+		if (COMPLETIONS[url] < c.complete) {
+		    COMPLETIONS[url] = c.complete;
+		    changed = true;
+		}
+	    } else {
+		COMPLETIONS[url] = c.complete;
+		changed = true;		
+	    }
+
+	    if ((changed) && (completionCallbacks[url])) {
+		_.each( completionCallbacks[url], function(callback) {
+		    console.log("calling back " + url + "with" + c.complete);
+		    callback(c.complete);
+		});
+	    }
+	});
+    });
+});
+
+module.exports.setCompletion = function(repositoryName, activityPath, complete) {
+    if ((!socket) || (!(socket.connected))) return;
+
+    socket.emit( 'completion', {repositoryName: repositoryName, activityPath: activityPath, complete: complete} );
+};
+
+module.exports.onCompletion = function(repositoryName, activityPath, callback) {
+    var url = repositoryName + '/' + activityPath;
+    
+    if (!(url in completionCallbacks))
+	completionCallbacks[url] = [];
+
+    completionCallbacks[url].unshift(callback);
+
+    if (COMPLETIONS[url]) {
+	callback(COMPLETIONS[url]);
+    }
+};
 
 // No need to confirm with the user to delete work---that happens via a Bootstrap Modal
 var clickResetWorkButton = function() {

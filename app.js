@@ -423,9 +423,6 @@ passport.deserializeUser(function(id, done) {
     
     var state = require('./routes/state.js')(io);
 
-    app.put('/completion/:activityHash', state.completion);
-    app.get('/users/:id/completions', state.getCompletions);
-
     app.get( '/:repository/:path(*)/gradebook',
 	     normalizeRepositoryName,
 	     gradebook.record );
@@ -461,34 +458,7 @@ passport.deserializeUser(function(id, done) {
 	    console.log('Express server listening on port ' + app.get('port'));
         });		    
     }
-    
-    io.on('connection', function (socket) {
-	/*
-	
-	socket.on('activity', function (activityHash) {
-	    var userId = socket.handshake.session.guestUserId;
-	    if (socket.handshake.session.passport) {
-		userId = socket.handshake.session.passport.userId || userId;
-	    }
-	    socket.join(activityHash + '/' + userId);
-	});
-	
-	socket.on('persistent-data', function (data) {
-	    var userId = socket.handshake.session.guestUserId;
-	    if (socket.handshake.session.passport) {
-		userId = socket.handshake.session.passport.userId || userId;
-	    }
-	    
-	    if (socket.handshake.session.userdata)
-	      socket.handshake.session.userdata = socket.handshake.session.userdata + 1;
-	    else
-		socket.handshake.session.userdata = 0;
-	    
-	    socket.to(data.activityHash + '/' + userId).emit('persistent-data', data);
-	});
-	*/
-    });
-    
+        
     // If nothing else matches, it is a 404
     app.use(function(req, res, next){
         res.status(404).render('404', { status: 404, url: req.url });

@@ -24,13 +24,21 @@ module.exports = function(io) {
 		    userId = socket.handshake.session.passport.user || userId;
 		}
 	    }
+
+	    mdb.Completion.find({user: userId}, { activityPath: 1, repositoryName: 1, complete: 1 }, function (err, completions) {
+		if (!err && completions)
+		    socket.emit('completions', completions);
+	    });
 	    
 	    socket.userId = userId;
 	    socket.activityHash = activityHash;
 	    
 	    var roomName = `/users/${userId}/state/${activityHash}`;
-	    socket.activity = roomName;
+	    socket.activityRoom = roomName;
 	    socket.join( roomName );
+
+	    socket.userRoom = `/users/${userId}`;
+	    socket.join( socket.userRoom );
 
 	    mdb.State.findOne({activityHash: activityHash, user: userId}, function(err, state) {
 		if (err || (!state))
@@ -122,50 +130,36 @@ module.exports = function(io) {
 		    socket.emit('patched', err);
 		    
 		    // tell other people in the room that we have a differential if they want it
-		    socket.broadcast.to(socket.activity).emit('have-differential');
+		    socket.broadcast.to(socket.activityRoom).emit('have-differential');
 		});
+	    });
+	});
+
+	socket.on('completion', function(c) {
+	    var userId = socket.userId;
+	    var activityHash = socket.activityHash;
+	    
+	    if ( (!activityHash) || (!userId) )
+		return;
+
+	    var query = {activityHash: activityHash,
+			 user: userId};
+
+	    if (c.activityPath) {
+		query = {activityHash: activityHash,
+			 activityPath: c.activityPath,
+			 repositoryName: c.repositoryName,
+			 user: userId};
+	    }
+	    
+	    mdb.Completion.update(query, {$set: {complete: c.complete, date: new Date()}}, {upsert: true}, function (err, affected, raw) {
+		// Tell other browsers viewing this user
+		socket.broadcast.to(socket.userRoom).emit('completions', [{activityPath: c.activityPath,
+									   repositoryName: c.repositoryName,
+									   complete: c.complete}]);
 	    });
 	});
     });
 		      
-    exports.completion = function(req, res) {
-	if (!req.user) {
-            res.status(500).send("");
-	}
-	else {
-	    var query = {activityHash: req.params.activityHash,
-			 user: req.user._id};
-
-	    if (req.body.activityPath) {
-		query = {activityHash: req.params.activityHash,
-			 activityPath: req.body.activityPath,
-			 repositoryName: req.body.repositoryName,
-			 user: req.user._id};
-	    }
-
-            mdb.Completion.update(query, {$set: {complete: req.body.complete, date: new Date()}}, {upsert: true}, function (err, affected, raw) {
-		if (err) {
-		    res.status(500).json(err);
-		} else
-		    res.json({ok: true});
-            });
-	}
-    };
-
-    exports.getCompletions = function(req, res) {
-	if (!req.user) {
-	    res.json({});
-	}
-	else {
-	    if (req.user._id.toString() != req.params.id)
-		res.json({});
-	    else
-		mdb.Completion.find({user: req.user._id}, function (err, completions) {
-		    res.json(completions);
-		});
-	}
-    };
-    
-
     return exports;
 };
