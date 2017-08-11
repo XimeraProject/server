@@ -333,15 +333,15 @@ function addLmsAccount(req, identifier, profile, done) {
 		};
 
 		if (roles)
-		    bridge.roles = roles;
+		    hash.roles = roles;
 		if (profile.custom_due_at)
-		    bridge.dueDate = profile.custom_due_at;
+		    hash.dueDate = profile.custom_due_at;
 		if (profile.custom_canvas_assignment_points_possible)
-		    bridge.pointsPossible = profile.custom_canvas_assignment_points_possible;
+		    hash.pointsPossible = profile.custom_canvas_assignment_points_possible;
 		if (profile.custom_lock_at) 
-		    bridge.untilDate = profile.custom_lock_at;
+		    hash.untilDate = profile.custom_lock_at;
 		if (profile.lis_result_sourcedid)
-		    bridge.lisResultSourcedid = profile.lis_result_sourcedid;		
+		    hash.lisResultSourcedid = profile.lis_result_sourcedid;		
 
 		bridge = new mdb.LtiBridge(hash);
 	    }
