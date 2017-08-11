@@ -28,7 +28,7 @@ var createActivity = function() {
 
     //$('.activity-body', this).annotator();
     
-    activity.fetchData( function(db) {
+    activity.fetchData( function() {
 	activity.persistentData( function() {
 	    if (!(activity.persistentData( 'experienced' ))) {
 		TinCan.experience(activity);

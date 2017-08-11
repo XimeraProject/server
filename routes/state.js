@@ -2,7 +2,6 @@ var winston = require('winston');
 var jsondiffpatch = require('jsondiffpatch');
 var mdb = require('../mdb');
 var util = require('util');
-var redis = require('redis');
 var crypto = require('crypto');
 
 var CANON = require('canon');
@@ -11,49 +10,9 @@ function checksumObject(object) {
     return XXHash.hash( Buffer.from(CANON.stringify( object )), 0x1337 ).toString(16);
 }
 
-// create a new redis client and connect to our local redis instance
-var client = redis.createClient();
-// if an error occurs, print it to the console
-client.on('error', function (err) {
-    console.log("Error " + err);
-});
-
 module.exports = function(io) {
     var exports = {};
 
-    ////////////////////////////////////////////////////////////////
-    function differentialSynchronization( userId, activityHash ) {
-	mdb.State.findOne({activityHash: activityHash, user: userId} , function(err, state) {
-	    if (err || (!state))
-		return;
-
-	    var data = state.data;
-	    
-	    var roomName = `/users/${userId}/state/${activityHash}`;
-	    var room = io.sockets.adapter.rooms[roomName];
-	    if (!room) return;
-	    
-	    Object.keys(room.sockets).forEach( function(id) {		
-		var shadowKey = `shadow:${userId}:${activityHash}:${id}`;
-		client.get(shadowKey, function(err, shadowState) {
-		    if (err || (!shadowState))
-			return;
-
-		    shadowState = JSON.parse(shadowState);
-
-		    // Send a diff if needed
-		    var delta = jsondiffpatch.diff(shadowState, data);
-
-		    if (delta !== undefined) {
-			io.to(id).emit('patch', delta, checksumObject( shadowState ) );
-			winston.info( `DS patch for /users/${userId}/state/${activityHash} for socket ${id}` );
-			client.setex(shadowKey, 60*60, JSON.stringify(data) );
-		    }
-		});
-	    });
-	});
-    }
-    
     io.on('connect', function( socket ) {
 
 	socket.on('watch', function(userId, activityHash) {
@@ -72,17 +31,40 @@ module.exports = function(io) {
 	    socket.activityHash = activityHash;
 	    
 	    var roomName = `/users/${userId}/state/${activityHash}`;
+	    socket.activity = roomName;
 	    socket.join( roomName );
 
-	    // do this via the sync commands
-	    var shadowKey = `shadow:${userId}:${activityHash}:${socket.id}`;	    
-	    mdb.State.findOne({activityHash: activityHash, user: userId} , function(err, state) {
-		if (err || (!state)) return;
-		client.setex(shadowKey, 60*60, JSON.stringify(state.data) );
+	    mdb.State.findOne({activityHash: activityHash, user: userId}, function(err, state) {
+		if (err || (!state))
+		    state = {data: {}};
+		socket.shadow = state.data;
 		socket.emit('initial-sync', state.data);
 	    });
 	});
 
+	socket.on('want-differential', function() {
+	    var userId = socket.userId;
+	    var activityHash = socket.activityHash;
+	    
+	    if ( (!activityHash) || (!userId) )
+		return;
+	    
+	    mdb.State.findOne({activityHash: activityHash, user: userId} , function(err, state) {
+		if (err || (!state))
+		    return;
+		
+		var data = state.data;
+		
+		// Send a diff if needed
+		var delta = jsondiffpatch.diff(socket.shadow, data);
+		
+		if (delta !== undefined) {
+		    socket.emit('patch', delta, checksumObject( socket.shadow ) );
+		    socket.shadow = jsondiffpatch.clone(data);		    
+		}
+	    });
+	});
+	
 	// Syncing only updates the shadows
 	socket.on('sync', function(data) {
 	    var userId = socket.userId;
@@ -91,8 +73,7 @@ module.exports = function(io) {
 	    if ( (!activityHash) || (!userId) )
 		return;
 
-	    var shadowKey = `shadow:${userId}:${activityHash}:${socket.id}`;
-	    client.setex(shadowKey, 60*60, JSON.stringify(data) );
+	    socket.shadow = data;
 	});
 	
 	socket.on('out-of-sync', function() {
@@ -102,39 +83,28 @@ module.exports = function(io) {
 	    if ( (!activityHash) || (!userId) )
 		return;
 	    
-	    var shadowKey = `shadow:${userId}:${activityHash}:${socket.id}`;
-	    client.get(shadowKey, function(err, shadowState) {
-		socket.emit('sync',JSON.parse(shadowState));
-	    });
+	    socket.emit('sync', socket.shadow);
 	});
 
-	socket.on('blargh', function() {
-            mdb.State.update({activityHash: activityHash, user: userId},
-			     {$set: {data: data}}, {upsert: true}, function (err, affected, raw) {
-			     });
-	    
-	    mdb.State.findOne({activityHash: activityHash, user: userId}, function(err, document) {
-		if (document) {
-		    // If the document isn't any good, just send an empty hash {}
-		    if (document.data)
-			socket.emit('sync',document.data);
-		    else
-			socket.emit('sync',{});			
-		}
-		else {
-                    // If there is nothing in the database, give the client an empty hash
-		    socket.emit('sync',{});					    
-		}
-            });
-	});
-	
 	socket.on('patch', function(delta, checksum, truth) {
 	    var userId = socket.userId;
 	    var activityHash = socket.activityHash;
 	    
 	    if ( (!activityHash) || (!userId) )
 		return;
-	    
+
+	    // Apply the patch to the shadow
+	    if (checksumObject(socket.shadow) != checksum) {
+		socket.emit( 'out-of-sync' );
+		return;
+	    }
+
+	    // Frankly this should never fail
+	    try {
+		jsondiffpatch.patch(socket.shadow, delta);
+	    } catch (e) {
+	    }
+
 	    // Apply patch to the server state
 	    mdb.State.findOne({activityHash: activityHash, user: userId} , function(err, state) {
 		var data;
@@ -148,53 +118,15 @@ module.exports = function(io) {
 		try {
 		    jsondiffpatch.patch(data, delta);
 		} catch (e) {
-		    console.log("state diff failed");
 		}
 		
 		mdb.State.update({activityHash: activityHash, user: userId}, {$set: {data: data}}, {upsert: true}, function (err, affected, raw) {
-		    // Apply patch to the shadow state
-
-		    // This requiers a WATCH and a MULTI to ensure
-		    // that our diff is atomic;
-		    // cf. https://blog.yld.io/2016/11/07/node-js-databases-using-redis-for-fun-and-profit/
-		    var shadowKey = `shadow:${userId}:${activityHash}:${socket.id}`;
-		    client.get(shadowKey, function(err, shadowState) {
-			if (err || (!shadowState))
-			    shadowState = data;
-			else {
-			    shadowState = JSON.parse(shadowState);
-			    
-			    if (checksumObject(shadowState) != checksum) {
-				console.log( "We are out of sync: "  );
-				console.log( checksumObject(shadowState) );
-				console.log( checksum );
-				console.log( "our shadow = " + JSON.stringify( shadowState ) );
-				console.log( "their shadow = " + JSON.stringify( truth ) );				
-				socket.emit( 'out-of-sync' );				
-			    }
-
-			    // This really shouldn't fail
-			    try {
-				jsondiffpatch.patch(shadowState, delta);
-			    } catch (e) {
-				console.log("SHADOW state diff failed");
-				console.log( "ShadowState = ",
-					     JSON.stringify(shadowState) );
-				console.log( "delta = ",
-					     JSON.stringify(delta) );
-			    }			    
-			}
-			
-			// Store patched shadow
-			client.setex(shadowKey, 60*60, JSON.stringify(shadowState) );
-
-			differentialSynchronization( userId, activityHash );
-		    });
+		    // tell other people in the room that we have a differential if they want it
+		    socket.broadcast.to(socket.activity).emit('have-differential');
 		});
 	    });
 	});
     });
-
 		      
     exports.completion = function(req, res) {
 	if (!req.user) {

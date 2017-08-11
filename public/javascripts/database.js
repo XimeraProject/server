@@ -191,10 +191,14 @@ module.exports.save = function(callback) {
     });
 };
 
-var theCallback = undefined;
+var fetcherCallbacks = [];
+
 // activity.js will use this to download the database from the server
 $.fn.extend({ fetchData: function(callback) {
-    theCallback = callback;
+    if (DATABASE !== undefined)
+	callback(DATABASE);
+    else 
+	fetcherCallbacks.unshift( callback );
 }});
 
 function synchronizePageWithDatabase() {
@@ -233,7 +237,10 @@ $(document).ready(function() {
 		});
 
 	synchronizePageWithDatabase();
-	theCallback( DATABASE );
+
+	_.each( fetcherCallbacks, function(callback) {
+	    callback(DATABASE);
+	});
     });    
     
     socket.on( 'sync', function(remoteDatabase) {
@@ -242,6 +249,14 @@ $(document).ready(function() {
     
     socket.on( 'out-of-sync', function() {
 	socket.emit( 'sync', SHADOW );
+    });
+
+    var wantDifferential = _.debounce( function() {
+	socket.emit( 'want-differential' );
+    }, 100 );
+    
+    socket.on( 'have-differential', function() {
+	wantDifferential();
     });
     
     socket.on( 'patch', function( delta, checksum ) {
