@@ -17,7 +17,8 @@ module.exports = function(io) {
 
 	socket.on('watch', function(userId, activityHash) {
 	    // BADBAD: Need some security here...
-
+	    console.log( "BADBAD: no security checks for " + userId );
+	    
 	    if (userId == null) {
 		userId = socket.handshake.session.guestUserId;
 		if (socket.handshake.session.passport) {
@@ -29,16 +30,19 @@ module.exports = function(io) {
 		if (!err && completions)
 		    socket.emit('completions', completions);
 	    });
-	    
+
 	    socket.userId = userId;
+	    socket.userRoom = `/users/${userId}`;
+	    socket.join( socket.userRoom );
+
+	    if (!activityHash)
+		return;
+	    
 	    socket.activityHash = activityHash;
 	    
 	    var roomName = `/users/${userId}/state/${activityHash}`;
 	    socket.activityRoom = roomName;
 	    socket.join( roomName );
-
-	    socket.userRoom = `/users/${userId}`;
-	    socket.join( socket.userRoom );
 
 	    mdb.State.findOne({activityHash: activityHash, user: userId}, function(err, state) {
 		if (err || (!state))

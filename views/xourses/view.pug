@@ -15,7 +15,7 @@ block content
         span.input-group-addon
           i.fa.fa-search        
   
-    div.card-group(class="xourse", data-commit=xourse.commit, data-points=xourse.totalPoints)
+    main.xourse.card-group(data-commit=xourse.commit, data-xourse-hash=xourse.hash, data-points=xourse.totalPoints)
       for activityUrl in xourse.activityList
         +xourseCard(repositoryName, xourse.path, activityUrl, xourse.activities[activityUrl])
     hr

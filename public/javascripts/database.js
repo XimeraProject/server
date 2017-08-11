@@ -195,8 +195,9 @@ function synchronizePageWithDatabase() {
 
 $(document).ready(function() {
     var activityHash = findActivityHash();
-
-    if (!activityHash)
+    var xourseHash = $('main.xourse').attr('data-xourse-hash');
+    
+    if ((!activityHash) && (!xourseHash))
 	return;
     
     try {
