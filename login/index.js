@@ -380,10 +380,16 @@ function addLmsAccount(req, identifier, profile, done) {
 
 	    if ('user_image' in profile)
 		updates.imageUrl = profile.user_image
-	    
-    	    mdb.User.findOneAndUpdate({_id: bridge.user},
-				      updates,
-				      callback);
+
+	    // Some denormalization is desirable in the user object
+	    // since we often have to determine whether or not someone
+	    // is an instructor in a course
+    	    mdb.LtiBridges.find({user: bridge.user}, function(err, bridges) {
+		
+    		mdb.User.findOneAndUpdate({_id: bridge.user},
+					  updates,
+					  callback);
+	    });
 	}
     ], function(err, result) {
 	if (err)

@@ -29,6 +29,7 @@
     "crypto": "0.0.3",
     "csv": "0.4.6",
     "depcheck": "^0.6.7",
+    "diff-match-patch": "^1.0.0",
     "domino": "1.0.19",
     "dotenv": "^4.0.0",
     "eonasdan-bootstrap-datetimepicker": "4.15.35",

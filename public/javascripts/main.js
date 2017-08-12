@@ -1,11 +1,13 @@
 // bootstrap is expecting a global jQuery object
 var $ = window.$ = window.jQuery = require('jquery');
 
+// jsondiffpatch expects this loaded globally
+window.diff_match_patch = require('diff-match-patch');
+
 require('./cache-bust');
 
 var jqueryUI = require('jquery-ui');
 var jqueryTransit = require('jquery.transit');
-var waypoint = require('waypoints/lib/jquery.waypoints.min.js');
 var tether = require('tether');
 window.Tether = tether;
 var bootstrap = require('bootstrap');

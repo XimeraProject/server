@@ -62,6 +62,8 @@ function differentialSynchronization() {
 	return;
     }
 
+    console.log( "DATABASE =",DATABASE);
+    console.log( "SHADOW =",SHADOW);    
     var delta = jsondiffpatch.diff( SHADOW, DATABASE );
     
     if (delta !== undefined) {
