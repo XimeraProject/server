@@ -24,6 +24,15 @@ $(document).ready(function() {
 	} else {
 	    $('#loginGuest').show();		
 	}
+
+	if (user.instructorRepositoryPaths) {
+	    user.instructorRepositoryPaths.forEach( function(p) {
+		if (window.location.pathname.startsWith( p ))
+		    $('#instructor-view-statistics').show();
+		if (window.location.pathname.startsWith( '/' + p ))
+		    $('#instructor-view-statistics').show();		    
+	    });
+	}
     });
     
 });

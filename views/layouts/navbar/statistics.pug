@@ -1,4 +1,4 @@
 if activity
-  button.btn.mx-1.btn-info(type="button", id="instructor-view-statistics", data-activity-url=repositoryName + '/' + activity.path, data-activity-hash=activity.hash)
+  button.btn.mx-1.btn-info#instructor-view-statistics(type="button", data-activity-url=repositoryName + '/' + activity.path, data-activity-hash=activity.hash,style="display: none;")
     | <i class="fa fa-bar-chart"></i> 
-    span.hidden-md-down &nbsp;Statistics            
+    span.hidden-md-down &nbsp;Statistics

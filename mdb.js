@@ -51,7 +51,8 @@ exports.initialize = function initialize(callback) {
 				      visibility: String,
 				      remoteAddress: String,
                                       isGuest: Boolean,
-                                      isAuthor: Boolean, // BADBAD: this is what permits a user to use xake publish
+                                      isAuthor: Boolean, // BADBAD: this is just for fun -- it's not used anywhere
+				      instructorRepositoryPaths: [String],				      
                                       lastUrlVisited: String,
 				      lastSeen: Date,
 				      instructor: Mixed,

@@ -384,9 +384,29 @@ function addLmsAccount(req, identifier, profile, done) {
 	    // Some denormalization is desirable in the user object
 	    // since we often have to determine whether or not someone
 	    // is an instructor in a course
-    	    mdb.LtiBridges.find({user: bridge.user}, function(err, bridges) {
+    	    mdb.LtiBridge.find({user: bridge.user}, function(err, bridges) {
+		if (!err) {
+		    updates.instructorRepositoryPaths = [];
 		
-    		mdb.User.findOneAndUpdate({_id: bridge.user},
+		    bridges.forEach( function(b) {
+			b.roles.forEach( function(role) {
+			    var isInstructor = false;
+			    console.log(role);
+			    if (role.match(/Instructor/)) isInstructor = true;
+			    if (role.match(/TeachingAssistant/)) isInstructor = true;
+			    if (role.match(/Administrator/)) isInstructor = true;
+			    if (role.match(/ContentDeveloper/)) isInstructor = true;						
+			    
+			    if (isInstructor) {
+				var url = b.repository + "/" + b.path;
+				// Add it if we haven't already
+				if (updates.instructorRepositoryPaths.indexOf(url) < 0)
+				    updates.instructorRepositoryPaths.unshift(url);
+			    }
+			});
+		    });
+		}
+		mdb.User.findOneAndUpdate({_id: bridge.user},
 					  updates,
 					  callback);
 	    });

@@ -31,10 +31,10 @@ mixin displayBridge(bridge)
       if bridge.lisResultSourcedid && bridge.lisOutcomeServiceUrl && bridge.pointsPossible
         | &nbsp;<span class="badge badge-success badge-pill">#{bridge.pointsPossible} points</span>       
     p
-      if bridge.roles.filter( f => f.match( /Instructor/ ) )
+      if bridge.roles.filter( f => f.match( /Instructor/ ) ).length > 0
         <span class="badge badge-default">Instructor</span>&nbsp;            
       else
-        if bridge.roles.filter( f => f.match( /TeachingAssistant/ ) )
+        if bridge.roles.filter( f => f.match( /TeachingAssistant/ ) ).length > 0
           <span class="badge badge-default">Instructor</span>&nbsp;             
         else    
           for role in bridge.roles 
