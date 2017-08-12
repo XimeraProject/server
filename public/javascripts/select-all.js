@@ -7,13 +7,13 @@ var database = require('./database');
 var TinCan = require('./tincan');
 
 
-var buttonTemplate = _.template( '<button class="btn btn-default <%= correct %>" id="<%= id %>"></label>' );
+var buttonTemplate = _.template( '<button class="btn text-left btn-secondary <%= correct %>" id="<%= id %>"></button>' );
 
-var answerHtml = '<div class="btn-group" style="vertical-align: bottom;" aria-live="assertive">' +
+var answerHtml = '<div class="btn-group" style="vertical-align: bottom; " aria-live="assertive">' +
 	'<button class="btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Correct answer!" style="display: none">' +
 	'<i class="fa fa-check"/>&nbsp;Correct' +
 	'</button></div>' +
-	'<div class="btn-group" style="vertical-align: bottom;" aria-live="assertive">' +
+	'<div class="btn-group" style="vertical-align: bottom; " aria-live="assertive">' +
 	'<button class="btn btn-danger btn-ximera-incorrect" data-toggle="tooltip" data-placement="top" title="Incorrect.  Try again!" style="display: none">' +
 	'<i class="fa fa-times"/>&nbsp;Try again' +
 	'</button></div>' +
@@ -45,13 +45,12 @@ var createSelectAll = function() {
     });
 
     selectAll.trigger( 'ximera:answer-needed' );
-    
+
     selectAll.persistentData(function(event) {
 	selectAll.find( 'button').removeClass('active');
 	
 	if (selectAll.persistentData('chosen')) {
 	    selectAll.persistentData('chosen').forEach( function(id) {
-		console.log( id );
 		selectAll.find( '#' + id ).addClass('active');
 	    });
 	    
@@ -108,7 +107,7 @@ var createSelectAll = function() {
 	    if (selectAll.persistentData('correct')) {
 		selectAll.trigger( 'ximera:correct' );
 	    }
-
+	    
 	    TinCan.answer( selectAll, { response: selectAll.persistentData('chosen'),
 					success: selectAll.persistentData('correct') } );
 	}
@@ -116,7 +115,7 @@ var createSelectAll = function() {
     
     $(this).find( ".btn-ximera-submit" ).click( checkAnswer );
     $(this).find( ".btn-ximera-incorrect" ).click( checkAnswer );
-    
+
     $(this).find( "button" ).each( function() {
 	$(this).click( function() {
 	    if (($(this).hasClass('disabled'))) {
@@ -131,13 +130,11 @@ var createSelectAll = function() {
 
 	    if (!chosen)
 		chosen = [];
-	    
+
 	    if (_.contains(chosen, id))
 		selectAll.persistentData('chosen', _.difference( chosen, [id] ) );
 	    else
 		selectAll.persistentData('chosen', _.union( chosen, [id] ) );
-
-	    console.log( selectAll.persistentData('chosen' ) );
 
 	    return false;	    
 	});
