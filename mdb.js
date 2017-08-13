@@ -84,7 +84,7 @@ exports.initialize = function initialize(callback) {
 					   lisResultSourcedid: String,
 					   lisOutcomeServiceUrl: String,
 
-					   instructionalStaff: Boolean,
+					   instructionalStaff: {type: Boolean, index: true},
 					   
 					   repository: {type: String, index: true},
 					   path: {type: String, index: true},					   

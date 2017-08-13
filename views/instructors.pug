@@ -6,25 +6,53 @@ block title
   else
     | Instructors
   
+mixin instructorPanel(instructor)
+  div.media
+    img.d-flex.mr-3(src=instructor.imageUrl)
+    div.media-body
+      h5 #{instructor.name} 
+        if instructor.bridge.roles.filter( f => f.match( /Instructor/ ) ).length > 0
+          <span class="badge badge-default">Instructor</span>&nbsp;            
+        else
+          if instructor.bridge.roles.filter( f => f.match( /TeachingAssistant/ ) ).length > 0
+            <span class="badge badge-default">Instructor</span>&nbsp;             
+          else    
+            for role in instructor.bridge.roles 
+              <span class="badge badge-default">#{role}</span>&nbsp;
+        if instructor.bridge.contextLabel || instructor.bridge.toolConsumerInstanceName
+          small.text-muted &nbsp;
+            if instructor.bridge.contextLabel
+              | #{instructor.bridge.contextLabel}
+            if instructor.bridge.toolConsumerInstanceName
+              | &nbsp;at #{instructor.bridge.toolConsumerInstanceName}
+      a.btn.btn-secondary(href='mailto:' + instructor.email + '?subject=' + subject + '&body=' + body)
+        | <i class="fa fa-envelope"></i>
+        span &nbsp;Send E-Mail
+      
 block content
- .container
-  .page-header
-     h1 Instructional Staff
-       if xourse && xourse.title
-         small &nbsp;for #{xourse.title}
-  div.row
-    nav(aria-label="breadcrumb",role="navigation")
-      ol.breadcrumb
-        li.breadcrumb-item
-          a(href="/" + repositoryName, aria-level=0)
-              | !{repositoryName}
-        if xourse
+  .container
+    div.row.my-3
+      h1 Instructional Staff
+        if xourse && xourse.title
+          small &nbsp;for #{xourse.title}
+    div.row
+      nav(aria-label="breadcrumb",role="navigation")
+        ol.breadcrumb
           li.breadcrumb-item
-            a(href="/" + repositoryName + "/" + xourse.path,aria-level=1)
-              if xourse && xourse.title            
-                | !{xourse.title}
-              else
-                | Xourse
-          li.breadcrumb-item.active(aria-current="page",aria-level=2)
-            | Instructors
-            
+            a(href="/" + repositoryName, aria-level=0)
+                | !{repositoryName}
+          if xourse
+            li.breadcrumb-item
+              a(href="/" + repositoryName + "/" + xourse.path,aria-level=1)
+                if xourse && xourse.title            
+                  | !{xourse.title}
+                else
+                  | Xourse
+            li.breadcrumb-item.active(aria-current="page",aria-level=2)
+              | Instructors
+    div.row
+      if instructors.length == 0
+        p I am afraid that I do not know the names of your instructors.  Please email <a href="mailto:ximera-help@osu.edu">ximera-help@osu.edu</a> and we will try to help you find them.
+      else
+        for instructor in instructors
+          +instructorPanel(instructor)
