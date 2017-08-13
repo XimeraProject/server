@@ -27,6 +27,7 @@ var express = require('express')
   , page = require('./routes/page')
   , keyserver = require('./routes/gpg')
   , hashcash = require('./routes/hashcash')
+  , supervising = require('./routes/supervising')
   , async = require('async')
   , fs = require('fs')
   , favicon = require('serve-favicon' )
@@ -106,6 +107,16 @@ mdb.initialize(function (err) {
 
     console.log( "Session setup." );
 
+    // We may have a default LTI key
+    if (config.ltiAuth) {
+	mdb.KeyAndSecret.update(
+	    {ltiKey: config.lti.key},
+	    {ltiKey: config.lti.key, ltiSecret: config.lti.secret},
+	    {upsert: true},
+	    function(err) {
+	    });
+    }
+    
     if (config.logging) {
 	app.use(expressWinston.logger({
 	    transports: [
@@ -172,6 +183,7 @@ passport.deserializeUser(function(id, done) {
     
     app.get( '/gpg/token/:keyid', keyserver.token );
     app.get( '/gpg/tokens/:keyid', keyserver.token );
+    app.get( '/gpg/secret/:ltiKey/:keyid', keyserver.ltiSecret );
     app.post( '/pks/add', keyserver.add );
 
     app.post( '/:repository.git', normalizeRepositoryName, keyserver.authorization );
@@ -348,7 +360,7 @@ passport.deserializeUser(function(id, done) {
     // Activity page rendering
 
     app.get( '/:repository/:path(*)/certificate',
-	     redirectUnnormalizeRepositoryName,	     
+	     redirectUnnormalizeRepositoryName,
 	     page.activitiesFromRecentCommitsOnMaster,
 	     page.chooseMostRecentBlob,
 	     page.parseActivity,
@@ -367,6 +379,7 @@ passport.deserializeUser(function(id, done) {
 		 page.activitiesFromRecentCommitsOnMaster,
 		 callback );
 
+	// Just ignore masquerades for non-page resources
 	app.get( '/users/:masqueradingUserId/:repository/:path(' + regexp + ')',
 		 normalizeRepositoryName,
 		 page.activitiesFromRecentCommitsOnMaster,		 
@@ -380,20 +393,10 @@ passport.deserializeUser(function(id, done) {
     serveContent( '*.js',  page.serve('text/javascript') );
 
     app.get( '/:repository/:path(*.tex)',
-	     redirectUnnormalizeRepositoryName,	     
+	     redirectUnnormalizeRepositoryName,
 	     page.activitiesFromRecentCommitsOnMaster,
 	     page.source );
     
-    app.get( '/users/:masqueradingUserId/:repository/:path(*)',
-	     //supervising.findUser,
-	     remember,
-	     redirectUnnormalizeRepositoryName,	     	     
-	     page.activitiesFromRecentCommitsOnMaster,
-	     page.chooseMostRecentBlob,
-	     parallel([page.fetchMetadataFromActivity,
-		       page.parseActivity]),
-	     page.renderWithETag );
-
     function parallel(middlewares) {
 	return function (req, res, next) {
 	    async.each(middlewares, function (mw, cb) {
@@ -434,16 +437,25 @@ passport.deserializeUser(function(id, done) {
 
     // Instructors should be based around a context instead?
     app.get( '/:repository/:path/instructors',
-	     redirectUnnormalizeRepositoryName,	     	     
+	     redirectUnnormalizeRepositoryName,
 	     page.activitiesFromRecentCommitsOnMaster,
 	     page.chooseMostRecentBlob,
 	     parallel([page.fetchMetadataFromActivity,
 		       page.parseActivity]),	     
 	     instructors.index );
 
+    app.get( '/users/:masqueradingUserId/:repository/:path(*)',
+	     redirectUnnormalizeRepositoryName,	     	     
+	     supervising.masquerade,
+	     page.activitiesFromRecentCommitsOnMaster,
+	     page.chooseMostRecentBlob,
+	     parallel([page.fetchMetadataFromActivity,
+		       page.parseActivity]),
+	     page.renderWithETag );        
+    
     app.get( '/:repository/:path(*)',
-	     remember,
 	     redirectUnnormalizeRepositoryName,
+	     remember,
 	     page.activitiesFromRecentCommitsOnMaster,
 	     page.chooseMostRecentBlob,
 	     parallel([page.fetchMetadataFromActivity,

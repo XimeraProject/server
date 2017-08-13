@@ -1,10 +1,19 @@
 div#loginUser(style="display: none;")
   li.nav-item.dropdown
     a.nav-link.dropdown-toggle(id="navbarLogin",data-toggle="dropdown",aria-haspopup="true",aria-expanded="false")
-      | <i class="fa fa-user"></i> 
-      span.hidden-md-down#userFirstName Me
+      // If we're masquerading as someone
+      if learner
+        | <i class="fa fa-user-secret"></i> 
+        span.hidden-md-down#userMasqueradingName &ldquo;#{learner.name.split(" ")[0]}&rdquo;
+      else
+        | <i class="fa fa-user"></i> 
+        span.hidden-md-down#userFirstName Me
     div.dropdown-menu.dropdown-menu-right(aria-labelledby="navbarLogin")
+      if learner
+        a.dropdown-item(href=url.replace('users/' + learner._id + '/', '')) <i class='fa fa-user'></i> Stop Pretending
+        div.dropdown-divider        
       a.dropdown-item(href=`/users/me`) <i class='fa fa-cogs'></i> Profile
+      a.dropdown-item(href=`/users/me/assignments`) <i class='fa fa-cogs'></i> Assignments
       a.dropdown-item(href="/logout") <i class='fa fa-sign-out'></i> Logout
 div#loginGuest(style="display: none;")
   li.nav-item.dropdown

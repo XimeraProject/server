@@ -134,6 +134,15 @@ exports.initialize = function initialize(callback) {
 					   keyid: {type: String, index: true},
 					   token: {type: String, index: true}
 				       }));
+
+    exports.KeyAndSecret = mongoose.model("KeyAndSecret",
+					  new mongoose.Schema({
+					      keyid: {type: String, index: true},
+					      ltiKey: {type: String, index: true},
+					      ltiSecret: String,
+					      encryptedSecret: String
+					  }));
+
     
     //mongoose.set('debug', true);    
     

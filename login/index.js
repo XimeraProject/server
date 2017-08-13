@@ -87,8 +87,6 @@ module.exports.localStrategy = function(rootUrl) {
 module.exports.lmsStrategy = function (rootUrl) {
     return new LtiStrategy({
         returnURL: '/just-logged-in',
-        consumerKey: config.lti.key,
-        consumerSecret: config.lti.secret,	
     }, function (req, identifier, profile, done) {
         addLmsAccount(req, identifier, profile, done);
     });

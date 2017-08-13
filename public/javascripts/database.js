@@ -106,7 +106,7 @@ module.exports.get = function(element) {
 
 function saveButtonOnlyGrows() {
   // This is less important when the save button is on the lefthand side
-  // $(SAVE_WORK_BUTTON_ID).css('min-width', $(SAVE_WORK_BUTTON_ID).css('width') );
+  $(SAVE_WORK_BUTTON_ID).css('min-width', $(SAVE_WORK_BUTTON_ID).css('width') );
 }
 
 // Commit some changes to the database (which will propagate them to other instances)
@@ -213,7 +213,9 @@ $(document).ready(function() {
 	socket = { on: function() {}, emit: function() {} };
     }
 
-    socket.emit( 'watch', null, findActivityHash() );
+    var learnerId = $('main').attr( 'data-learner' );
+    
+    socket.emit( 'watch', learnerId, findActivityHash() );
 
     var repositoryName = $('main').attr('data-repository-name');
     var filename = $('main').attr('data-path');

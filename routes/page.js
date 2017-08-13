@@ -123,6 +123,8 @@ exports.render = function(req, res, next) {
 	    xourse.path = xourse.path.replace(/\.html$/,'')
 	}		
 	res.render('xourses/view', { xourse: xourse,
+				     url: req.url,
+				     learner: req.learner,			     
 			       repositoryName: req.repositoryName });
 	return;
     }
@@ -182,6 +184,7 @@ exports.render = function(req, res, next) {
 				 repositoryName: req.repositoryName,
 				 repositoryMetadata: req.repositoryMetadata,
 				 nextActivity: nextActivity,
+				 learner: req.learner,
 				 previousActivity: previousActivity,
 				 url: req.url });		    
 	});
@@ -191,6 +194,7 @@ exports.render = function(req, res, next) {
 	res.render('page', { activity: activity,
 			     repositoryMetadata: req.repositoryMetadata,
 			     repositoryName: req.repositoryName,
+			     learner: req.learner,			     
 			     url: req.url
 			   });
     }
@@ -222,8 +226,12 @@ exports.chooseMostRecentBlob = function(req, res, next) {
 		activityHashes = activityHashes.filter(function(item, pos) {
 		    return activityHashes.indexOf(item) == pos;
 		});
+
+		var userId = req.user._id;
+		if (req.learner)
+		    userId = req.learner._id;
 		
-		mdb.State.find({user: req.user._id, activityHash: { $in: activityHashes }}).exec( callback );
+		mdb.State.find({user: userId, activityHash: { $in: activityHashes }}).exec( callback );
 	    },
 	    function( states, callback ) {
 		var activity = activities[0];
@@ -254,7 +262,11 @@ exports.chooseMostRecentBlob = function(req, res, next) {
 
 		// store empty state for it so the next time we visit
 		// the page, we'll go to this sha
-		mdb.State.update({activityHash: activity.activityHash, user: req.user._id},
+		var userId = req.user._id;
+		if (req.learner)
+		    userId = req.learner._id;
+		
+		mdb.State.update({activityHash: activity.activityHash, user: userId},
 				 {$setOnInsert: {data: {}}}, {upsert: true},
 				 function (err, affected, raw) {
 				     console.log("stored state for " + activity.activityHash );
