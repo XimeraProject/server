@@ -54,19 +54,24 @@ exports.getCurrent = function(req, res, next){
 	return;
     }
 
-    if (req.user.email)
-	req.user.gravatar = crypto.createHash('md5').update(req.user.email).digest("hex");
+    var user = Object.assign({}, req.user.toObject());
     
-    if (req.user.googleOpenId) req.user.googleOpenId = "token";
-    if (req.user.courseraOAuthId) req.user.courseraOAuthId = "token";
-    if (req.user.githubId) req.user.githubId = "token";
-    if (req.user.twitterOAuthId) req.user.twitterOAuthId = "token";
+    if (user.email)
+	user.gravatar = crypto.createHash('md5').update(user.email).digest("hex");
     
-    req.user.apiKey = "";
-    req.user.apiSecret = "";
-    req.user.password = "";
+    if (user.googleOpenId) user.googleOpenId = "token";
+    if (user.courseraOAuthId) user.courseraOAuthId = "token";
+    if (user.githubId) user.githubId = "token";
+    if (user.twitterOAuthId) user.twitterOAuthId = "token";
     
-    res.json(req.user);
+    user.apiKey = "";
+    user.apiSecret = "";
+    user.password = "";
+
+    mdb.LtiBridge.find({user: new mongo.ObjectID(user._id)}, function(err, bridges) {
+	user.bridges = bridges;
+	res.json(user);
+    });
 };
 
 exports.currentProfile = function(req, res){

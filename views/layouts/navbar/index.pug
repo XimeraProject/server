@@ -5,6 +5,7 @@ nav.navbar.sticky-top.navbar-toggleable.navbar-light.bg-faded(role='navigation')
   include brand
   .navbar-collapse.collapse#navbarNav
     ul.navbar-nav
+      include due-date        
       include statistics
       if !landingPage
         include get-help
