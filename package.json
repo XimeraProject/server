@@ -97,6 +97,7 @@
     "tether": "^1.4.0",
     "uint32": "^0.2.1",
     "underscore": "1.8.3",
+    "uniq": "^1.0.1",
     "uuid": "^3.1.0",
     "validator": "4.5.0",
     "versionator": "^2.0.0",

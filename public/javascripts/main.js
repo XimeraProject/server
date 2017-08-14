@@ -36,6 +36,7 @@ var youtube = require('./youtube');
 var instructor = require('./instructor');
 
 var rowclick = require('./rowclick');
+var supervision = require('./supervision');
 
 var references = require('./references');
 var Desmos = require('./desmos');

@@ -257,7 +257,8 @@ passport.deserializeUser(function(id, done) {
     app.put('/users/:id/secret', function( req, res ) { user.putSecret( req, res ); } );
 
     app.delete('/users/:id/bridges/:bridge', function( req, res, next ) { user.deleteBridge( req, res, next ); } );    
-    
+
+    app.get('/supervise', supervising.watch );
     
     ////////////////////////////////////////////////////////////////
     // BADBAD: some permanent redirects for OSU courses from old URLs

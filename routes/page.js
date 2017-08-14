@@ -269,8 +269,6 @@ exports.chooseMostRecentBlob = function(req, res, next) {
 		mdb.State.update({activityHash: activity.activityHash, user: userId},
 				 {$setOnInsert: {data: {}}}, {upsert: true},
 				 function (err, affected, raw) {
-				     console.log("stored state for " + activity.activityHash );
-				     console.log("affected = " + JSON.stringify(affected) );
 				     callback( err, activity );				     
 				 });
 	    },

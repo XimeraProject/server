@@ -1,6 +1,11 @@
 var mdb = require('../mdb');
 var mongo = require('mongodb');
 
+
+exports.watch = function( req, res, next ) {
+    res.render('watch', { user: req.user } );
+}
+
 exports.isInstructorForLearnerInRepository = function( repositoryName, supposedInstructor, supposedLearner, callback ) {
     mdb.LtiBridge.find({user: supposedInstructor._id}, function(err, instructorBridges) {
 	if (err) {
