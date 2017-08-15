@@ -19,14 +19,6 @@ block content
       else
         | Home
 
-  div.container.my-2
-   .input-group.ml-auto.w-25
-        input.form-control(id="xourse-search",type="search",placeholder="Search for...")
-        span.input-group-addon
-          i.fa.fa-search        
-  
-          
-
   div.container  
     main.xourse.card-group(data-commit=xourse.commit, data-hash=xourse.hash, data-points=xourse.totalPoints, data-path=xourse.path, data-repository-name=repositoryName, data-learner=learner ? learner._id : undefined, data-xourse-path=xourse.path)
       for activityUrl in xourse.activityList

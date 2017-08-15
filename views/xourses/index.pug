@@ -10,13 +10,14 @@ block content
 
   .container.ml-5.p-3.d-flex.align-items-start
     for xourse in xourses  
-      .card.m-2.xourse-card(style="width: 30%;")
-        a(href=`/${repositoryName}/${xourse.path}`)
-        if xourse.logo
-          img.card-img-top(src=`${repositoryName}/${xourse.logo}`,style="width: 100%;")
-        else
-          img.card-img-top(style="width: 100%;")        
-        .card-block
-          h4.card-title #{xourse.title}
-          p.card-text !{xourse.abstract}
+      if xourse.title
+        .card.m-2.xourse-card(style="width: 30%;")
+          a(href=`/${repositoryName}/${xourse.path}`)
+          if xourse.logo
+            img.card-img-top(src=`${repositoryName}/${xourse.logo}`,style="width: 100%;")
+          else
+            img.card-img-top(style="width: 100%;")        
+          .card-block
+            h4.card-title #{xourse.title}
+            p.card-text !{xourse.abstract}
 

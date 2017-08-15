@@ -10,10 +10,12 @@ nav.navbar.sticky-top.navbar-toggleable.navbar-light.bg-faded(role='navigation')
       if !landingPage
         include get-help
     ul.navbar-nav.ml-auto
+      if xourse
+        include search
       include save              
       include update    
       include erase    
       include edit
-      if !landingPage
+      if activity
         include progress-bar      
       include login
