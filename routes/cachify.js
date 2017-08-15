@@ -1,7 +1,7 @@
 var redis = require('redis');
 
 // create a new redis client and connect to our local redis instance
-var client = redis.createClient();
+var client = redis.createClient({return_buffers: true});
 
 // if an error occurs, print it to the console
 client.on('error', function (err) {
@@ -35,12 +35,14 @@ exports.string = function( key, f, callback ) {
 	    callback(err);
 	} else {
 	    if (result) {
+		console.log("cached",result);
 		callback( null, result );
 	    } else {
 		f( function(err, result) {
 		    if (err) {
 			callback( err );
 		    } else {
+			console.log("refreshed",result);			
 			client.setex( key, 31557600, result );
 			callback( null, result );
 		    }
