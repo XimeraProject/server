@@ -201,7 +201,6 @@ passport.deserializeUser(function(id, done) {
 
     versionator = versionator.createBasic('v' + app.version);
     app.locals.versionPath = function(url) {
-	return url; // BABAD: Disable this until I can get nginx restarted on the production server
 	if (url.match(/^\/public\//)) {
 	    return url.replace(/^\/public\//, '/public/v' + app.version + '/' );
 	}
