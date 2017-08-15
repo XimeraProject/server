@@ -69,7 +69,7 @@ block content
               .card-title #{person.name}          
           ul.list-group.list-group-flush(data-toggle="tooltip" data-placement="bottom" title=whyVisible)
             if (!(person.visibility )) || (person.visibility == "none")
-              li.list-group-item <i class="fa fa-eye-slash"></i>&nbsp;Visible to&nbsp;<strong>#{person.pronouned}</strong>
+              li.list-group-item <i class="fa fa-eye-slash"></i>&nbsp;Visible to&nbsp;<strong>staff</strong>
             if (person.visibility == "users")
               li.list-group-item <i class="fa fa-eye"></i>&nbsp;Visible to other&nbsp;<strong>learners</strong>
             if (person.visibility == "everyone")

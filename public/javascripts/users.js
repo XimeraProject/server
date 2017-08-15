@@ -51,19 +51,18 @@ $(document).ready(function() {
 
 		if (assignment) {
 		    var dueDate = moment(Date.parse(assignment.dueDate));
-		    
-		    $('#dueDateCountdown').text( dueDate.fromNow() );
-		    $('#dueDate').attr('title', "Due at " + dueDate.format('LLLL') );
-		    $('#dueDate').show();		    
-		    $('#dueDate').tooltip();
-		    
-		    window.setInterval( function() {
+		    if (dueDate.isValid()) {
 			$('#dueDateCountdown').text( dueDate.fromNow() );
-		    }, 1000);
+			$('#dueDate').attr('title', "Due at " + dueDate.format('LLLL') );
+			$('#dueDate').show();		    
+			$('#dueDate').tooltip();
+			
+			window.setInterval( function() {
+			    $('#dueDateCountdown').text( dueDate.fromNow() );
+			}, 1000);
+		    }
 		}
 	    }
 	}
     });
 });
-
-	     

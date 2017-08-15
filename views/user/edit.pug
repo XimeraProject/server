@@ -19,7 +19,7 @@ block content
                 div.btn-group(data-toggle="buttons")
                   label.btn.btn-secondary(class=(person.visibility=="none") ? "active" : "")
                     input(type="radio",name="visibility",id="none",value="none",data-toggle="button",checked=(person.visibility=="none") ? "checked" : "")
-                    | <i class="fa fa-user"></i>&nbsp;Only me
+                    | <i class="fa fa-user"></i>&nbsp;My instructors
                   label.btn.btn-secondary(class=(person.visibility=="users") ? "active" : "")
                     input(type="radio",name="visibility",id="users",value="users",data-toggle="button",checked=(person.visibility=="users") ? "checked" : "")
                     | <i class="fa fa-users"></i>&nbsp;Other learners

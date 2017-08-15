@@ -42,6 +42,11 @@ function parseXourseDocument( $ ) {
     xourse.activityList = [];
     xourse.activities = {};
 
+    // Read logo
+    var logo = $('meta[name="og:image"]').attr('content');
+    if ((logo) && (logo.length > 0))
+	xourse.logo = logo;
+    
     $('.activity').each( function() {
 	$(this).attr('data-weight','1');
     });

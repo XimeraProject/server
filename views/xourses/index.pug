@@ -4,13 +4,19 @@ block title
   | #{repositoryName}
   
 block content
-  div.container.mt-5
-    .row.p-2
-      h1(role="banner") #{repositoryName}
-  .container.ml-5.p-5
-     for xourse in xourses
-       div.row
-         h2 
-           a(href=`/${repositoryName}/${xourse.path}`) #{xourse.title}
-       if xourses.indexOf(xourse) < xourses.length - 1
-         hr
+  ol.breadcrumb
+    li.breadcrumb-item.active
+      | !{repositoryName}
+
+  .container.ml-5.p-3.d-flex.align-items-start
+    for xourse in xourses  
+      .card.m-2.xourse-card(style="width: 30%;")
+        a(href=`/${repositoryName}/${xourse.path}`)
+        if xourse.logo
+          img.card-img-top(src=`${repositoryName}/${xourse.logo}`,style="width: 100%;")
+        else
+          img.card-img-top(style="width: 100%;")        
+        .card-block
+          h4.card-title #{xourse.title}
+          p.card-text !{xourse.abstract}
+

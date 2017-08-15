@@ -18,7 +18,7 @@ nav.dragscroll(aria-label="breadcrumb",role="navigation")
       li.breadcrumb-item
         a(href="/" + repositoryName + "/" + activity.xourse.path + "/" + activity.chapter.href,aria-level=level) !{activity.chapter.title}
     - level = level + 1;                                        
-    li.breadcrumb-item.active(aria-current="page",aria-level=level)                  
+    li.breadcrumb-item.active(aria-current="page",aria-level=level)
       if activity.title
         | !{activity.title}
       else

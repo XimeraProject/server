@@ -69,6 +69,13 @@ about it and choose the background color. */
     height: 100%; width: 100%;
 }
 
+.xourse-card a {
+    z-index: 900;
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%; width: 100%;
+}
+
 // The section title cards are highlighted
 .card-sectionheading {
     background-color: $gray-lighter;
