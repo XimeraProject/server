@@ -30,26 +30,22 @@ mixin instructorPanel(instructor)
         span &nbsp;Send E-Mail
       
 block content
+  nav(aria-label="breadcrumb",role="navigation")
+    ol.breadcrumb
+      li.breadcrumb-item
+        - var level = 1;
+        a(href="/" + repositoryName, aria-level=level)
+            | !{repositoryName}
+      li.breadcrumb-item
+        - level = level + 1;
+        a(href="/" + repositoryName + "/" + xourse.path,aria-level=level)
+          if (xourse.title) && (xourse.title != '')
+            | !{xourse.title}
+          else
+            | Home
+      li.breadcrumb-item.active
+          | Instructional Staff
   .container
-    div.row.my-3
-      h1 Instructional Staff
-        if xourse && xourse.title
-          small &nbsp;for #{xourse.title}
-    div.row
-      nav(aria-label="breadcrumb",role="navigation")
-        ol.breadcrumb
-          li.breadcrumb-item
-            a(href="/" + repositoryName, aria-level=0)
-                | !{repositoryName}
-          if xourse
-            li.breadcrumb-item
-              a(href="/" + repositoryName + "/" + xourse.path,aria-level=1)
-                if xourse && xourse.title            
-                  | !{xourse.title}
-                else
-                  | Xourse
-            li.breadcrumb-item.active(aria-current="page",aria-level=2)
-              | Instructors
     div.row
       if instructors.length == 0
         p I am afraid that I do not know the names of your instructors.  Please email <a href="mailto:ximera-help@osu.edu">ximera-help@osu.edu</a> and we will try to help you find them.

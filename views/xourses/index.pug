@@ -4,9 +4,10 @@ block title
   | #{repositoryName}
   
 block content
-  ol.breadcrumb
-    li.breadcrumb-item.active
-      | !{repositoryName}
+  nav(aria-label="breadcrumb",role="navigation")
+    ol.breadcrumb
+      li.breadcrumb-item.active
+        | !{repositoryName}
 
   .container.ml-5.p-3.d-flex.align-items-start
     for xourse in xourses  

@@ -8,16 +8,17 @@ block modals
   include ../modals/update-xourse
   
 block content
-  ol.breadcrumb
-    li.breadcrumb-item
-      - level = level + 1;
-      a(href="/" + repositoryName, aria-level=level)
-          | !{repositoryName}
-    li.breadcrumb-item.active
-      if (xourse.title) && (xourse.title != '')
-        | !{xourse.title}
-      else
-        | Home
+  nav(aria-label="breadcrumb",role="navigation")
+    ol.breadcrumb
+      li.breadcrumb-item
+        - var level = 1;      
+        a(href="/" + repositoryName, aria-level=level)
+            | !{repositoryName}
+      li.breadcrumb-item.active
+        if (xourse.title) && (xourse.title != '')
+          | !{xourse.title}
+        else
+          | Home
 
   div.container  
     main.xourse.card-group(data-commit=xourse.commit, data-hash=xourse.hash, data-points=xourse.totalPoints, data-path=xourse.path, data-repository-name=repositoryName, data-learner=learner ? learner._id : undefined, data-xourse-path=xourse.path)
