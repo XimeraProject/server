@@ -5,16 +5,29 @@ block title
   | #{xourse.title}
 
 block modals
-                
+  include ../modals/update-xourse
+  
 block content
-  div.container
-    .row.p-2
-      h1(role="banner") #{xourse.title}
-      .input-group.ml-auto.w-25
+  ol.breadcrumb
+    li.breadcrumb-item
+      - level = level + 1;
+      a(href="/" + repositoryName, aria-level=level)
+          | !{repositoryName}
+    li.breadcrumb-item.active
+      if (xourse.title) && (xourse.title != '')
+        | !{xourse.title}
+      else
+        | Home
+
+  div.container.my-2
+   .input-group.ml-auto.w-25
         input.form-control(id="xourse-search",type="search",placeholder="Search for...")
         span.input-group-addon
           i.fa.fa-search        
   
+          
+
+  div.container  
     main.xourse.card-group(data-commit=xourse.commit, data-hash=xourse.hash, data-points=xourse.totalPoints, data-path=xourse.path, data-repository-name=repositoryName, data-learner=learner ? learner._id : undefined, data-xourse-path=xourse.path)
       for activityUrl in xourse.activityList
         +xourseCard(repositoryName, xourse.path, activityUrl, xourse.activities[activityUrl])

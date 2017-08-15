@@ -1,0 +1,14 @@
+.modal.fade#updateWarningModal(tabindex="-1",role="dialog",aria-labelledby="updateWarningModal")
+  .modal-dialog(role="document")
+    .modal-content
+      .modal-header
+        h5(class="modal-title",id="updateModalLabel") Updated Version Available
+        button.close(type="button",data-dismiss="modal",aria-label="Close")
+          span(aria-hidden="true") &times;          
+      .modal-body
+          p There is an updated version of this page.  How would you like to proceed?
+      .modal-footer
+        button.btn.btn-secondary(type="button",data-dismiss="modal")
+          | <i class="fa fa-level-down"></i>&nbsp;Stay with this old version.
+        a.btn.btn-primary#update-version-button(href="#")
+          | <i class="fa fa-level-up"></i>&nbsp;Update to the new version.
