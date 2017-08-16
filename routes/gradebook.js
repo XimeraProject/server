@@ -59,7 +59,7 @@ exports.record = function(req, res, next) {
 				
 				var cacheKey = "gradebook:" + req.user._id + ":" + repositoryName + ":" + req.params.path;
 				client.get(cacheKey, function(err, cachedGrade) {
-				    if (false && (parseFloat(cachedGrade) >= resultTotalScore)) {
+				    if (parseFloat(cachedGrade) >= resultTotalScore) {
 					console.log("cached grade=",cachedGrade);
 					console.log("resultTotalscore=",resultTotalScore);
 					callback(null);
