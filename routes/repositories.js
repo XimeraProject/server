@@ -123,24 +123,6 @@ exports.git = function(req, res) {
 		    console.log( err );
 		    res.status(500).send(err);
 		} else {
-		    /*
-{ head: '52b5e4474350e7849f289c99380fafe731a289f1',
-  last: '00c30000000000000000000000000000000000000000',
-  refname: 'refs/tags/publications/613cf699885d1e0c4e267ee8f32cb95b41c200cc',
-  ref: 'tags',
-  name: 'publications/613cf699885d1e0c4e267ee8f32cb95b41c200cc',
-  branch: 'publications/613cf699885d1e0c4e267ee8f32cb95b41c200cc' }
-
-
-{ head: '52b5e4474350e7849f289c99380fafe731a289f1',
-  last: '00c30000000000000000000000000000000000000000',
-  refname: 'refs/tags/publications/613cf699885d1e0c4e267ee8f32cb95b41c200cc',
-  ref: 'tags',
-  name: 'publications/613cf699885d1e0c4e267ee8f32cb95b41c200cc',
-  branch: 'publications/613cf699885d1e0c4e267ee8f32cb95b41c200cc' }
-
-		    */
-		    
 		    var ps = spawn(service.cmd, service.args.concat(dir));
 		    ps.stdout.pipe(service.createStream()).pipe(ps.stdin);
 
