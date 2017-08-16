@@ -35,14 +35,12 @@ exports.string = function( key, f, callback ) {
 	    callback(err);
 	} else {
 	    if (result) {
-		console.log("cached",result);
 		callback( null, result );
 	    } else {
 		f( function(err, result) {
 		    if (err) {
 			callback( err );
 		    } else {
-			console.log("refreshed",result);			
 			client.setex( key, 31557600, result );
 			callback( null, result );
 		    }
