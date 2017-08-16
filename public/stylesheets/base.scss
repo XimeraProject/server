@@ -10,6 +10,21 @@ $red:    #bb0000 !default;
 // Bootstrap v4 ftw
 @import "./node_modules/bootstrap/scss/bootstrap.scss";
 
+.xourse-card.card:hover {
+    transition: background-color 0.2s ease-in;
+    background-color: $gray-lightest;
+}
+
+.activity-card.card:not(.active):not(.part):hover  {
+    transition: background-color 0.1s ease-in;
+    background-color: $gray-lightest;
+}
+
+.btn-secondary:not(.active):hover {
+    background-color: $gray-lightest;
+}
+
+
 // A lot of buttons pulsate
 @import "pulsate";
 
@@ -31,8 +46,6 @@ about it and choose the background color. */
 @import "abstract";
 
 @import "certificate";
-
-@import "./node_modules/bootstrap/scss/bootstrap.scss";
 
 // Animate the progress bar motion
 .progress-bar {
