@@ -2,6 +2,8 @@ var cheerio = require('cheerio');
 var repositories = require('./repositories');
 var cachify = require('./cachify');
 var path = require('path');
+var poetry = require('./poetry');
+
 
 // this is what really should be cached -- and it can be safely cached
 // forever because the blob is immutable
@@ -27,6 +29,10 @@ exports.parseActivityBlob = function( repositoryName, filename, blobHash, callba
 			     activity.html = $('body').html();
 			     activity.hash = blobHash;
 			     activity.description = $('div.abstract').html();
+
+			     if (!(activity.title)) {
+				 activity.title = poetry.shaToPoeticName(blobHash);
+			     }
 			 }
 			 
 			 callback(null, activity);
