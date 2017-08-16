@@ -69,11 +69,12 @@ exports.connection = function( socket ) {
 
     socket.on('disconnect', function() {
 	var realUserId = socket.handshake.session.guestUserId;
+	
 	if (socket.handshake.session.passport) {
 	    realUserId = socket.handshake.session.passport.user || realUserId;
 	}
-	
-	toInstructors( socket, 'leave', realUserId);
+
+	toInstructors( socket, 'leave', { userId: realUserId, repositoryName: socket.repositoryName, activityPath: socket.activityPath } );
     });
     
     socket.on('watch', function(userId, activityHash) {
@@ -101,7 +102,10 @@ exports.connection = function( socket ) {
 	socket.userRoom = `/users/${userId}`;
 	socket.join( socket.userRoom );
 
-	toInstructors( socket, 'enter', realUserId);	
+	mdb.User.findOne({_id: realUserId}, { name: 1, imageUrl: 1, email: 1 }, function (err, user) {
+	    if (!err && user)
+		toInstructors( socket, 'enter', user);			
+	});	
 	
 	if (!activityHash)
 	    return;
@@ -237,6 +241,9 @@ exports.connection = function( socket ) {
 
 	    // And tell any instructors what this student is doing
 	    toInstructors( socket, 'completions', payload);
+
+	    socket.activityPath = c.activityPath;
+	    socket.repositoryName = c.repositoryName;
 	});
     });
 };

@@ -40,6 +40,7 @@ var express = require('express')
   , methodOverride = require('method-override')
   , errorHandler = require('errorhandler')
   , sendSeekable = require('send-seekable')
+  , url = require('url')
   , versionator = require('versionator')
   ;
 
@@ -77,7 +78,8 @@ app.use(logger('dev'));
 app.use(favicon(path.join(__dirname, 'public/images/icons/favicon/favicon.ico')));
 
 app.use(function(req, res, next) {
-    res.locals.path = req.path;    
+    res.locals.path = req.path;
+    res.locals.absoluteUrl = url.resolve(config.root, req.url);
     next();
 });
 
@@ -374,16 +376,16 @@ passport.deserializeUser(function(id, done) {
 	     page.ltiConfig );
     
     var serveContent = function( regexp, callback ) {
-	app.get( '/:repository/:path(' + regexp + ')',
-		 redirectUnnormalizeRepositoryName,
-		 page.activitiesFromRecentCommitsOnMaster,
-		 callback );
-
 	// Just ignore masquerades for non-page resources
 	app.get( '/users/:masqueradingUserId/:repository/:path(' + regexp + ')',
 		 normalizeRepositoryName,
 		 page.activitiesFromRecentCommitsOnMaster,		 
-		 callback );	
+		 callback );
+	
+	app.get( '/:repository/:path(' + regexp + ')',
+		 redirectUnnormalizeRepositoryName,
+		 page.activitiesFromRecentCommitsOnMaster,
+		 callback );
     };
 
     serveContent( '*.svg', page.serve('image/svg+xml') );

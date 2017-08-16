@@ -16,21 +16,24 @@ footer.bg-inverse.text-white
             a(href="/about/team") Development Team
             a(href="/about/workshop") Workshop
         .col-md-3.hidden-sm-down
-          h5 Social
+          h5 Share to&hellip;
           ul
-            a(href='https://www.facebook.com/groups/337167309757871/')
+            a(href='http://www.facebook.com/sharer.php?u=' + absoluteUrl)
               | Facebook 
               i.fa.fa-facebook
-            a(href='https://twitter.com/XimeraProject')
+            a(href='http://twitter.com/intent/tweet?status=' + absoluteUrl + ' @XimeraProject')
               | Twitter 
               i.fa.fa-twitter
-            a(href='https://plus.google.com/communities/115767215179468258008')
+            a(href='https://plus.google.com/share?url=' + absoluteUrl)
               | Google Plus 
               i.fa.fa-google-plus
+              
+          h5 Contact Us
+          ul
             a(href='https://github.com/kisonecat/ximera')
               | GitHub 
               i.fa.fa-github-alt
-            a(href='/about/contact') Contact Us 
+            a(href='/about/contact') E-mail 
               i.fa.fa-envelope
         .col-md-3.address.hidden-sm-down
           p

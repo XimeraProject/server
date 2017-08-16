@@ -11,7 +11,8 @@ var _ = require('underscore');
 var repositories = require('./repositories');
 var metadata = require('./metadata');
 var ETag = require('./etag');
-
+var striptags = require('striptags');
+var url = require('url');
 var config = require('../config');
 
 function authorization(req,res,next) {
@@ -121,11 +122,19 @@ exports.render = function(req, res, next) {
 	xourse.path = req.activity.path;
 	if (xourse.path) {
 	    xourse.path = xourse.path.replace(/\.html$/,'')
-	}		
+	}
+
+	var logo = undefined;
+	if (xourse.logo) {
+	    console.log(xourse.logo);
+	    logo = url.resolve(config.root, path.join( req.repositoryName, xourse.logo ) );
+	}
+	
 	res.render('xourses/view', { xourse: xourse,
 				     url: req.url,
-				     learner: req.learner,			     
-			       repositoryName: req.repositoryName });
+				     logo: logo,
+				     learner: req.learner,
+				     repositoryName: req.repositoryName });
 	return;
     }
     
@@ -181,6 +190,7 @@ exports.render = function(req, res, next) {
 	    }
 	    
 	    res.render('page', { activity: activity,
+				 description: striptags(activity.description ? activity.description : ""),
 				 repositoryName: req.repositoryName,
 				 repositoryMetadata: req.repositoryMetadata,
 				 nextActivity: nextActivity,
@@ -192,6 +202,7 @@ exports.render = function(req, res, next) {
 	activity.xourse = {};
 	activity.xourse.activityList = [];
 	res.render('page', { activity: activity,
+			     description: striptags(activity.description ? activity.description : ""),			     
 			     repositoryMetadata: req.repositoryMetadata,
 			     repositoryName: req.repositoryName,
 			     learner: req.learner,			     

@@ -13,7 +13,7 @@ div#loginUser(style="display: none;")
         a.dropdown-item(href=url.replace('users/' + learner._id + '/', '')) <i class='fa fa-user'></i> Stop Pretending
         div.dropdown-divider        
       a.dropdown-item(href=`/users/me`) <i class='fa fa-cogs'></i> Profile
-      a.dropdown-item(href='/supervise') <i class='fa fa-eye'></i> Supervise
+      a.dropdown-item#menu-supervise(href='/supervise',style="display: none;") <i class='fa fa-eye'></i> Supervise
       a.dropdown-item(href="/logout") <i class='fa fa-sign-out'></i> Logout
 div#loginGuest(style="display: none;")
   li.nav-item.dropdown

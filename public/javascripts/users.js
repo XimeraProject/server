@@ -28,6 +28,8 @@ $(document).ready(function() {
 
 	// Instructors should see a "statistics" button
 	if (user.instructorRepositoryPaths) {
+	    $('#menu-supervise').show();
+	    
 	    user.instructorRepositoryPaths.forEach( function(p) {
 		if (window.location.pathname.startsWith( p ))
 		    $('#instructor-view-statistics').show();

@@ -17,6 +17,22 @@ html(lang="en")
     meta(name="keywords", content="mathematics, math, maths, courses, course, education, calculus, complex analysis, algebra, geometry, graphs, plots, MOOC")
     link(href=versionPath("/public/stylesheets/base.css"), rel="stylesheet", media="screen")
 
+    if xourse && xourse.title
+      meta(property="og:title",content=xourse.title)
+    else if activity && activity.title
+      meta(property="og:title",content=activity.title)      
+      
+    meta(property="og:url",content=absoluteUrl)
+    
+    if ogType
+      meta(property="og:type",content=ogType)
+    
+    if description
+      meta(property="og:description",content=description)
+      
+    if logo
+      meta(property="og:image",content=logo)
+    
     if stylesheet
       link(rel="stylesheet/less",type="text/css",href=versionPath(stylesheet))
 
@@ -70,6 +86,15 @@ html(lang="en")
       script(type="text/javascript",src=versionPath("/public/javascripts/index.js"))
       
   body
+     div#fb-root
+     script(type="text/javascript").
+        (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.10&appId=1581769695449208";
+        fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
      include navbar/index.pug
      div
        block modals

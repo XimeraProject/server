@@ -13,7 +13,7 @@ exports.parseActivityBlob = function( repositoryName, blobHash, callback ) {
 			 var $ = cheerio.load( source, {xmlMode: true} );
 
 			 var isXourse = $('meta[name="description"]').attr('content') == 'xourse';
-		 
+
 			 if (isXourse) {
 			     activity = parseXourseDocument( $ );
 			 } else {
