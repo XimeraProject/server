@@ -1,10 +1,11 @@
 var cheerio = require('cheerio');
 var repositories = require('./repositories');
 var cachify = require('./cachify');
+var path = require('path');
 
 // this is what really should be cached -- and it can be safely cached
 // forever because the blob is immutable
-exports.parseActivityBlob = function( repositoryName, blobHash, callback ) {
+exports.parseActivityBlob = function( repositoryName, filename, blobHash, callback ) {
     cachify.json( "metadata:" + blobHash,
 	     function(callback) {
 		 repositories.readBlob( repositoryName, blobHash )
@@ -15,7 +16,7 @@ exports.parseActivityBlob = function( repositoryName, blobHash, callback ) {
 			 var isXourse = $('meta[name="description"]').attr('content') == 'xourse';
 
 			 if (isXourse) {
-			     activity = parseXourseDocument( $ );
+			     activity = parseXourseDocument( $, filename );
 			 } else {
 			     $('a').each( function() {
 				 if ($(this).attr('id'))
@@ -37,7 +38,7 @@ exports.parseActivityBlob = function( repositoryName, blobHash, callback ) {
 	     callback );
 };
 
-function parseXourseDocument( $ ) {
+function parseXourseDocument( $, filename ) {
     var xourse = { kind: 'xourse' };
     xourse.activityList = [];
     xourse.activities = {};
@@ -94,8 +95,12 @@ function parseXourseDocument( $ ) {
 	card.href = element.attr('href');
 	if (card.href === undefined) {
 	    card.href = '#' + element.attr('id');
+	} else {
+	    // Cards are listed relative to the xourse root
+	    console.log(card.href);
+	    //card.href = path.join( path.dirname(filename), card.href );
 	}
-
+	
 	xourse.activities[card.href] = card;
 	xourse.activityList.push( card.href );
     });
@@ -112,14 +117,14 @@ function parseXourseDocument( $ ) {
 }
 
 // these should also be cached
-exports.parseXourseBlob = function( repositoryName, blobHash, callback ) {
+exports.parseXourseBlob = function( repositoryName, filename, blobHash, callback ) {
     cachify.json( "metadata:" + blobHash,
 	     function(callback) {
 		 repositories.readBlob( repositoryName, blobHash )
 		     .then( function(source) {
 
 			 var $ = cheerio.load( source, {xmlMode: true} );
-			 var xourse = parseXourseDocument( $ );
+			 var xourse = parseXourseDocument( $, filename );
 			 callback(null, xourse);
 		     })
 		     .catch( function(err) {

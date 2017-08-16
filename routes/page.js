@@ -33,7 +33,7 @@ function authorization(req,res,next) {
     } else {
 	var token = "";
 	var parts = authorization.split(' ');
-	console.log(authorization);
+
 	if (parts[0].match(/Bearer/)) {
 	    token = parts.reverse()[0];
 	}
@@ -47,8 +47,6 @@ function authorization(req,res,next) {
 
 	repositories.readRepositoryToken( repositoryName )
 	    .then(function(buf) {
-		console.log("Buf=",buf);
-		console.log("token=",token);		
 		if (buf == token) {
 		    next();
 		} else
@@ -92,7 +90,7 @@ exports.activitiesFromRecentCommitsOnMaster = function(req, res, next) {
 
 exports.parseActivity = function(req,res,next) {
     if (req.activity.hash) {
-	metadata.parseActivityBlob( req.repositoryName, req.activity.hash, function(err, activity) {
+	metadata.parseActivityBlob( req.repositoryName, req.activity.path, req.activity.hash, function(err, activity) {
 	    req.activity = _.extend( req.activity, activity );
 	    next();
 	});
@@ -126,7 +124,6 @@ exports.render = function(req, res, next) {
 
 	var logo = undefined;
 	if (xourse.logo) {
-	    console.log(xourse.logo);
 	    logo = url.resolve(config.root, path.join( req.repositoryName, xourse.logo ) );
 	}
 	
@@ -146,7 +143,7 @@ exports.render = function(req, res, next) {
     }
     
     if (req.activity.xourse) {
-	metadata.parseXourseBlob( req.repositoryName, req.activity.xourse.hash, function(err,xourse) {
+	metadata.parseXourseBlob( req.repositoryName, req.activity.path, req.activity.xourse.hash, function(err,xourse) {
 	    xourse.path = req.activity.xourse.path;
 	    xourse.hash = req.activity.xourse.hash;
 	    
@@ -330,7 +327,7 @@ exports.source = function(req, res, next) {
 
 exports.ltiConfig = function(req, res) {
     var file = req.activities[0];
-        
+
     var hash = {
 	title: 'Ximera ' + file.path.replace(/\.html$/,''),
 	description: '',

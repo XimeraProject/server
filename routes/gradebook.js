@@ -6,6 +6,16 @@ var config = require('../config');
 var async = require('async');
 const uuidv1 = require('uuid/v1');
 
+var redis = require('redis');
+
+// create a new redis client and connect to our local redis instance
+var client = redis.createClient();
+
+// if an error occurs, print it to the console
+client.on('error', function (err) {
+    console.log("Error " + err);
+});
+
 var passback = pug.compileFile(path.join(__dirname,'../views/lti/passback.pug'));
 
 exports.record = function(req, res, next) {
@@ -20,54 +30,88 @@ exports.record = function(req, res, next) {
 	    } else {
 		async.each( bridges,
 			    function(bridge, callback) {
-				var pointsPossible = parseInt(bridge.pointsPossible);
-
-				if (pointsPossible > 0) {
+				console.log(bridge);
+				
+				// Silently ignore attempts to submit homework after the due date
+				if (bridge.dueDate < Date.now()) {
+				    console.log("due date exceeded");
 				    callback(null);
 				    return;
 				}
 				
-				var resultScore = parseFloat(req.body.pointsEarned) / parseFloat(req.body.pointsPossible);
-				var resultTotalScore = resultScore * pointsPossible;
-
-				// BADBAD: should round these two a couple decimal places to avoid some weird appearances on canvas
-
-				// BADBAD: should only send updates to canvas if the grade is going up
-				
-				var pox = passback({
-				    messageIdentifier: uuidv1(),
-				    resultDataUrl: config.root + '/users/' + req.user._id + '/' + repositoryName + '/' + req.params.path,
-				    resultScore: resultScore,
-				    resultTotalScore: resultTotalScore,
-				    sourcedId: bridge.lisResultSourcedid
-				});
-				
-				var url = bridge.lisOutcomeServiceUrl;
-				
-				var oauth = {
-				    callback: "about:blank",
-				    body_hash: true,			
-				    consumer_key: bridge.oauthConsumerKey,
-				    consumer_secret: config.lti.secret,
-				    signature_method: bridge.oauthSignatureMethod
-				};
-				
-				if (oauth.consumer_key != config.lti.key) {
-				    console.log("WRONG KEY");
+				var pointsPossible = parseInt(bridge.pointsPossible);
+				console.log("pointsPossible",bridge.pointsPossible);
+				if (pointsPossible == 0) {
+				    console.log("no points possible included");				    
+				    callback(null);
+				    return;
 				}
 				
-				request.post({
-				    url: url,
-				    body: pox,
-				    oauth: oauth,
-				    headers: {
-					'Content-Type': 'application/xml',
-				    }
-				}, function(err, response, body) {
-				    if (err) {
-					callback(err);
-				    } else {
+				// BADBAD: round to a couple decimal places to avoid some weird appearances on canvas
+				var resultScore = Math.ceil(100 * parseFloat(req.body.pointsEarned) / parseFloat(req.body.pointsPossible)) / 100.0;
+				var resultTotalScore = Math.ceil(100 * parseFloat(req.body.pointsEarned) / parseFloat(req.body.pointsPossible) * pointsPossible)/100.0;
+
+				// No need to record zeros in the gradebook
+				if (resultScore == 0) {
+				    callback(null);
+				    return;				    
+				}
+				
+				var cacheKey = "gradebook:" + req.user._id + ":" + repositoryName + ":" + req.params.path;
+				client.get(cacheKey, function(err, cachedGrade) {
+				    if (false && (parseFloat(cachedGrade) >= resultTotalScore)) {
+					console.log("cached grade=",cachedGrade);
+					console.log("resultTotalscore=",resultTotalScore);
 					callback(null);
+				    } else {
+					var pox = passback({
+					    messageIdentifier: uuidv1(),
+					    resultDataUrl: config.root + '/users/' + req.user._id + '/' + repositoryName + '/' + req.params.path,
+					    resultScore: resultScore,
+					    resultTotalScore: resultTotalScore,
+					    sourcedId: bridge.lisResultSourcedid
+					});
+				
+					var url = bridge.lisOutcomeServiceUrl;
+					console.log(url);
+					
+					mdb.KeyAndSecret.findOne(
+					    {ltiKey: bridge.oauthConsumerKey},
+					    function(err, keyAndSecret) {
+						if (err) {
+						    callback(err);
+						} else {
+						    if (!keyAndSecret) {
+							callback("Missing LTI secret.");
+						    } else {
+							var oauth = {
+							    callback: "about:blank",
+							    body_hash: true,			
+							    consumer_key: keyAndSecret.ltiKey,
+							    consumer_secret: keyAndSecret.ltiSecret,
+							    signature_method: bridge.oauthSignatureMethod
+							};
+
+							request.post({
+							    url: url,
+							    body: pox,
+							    oauth: oauth,
+							    headers: {
+								'Content-Type': 'application/xml',
+							    }
+							}, function(err, response, body) {
+							    console.log(body);
+							    if (err) {
+								callback(err);
+							    } else {
+								console.log("Score",resultTotalScore);
+								client.setex(cacheKey, 60*60, JSON.stringify(resultTotalScore));
+								callback(null);
+							    }
+							});
+						    }
+						}
+					    });
 				    }
 				});
 			    },

@@ -24,7 +24,7 @@ block content
       .col-md-12
     .row.justify-content-center
       .col-md-10
-        main.activity(id="theActivity", data-hash=activity.hash, data-repository-name=repositoryName, data-commit=activity.commit, data-path=activity.path, data-title=activity.title, role="main", data-learner=learner ? learner._id : undefined, data-xourse-path=activity.xourse ? activity.xourse.path : undefined)
+        main.activity(id="theActivity", data-hash=activity.hash, data-repository-name=repositoryName, data-commit=activity.commit, data-path=activity.path, data-title=activity.title, role="main", data-learner=learner ? learner._id : undefined, data-xourse-path=activity.xourse ? activity.xourse.path : undefined, data-xourse-url=activity.xourse ? (repositoryName + '/' + activity.xourse.path) : undefined, data-points=activity.xourse ? activity.xourse.totalPoints : undefined)
           .activity-body#page-content
             | !{activity.html}            
             include page/next-and-previous

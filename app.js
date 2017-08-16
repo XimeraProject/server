@@ -260,7 +260,7 @@ passport.deserializeUser(function(id, done) {
     app.delete('/users/:id/bridges/:bridge', function( req, res, next ) { user.deleteBridge( req, res, next ); } );    
 
     app.get('/supervise', supervising.watch );
-    
+
     ////////////////////////////////////////////////////////////////
     // BADBAD: some permanent redirects for OSU courses from old URLs
     app.get( '/course', function( req, res ) { res.redirect('/mooculus'); });
@@ -370,10 +370,10 @@ passport.deserializeUser(function(id, done) {
 
     // BADBAD: i also need to serve pngs and pdfs and such from the repo here
 
-    app.get( '/:repository/:path/lti.xml',
+    app.get( '/:repository/:path(*)/lti.xml',
 	     redirectUnnormalizeRepositoryName,
 	     page.activitiesFromRecentCommitsOnMaster,
-	     page.ltiConfig );
+	     page.ltiConfig );    
     
     var serveContent = function( regexp, callback ) {
 	// Just ignore masquerades for non-page resources

@@ -4,20 +4,22 @@ var _ = require('underscore');
 exports.update = _.debounce( function() {
     var pointsEarned = 0;
     
-    $("a.activity-card").each( function() {
+    $(".activity-card").each( function() {
 	var card = $(this);
-	var weight = card.attr('data-weight');
-	var completion = card.attr('data-max-completion');
+	var weight = parseFloat(card.attr('data-weight'));
+	var completion = parseFloat(card.attr('data-max-completion'));
 
-	var points = weight * completion;
-
-	pointsEarned = pointsEarned + points;
+	if (! isNaN(weight)) {
+	    if (! isNaN(completion)) {	    
+		var points = weight * completion;
+		pointsEarned = pointsEarned + points;
+	    }
+	}
     });
 
-    var pointsPossible = $(".course-navigation").attr( 'data-points' );
-
-    var xourseUrl = $(".course-navigation").attr( 'data-xourse-url' );    
-
+    var pointsPossible = $("main").attr( 'data-points' );
+    var xourseUrl = $("main").attr( 'data-xourse-url' );
+    console.log("score =",pointsEarned);
     var payload = {
 	pointsEarned: pointsEarned,
 	pointsPossible: pointsPossible	
