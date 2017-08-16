@@ -42,11 +42,11 @@ mixin displayBridge(bridge)
       | in&nbsp;
       a(href=`/${bridge.repository}/${bridge.path}`)
         code #{bridge.repository}/#{bridge.path}
-
-    if bridge.lisResultSourcedid && bridge.lisOutcomeServiceUrl
-      p #{bridge.dueDate}
-
-
+      if bridge.lisResultSourcedid && bridge.lisOutcomeServiceUrl && bridge.dueDate
+        | &nbsp;due&nbsp;
+        i.fa.fa-clock-o.mr-1      
+        time(class="relative-date", datetime=bridge.dueDate)
+          | #{bridge.dueDate}
 					   
   
 block content
