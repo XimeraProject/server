@@ -438,7 +438,7 @@ passport.deserializeUser(function(id, done) {
 	     gradebook.record );    
 
     // Instructors should be based around a context instead?
-    app.get( '/:repository/:path/instructors',
+    app.get( '/:repository/:path(*)/instructors',
 	     redirectUnnormalizeRepositoryName,
 	     page.activitiesFromRecentCommitsOnMaster,
 	     page.chooseMostRecentBlob,
