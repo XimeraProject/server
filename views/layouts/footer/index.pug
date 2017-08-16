@@ -1,13 +1,14 @@
 footer.bg-inverse.text-white
     .container
       .row
-        .col-md-3.hidden-sm-down
-          h5
-            a(href="/course/") Courses
-          ul
-            a(href="/mooculus/calculus1") Calculus One
-            a(href="/mooculus/calculus2") Calculus Two
-            a(href="/mooculus/calculus3") Calculus Three
+        if (!atColoradoState)
+          .col-md-3.hidden-sm-down
+            h5
+              a(href="/mooculus/") Courses
+            ul
+              a(href="/mooculus/calculus1") Calculus One
+              a(href="/mooculus/calculus2") Calculus Two
+              a(href="/mooculus/calculus3") Calculus Three
         .col-md-3
           h5.hidden-sm-down
             a(href="/about/overview") About
@@ -39,9 +40,9 @@ footer.bg-inverse.text-white
       .row
         .col-md-12.osu
           if (atColoradoState)
-            img.hidden-sm-down(src=versionPath("/public/images/colorado-state/logo.png"))
+            img.hidden-sm-down(src=versionPath(versionPath("/public/images/colorado-state/logo.png")))
           else
-            img.hidden-sm-down(src=versionPath("/public/images/osu/osu-web-footer-wordmark-rev.png"))
+            img.hidden-sm-down(src=versionPath(versionPath("/public/images/osu/osu-web-footer-wordmark-rev.png")))
           p
             | &copy; 2013&ndash;#{new Date().getFullYear()}, The Ohio State University <span class="hidden-xs-down">&mdash; <a href="/about/team">Ximera team</a></span>
           p.hidden-xs-down
