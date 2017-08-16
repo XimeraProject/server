@@ -31,7 +31,7 @@ exports.parseActivityBlob = function( repositoryName, filename, blobHash, callba
 			     activity.description = $('div.abstract').html();
 
 			     if (!(activity.title)) {
-				 activity.title = poetry.shaToPoeticName(blobHash);
+				 activity.title = blobHash.substr(0,6) + "&hellip;: &rdquo;" + poetry.poeticName(filename.replace(/\.html/,'')) + "&ldquo;";
 			     }
 			 }
 			 
@@ -91,21 +91,21 @@ function parseXourseDocument( $, filename ) {
 	    card.title = element.html();
 	}
 	
+	if (!(card.title.match(/[A-z0-9]/))) {
+	    card.title = '"' + poetry.poeticName(element.attr('href')) + '"';
+	}
+	
 	card.summary = $('h3',this).html();
 	card.cssClass = element.attr('class').replace('activity','');
-	    
+	
 	// BADBAD: these hashes need to be found, or we need to
 	// replace how we store progress
 	card.hashes = [];
-	
 	card.href = element.attr('href');
 	if (card.href === undefined) {
 	    card.href = '#' + element.attr('id');
-	} else {
-	    // Cards are listed relative to the xourse root
-	    console.log(card.href);
-	    //card.href = path.join( path.dirname(filename), card.href );
 	}
+
 	
 	xourse.activities[card.href] = card;
 	xourse.activityList.push( card.href );

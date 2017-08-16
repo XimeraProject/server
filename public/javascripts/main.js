@@ -348,6 +348,8 @@ $(document).ready(function() {
     
     $(".dropdown-toggle").dropdown();
 
+    $('[data-toggle="tooltip"]').tooltip();
+
     // This could go in "init" above, but it needs to be after the end process hook
     MathJax.Hub.Startup.onload();
 

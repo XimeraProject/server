@@ -4,7 +4,7 @@ mixin practiceXourseCardOld(locator, url, card, active)
       div.progress-bar.progress-bar-success(role="progressbar", style="width: 0%;")
       
 mixin practiceXourseCard(locator, url, card, active)
-  .activity-card.text-center(class=card.cssClass + (active ? " active" : ""),data-weight=card.weight, href=locator + "/" + url, data-repository-name=repositoryName, data-path=url, style=style, data-hashes=JSON.stringify(card.hashes))
+  .activity-card.text-center(class=card.cssClass + (active ? " active" : ""),data-weight=card.weight, href=locator + "/" + url, data-repository-name=repositoryName, data-path=url, style=style, data-hashes=JSON.stringify(card.hashes),data-toggle="tooltip",data-placement="bottom",title=card.title ? card.title : 'Practice')
     a(href=locator + "/" + url)  
     div.progress.vertical
       div.progress-bar.bg-success(role="progressbar", style="width: 0%;")
