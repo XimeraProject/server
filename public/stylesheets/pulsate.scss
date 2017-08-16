@@ -1,17 +1,18 @@
-$pulsate-list: primary, success, info, warning, danger, inverse;
+$pulsate-list: btn-primary, btn-success, btn-info, btn-warning, btn-danger, btn-inverse, page-link;
 
 $pulsate-colors: (
-    primary: $brand-primary,
-    success: $brand-success,
-    info: $brand-info,
-    warning: $brand-warning,
-    danger: $brand-danger,
-    inverse: $brand-inverse
+    btn-primary: $brand-primary,
+    btn-success: $brand-success,
+    btn-info: $brand-info,
+    btn-warning: $brand-warning,
+    btn-danger: $brand-danger,
+    btn-inverse: $brand-inverse,
+    page-link: $brand-primary
 );
 
 @each $pulsator in $pulsate-list {
 
-.btn-#{$pulsator}.pulsate {
+.#{$pulsator}.pulsate {
     -webkit-animation: pulsate-#{$pulsator} 1s infinite alternate;
     -moz-animation: pulsate-#{$pulsator} 1s infinite alternate;
     -animation: pulsate-#{$pulsator} 1s infinite alternate;
@@ -33,3 +34,4 @@ $pulsate-colors: (
     to { box-shadow: 0 0 20px map-get($pulsate-colors,$pulsator); }
 }
 }
+

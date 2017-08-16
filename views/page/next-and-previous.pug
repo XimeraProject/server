@@ -4,14 +4,14 @@ if previousActivity || nextActivity
       li.page-item#previous-activity(class=(previousActivity ? undefined : "disabled"))
         if previousActivity
           a.page-link(href="/" + repositoryName + "/" + activity.xourse.path + "/" + previousActivity,aria-label="previous activity")              
-            | &larr; Previous Activity
+            | &larr; Previous
         else
           span.page-link(aria-label="previous activity",href="#")              
-            | &larr; Previous Activity 
+            | &larr; Previous
       li.page-item.ml-auto#next-activity(class=(nextActivity ? undefined : "disabled"),completion-blink="",aria-label="next activity")
         if nextActivity
           a.page-link(href="/" + repositoryName + "/" + activity.xourse.path + "/" + nextActivity)
-            | <span id="next-activity-label">Next Activity</span> &rarr;
+            | <span id="next-activity-label">Next</span> &rarr;
         else
           span.page-link(aria-label="next activity")              
-            | <span id="next-activity-label">Next Activity</span> &rarr;
+            | <span id="next-activity-label">Next</span> &rarr;

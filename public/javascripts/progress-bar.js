@@ -108,6 +108,11 @@ var update = _.debounce( function() {
 
     // total the points in the course (if there is one)
     gradebook.update();
+
+    if (value == 1) {
+	$('#next-activity .page-link').addClass('pulsate');
+    }
+    
 }, 300 );
 
 exports.monitorActivity = function( activity ) {
