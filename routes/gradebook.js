@@ -30,19 +30,14 @@ exports.record = function(req, res, next) {
 	    } else {
 		async.each( bridges,
 			    function(bridge, callback) {
-				console.log(bridge);
-				
 				// Silently ignore attempts to submit homework after the due date
 				if (bridge.dueDate < Date.now()) {
-				    console.log("due date exceeded");
 				    callback(null);
 				    return;
 				}
 				
 				var pointsPossible = parseInt(bridge.pointsPossible);
-				console.log("pointsPossible",bridge.pointsPossible);
 				if (pointsPossible == 0) {
-				    console.log("no points possible included");				    
 				    callback(null);
 				    return;
 				}
@@ -60,8 +55,6 @@ exports.record = function(req, res, next) {
 				var cacheKey = "gradebook:" + req.user._id + ":" + repositoryName + ":" + req.params.path;
 				client.get(cacheKey, function(err, cachedGrade) {
 				    if (parseFloat(cachedGrade) >= resultTotalScore) {
-					console.log("cached grade=",cachedGrade);
-					console.log("resultTotalscore=",resultTotalScore);
 					callback(null);
 				    } else {
 					var pox = passback({
@@ -73,7 +66,6 @@ exports.record = function(req, res, next) {
 					});
 				
 					var url = bridge.lisOutcomeServiceUrl;
-					console.log(url);
 					
 					mdb.KeyAndSecret.findOne(
 					    {ltiKey: bridge.oauthConsumerKey},
@@ -100,11 +92,9 @@ exports.record = function(req, res, next) {
 								'Content-Type': 'application/xml',
 							    }
 							}, function(err, response, body) {
-							    console.log(body);
 							    if (err) {
 								callback(err);
 							    } else {
-								console.log("Score",resultTotalScore);
 								client.setex(cacheKey, 60*60, JSON.stringify(resultTotalScore));
 								callback(null);
 							    }
