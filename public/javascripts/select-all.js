@@ -72,12 +72,16 @@ var createSelectAll = function() {
 	    
 	    selectAll.find( '.btn-group button' ).hide();
 
+	    var checked = selectAll.persistentData('checked');
+	    if (checked) checked = checked.filter( function(x) { return x != null; } );
+	    
+	    var chosen = selectAll.persistentData('chosen');
+	    if (chosen) chosen = chosen.filter( function(x) { return x != null; } );
+
 	    if (selectAll.persistentData('checked') &&
-		(_.isEqual( _.sortBy( selectAll.persistentData('checked') ),
-			    _.sortBy( selectAll.persistentData('chosen')))))
+		(_.isEqual( _.sortBy( checked ), _.sortBy( chosen ) )))
 		selectAll.find( '.btn-group .btn-ximera-incorrect' ).show();
 	    else {
-		selectAll.find( '.btn-group .btn-ximera-submit' ).show();
 		selectAll.find( '.btn-group .btn-ximera-submit' ).show();		    
 	    }
 	}
@@ -93,9 +97,9 @@ var createSelectAll = function() {
 	    var chosen = selectAll.persistentData('chosen');
 
 	    var correct = true;
-	    selectAll.find('button').each( function() {
+	    selectAll.find('button.btn-secondary').each( function() {
 		var id = $(this).attr('id');
-		
+		console.log(id);
 		if ($(this).hasClass('correct') !== _.contains( chosen, id ))
 		    correct = false;
 	    });
@@ -116,7 +120,7 @@ var createSelectAll = function() {
     $(this).find( ".btn-ximera-submit" ).click( checkAnswer );
     $(this).find( ".btn-ximera-incorrect" ).click( checkAnswer );
 
-    $(this).find( "button" ).each( function() {
+    $(this).find( "button.btn-secondary" ).each( function() {
 	$(this).click( function() {
 	    if (($(this).hasClass('disabled'))) {
 		return false;
