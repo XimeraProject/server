@@ -315,6 +315,8 @@ function addLmsAccount(req, identifier, profile, done) {
                     bridge.untilDate = profile.custom_lock_at;
 		if (profile.lis_result_sourcedid)	
                     bridge.lisResultSourcedid = profile.lis_result_sourcedid;
+		if (profile.oauth_consumer_key)
+                    bridge.oauthConsumerKey = profile.oauth_consumer_key;
 
 	    } else {
 		// make a new bridge
