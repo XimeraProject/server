@@ -107,7 +107,6 @@ exports.git = function(req, res) {
     
     req.pipe(backend(req.url, function(err, service) {
 	if (err) {
-	    console.log("err=",err);
 	    res.statusCode = 500;
 	    res.end(err + '\n');
 	    return;
@@ -120,7 +119,6 @@ exports.git = function(req, res) {
 	    // Only then do we require that a bearer token be presented
 	    page.authorization( req, res, function(err) {
 		if (err) {
-		    console.log( err );
 		    res.status(500).send(err);
 		} else {
 		    var ps = spawn(service.cmd, service.args.concat(dir));
@@ -337,7 +335,7 @@ exports.activitiesFromRecentCommits = function(repositoryName, branchName, pathn
 					activity.activityHash = treeEntry.sha();
 					activity.hash = treeEntry.sha();
 					activity.path = treeEntry.path();
-					
+
 					tree.getEntry(item.path).then(function(treeEntry) {
 					    activity.xourse = {path: treeEntry.path()};
 					    if (treeEntry.isBlob()) {
@@ -386,11 +384,9 @@ exports.mostRecentMetadataOnBranch = function( repositoryName, branchName ) {
 		return recentCommitsOnBranch( repository, branchName );
 	    })
 	    .then( function(commits) {
-		console.log(commits);
 		return commits[0].commit.getTree();
 	    })
 	    .then( function(tree) {
-		console.log(tree);
 		return tree.getEntry("metadata.json");
 	    }).then( function(entry) {
 		return entry.getBlob();

@@ -76,7 +76,6 @@ exports.create = function(req, res) {
 exports.activitiesFromRecentCommitsOnMaster = function(req, res, next) {
     var repositoryName = req.params.repository;
     req.repositoryName = req.params.repository;
-    
     repositories.activitiesFromRecentCommitsOnMaster( repositoryName, req.params.path )
 	.then( function(activities) {
 	    req.activities = activities;
@@ -223,7 +222,7 @@ exports.chooseMostRecentBlob = function(req, res, next) {
 	sha = shas[0];
 	activities = activities.filter( function(activity) { return activity.sourceSha == sha; });
     }
-    
+
     async.waterfall(
 	[		
 	    function(callback) {
@@ -234,6 +233,11 @@ exports.chooseMostRecentBlob = function(req, res, next) {
 		activityHashes = activityHashes.filter(function(item, pos) {
 		    return activityHashes.indexOf(item) == pos;
 		});
+
+		// This is crucial, because otherwise we may load old data?
+		activityHashes = activityHashes.filter(function(item) {
+		    return item !== undefined;
+		});		
 
 		var userId = req.user._id;
 		if (req.learner)
