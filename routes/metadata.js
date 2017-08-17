@@ -87,17 +87,19 @@ function parseXourseDocument( $, filename ) {
 	card.weight = weight;
 	
 	card.title = $('h2',this).html();
+	
 	if (card.title === null) {
 	    card.title = element.html();
-	}
-	
-	if (!(card.title.match(/[A-z0-9]/))) {
-	    card.title = '"' + poetry.poeticName(element.attr('href')) + '"';
+	} 
+	if (card.title) {
+	    if (!(card.title.match(/[A-z0-9]/))) {
+		card.title = '"' + poetry.poeticName(element.attr('href')) + '"';
+	    }
 	}
 	
 	card.summary = $('h3',this).html();
 	card.cssClass = element.attr('class').replace('activity','');
-	
+
 	// BADBAD: these hashes need to be found, or we need to
 	// replace how we store progress
 	card.hashes = [];
