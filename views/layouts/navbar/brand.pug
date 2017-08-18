@@ -1,2 +1,6 @@
-a.navbar-brand.hidden-sm-down(href="/")
-  img(src=versionPath("/public/images/logo/logo.svg"),style="max-height: 1rem; opacity: 0.5; vertical-align: baseline;")
+if (atColoradoState)
+  a.navbar-brand.hidden-sm-down(href="/math160fa17")
+    img(src=versionPath("/public/images/logo/logo.svg"),style="max-height: 1rem; opacity: 0.5; vertical-align: baseline;")
+else
+  a.navbar-brand.hidden-sm-down(href="/")
+    img(src=versionPath("/public/images/logo/logo.svg"),style="max-height: 1rem; opacity: 0.5; vertical-align: baseline;")
