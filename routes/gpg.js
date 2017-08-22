@@ -63,7 +63,7 @@ exports.ltiSecret = function(req,res) {
 
 			    gpg.encrypt( hash.ltiSecret, ['-a','--always-trust', '--recipient', keyid ], function(err, result, errors) {
 				if (err) {
-				    res.status(400).send( errors );
+				    res.status(400).send( 'Could not encrypt secret.' );
 				} else {
 				    hash.encryptedSecret = result;
 				    keyAndSecret = new mdb.KeyAndSecret(hash);
