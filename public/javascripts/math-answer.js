@@ -115,7 +115,15 @@ var createMathAnswer = function() {
 	assignGlobalVariable( result, text );	
     });
 
-    
+    // ACCESSIBILITY: unfortunately, we prevent spacebar from opening
+    // a mathjax menu.  By enabling menus in mathjax, right-clicking
+    // still opens the menu.
+    inputBox.on( 'keydown', function(event) {
+	if (event.keyCode == 32) {
+	    event.stopPropagation();
+	}
+    });
+
     result.on( 'ximera:statistics:answers', function(event, answers) {
 	var total = Object.keys( answers ).map( function(x) { return answers[x]; } ).reduce(function(a, b) { return a + b; });
 
