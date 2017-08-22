@@ -62,8 +62,8 @@ exports.ltiSecret = function(req,res) {
 			    hash.ltiSecret = base64url(buffer);
 
 			    gpg.encrypt( hash.ltiSecret, ['-a','--always-trust', '--recipient', keyid ], function(err, result, errors) {
-				if (err && (Object.keys(err).length > 0)) {
-				    res.status(400).send( 'Could not encrypt secret.' );
+				if (err) {
+				    res.status(400).send( errors );
 				} else {
 				    hash.encryptedSecret = result;
 				    keyAndSecret = new mdb.KeyAndSecret(hash);
