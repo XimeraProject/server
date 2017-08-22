@@ -61,7 +61,7 @@ exports.ltiSecret = function(req,res) {
 			    hash.ltiKey = ltiKey;
 			    hash.ltiSecret = base64url(buffer);
 
-			    gpg.encrypt( hash.ltiSecret, ['-a','--always-trust', '--recipient', keyid ], function(err, result, errors) {
+			    gpg.encrypt( hash.ltiSecret, ['-a', '--always-trust', '--recipient', keyid ], function(err, result, errors) {
 				if (err) {
 				    res.status(400).send( 'Could not encrypt secret.' );
 				} else {
