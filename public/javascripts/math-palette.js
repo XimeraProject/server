@@ -32,7 +32,6 @@ $(function() {
 		'completion': console.log
 	    },
 	    "options":{
-		//'blank_caret': "[?]",
 		'empty_content': "\\color{gray}{\\text{Click here to start typing a mathematical expression}}"
 	    }
 	});
