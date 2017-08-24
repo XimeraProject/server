@@ -423,6 +423,10 @@ passport.deserializeUser(function(id, done) {
     });
     io.use(ios(theSession, cookieParser(config.session.secret)));
 
+    io.on( 'connection', function() {
+	console.log( "USER COUNT:", io.engine.clientsCount );
+    });
+    
     ////////////////////////////////////////////////////////////////
     // State storage    
     
