@@ -16,7 +16,7 @@ exports.parseActivityBlob = function( repositoryName, filename, blobHash, callba
 			 var $ = cheerio.load( source, {xmlMode: true} );
 
 			 var isXourse = $('meta[name="description"]').attr('content') == 'xourse';
-
+			 
 			 if (isXourse) {
 			     activity = parseXourseDocument( $, filename );
 			 } else {
@@ -34,6 +34,10 @@ exports.parseActivityBlob = function( repositoryName, filename, blobHash, callba
 				 activity.title = blobHash.substr(0,6) + "&hellip;: &rdquo;" + poetry.poeticName(filename.replace(/\.html/,'')) + "&ldquo;";
 			     }
 			 }
+
+			 var author = $('meta[name="author"]').attr('content');
+			 if (author && author.match(/[A-z]/))
+			     activity.author = author;
 			 
 			 callback(null, activity);
 		     })

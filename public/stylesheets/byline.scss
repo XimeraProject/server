@@ -1,0 +1,14 @@
+/* The styling for the abstract */
+#byline:not(:empty):before {
+  content:"By ";
+  font-style:normal;
+  display: inline;
+}
+
+#byline {
+  color: #AAA;
+}
+
+#byline:empty {
+    display: none;
+}

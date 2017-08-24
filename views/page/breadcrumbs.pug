@@ -23,3 +23,5 @@ nav(aria-label="breadcrumb",role="navigation")
         | !{activity.title}
       else
         | Activity
+    if activity && activity.author
+      div.float-right.byline#byline #{activity.author}
