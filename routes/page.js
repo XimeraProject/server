@@ -130,6 +130,7 @@ exports.render = function(req, res, next) {
 				     url: req.url,
 				     logo: logo,
 				     learner: req.learner,
+				     user: req.user,				     
 				     repositoryName: req.repositoryName });
 	return;
     }
@@ -191,6 +192,7 @@ exports.render = function(req, res, next) {
 				 repositoryMetadata: req.repositoryMetadata,
 				 nextActivity: nextActivity,
 				 learner: req.learner,
+				 user: req.user,		 
 				 previousActivity: previousActivity,
 				 url: req.url });		    
 	});
@@ -201,7 +203,8 @@ exports.render = function(req, res, next) {
 			     description: striptags(activity.description ? activity.description : ""),			     
 			     repositoryMetadata: req.repositoryMetadata,
 			     repositoryName: req.repositoryName,
-			     learner: req.learner,			     
+			     learner: req.learner,
+			     user: req.user,			     
 			     url: req.url
 			   });
     }

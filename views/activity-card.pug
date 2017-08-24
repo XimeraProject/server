@@ -25,7 +25,7 @@ mixin regularXourseCard(locator, url, card, active)
       div.card-text !{card.summary}
              
 mixin xourseCard(repositoryName, xourseUrl, url, card, active)
-   - var locator = '/' + repositoryName + '/' + xourseUrl;
+   - var locator = ((learner && (learner._id != user._id)) ? ('/users/' + learner._id) : '') + ('/' + repositoryName + '/' + xourseUrl);
    if (card.cssClass) && (card.cssClass.match( /practice/ ))
      +practiceXourseCard( locator, url, card, active )
    else
