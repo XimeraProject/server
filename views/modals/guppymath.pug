@@ -1,0 +1,30 @@
+.modal.fade#guppymathModal(tabindex="-1",role="dialog",aria-labelledby="guppyModal")
+  .modal-dialog(role="document")
+    .modal-content
+      .modal-header
+        h5(class="modal-title",id="guppyModal") Expression Editor
+        button.close(type="button",data-dismiss="modal",aria-label="Close")
+          span(aria-hidden="true") &times;
+      .modal-body
+        .btn-toolbar.mb-2(role="math palette",aria-label="Palette of mathematical symbols")
+          .btn-group.mr-2(role="group",aria-label="Operations")
+            button.btn.btn-secondary#guppy-plus(type="button") +
+            button.btn.btn-secondary#guppy-minus(type="button") &ndash;
+            button.btn.btn-secondary#guppy-times(type="button") &times;            
+            button.btn.btn-secondary#guppy-divide(type="button") &divide;                       
+            button.btn.btn-secondary#guppy-exp(type="button") <em>x</em>&#8319;
+          .btn-group.mr-2(role="group",aria-label="Radiacls")
+            button.btn.btn-secondary#guppy-sqrt(type="button") &radic;
+            button.btn.btn-secondary#guppy-root(type="button") &#8319;&radic;            
+          .btn-group.mr-2(role="group",aria-label="Greek letters")
+            button.btn.btn-secondary#guppy-pi(type="button") &pi;
+          .btn-group.mr-2(role="group",aria-label="Delimiters")
+            button.btn.btn-secondary#guppy-paren(type="button") (&nbsp;)
+            button.btn.btn-secondary#guppy-abs(type="button") |&nbsp;|
+        div#guppy(style="width:100%;height:100pt;")
+        div#guppy-error
+      .modal-footer
+        button.btn.btn-danger(type="button",data-dismiss="modal")
+          | <i class="fa fa-times"></i>&nbsp;Cancel
+        button.btn.btn-primary#guppy-save-button(type="button")
+          | <i class="fa fa-check"></i>&nbsp;OK

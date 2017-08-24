@@ -273,7 +273,8 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 				      style: {width: "175px", marginBottom: "10px", marginTop: "10px" }
 				     });
 
-
+	    console.log(input);
+	    
 	    // Parse key=value pairs from optional [bracket] into data- attributes
 	    if (keys !== undefined) {
 		keys.split(",").forEach( function(keyvalue) { 

@@ -7,6 +7,7 @@ var Expression = require('math-expressions');
 var ProgressBar = require('./progress-bar');
 var popover = require('./popover');
 var Javascript = require('./javascript');
+var palette = require('./math-palette');
 
 // I comment these out to make sure that the input box is rounded, but this breaks the display of the statistics
 var buttonlessTemplate = '<form class="form-inline mathjaxed-input" style="display: inline-block;">' +
@@ -21,12 +22,15 @@ var buttonlessTemplate = '<form class="form-inline mathjaxed-input" style="displ
 var template = '<form class="form-inline mathjaxed-input" style="display: inline-block;">' +
     '<div class="input-group">' +
    	'<input class="form-control" aria-label="answer" type="text"/>' +
-	'<span class="input-group-btn">' +
+        '<span class="input-group-btn">' +
 	'<button class="px-0 btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Correct answer!" style="display: none; z-index: 1;" aria-label="correct answer" aria-live="assertive">' +
 	'<i class="fa fa-fw fa-check"/>' +
 	'</button>' +
 	'<button class="px-0 btn btn-danger btn-ximera-incorrect" data-toggle="tooltip" data-placement="top" title="Incorrect.  Try again!" style="display: none; z-index: 1;" aria-label="incorrect!  try again" aria-live="assertive">' +
 	'<i class="fa fa-fw fa-times"/>' +
+        '</button>' +
+	'<button class="px-0 btn btn-primary disabled btn-ximera-checking" aria-label="evaluating your work" data-toggle="tooltip" data-placement="top" title="Evaluating your work..." style="z-index: 1;">' +
+	'<i class="fa fa-fw fa-spinner fa-spin"/>' +
 	'</button>' +
 	'<button class="px-0 btn btn-primary btn-ximera-submit" aria-label="check work" data-toggle="tooltip" data-placement="top" title="Click to check your answer." style="z-index: 1;">' +
 	'<i class="fa fa-fw fa-question"/>' +
@@ -108,12 +112,45 @@ var createMathAnswer = function() {
     
     // When the box changes, update the database AND any javascript variables
     var inputBox = result.find( "input.form-control" );
+    
     inputBox.on( 'input', function() {
 	var text = $(this).val();
 	result.persistentData( 'response', text );
-
 	assignGlobalVariable( result, text );	
     });
+
+    ////////////////////////////////////////////////////////////////
+    // Link the "math editor" button in the toolbar to the CURRENTLY
+    // FOCUSED textfield
+    var timer = undefined;
+
+    
+    function updateMathEditButton() {
+	if ($(document.activeElement).attr('data-input-box'))
+	    $("#math-edit-button").show();
+	else
+	    $("#math-edit-button").hide();
+    }
+    
+    inputBox.focusout( function() {
+	window.setTimeout( function() { updateMathEditButton(); }, 100 );
+    });
+    
+    inputBox.focus( function() {
+	$(this).attr( 'data-input-box', true );
+	updateMathEditButton();
+	
+	$("#math-edit-button").unbind("click");
+	$("#math-edit-button").click( function() {
+	    palette.launch( inputBox.val(),
+			    function( err, text ) {
+				result.persistentData( 'response', text );
+				assignGlobalVariable( result, text );
+			    });
+	});
+    });
+
+
 
     // ACCESSIBILITY: unfortunately, we prevent spacebar from opening
     // a mathjax menu.  By enabling menus in mathjax, right-clicking
@@ -225,6 +262,7 @@ var createMathAnswer = function() {
 	if (result.persistentData('correct')) {
 	    result.find('.btn-ximera-correct').show();
 	    result.find('.btn-ximera-incorrect').hide();
+	    result.find('.btn-ximera-checking').hide();			    
 	    result.find('.btn-ximera-submit').hide();
 	    
 	    inputBox.prop( 'disabled', true );
@@ -234,6 +272,7 @@ var createMathAnswer = function() {
 	    // I'm doing "result.find('.btn').hide();" but avoiding the info button
 	    result.find('.btn-ximera-correct').hide();
 	    result.find('.btn-ximera-incorrect').hide();
+	    result.find('.btn-ximera-checking').hide();			    	    
 	    result.find('.btn-ximera-submit').hide();
 	    
 	    if ((result.persistentData('response') == result.persistentData('attempt')) &&
@@ -321,13 +360,40 @@ var createMathAnswer = function() {
 		} else
 		    correct = studentAnswer.equals( correctAnswer );
 	    }
-	    
-	    if (correct) {
-		result.persistentData( 'correct', true );
-		result.trigger( 'ximera:correct' );
+
+	    // Check if the correct answer is actually a promise to check for correctness
+	    if (correct.then) {
+		result.find('.btn-ximera-correct').hide();
+		result.find('.btn-ximera-incorrect').hide();
+		result.find('.btn-ximera-checking').show();
+		result.find('.btn-ximera-submit').hide();
+		inputBox.prop( 'disabled', true );
+		
+		correct.then( function(value) {
+		    if (value) {
+			result.persistentData( 'correct', true );
+			result.trigger( 'ximera:correct' );
+		    } else {
+			result.persistentData( 'correct', false );
+			result.persistentData( 'attempt', inputBox.val() );
+		    }
+		}, function(reason) {
+		    result.find('.btn-ximera-correct').hide();
+		    result.find('.btn-ximera-incorrect').hide();
+		    result.find('.btn-ximera-checking').hide();
+		    result.find('.btn-ximera-submit').show();
+		    inputBox.prop( 'disabled', false );
+
+		    alert(reason);
+		});
 	    } else {
-		result.persistentData( 'correct', false );
-		result.persistentData( 'attempt', inputBox.val() );
+		if (correct) {
+		    result.persistentData( 'correct', true );
+		    result.trigger( 'ximera:correct' );
+		} else {
+		    result.persistentData( 'correct', false );
+		    result.persistentData( 'attempt', inputBox.val() );
+		}
 	    }
 	}
 

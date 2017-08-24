@@ -1,7 +1,7 @@
 {
   "name": "ximera",
   "description": "Ximera interactive textbook server",
-  "version": "0.0.72",
+  "version": "0.0.73",
   "private": true,
   "scripts": {
     "start": "node app.js",
@@ -50,6 +50,7 @@
     "gpg": "^0.6.0",
     "gridfs-stream": "1.1.1",
     "gulp-pug-lint": "akoutmos/gulp-pug-lint",
+    "guppymath": "daniel3735928559/guppy",
     "htmllint-cli": "0.0.6",
     "ims-lti": "3.0.1",
     "ip": "1.1.3",
@@ -61,7 +62,7 @@
     "jquery.transit": "^0.9.12",
     "jsondiffpatch": "^0.2.4",
     "markdown": "0.5.0",
-    "math-expressions": "1.7.0",
+    "math-expressions": "1.8.1",
     "mathjax": "2.6.1",
     "method-override": "2.3.5",
     "mocha": "^3.4.2",
