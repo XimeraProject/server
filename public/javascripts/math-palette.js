@@ -18,7 +18,10 @@ $(function() {
 		    var input = guppyDiv.backend.get_content('latex');
 		    console.log(input);
 		    try {
-			var output = Expression.fromLatex( input.replace(/\\dfrac/g,'\\frac') ).toString();
+			var output = Expression.fromLatex( input
+							   .replace(/\\dfrac/g,'\\frac')
+							   .replace(/\\cdot/g, ' ')
+							 ).toString();
 			$('#guppymathModal').modal('hide');
 
 			callback( null, output );
