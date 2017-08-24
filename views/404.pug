@@ -12,4 +12,5 @@ block content
       div.mt-5
         h3 The page you want could not be found.
         p I could not find the page <code>#{url}</code> but I will look into the cause of this error.
-        
+        if repositoryName
+          p In the meantime, perhaps look at <a href="/#{repositoryName}"><code>#{repositoryName}</code></a> to find what you seek.

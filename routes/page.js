@@ -94,7 +94,7 @@ exports.parseActivity = function(req,res,next) {
 	    next();
 	});
     } else {
-	res.status(500).send('missing entry');	
+        res.status(404).render('404', { status: 404, url: req.url, repositoryName: req.repositoryName });
     }
 };
 
