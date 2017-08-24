@@ -483,7 +483,7 @@ passport.deserializeUser(function(id, done) {
     ////////////////////////////////////////////////////////////////
     // Present errors to the user
     
-    if ('development' == app.get('env')) {
+    if ('d2evelopment' == app.get('env')) {
 	// Middleware for development only, since this will dump a
 	// stack trace
 	errorHandler.title = 'Ximera';
@@ -495,8 +495,13 @@ passport.deserializeUser(function(id, done) {
 	    return next(err);
 	}
 
-	res.render('500', {
-	    message: err
-	});
+	if ((err.code) && (err.code == 'ENOENT')) {
+            res.status(404).render('404',
+				   { status: 404, url: req.url });	    
+	} else {
+	    res.status(500).render('500', {
+		message: err
+	    });
+	}
     });
 });
