@@ -144,8 +144,11 @@ var createMathAnswer = function() {
 	$("#math-edit-button").click( function() {
 	    palette.launch( inputBox.val(),
 			    function( err, text ) {
+				inputBox.val(text),
 				result.persistentData( 'response', text );
 				assignGlobalVariable( result, text );
+				inputBox.focus();
+				inputBox.trigger('input');
 			    });
 	});
     });

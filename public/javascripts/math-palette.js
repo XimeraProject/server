@@ -12,6 +12,9 @@ $(function() {
     if ($("#guppy").length > 0) {
 	guppyDiv = new GuppyMath("guppy", {
 	    "events":{
+		'change': function(event) {
+		    // Can test here
+		},
 		'done': function(event) {
 		    console.log( guppyDiv.backend.get_content('xml') );
 		    
@@ -28,15 +31,16 @@ $(function() {
 		    } catch (err) {
 			$('#guppy-error').text(err);
 		    }
-		},
-		'completion': console.log
+		}
 	    },
 	    "options":{
+		'blank_caret': "\\color{red}{[?]}",
 		'empty_content': "\\color{gray}{\\text{Click here to start typing a mathematical expression}}"
 	    }
 	});
-        GuppyMath.init_symbols(["/node_modules/guppymath/sym/symbols.json"]);
-
+	
+        GuppyMath.init_symbols(["/public/symbols.json"]);
+	
 	function symbolizer( id, sym ) {
 	    $('#guppy-' + id).mousedown( function(event) {
 		guppyDiv.backend.insert_symbol(sym);
@@ -59,10 +63,34 @@ $(function() {
 	stringizer( 'times', '*' );
 	stringizer( 'plus', '+' );
 	stringizer( 'minus', '-' );
-	symbolizer( 'divide', 'frac' );
+	symbolizer( 'slash', 'slash' );
 	symbolizer( 'paren', 'paren' );
 	symbolizer( 'abs', 'abs' );
 	symbolizer( 'exp', 'exp' );
+
+	stringizer( 'sin', 'sin' );
+	stringizer( 'cos', 'cos' );
+	stringizer( 'tan', 'tan' );
+	stringizer( 'log', 'log' );
+	stringizer( 'ln', 'ln' );
+	stringizer( 'arcsin', 'arcsin' );
+	stringizer( 'arccos', 'arccos' );
+	stringizer( 'arctan', 'arctan' );
+	
+	$('#guppy-etothe').mousedown( function(event) {
+	    guppyDiv.backend.insert_string('e');
+	    guppyDiv.backend.insert_symbol('exp');	    
+	    event.stopImmediatePropagation();
+	    document.getElementById("guppy").focus();		
+	} );
+
+	guppyDiv.backend['right_paren'] = function() {
+	    for( var i = 0; i<50; i++ ) {
+		guppyDiv.backend.sel_left();
+	    }
+	    guppyDiv.backend.insert_symbol('paren');	    
+	};
+
     }
 
     $('#guppy-save-button').click( function() {
@@ -75,12 +103,17 @@ module.exports.launch = function( text, f ) {
     callback = f;
 
     try {
-	var expression = Expression.fromText( text );
-	window.e = expression;
-	guppyDiv.backend.set_content(expression.toXML());
+	if (text.match(/^ *$/)) {
+	    guppyDiv.backend.set_content('<m><e></e></m>');
+	} else {
+	    var expression = Expression.fromText( text );
+	    guppyDiv.backend.set_content(expression.toXML());
+	}
     } catch (err) {
-	$('#guppy-error').text(err);
+	guppyDiv.backend.set_content('<m><e></e></m>');	
+	//$('#guppy-error').text(err);
     }
     
     $('#guppymathModal').modal('show');
+    guppyDiv.activate();    
 };

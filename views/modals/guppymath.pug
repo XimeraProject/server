@@ -2,7 +2,7 @@
   .modal-dialog(role="document")
     .modal-content
       .modal-header
-        h5(class="modal-title",id="guppyModal") Expression Editor
+        h5(class="modal-title",id="guppyModal") Mathematical Expression Editor
         button.close(type="button",data-dismiss="modal",aria-label="Close")
           span(aria-hidden="true") &times;
       .modal-body
@@ -11,7 +11,7 @@
             button.btn.btn-secondary#guppy-plus(type="button") +
             button.btn.btn-secondary#guppy-minus(type="button") &ndash;
             button.btn.btn-secondary#guppy-times(type="button") &times;            
-            button.btn.btn-secondary#guppy-divide(type="button") &divide;                       
+            button.btn.btn-secondary#guppy-slash(type="button") &divide;                       
             button.btn.btn-secondary#guppy-exp(type="button") <em>x</em>&#8319;
           .btn-group.mr-2(role="group",aria-label="Radiacls")
             button.btn.btn-secondary#guppy-sqrt(type="button") &radic;
@@ -21,6 +21,19 @@
           .btn-group.mr-2(role="group",aria-label="Delimiters")
             button.btn.btn-secondary#guppy-paren(type="button") (&nbsp;)
             button.btn.btn-secondary#guppy-abs(type="button") |&nbsp;|
+        .btn-toolbar.mb-2(role="math palette",aria-label="Palette of mathematical symbols")
+          .btn-group.mr-2(role="group",aria-label="trig functions")
+            button.btn.btn-secondary#guppy-sin(type="button") sin
+            button.btn.btn-secondary#guppy-cos(type="button") cos
+            button.btn.btn-secondary#guppy-tan(type="button") tan
+          .btn-group.mr-2(role="group",aria-label="inverse trig functions")
+            button.btn.btn-secondary#guppy-arcsin(type="button") arcsin
+            button.btn.btn-secondary#guppy-arccos(type="button") arccos
+            button.btn.btn-secondary#guppy-arctan(type="button") arctan            
+          .btn-group.mr-2(role="group",aria-label="logarithms and exponentials")
+            button.btn.btn-secondary#guppy-etothe(type="button") <em>e</em>&#739;
+            button.btn.btn-secondary#guppy-ln(type="button") ln
+            button.btn.btn-secondary#guppy-log(type="button") log
         div#guppy(style="width:100%;height:100pt;")
         div#guppy-error
       .modal-footer
