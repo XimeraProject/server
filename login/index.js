@@ -266,6 +266,10 @@ function addLmsAccount(req, identifier, profile, done) {
 	
 	// See if we have already logged in with this narrow context
 	function(user, callback) {
+	    // It is possible that the user has changed, so we need to
+	    // replace our old user with the new user
+	    req.user = user;
+	    
 	    console.log("Looking up bridge for ltiId = ", identifier);
 	    
 	    var hash = {ltiId: identifier,
