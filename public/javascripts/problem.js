@@ -3,7 +3,7 @@ var _ = require('underscore');
 var TinCan = require('./tincan');
 var database = require('./database');
 
-var hintButtonHtml = '<button class="btn btn-info btn-reveal-hint" type="button" data-toggle="tooltip" data-placement="top" title="Reveal the next hint."><i class="fa fa-life-ring"/>&nbsp; Reveal Hint<span class="counter" style="display: none;"> (<span class="count">1</span>)</span></button>';
+var hintButtonHtml = '<button class="btn btn-info btn-reveal-hint" type="button" data-toggle="tooltip" data-placement="top" title="Reveal the next hint."><i class="fa fa-life-ring"/>&nbsp; Reveal Hint<span class="counter" style="display: none;"> (<span class="count">1</span> of <span class="total">1</span>)</span></button>';
 
 var createProblem = function() {
     var problem = $(this);
@@ -99,17 +99,28 @@ var createProblem = function() {
 	
 	hints.push( event.target );
 	problem.data( 'hints', hints  );
-	
+
 	if (hints.length == 1) {
 	    hintButton.click( function(event) {
+		hintButton.find( ".counter" ).show();	    
+		
+		var revealed = _.filter( hints, function(element) { return $(element).persistentData('available'); } );
+		hintButton.find( ".count" ).html( revealed.length + 1 );
+		
 		var nextHint = _.first( _.filter( hints, function(element) { return ! $(element).persistentData('available'); } ) );
 		$(nextHint).persistentData('available', true );
 		$(nextHint).persistentData('collapsed', false );
+
+		nextHint = _.first( _.filter( hints, function(element) { return ! $(element).persistentData('available'); } ) );		
+		if (!nextHint) {
+		    $(hintButton).fadeOut();
+		}
 	    });
-	    
-	    problem.prepend( hintButton );
+
+	    if (_.filter( hints, function(element) { return ! $(element).persistentData('available'); } ).length > 0)
+		problem.prepend( hintButton );
 	} else {
-	    hintButton.find( ".count" ).html( hints.length );
+	    hintButton.find( ".total" ).html( hints.length );
 	}
 	
 	return false;

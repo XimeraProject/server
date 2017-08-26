@@ -21,10 +21,10 @@
 
 .btn-hint-collapse {
     float: right;
-    // clear: right;
+    clear: right;
     margin: 0.25em;
     margin-right: 0;
-    
+    padding: 0;
     /* Sometimes mathjax elements cover up the hint collapse button */
     z-index: 1;
     position: relative;
