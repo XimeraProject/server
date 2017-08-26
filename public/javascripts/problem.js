@@ -1,14 +1,9 @@
 var $ = require('jquery');
 var _ = require('underscore');
-var MathJax = require('./mathjax');
 var TinCan = require('./tincan');
 var database = require('./database');
 
 var hintButtonHtml = '<button class="btn btn-info btn-reveal-hint" type="button" data-toggle="tooltip" data-placement="top" title="Reveal the next hint."><i class="fa fa-life-ring"/>&nbsp; Reveal Hint<span class="counter" style="display: none;"> (<span class="count">1</span>)</span></button>';
-
-var rejax = function() {
-    MathJax.Hub.Queue(["Rerender", MathJax.Hub]);
-};
 
 var createProblem = function() {
     var problem = $(this);
