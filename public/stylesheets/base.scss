@@ -49,6 +49,10 @@ about it and choose the background color. */
 
 @import "certificate";
 
+body {
+  counter-reset: practice;
+}
+
 // Animate the progress bar motion
 .progress-bar {
     transition: width .4s ease;
@@ -73,6 +77,18 @@ about it and choose the background color. */
     max-height: 11rem;
     height: 11rem;
     overflow: hidden;
+}
+
+.activity-card.practice::before {
+  counter-increment: practice;
+  content: counter(practice);
+  position: absolute;
+  width: 2rem;
+  font-size: 60%;
+  padding-top: 1em;
+  text-align: center;
+  z-index: 100;
+  color: black;
 }
 
 // The first (and only) anchor inside a card covers the whole card,
