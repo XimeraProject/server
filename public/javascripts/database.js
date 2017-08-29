@@ -8,6 +8,10 @@ var async = require('async');
 var io = require('socket.io-client');
 var jsondiffpatch = require('jsondiffpatch');
 
+var chat = require('./chat');
+var users = require('./users');
+
+
 var CANON = require('canon');
 var XXH = require('xxhashjs');
 function checksumObject(object) {
@@ -232,7 +236,7 @@ $(document).ready(function() {
 	    $('#update-version-button').attr('href', window.location.pathname + "?" + commitHash );
 	    $('#pageUpdate').show();
 	}
-    });    
+    });
 
     socket.on( 'sync', function(remoteDatabase) {
 	SHADOW = jsondiffpatch.clone(remoteDatabase);
@@ -326,6 +330,26 @@ $(document).ready(function() {
 	    }
 	});
     });
+
+    //////////////////////////////////////////////////////////////////
+    // Chat room functionality
+    
+    socket.on('chat', function(name, message) {
+	chat.appendToTranscript( name, message, true );
+    });
+
+    chat.onSendMessage( function(message) {
+	var name = users.me().then( function(user) {
+	    var first = user.name.split(' ')[0];
+	    var last = user.name.split(' ').slice(-1)[0];
+	    var initials = '??';
+	    if (first && last)
+		initials = first.substr(0,1) + last.substr(0,1);
+	    
+	    socket.emit( 'chat', initials, message );
+	});
+    });
+    
 });
 
 module.exports.setCompletion = function(repositoryName, activityPath, complete) {

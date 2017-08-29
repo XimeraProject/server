@@ -1,0 +1,60 @@
+.chat {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 30vw;
+    background-color: white;
+    z-index: 9000;
+    border-top: black 1px solid;
+    border-left: black 1px solid;    
+}
+
+.chat h5 {
+    margin: 1ex;
+}
+
+.chat .transcript {
+    border: none;
+    border-top: #eee 1px solid;
+    border-bottom: #eee 1px solid;    
+    max-height: 144pt;
+    padding: 1ex;
+    overflow: hidden;
+    overflow-y: scroll;
+    margin: 0;
+}
+
+.chat input {
+    width: 100%;
+    border: none;
+    padding: 2pt;
+}
+
+
+.chat dl {
+}
+
+.chat dl dt {
+    float: left;
+    margin-right: 1em;
+    color: #aaa;
+}
+
+.chat dl dd {
+    border-top: #eee 1px solid;
+    display: flex;    
+}
+
+
+.chat dl dt.other {
+    float: right;
+    margin: 0;
+    margin-left: 1em;
+    text-align: right;
+    clear: right;
+}
+
+.chat dl dd.other {
+    background: white;
+    text-align: right;
+}

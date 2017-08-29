@@ -76,6 +76,10 @@ exports.connection = function( socket ) {
 
 	toInstructors( socket, 'leave', { userId: realUserId, repositoryName: socket.repositoryName, activityPath: socket.activityPath } );
     });
+
+    socket.on('chat', function(name, message) {
+	socket.broadcast.to(socket.userRoom).emit('chat', name, message);
+    });
     
     socket.on('watch', function(userId, activityHash) {
 	// BADBAD: Need some security here...

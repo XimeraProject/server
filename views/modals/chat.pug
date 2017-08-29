@@ -1,0 +1,8 @@
+// This is not really a modal, but it is a sort of "dialog box"
+.chat(tabindex="-1",role="dialog",aria-labelledby="chatHeader")
+  h5(id="chatHeader") Chat
+    button.close(type="button",aria-label="Close")
+      span(aria-hidden="true") &times;          
+  .chat-body(style="display: none;")
+    dl.transcript
+    input(type="text")
