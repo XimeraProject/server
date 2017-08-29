@@ -42,5 +42,9 @@ span.LATEX .TEX .E {
 
 // Some better spacing
 .sectionHead {
-    @extend .mt-5;
+    @extend .mt-6;
+}
+
+.subsectionHead {
+    @extend .mt-3;
 }
