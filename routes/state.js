@@ -93,7 +93,6 @@ exports.connection = function( socket ) {
     });
 
     socket.on('xake-chat', function( payload ) {
-	console.log( "WHAT!??!" );
 	if (socket.isInstructor) {
 	console.log( payload );	    
 	    socket.to('/users/' + payload.userId).emit('chat', "<", payload.message);
