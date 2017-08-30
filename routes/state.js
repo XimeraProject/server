@@ -21,6 +21,8 @@ exports.push = function(repositoryName) {
 
 exports.connection = function( socket ) {
     socket.on('want-commit', function(repositoryName, filename) {
+	socket.repositoryName = repositoryName;
+
 	socket.join( '/repositories/' + repositoryName );
 	
 	repositories.activitiesFromRecentCommitsOnMaster( repositoryName, filename ).then( function(activities) {
@@ -77,8 +79,35 @@ exports.connection = function( socket ) {
 	toInstructors( socket, 'leave', { userId: realUserId, repositoryName: socket.repositoryName, activityPath: socket.activityPath } );
     });
 
+    socket.on('xake', function(credentials) {
+	var repository = credentials.repository;
+	var token = credentials.token;
+
+	// Fail silently
+	repositories.readRepositoryToken( repository ).then( function(actualToken) {
+	    if (token == actualToken) {
+		socket.isInstructor = true;
+		socket.join( '/repositories/' + repository + '/instructor' );
+	    }
+	});
+    });
+
+    socket.on('xake-chat', function( payload ) {
+	console.log( "WHAT!??!" );
+	if (socket.isInstructor) {
+	console.log( payload );	    
+	    socket.to('/users/' + payload.userId).emit('chat', "<", payload.message);
+	}
+    });
+    
     socket.on('chat', function(name, message) {
 	socket.broadcast.to(socket.userRoom).emit('chat', name, message);
+	
+	socket.to('/repositories/' + socket.repositoryName + '/instructor')
+	    .emit('xake-chat', { userId: socket.userId,
+				 name: socket.userName,
+				 message: message
+			       } );	
     });
     
     socket.on('watch', function(userId, activityHash) {
@@ -107,8 +136,10 @@ exports.connection = function( socket ) {
 	socket.join( socket.userRoom );
 
 	mdb.User.findOne({_id: realUserId}, { name: 1, imageUrl: 1, email: 1 }, function (err, user) {
-	    if (!err && user)
-		toInstructors( socket, 'enter', user);			
+	    if (!err && user) {
+		toInstructors( socket, 'enter', user);
+		socket.userName = user.name;
+	    }
 	});	
 	
 	if (!activityHash)

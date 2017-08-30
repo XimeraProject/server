@@ -426,7 +426,7 @@ passport.deserializeUser(function(id, done) {
     io.on( 'connection', function() {
 	console.log( "USER COUNT:", io.engine.clientsCount );
     });
-    
+
     ////////////////////////////////////////////////////////////////
     // State storage    
     
