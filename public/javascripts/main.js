@@ -97,6 +97,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     TEXDEF.macros.graph = "graph";
     TEXDEF.macros.newlabel = "newlabel";
     TEXDEF.macros.sage = "sage";
+    TEXDEF.macros.delimiter = "delimiter";
     
     TEXDEF.macros.js = "js";
 
@@ -138,6 +139,23 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     var sageCounter = 0;
     
     TEX.Parse.Augment({
+	/* sagetex emits delimiter commands pretty frequently */
+	delimiter: function(name) {
+	    var d = this.GetArgument(name);
+
+	    if (d.match(/426830A/)) {
+		var mml = TEX.Parse("\\langle",this.stack.env).mml();
+		this.Push(mml);
+		return;
+	    }
+
+	    if (d.match(/526930B/)) {
+		var mml = TEX.Parse("\\rangle",this.stack.env).mml();
+		this.Push(mml);
+		return;
+	    }	    
+	},
+	
 	/* Implements sagetex */
 	newlabel: function(name) {
 	    var label = this.GetArgument(name);
