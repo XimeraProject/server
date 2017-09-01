@@ -3,7 +3,23 @@ var _ = require('underscore');
 var TinCan = require('./tincan');
 var database = require('./database');
 
-var hintButtonHtml = '<button class="btn btn-info btn-reveal-hint" type="button" data-toggle="tooltip" data-placement="top" title="Reveal the next hint."><i class="fa fa-life-ring"/>&nbsp; Reveal Hint<span class="counter" style="display: none;"> (<span class="count">1</span> of <span class="total">1</span>)</span></button>';
+var hintCountdown = 30;
+
+$(function() {
+    var timer = window.setInterval( function() {
+	if (hintCountdown > 0) {
+	    hintCountdown = hintCountdown - 1;
+	    console.log( hintCountdown );
+	    $('.seconds-remaining').text(hintCountdown.toString());
+	} else {
+	    window.clearInterval(timer);
+	    $('.countdown').hide();
+	    $('.hint-unlocked').show();	    
+	}
+    }, 1000);
+});
+
+var hintButtonHtml = '<button class="btn btn-info btn-reveal-hint" type="button" data-toggle="tooltip" data-placement="top" title="Reveal the next hint."><i class="fa fa-life-ring"/>&nbsp; Reveal Hint<span class="counter" style="display: none;"> (<span class="count">1</span> of <span class="total">1</span>)</span><span class="hint-locked" style="display: none;"><span class="countdown"> (<i class="fa fa-lock"/> <span class="seconds-remaining">1</span>)</span><span class="hint-unlocked" style="display: none;"> <i class="fa fa-unlock"/></span></span></button>';
 
 var createProblem = function() {
     var problem = $(this);
@@ -93,15 +109,20 @@ var createProblem = function() {
 	    return true;
 	
 	var hints = [];
-	
+
 	if (problem.data( 'hints' ))
 	    hints = problem.data( 'hints' );
 	
 	hints.push( event.target );
 	problem.data( 'hints', hints  );
-
+	
 	if (hints.length == 1) {
 	    hintButton.click( function(event) {
+		if (hintCountdown > 0) {
+		    hintButton.find( ".hint-locked" ).show();		    
+		    return;
+		}
+		
 		hintButton.find( ".counter" ).show();	    
 		
 		var revealed = _.filter( hints, function(element) { return $(element).persistentData('available'); } );
@@ -117,10 +138,16 @@ var createProblem = function() {
 		}
 	    });
 
-	    if (_.filter( hints, function(element) { return ! $(element).persistentData('available'); } ).length > 0)
-		problem.prepend( hintButton );
+	    problem.prepend( hintButton );	    
 	} else {
 	    hintButton.find( ".total" ).html( hints.length );
+	}
+
+	var revealed = _.filter( hints, function(element) { return $(element).persistentData('available'); } );
+	if (hints.length == revealed.length) {
+	    hintButton.hide();
+	} else {
+	    hintButton.show();	    
 	}
 	
 	return false;
