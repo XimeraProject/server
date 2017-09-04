@@ -339,9 +339,6 @@ exports.ltiConfig = function(req, res) {
 	title: 'Ximera ' + file.path.replace(/\.html$/,''),
 	description: '',
 	launchUrl: config.root + '/' + req.params.repository + '/' + req.params.path + '/lti',
-	xourse: { repositoryName: req.repositoryName,
-		  path: file.path.replace(/\.html$/,'')
-		},
 	domain: url.parse(config.root).hostname
     };
         
