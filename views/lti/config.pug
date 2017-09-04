@@ -5,8 +5,6 @@ cartridge_basiclti_link(xmlns="http://www.imsglobal.org/xsd/imslticc_v1p0", xmln
   blti:icon
   blti:launch_url #{launchUrl}
   blti:custom
-    lticm:property(name="xourse") #{xourse.path}
-    lticm:property(name="repository") #{xourse.repositoryName}
     lticm:property(name="unlock_at") $Canvas.assignment.unlockAt.iso8601
     lticm:property(name="lock_at") $Canvas.assignment.lockAt.iso8601
     lticm:property(name="due_at") $Canvas.assignment.dueAt.iso8601

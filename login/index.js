@@ -236,6 +236,12 @@ function normalizeRepositoryName( name ) {
 function addLmsAccount(req, identifier, profile, done) {
     console.log(profile);
 
+    // Nowadays we set the custom parameters just via the launch URL
+    if (req.params.repository)
+	profile.custom_repository = req.params.repository;
+    if (req.params.path)
+	profile.custom_xourse = req.params.path;
+    
     if (profile.custom_repository)
 	profile.custom_repository = normalizeRepositoryName(profile.custom_repository);
 

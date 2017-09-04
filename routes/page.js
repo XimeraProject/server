@@ -338,7 +338,7 @@ exports.ltiConfig = function(req, res) {
     var hash = {
 	title: 'Ximera ' + file.path.replace(/\.html$/,''),
 	description: '',
-	launchUrl: config.root + '/lms',
+	launchUrl: config.root + '/' + req.params.repository + '/' + req.params.path + '/lti',
 	xourse: { repositoryName: req.repositoryName,
 		  path: file.path.replace(/\.html$/,'')
 		},

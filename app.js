@@ -338,6 +338,9 @@ passport.deserializeUser(function(id, done) {
 	app.post('/lms', passport.authenticate('lms', { successRedirect: '/just-logged-in',
 							failureRedirect: '/',
 							failureFlash: true}));
+	app.post('/:repository/:path(*)/lti', passport.authenticate('lms', { successRedirect: '/just-logged-in',
+									     failureRedirect: '/',
+									     failureFlash: true}));	
     }
     
     app.get('/logout', function (req, res) {
