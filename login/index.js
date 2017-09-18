@@ -327,7 +327,8 @@ function addLmsAccount(req, identifier, profile, done) {
                     bridge.lisResultSourcedid = profile.lis_result_sourcedid;
 		if (profile.oauth_consumer_key)
                     bridge.oauthConsumerKey = profile.oauth_consumer_key;
-
+		if (profile.lis_outcome_service_url)
+                    bridge.lisOutcomeServiceUrl = profile.lis_outcome_service_url;
 	    } else {
 		// make a new bridge
 		var hash = {
