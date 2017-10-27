@@ -357,11 +357,18 @@ var createMathAnswer = function() {
 		    correct = false;
 		}
 	    } else {
-		if (format !== 'expression') {
-		    console.log( "compare ", correctAnswer, " and ", studentAnswer );
-		    correct = (correctAnswer == studentAnswer);
-		} else
-		    correct = studentAnswer.equals( correctAnswer );
+		if (format === 'string') {
+		    // Strings should be normalized to uppercase when
+		    // doing case insensitive comparison, per
+		    // https://msdn.microsoft.com/en-us/library/bb386042.aspx
+		    correct = (correctAnswer.toUpperCase() == studentAnswer.toUpperCase());
+		} else {
+		    if (format !== 'expression') {
+			console.log( "compare ", correctAnswer, " and ", studentAnswer );
+			correct = (correctAnswer == studentAnswer);
+		    } else
+			correct = studentAnswer.equals( correctAnswer );
+		}
 	    }
 
 	    // Check if the correct answer is actually a promise to check for correctness
