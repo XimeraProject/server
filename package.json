@@ -1,7 +1,7 @@
 {
   "name": "ximera",
   "description": "Ximera interactive textbook server",
-  "version": "0.0.84",
+  "version": "0.0.85",
   "private": true,
   "scripts": {
     "start": "node app.js",
@@ -62,7 +62,7 @@
     "jquery.transit": "^0.9.12",
     "jsondiffpatch": "^0.2.4",
     "markdown": "0.5.0",
-    "math-expressions": "1.8.1",
+    "math-expressions": "1.8.3",
     "mathjax": "2.6.1",
     "method-override": "2.3.5",
     "mocha": "^3.4.2",
