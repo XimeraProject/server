@@ -5,47 +5,52 @@
 \begin{document}
 \begin{tikzpicture}
   \begin{scope}
-    \clip(0,0) rectangle (70cm,10cm);
+    \clip(0,0) rectangle (71cm,10cm);
     
     %% X
     \begin{scope}[xshift=1cm]
-    \draw[line width=2.5cm, red] (0,-2) -- (14,12);
-    \draw[line width=2.5cm, red] (0,12) -- (14,-2);
+    \draw[line width=2.5cm, black] (0,-2) -- (14,12);
+    \draw[line width=2.5cm, black] (0,12) -- (14,-2);
     \end{scope}
     %% I
     \begin{scope}[xshift=16.5cm]
-      \draw[line width=2.5cm, red] (0,0) -- (0,10);
+      \draw[line width=2.5cm, black] (0,0) -- (0,10);
     \end{scope}
 
     %% M
     \begin{scope}[xshift=19.5cm]
-    \draw[line width=2.5cm, red, smooth, rounded corners=1cm,]
+    \draw[line width=2.5cm, black, smooth, rounded corners=1cm,]
     (0,0) -- (0,8.75)%% 
     --(3.5,8.75) % width of top
     --(6.5,1.25)--(8.5,1.25)
     --(11.5,8.75)
-    --(14.5,8.75)--(14.5,0);
+    --(15,8.75)--(15,0);
     \end{scope}
 
     %% E
-    \begin{scope}[xshift=37cm,yshift=1.25cm]
-      \draw[line width=2.5cm, red, smooth, rounded corners=2cm,]
-      (8,0)--(0,0)--(0,3.75)--(6.5,3.75);
+    \begin{scope}[xshift=37.25cm,yshift=1.25cm]
+      \draw[line width=2.5cm, black, smooth, rounded corners=2cm,]
+      (10,0)--(0,0)--(0,3.75)--(9.5,3.75);
       
-      \draw[line width=2.5cm, red, smooth, rounded corners=2cm,]
-      (0,2)--(0,7.5)--(10,7.5);
+      \draw[line width=2.5cm, black, smooth, rounded corners=2cm,]
+      (5,3.75) -- (0,3.75)--(0,7.5)--(14,7.5);
     \end{scope}
 
     %% R
-    \begin{scope}[xshift=47cm,yshift=-1.25cm]
-      \draw[line width=2.5cm, red, smooth, rounded corners=2cm,]
+    \begin{scope}[xshift=49cm,yshift=-1.25cm]
+      \draw[line width=2.5cm, black, smooth, rounded corners=2cm,]
       (0,10)--(10,10)--(10,5)--(0,5)--(0,1.25);
       
-      \draw[line width=2.5cm, red,]
+      \draw[line width=2.5cm, black,]
       (6,5)--(10,0);
     \end{scope}
-    
+
+    %% A
+    \begin{scope}[xshift=59.5cm,yshift=-1.25cm]
+      \draw[line width=2.5cm, black, smooth, rounded corners=1.5cm,]
+      (0,0)--(5,10.75)--(10,0);
+    \end{scope}
   \end{scope}
-  %\draw[step=1cm,gray,very thin] (0,0) grid (70,10);
+  %\draw[step=1cm,gray,very thin] (0,0) grid (71,10);
 \end{tikzpicture}
 \end{document}
