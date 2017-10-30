@@ -2,7 +2,10 @@
 
 \usepackage{tikz}
 \usepackage{color}
+\usepackage{helvet}
+%\usepackage{gillius}
 \usepackage{standalone}
+\renewcommand{\familydefault}{\sfdefault}
 
 \begin{document}
 
@@ -10,10 +13,38 @@
   \begin{scope}
     \clip(0,0) rectangle (6,3);
     \draw[fill=white,draw=none] (0,0) rectangle (6,3);
-    \draw[fill=red,draw=none] (0.2,.2) rectangle (5.8,2.8);
-    \draw[fill=white,draw=none] (3,.3) rectangle (5.7,2.7);
-    \node at (2,1) {\tikzset{draw/.append style={blue}}
-    \resizebox{1in}{!}{\input{tikzLogo.tex}}};
+    \draw[fill=red!85!black,draw=none] (0.15,.15) rectangle (5.85,2.85);
+    \draw[fill=white,draw=none] (3,.2) rectangle (5.8,2.8);
+    \node[anchor=west] at (.15,2.2) {\tikzset{draw/.append style={white}}
+      \resizebox{2.5in}{!}{\input{tikzLogo.tex}}};
+    \node[anchor=west,white] at (.217,1.25) [draw,align=left,draw=none]{
+      \Large
+      Ximera\\[.16cm]
+      \Large
+      Interactive\\[.16cm]
+      \Large
+      Mathematics\\[.16cm]
+      \Large
+      Education\\[.16cm]
+      \Large
+      Resources for \\[.16cm]
+      \Large
+      All
+    };
+
+    \node[anchor=west,black] at (3.217,1.5) [draw,align=left,draw=none]{
+      \Huge
+      CRITICAL\\[.16cm]
+      \Huge
+      MATH\\[.16cm]
+      \Huge
+      ITEM\\[.7cm]
+      \Large
+      HANDLE WITH \\[.1cm]
+      \Large
+      EXTREME CARE
+    };
+    \node[anchor=west,red!85!black] at (.1,.1) {\tiny\textbf{XIMERA\quad FORM \quad 1368 \quad GIT \quad COMMIT \quad 6acbc06 \quad PREVIOUS \quad EDITION \quad IS \quad OBSOLETE.}};
   \end{scope}
   \end{tikzpicture}
 \end{document}
