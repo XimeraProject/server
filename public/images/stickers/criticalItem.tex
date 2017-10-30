@@ -1,0 +1,19 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+\usepackage{color}
+\usepackage{standalone}
+
+\begin{document}
+
+\begin{tikzpicture}[x=1in,y=1in] 
+  \begin{scope}
+    \clip(0,0) rectangle (6,3);
+    \draw[fill=white,draw=none] (0,0) rectangle (6,3);
+    \draw[fill=red,draw=none] (0.2,.2) rectangle (5.8,2.8);
+    \draw[fill=white,draw=none] (3,.3) rectangle (5.7,2.7);
+    \node at (2,1) {\tikzset{draw/.append style={blue}}
+    \resizebox{1in}{!}{\input{tikzLogo.tex}}};
+  \end{scope}
+  \end{tikzpicture}
+\end{document}
