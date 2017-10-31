@@ -7,14 +7,17 @@
 \usepackage{standalone}
 \renewcommand{\familydefault}{\sfdefault}
 
+\colorlet{redback}{red!85!black} 
+
 \begin{document}
 
 \begin{tikzpicture}[x=1in,y=1in] 
   \begin{scope}
     \clip(0,0) rectangle (6,3);
     \draw[fill=white,draw=none] (0,0) rectangle (6,3);
-    \draw[fill=red!85!black,draw=none] (0.15,.15) rectangle (5.85,2.85);
-    \draw[fill=white,draw=none] (3,.2) rectangle (5.8,2.8);
+    \draw[fill=redback,draw=none] (0.15,.15) rectangle (5.85,2.85);
+    \draw[fill=white,draw=none] (3,.25) rectangle (5.75,2.75);
+
     \node[anchor=west] at (.18,2.2) {\tikzset{draw/.append style={white}}
       \resizebox{2.6in}{!}{\input{tikzLogo.tex}}};
     \node[anchor=west,white] at (.247,1.3) [draw,align=left,draw=none]{
@@ -29,8 +32,9 @@
       \Large
       All
     };
-
-    \node[anchor=west,black] at (3.217,1.5) [draw,align=left,draw=none]{
+    
+    \node[anchor=west,black] at (3.217,1.64)
+         [draw,align=left,draw=none]{
       \Huge
       CRITICAL\\[.16cm]
       \Huge
@@ -41,8 +45,11 @@
       HANDLE WITH \\[.1cm]
       \Large
       EXTREME CARE
-    };
-    \node[anchor=west,red!85!black] at (.1,.1) {\tiny\textbf{XIMERA\quad FORM \quad 1368 \quad GIT \quad COMMIT \quad 6acbc06 \quad PREVIOUS \quad EDITION \quad IS \quad OBSOLETE.}};
+         };
+
+    \draw[very thick,black] (3.6,1.35)--(4.6,1.35);          
+    
+    \node[anchor=west,redback] at (.15,.1) {\tiny\textbf{XIMERA\quad FORM \quad 1368 \quad GIT \quad COMMIT \quad 6acbc06 \quad PREVIOUS \quad EDITION \quad IS \quad OBSOLETE.}};
   \end{scope}
   \end{tikzpicture}
 \end{document}
