@@ -4,6 +4,7 @@
     ▄██▀██▄   ██▐██  ▐██ ██▌  ██▌██        ▐█▌  ▀██▄   ██▀   ▀██
   ▄██▀   ▀██▄ ██▐██   ▀███▀   ██▌▀█████████▐█▌    ▀██▄██▀     ▀██
 
-Based on a rendering orginally drawn by:
-http://my.asciiart.club/
 
+
+Based on a rendering originally drawn by:
+http://my.asciiart.club/
