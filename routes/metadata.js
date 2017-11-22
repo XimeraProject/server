@@ -31,7 +31,7 @@ exports.parseActivityBlob = function( repositoryName, filename, blobHash, callba
 			     activity.description = $('div.abstract').html();
 
 			     if (!(activity.title)) {
-				 activity.title = blobHash.substr(0,6) + "&hellip;: &rdquo;" + poetry.poeticName(filename.replace(/\.html/,'')) + "&ldquo;";
+				 activity.title = blobHash.substr(0,6) + "&hellip;: &ldquo;" + poetry.poeticName(filename.replace(/\.html/,'')) + "&rdquo;";
 			     }
 			 }
 
