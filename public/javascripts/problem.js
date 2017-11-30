@@ -9,7 +9,6 @@ $(function() {
     var timer = window.setInterval( function() {
 	if (hintCountdown > 0) {
 	    hintCountdown = hintCountdown - 1;
-	    console.log( hintCountdown );
 	    $('.seconds-remaining').text(hintCountdown.toString());
 	} else {
 	    window.clearInterval(timer);
