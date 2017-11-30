@@ -102,6 +102,7 @@ We want to stop when the index reaches the end of the list of environments. */
       text-transform: capitalize;   /* CSS here only applies to one word, like "Theorem." or "Example." */
       font-weight: bold;
       padding-right: 0.5em;
+      font-family:  -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
    }
    
    .#{$nameOfClass} ul{

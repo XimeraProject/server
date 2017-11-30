@@ -48,12 +48,15 @@ about it and choose the background color. */
 .btn-group-vertical button {
     font-family: MJX_Main;    
 }
+.activity-card .card-text {
+    font-family: MJX_Main;   
+}
 // But navigation stuff is a system font
 nav {
     font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 // as are headings
-.sectionHead {
+.sectionHead, .subsectionHead, .likesubsectionHead {
     font-family:  -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
@@ -113,3 +116,11 @@ height: auto;
 nav .breadcrumb {
     margin-bottom: 0;
 }
+
+/* tex4ht generates enumerate-enumitem as description lists.  I want
+   them inline. */
+dt.enumerate-enumitem {
+    float: left;
+    padding-right: 0.5em;
+}
+
