@@ -1,15 +1,155 @@
-.xourse ul li {
-    display: inline;
-}
-
-.xourse ul li.itemize {
-    display: list-item;
-}
-
-.xourse .activity-card {
+.xourse-cards {
     margin: 0;
+    padding: 0;
+    width: 100%;
+    box-sizing: border-box;    
 }
 
-.xourse .activity-card {
-    padding: 6px;
+
+main.xourse {
+  display: flex;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+  width: 100%;
+  justify-content: center;
+  overflow: hidden;
 }
+
+main.xourse:before {
+  display: inline;
+}
+
+.card-group .card.activity-card .card-block {
+    width: 100%;
+    flex: 0 0 100%;
+}
+
+// Activity cards are square
+.card-group .card.activity-card {
+    display: block;
+    box-sizing: border-box;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    /* Seriously including 99.99% is ridiculous, but here we are. */
+    width: 100%;
+    flex: 0 0 100%;
+    @for $i from 1 through 28 {
+	@media (min-width: $i * 11rem) {
+	    width: calc(99.999% / #{$i});
+	    flex: 0 0 calc(99.999% / #{$i});	       
+	}
+    }
+    height: 11rem;
+}
+.kinetic .card.activity-card {
+    width: 11rem;
+}
+
+// The first (and only) anchor inside a card covers the whole card,
+// making it clickable.
+.activity-card a {
+    z-index: 900;
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%; width: 100%;
+}
+
+.xourse-card a {
+    z-index: 900;
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%; width: 100%;
+}
+
+// The section title cards are highlighted
+.card-sectionheading {
+    background-color: $gray-lighter;
+    border-color: $gray-lighter;
+    h4 {
+	font-weight: bold;
+    }
+}
+
+// The section title cards are highlighted
+.card.chapter {
+    background-color: $gray-lightest;
+}
+
+// The active card is displayed in an active way
+.activity-card.active {
+    //@extend .card-info;
+    background-color: $gray-dark;
+    border-color: $gray-dark;    
+    @extend .card-inverse;
+}
+
+// Practice cards just include the progress bar
+.activity-card.practice {
+    width: 2rem;
+    max-width: 2rem;
+    min-width: 2rem;
+    max-height: 11rem;
+    height: 11rem;
+    overflow: hidden;
+}
+
+.activity-card.practice::before {
+  counter-increment: practice;
+  content: counter(practice);
+  position: absolute;
+  width: 2rem;
+  font-size: 60%;
+  padding-top: 1em;
+  text-align: center;
+  z-index: 100;
+  color: black;
+  left: 0px;
+}
+
+
+// Activity cards are often used in a scrolling carousel
+.scroll {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+
+// some activtiy cards have vertical progress bars
+.vertical {
+    /*width: 176px;
+    position: relative;
+    left: -176px;
+   */
+    //-webkit-transform: rotate(-90deg);
+    //-webkit-transform-origin: top right;
+    //transform: rotate(-90deg);
+    //
+    //transform-origin: bottom center;
+    //padding: 0;
+    //margin: 0;
+    transform-origin: top right;
+    transform: rotate(-90deg);
+    position: relative;
+    left: -10rem;
+    width: 10rem;
+    margin: 0.5rem;
+}
+
+ 
+// At least on webkit we can get rid of the basically useless thumb
+// buttons
+div.scroll::-webkit-scrollbar {
+    width: 12pt;
+}
+
+div.scroll::-webkit-scrollbar-track {
+    background-color: $gray-lighter;
+}
+
+div.scroll::-webkit-scrollbar-thumb {
+    background-color: $gray-dark;
+}
+

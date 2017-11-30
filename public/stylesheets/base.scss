@@ -59,121 +59,6 @@ body {
     -webkit-transition: width .4s;
 }
 
-// Activity cards are square
-.activity-card.card {
-    width: 11rem;
-    max-width: 11rem;
-    min-width: 11rem;
-    max-height: 11rem;
-    height: 11rem;
-    overflow: hidden;
-}
-
-// Practice cards just include the progress bar
-.activity-card.practice {
-    width: 2rem;
-    max-width: 2rem;
-    min-width: 2rem;
-    max-height: 11rem;
-    height: 11rem;
-    overflow: hidden;
-}
-
-.activity-card.practice::before {
-  counter-increment: practice;
-  content: counter(practice);
-  position: absolute;
-  width: 2rem;
-  font-size: 60%;
-  padding-top: 1em;
-  text-align: center;
-  z-index: 100;
-  color: black;
-}
-
-// The first (and only) anchor inside a card covers the whole card,
-// making it clickable.
-.activity-card a {
-    z-index: 900;
-    position: absolute;
-    top: 0; left: 0;
-    height: 100%; width: 100%;
-}
-
-.xourse-card a {
-    z-index: 900;
-    position: absolute;
-    top: 0; left: 0;
-    height: 100%; width: 100%;
-}
-
-// The section title cards are highlighted
-.card-sectionheading {
-    background-color: $gray-lighter;
-    border-color: $gray-lighter;
-    h4 {
-	font-weight: bold;
-    }
-}
-
-// The section title cards are highlighted
-.card.chapter {
-    background-color: $gray-lightest;
-}
-
-// The active card is displayed in an active way
-.activity-card.active {
-    //@extend .card-info;
-    background-color: $gray-dark;
-    border-color: $gray-dark;    
-    @extend .card-inverse;
-}
-
-// Activity cards are often used in a scrolling carousel
-.scroll {
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  -ms-overflow-style: -ms-autohiding-scrollbar;
-}
-
-// some activtiy cards have vertical progress bars
-.vertical {
-    /*width: 176px;
-    position: relative;
-    left: -176px;
-   */
-    //-webkit-transform: rotate(-90deg);
-    //-webkit-transform-origin: top right;
-    //transform: rotate(-90deg);
-    //
-    //transform-origin: bottom center;
-    //padding: 0;
-    //margin: 0;
-    transform-origin: top right;
-    transform: rotate(-90deg);
-    position: relative;
-    left: -10rem;
-    width: 10rem;
-    margin: 0.5rem;
-}
-
- 
-// At least on webkit we can get rid of the basically useless thumb
-// buttons
-div.scroll::-webkit-scrollbar {
-    width: 12pt;
-}
-
-div.scroll::-webkit-scrollbar-track {
-    background-color: $gray-lighter;
-}
-
-div.scroll::-webkit-scrollbar-thumb {
-    background-color: $gray-dark;
-}
-
 @import "dialogue";
 @import "images";
 
@@ -204,3 +89,11 @@ height: auto;
 @import "chat";
 
 @import "print";
+
+@import "xourse";
+
+/* I do not understand why this is in bootstrap, but without it there
+   is space between my breadcrumb'd navbar and the content */
+nav .breadcrumb {
+    margin-bottom: 0;
+}
