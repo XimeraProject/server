@@ -1,4 +1,5 @@
 var $ = require('jquery');
+var MathJax = require('./mathjax');
 
 function zoomTo( id ) {
     var target = $(document.getElementById(id));
@@ -8,9 +9,9 @@ function zoomTo( id ) {
     target.stop().css("background-color", "#FFFF9C")
 	.animate({ backgroundColor: "#FFFFFF"}, 5000);
 
-    // This is pretty hacky -- I am depending on my scroller-anchor to compute the actual offset
+    // This is pretty hacky
     var el = target; 
-    var elOffset = el.offset().top - $('#scroller-anchor').offset().top;
+    var elOffset = el.offset().top;
     console.log( "elOffset = " + elOffset );
     var elHeight = el.outerHeight();
     var windowHeight = $(window).height();
@@ -32,6 +33,23 @@ function zoomTo( id ) {
 var createReference = function() {
     var reference = $(this);
 
+    function checkLabel(reference) {
+	console.log("checking ",reference);
+	var href = reference.attr('href');
+	href = href.replace(/^#/, '' );	
+	console.log("with its ",href);
+	if (MathJax.Extension["TeX/AMSmath"].labels[href]) {
+	    var label = MathJax.Extension["TeX/AMSmath"].labels[href];
+	    reference.text( label.tag );
+	    reference.attr('href', '#' + label.id );
+	    reference.addClass('mathjax-link');
+	}
+    }
+    
+    MathJax.Hub.Queue(
+	[checkLabel,reference]
+    );
+    
     reference.click( function(event) {
 	if (reference.hasClass('broken'))
 	    return false;
@@ -40,6 +58,11 @@ var createReference = function() {
 
 	href = href.replace(/^#/, '' );
 
+	if (reference.hasClass('mathjax-link')) {
+	    zoomTo( href );
+	    return;
+	}
+	
 	var repository = $("#theActivity").attr('data-repository-name');
 
 	if (!repository) {
