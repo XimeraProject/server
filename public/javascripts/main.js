@@ -64,6 +64,7 @@ MathJax.Hub.Config(
 	// BADBAD: this also breaks the layout triggers
 	//showMathMenu: false,
 	TeX: {
+	    equationNumbers: { autoNumber: "AMS" },
 	    extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js", "color.js"],
 	    Macros: {
 		xspace: '',

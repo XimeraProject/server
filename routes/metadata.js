@@ -21,8 +21,11 @@ exports.parseActivityBlob = function( repositoryName, filename, blobHash, callba
 			     activity = parseXourseDocument( $, filename );
 			 } else {
 			     $('a').each( function() {
-				 if ($(this).attr('id'))
-				     $(this).remove();
+				 if ($(this).attr('class') != 'ximera-label') {
+				     if ($(this).attr('id'))
+					 $(this).remove();
+				 } else {
+				 }
 			     });
 			     
 			     activity.title = $('title').html();

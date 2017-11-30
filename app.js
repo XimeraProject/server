@@ -461,6 +461,12 @@ passport.deserializeUser(function(id, done) {
 	     parallel([page.fetchMetadataFromActivity,
 		       page.parseActivity]),
 	     page.renderWithETag );        
+
+    app.get( '/labels/:repository/:label',
+	     redirectUnnormalizeRepositoryName,	     	     
+	     page.mostRecentMetadata,
+	     page.labels	     
+	   );    
     
     app.get( '/:repository/:path(*)',
 	     redirectUnnormalizeRepositoryName,
@@ -470,11 +476,11 @@ passport.deserializeUser(function(id, done) {
 	     parallel([page.fetchMetadataFromActivity,
 		       page.parseActivity]),
 	     page.renderWithETag );
-
+    
     app.get( '/:repository',
 	     redirectUnnormalizeRepositoryName,	     	     
 	     page.mostRecentMetadata,
-	     xourses.index );    
+	     xourses.index );
     
     if(!module.parent){
         server.listen(app.get('port'), function(stream){

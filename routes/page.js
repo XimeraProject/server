@@ -378,3 +378,17 @@ exports.mostRecentMetadata = function(req, res, next) {
 		next(err);
 	});
 };
+
+exports.labels = function(req, res) {
+    var label = req.params.label;
+
+    if (req.repositoryMetadata) {
+	if (label in req.repositoryMetadata.labels)
+	    res.json( req.repositoryMetadata.labels[label] );
+	else {
+	    res.status(404).send("");	    		    
+	}
+    } else {
+	res.status(500).send("");
+    }
+};

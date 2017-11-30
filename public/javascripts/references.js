@@ -1,8 +1,7 @@
 var $ = require('jquery');
 
 function zoomTo( id ) {
-    var target = $('#' + id);
-
+    var target = $(document.getElementById(id));
     target = target.closest( 'div' );
 
     // Make the div flash
@@ -41,21 +40,24 @@ var createReference = function() {
 
 	href = href.replace(/^#/, '' );
 
-	var commit = $("#theActivity").attr('data-commit');
+	var repository = $("#theActivity").attr('data-repository-name');
 
-	if (!commit) {
+	if (!repository) {
 	    console.log( "References must be on a page with #theActivity" );
 	    return false;
 	}
-	
+
 	$.ajax({
-	    url: "/labels/" + commit + "/" + href,
-	}).done(function(activity) {
+	    url: "/labels/" + repository + "/" + href,
+	}).done(function(filename) {
 	    // BADBAD: test if I'm on the curent page
-	    if (activity.hash == $("#theActivity").attr('data-hash')) {
+	    if (filename == $("#theActivity").attr('data-path')) {
 		zoomTo( href );
 	    } else {
-		window.location.href = "/course/" + activity.commit + "/" + activity.path + "#" + href;
+		var xourse = "";
+		if ($("#theActivity").attr('data-xourse-path'))
+		    xourse = "/" + $("#theActivity").attr('data-xourse-path');
+		window.location.href = "/" + repository + xourse + "/" + filename + "#" + href;
 	    }
 	}).fail( function(xhr, status, err) {
 	    reference.prepend( $('<i class="fa fa-unlink"></i><span>&nbsp;</span>') );
