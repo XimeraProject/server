@@ -24,7 +24,7 @@ exports.bindPopover = function(element) {
     inputBox.on( 'input', update );
 
     inputBox.focus( update );
-    
+
     inputBox.blur( function () {
 	$(element).popover('hide');
     });

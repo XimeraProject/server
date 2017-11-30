@@ -269,6 +269,8 @@ var createMathAnswer = function() {
 	    result.find('.btn-ximera-submit').hide();
 	    
 	    inputBox.prop( 'disabled', true );
+	    // Disabled elements won't fire the blur event that would otherwise hide this
+	    $(result).popover('hide');	    
 	} else {
 	    inputBox.prop( 'disabled', false );
 
@@ -377,6 +379,7 @@ var createMathAnswer = function() {
 		result.find('.btn-ximera-incorrect').hide();
 		result.find('.btn-ximera-checking').show();
 		result.find('.btn-ximera-submit').hide();
+		// Disabled elements won't fire the blur event that would otherwise hide this		
 		inputBox.prop( 'disabled', true );
 		
 		correct.then( function(value) {
