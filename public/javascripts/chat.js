@@ -4,7 +4,11 @@ $(function() {
     });
     
     $('.chat .close').on('click', function() {
-	$('.chat-body').hide();
+	if ($('.chat-body').is(":visible")) {
+	    $('.chat-body').hide();
+	} else {
+	    $('.chat').hide();
+	}
 	return false;
     });
 });
