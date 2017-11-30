@@ -41,14 +41,20 @@ about it and choose the background color. */
 
 @import "mathjax";
 
+// Body text is in a math-compatible font...
 .container-fluid {
     font-family: MJX_Main;
 }
 .btn-group-vertical button {
     font-family: MJX_Main;    
 }
+// But navigation stuff is a system font
 nav {
     font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+// as are headings
+.sectionHead {
+    font-family:  -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 @import "footer";
