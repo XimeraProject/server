@@ -78,3 +78,13 @@
     margin-top: 7rem;
   }
 }
+
+.carousel-logo {
+    position: absolute;
+    top: 18%;
+    left: 25%;
+    margin-right: -50%;
+    transform: translate(-25%, -18%) auto;
+    width: 50%;
+    filter: invert(100%);
+}

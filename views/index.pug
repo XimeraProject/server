@@ -4,6 +4,7 @@ block content
     - var LaTeX = '<span class="other-latex">L<sup>a</sup>T<sub>e</sub>X</span>';
     - var TeX = '<span class="tex">T<sub>e</sub>X</span>';
     #myCarousel.carousel.slide(data-ride='carousel')
+      img.carousel-logo(src=versionPath("/public/images/logo/logo.svg"))
       ol.carousel-indicators
         li.active(data-target='#myCarousel', data-slide-to='0')
         li(data-target='#myCarousel', data-slide-to='1')
@@ -11,7 +12,7 @@ block content
       .carousel-inner(role='listbox')
         .carousel-item.active
           // I have animations
-          //img.first-slide(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', alt='First slide')
+          //img.first-slide(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', alt='First slide') 
           .container
             .carousel-caption.d-none.d-md-block.text-left
               h1 Open Courses.  Free Math.
