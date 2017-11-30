@@ -41,6 +41,16 @@ about it and choose the background color. */
 
 @import "mathjax";
 
+.container-fluid {
+    font-family: MJX_Main;
+}
+.btn-group-vertical button {
+    font-family: MJX_Main;    
+}
+nav {
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
 @import "footer";
 
 @import "activity";
