@@ -168,8 +168,6 @@ var createProblem = function() {
 	    
 	    // Uncover the next level of problem-environments
 	    problem.find('.problem-environment').not('.hint').each( function() {
-		console.log("PROBLEM UNCOVERed: ", this);
-		console.log( "parent?=",$(this).closest('.problem-environment'));
 		if ($(this).parent().closest('.problem-environment').is(problem)) {
 		    $(this).persistentData( 'available', true );
 		}
