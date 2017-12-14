@@ -165,10 +165,12 @@ var createProblem = function() {
 	    
 	    // When a problem is complete, we announce it to the world
 	    problem.trigger( 'ximera:complete' );
-
+	    
 	    // Uncover the next level of problem-environments
 	    problem.find('.problem-environment').not('.hint').each( function() {
-		if ($(this).parent('.problem-environment').first().is(problem)) {
+		console.log("PROBLEM UNCOVERed: ", this);
+		console.log( "parent?=",$(this).closest('.problem-environment'));
+		if ($(this).parent().closest('.problem-environment').is(problem)) {
 		    $(this).persistentData( 'available', true );
 		}
 	    });
