@@ -24,6 +24,16 @@ main.xourse:before {
     flex: 0 0 100%;
 }
 
+.card.activity-card .card-number {
+    opacity: 0.5;
+    float: right;
+    font-size: 50%;
+}
+.card.activity-card .card-number:before {
+    content: "§";
+    margin-left: 6px;
+}
+
 // Activity cards are square
 .card-group .card.activity-card {
     display: block;
