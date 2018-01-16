@@ -7,9 +7,6 @@
 \usepackage{helvet}
 %\usepackage{gillius}
 
-\immediate\write18{git rev-parse HEAD > \jobname.info}
-
-
 \usepackage{standalone}
 \renewcommand{\familydefault}{\sfdefault}
 
@@ -55,7 +52,7 @@
 
     \draw[very thick,black] (3.6,1.35)--(4.6,1.35);          
     
-    \node[anchor=west,redback] at (.15,.1) {\tiny\textbf{XIMERA\quad FORM \quad 1368 \quad GIT \quad COMMIT \quad \input{\jobname.info} \quad PREVIOUS \quad EDITION \quad IS \quad OBSOLETE.}};
+    \node[anchor=west,redback] at (.15,.1) {\tiny\textbf{XIMERA\quad FORM \quad 1368 \quad GIT \quad COMMIT \quad \input{../../../.git/refs/heads/master} \quad PREVIOUS \quad EDITION \quad IS \quad OBSOLETE.}};
   \end{scope}
   \end{tikzpicture}
 \end{document}
