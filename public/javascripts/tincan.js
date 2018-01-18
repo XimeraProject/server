@@ -148,14 +148,12 @@ var uploadQueue = _.throttle( function() {
     if (repositoryName === undefined)
 	repositoryName = '';
 
-    /* TEMPORARY BANDAID TO PREVENT MELTDOWN
     $.ajax({
 	url: "/" + repositoryName + '/xAPI/statements',
 	type: 'POST',
 	data: JSON.stringify(queue),
 	contentType: 'application/json',
     });
-    */
     
     // We don't bother with errors or success -- if we fail to hear reports from students, that's fine!
     queue = [];
