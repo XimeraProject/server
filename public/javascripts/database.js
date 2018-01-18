@@ -79,7 +79,7 @@ function differentialSynchronization() {
     }
 }
 
-var differentialSynchronizationDebounced = _.debounce( differentialSynchronization, 1000 );
+var differentialSynchronizationDebounced = _.debounce( differentialSynchronization, 7000 );
 
 var findRepositoryName = _.memoize( function( element ) {
     if ($(element).hasClass('activity'))
