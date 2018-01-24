@@ -19,12 +19,14 @@ exports.update = _.debounce( function() {
 
     var pointsPossible = $("main").attr( 'data-points' );
     var xourseUrl = $("main").attr( 'data-xourse-url' );
-    console.log("score =",pointsEarned);
+
     var payload = {
 	pointsEarned: pointsEarned,
 	pointsPossible: pointsPossible	
     };
 
+    $(".progress.completion-meter").attr('title', 'Submitting grade...' );
+    
     $.ajax({
 	url: '/' + xourseUrl + '/gradebook',
 	type: 'PUT',
@@ -32,7 +34,16 @@ exports.update = _.debounce( function() {
 	contentType: 'application/json',	
 	success: function( result ) {
 	    console.log( "Recorded gradebook",payload );
-	}	    
+	    $('.progress-bar', ".progress.completion-meter").removeClass( 'bg-danger' );
+	    $('.progress-bar', ".progress.completion-meter").addClass( 'bg-success' );
+	    $(".progress.completion-meter").attr('title', 'Grade submitted at '  + (new Date()).toLocaleTimeString() );
+	},
+	error: function(jqXHR, err, exception) {
+	    $(".progress.completion-meter").attr('title', 'Could not submit grade.' );
+	    $('.progress-bar', ".progress.completion-meter").removeClass( 'bg-success' );
+	    $('.progress-bar', ".progress.completion-meter").addClass( 'bg-danger' );
+	    window.setTimeout( exports.update, 1000 );
+	}
     });
     
 }, 300 );

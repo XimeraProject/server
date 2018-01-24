@@ -41,7 +41,7 @@ exports.record = function(req, res, next) {
 				    callback(null);
 				    return;
 				}
-				
+
 				// BADBAD: round to a couple decimal places to avoid some weird appearances on canvas
 				var resultScore = Math.ceil(100 * parseFloat(req.body.pointsEarned) / parseFloat(req.body.pointsPossible)) / 100.0;
 				var resultTotalScore = Math.ceil(100 * parseFloat(req.body.pointsEarned) / parseFloat(req.body.pointsPossible) * pointsPossible)/100.0;
