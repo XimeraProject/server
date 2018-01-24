@@ -38,8 +38,12 @@ $(function() {
 		'empty_content': "\\color{gray}{\\text{Click here to start typing a mathematical expression}}"
 	    }
 	});
-	
-        GuppyMath.init_symbols(["/public/symbols.json"]);
+
+	if (GuppyMath.init_symbols) {
+            GuppyMath.init_symbols(["/public/symbols.json"]);
+	} else {
+	    console.log( "Warning: no GuppyMath.init_symbols" );
+	}
 	
 	function symbolizer( id, sym ) {
 	    $('#guppy-' + id).mousedown( function(event) {
