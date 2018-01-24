@@ -344,10 +344,13 @@ MathJax.Hub.Configured();
 
 $(document).ready(function() {
 
-    // Make sage cells
-    sagecell.makeSagecell({"inputLocation": ".sage"});
-    sagecell.makeSagecell({"inputLocation": ".sageOutput", "hide": ["editor","evalButton"], "autoeval": true });
-
+    // If we managed to load the sagecell code...
+    if (window.sagecell) {
+	// Make sage cells!
+	sagecell.makeSagecell({"inputLocation": ".sage"});
+	sagecell.makeSagecell({"inputLocation": ".sageOutput", "hide": ["editor","evalButton"], "autoeval": true });
+    }
+    
     // Make anchors with references from \ref actually work
     $('a.reference').reference();
     references.highlightTarget();

@@ -1,6 +1,6 @@
 if activity                                
   button.btn.btn-primary.mx-1(type="button", id="save-work-button")
-    span(style="display: none;", id="work-saved-error")
+    span(style="display: none;", id="work-error")
       | <i class="fa fa-exclamation-triangle"></i> 
       span.hidden-md-down &nbsp;Failed
     span(style="display: none;", id="work-saved")
@@ -9,6 +9,9 @@ if activity
     span(style="display: none;", id="work-saving")
       | <i class="fa fa-refresh fa-spin"></i> 
       span.hidden-md-down &nbsp;Saving&hellip;    
+    span(style="display: none;", id="work-reconnecting")
+      | <i class="fa fa-refresh fa-spin"></i> 
+      span.hidden-md-down &nbsp;Reconnecting&hellip;
     span(id="work-save")
       | <i class="fa fa-save"></i> 
       span.hidden-md-down &nbsp;Save      

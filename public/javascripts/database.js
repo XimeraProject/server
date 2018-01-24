@@ -23,6 +23,23 @@ var socket = undefined;
 var SAVE_WORK_BUTTON_ID = '#save-work-button';
 var RESET_WORK_BUTTON_ID = '#reset-work-button';    
 
+function saveButtonOnlyGrows() {
+  // This is less important when the save button is on the lefthand side
+  $(SAVE_WORK_BUTTON_ID).css('min-width', $(SAVE_WORK_BUTTON_ID).css('width') );
+}
+
+function saveWorkStatus(status, tooltip) {
+    $(SAVE_WORK_BUTTON_ID).children('span').not('#work-' + status).hide();
+    $(SAVE_WORK_BUTTON_ID).children('#work-' + status).show();
+    saveButtonOnlyGrows();
+    
+    if (tooltip) {
+	$(SAVE_WORK_BUTTON_ID).attr( 'title', tooltip );
+    } else {	
+	$(SAVE_WORK_BUTTON_ID).attr( 'title', '' );
+    }
+}
+
 var DATABASE = undefined;
 var SHADOW = undefined;
 var COMPLETIONS = {};
@@ -59,27 +76,21 @@ $.fn.extend({ activityPath: function() {
 
 function differentialSynchronization() {
     if ((!socket) || (!(socket.connected))) {
-	$(SAVE_WORK_BUTTON_ID).children('span').not('#work-saved-error').hide();
-	$(SAVE_WORK_BUTTON_ID).children('#work-saved-error').show();
-	saveButtonOnlyGrows();    
-	
+	saveWorkStatus( 'error', "Synchronization failed" );
+	window.setTimeout(differentialSynchronizationDebounced, 5000);
 	return;
     }
 
     var delta = jsondiffpatch.diff( SHADOW, DATABASE );
     
     if (delta !== undefined) {
-	$(SAVE_WORK_BUTTON_ID).children('span').not('#work-saving').hide();
-	$(SAVE_WORK_BUTTON_ID).children('#work-saving').show();
-	saveButtonOnlyGrows();    
-	
+	saveWorkStatus( 'saving' );
 	socket.emit( 'patch', delta, checksumObject(SHADOW) );
-	
 	SHADOW = jsondiffpatch.clone(DATABASE);
     }
 }
 
-var differentialSynchronizationDebounced = _.debounce( differentialSynchronization, 7000 );
+var differentialSynchronizationDebounced = _.debounce( differentialSynchronization, 2000 );
 
 var findRepositoryName = _.memoize( function( element ) {
     if ($(element).hasClass('activity'))
@@ -105,11 +116,6 @@ module.exports.get = function(element) {
     
     return DATABASE[identifier];
 };
-
-function saveButtonOnlyGrows() {
-  // This is less important when the save button is on the lefthand side
-  $(SAVE_WORK_BUTTON_ID).css('min-width', $(SAVE_WORK_BUTTON_ID).css('width') );
-}
 
 // Commit some changes to the database (which will propagate them to other instances)
 module.exports.commit = _.throttle( function() {
@@ -211,7 +217,7 @@ $(document).ready(function() {
     try {
 	socket = io.connect();
     } catch (err) {
-	alert( "Could not connect.  Your work is not being saved." );
+	saveWorkStatus( 'error', "Could not connect.  Your work is not being saved." );
 	socket = { on: function() {}, emit: function() {} };
     }
 
@@ -223,12 +229,28 @@ $(document).ready(function() {
     var filename = $('main').attr('data-path');
     
     socket.emit( 'want-commit', repositoryName, filename );
+    
     socket.on('push', function() {
 	socket.emit( 'want-commit', repositoryName, filename );	
     });
+
+    socket.on('reconnecting', function (attempt) {
+	saveWorkStatus( 'reconnecting' );	
+    });    
+
+    socket.on('reconnect_error', function (err) {
+	saveWorkStatus( 'error', err );
+	console.log(err);
+    });    
+
+    socket.on('connect_error', function (err) {
+	saveWorkStatus( 'error', err );
+	console.log(err);
+    });    
     
-    socket.on('reconnect', function () { 
-	socket.emit( 'watch', null, findActivityHash() );
+    socket.on('reconnect', function () {
+	saveWorkStatus( 'save' );
+	socket.emit( 'watch', learnerId, findActivityHash() );
     });
 
     socket.on('commit', function (remoteRepositoryName, remoteFilename, commitHash, remoteContentHash) {
@@ -277,21 +299,22 @@ $(document).ready(function() {
     });
 
     socket.on( 'disconnect', function(err) {
-	$(SAVE_WORK_BUTTON_ID).children('span').not('#work-saved-error').hide();
-	$(SAVE_WORK_BUTTON_ID).children('#work-saved-error').show();
-	saveButtonOnlyGrows();    
+	saveWorkStatus( 'error', "Disconnected" );
+	console.log(err);
     });
     
     socket.on( 'patched', function(err) {
 	if (err) {
-	    $(SAVE_WORK_BUTTON_ID).children('span').not('#work-saved-error').hide();
-	    $(SAVE_WORK_BUTTON_ID).children('#work-saved-error').show();
-	    saveButtonOnlyGrows();    
+	    saveWorkStatus( 'error', err );
+	    console.log(err);	    
 	} else {
-	    $(SAVE_WORK_BUTTON_ID).children('span').not('#work-saved').hide();
-	    $(SAVE_WORK_BUTTON_ID).children('#work-saved').show();
-	    saveButtonOnlyGrows();
+	    saveWorkStatus( 'saved', 'Uploaded at ' + (new Date()).toLocaleTimeString() );
 	}
+    });
+    
+    socket.on('pong', function(latency)  {
+	console.log( "ping: " + latency.toString() + "ms" );
+	$(SAVE_WORK_BUTTON_ID).attr( 'title', latency.toString() + "ms ping" );
     });
     
     socket.on( 'patch', function( delta, checksum ) {
