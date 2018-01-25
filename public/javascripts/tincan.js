@@ -148,16 +148,24 @@ var uploadQueue = _.throttle( function() {
     if (repositoryName === undefined)
 	repositoryName = '';
 
+    var data = JSON.stringify(queue);
+    queue = [];
+    
     $.ajax({
 	url: "/" + repositoryName + '/xAPI/statements',
 	type: 'POST',
-	data: JSON.stringify(queue),
+	data: data,
 	contentType: 'application/json',
+	error: function( xhr, textStatus, errorThrown ) {
+	    // If we fail, put our payload back into the queue...
+	    JSON.parse(data).forEach( function(statement) {
+		queue.push( statement );
+	    });
+	    // and try again later
+	    window.setTimeout(uploadQueue, 7001);
+	}
     });
-    
-    // We don't bother with errors or success -- if we fail to hear reports from students, that's fine!
-    queue = [];
-}, 1000 );
+}, 1009 );
 
 // statement should include a verb and an object; the current user is implied
 exports.recordStatement = function(statement) {
