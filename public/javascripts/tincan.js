@@ -157,7 +157,7 @@ var uploadQueue = _.throttle( function() {
     
     // We don't bother with errors or success -- if we fail to hear reports from students, that's fine!
     queue = [];
-}, 500 );
+}, 1000 );
 
 // statement should include a verb and an object; the current user is implied
 exports.recordStatement = function(statement) {
