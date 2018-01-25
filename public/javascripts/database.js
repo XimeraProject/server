@@ -77,7 +77,7 @@ $.fn.extend({ activityPath: function() {
 function differentialSynchronization() {
     if ((!socket) || (!(socket.connected))) {
 	saveWorkStatus( 'error', "Synchronization failed" );
-	window.setTimeout(differentialSynchronizationDebounced, 5000);
+	window.setTimeout(differentialSynchronizationDebounced, 3001);
 	return;
     }
 
@@ -90,7 +90,7 @@ function differentialSynchronization() {
     }
 }
 
-var differentialSynchronizationDebounced = _.debounce( differentialSynchronization, 2000 );
+var differentialSynchronizationDebounced = _.debounce( differentialSynchronization, 3001 );
 
 var findRepositoryName = _.memoize( function( element ) {
     if ($(element).hasClass('activity'))
@@ -411,7 +411,7 @@ var clickResetWorkButton = function() {
     differentialSynchronization();
 };
 
-// After the document loads, every 7000 milliseconds, make sure the database is saved.
+// After the document loads, every few seconds, make sure the database is saved.
 $(document).ready(function() {
     activityHash = findActivityHash();
     
