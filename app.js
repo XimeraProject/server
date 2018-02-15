@@ -213,6 +213,7 @@ passport.deserializeUser(function(id, done) {
     };
     app.use('/public', versionator.middleware);
     app.use('/public', express.static(path.join(__dirname, 'public'), {maxAge: '1y'}));;
+    app.use('/lib/guppy', express.static(path.join(__dirname, 'node_modules/guppy-dev/lib'), {maxAge: '1y'}));
     app.use('/node_modules', versionator.middleware);    
     app.use('/node_modules', express.static(path.join(__dirname, 'node_modules'), {maxAge: '1y'}));
 
