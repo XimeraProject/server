@@ -131,10 +131,13 @@ var createMathAnswer = function() {
 	else
 	    $("#math-edit-button").hide();
     }
-    
-    inputBox.focusout( function() {
-	window.setTimeout( function() { updateMathEditButton(); }, 100 );
-    });
+
+    /*
+      If you happen to click outside a math input box, then the math
+    editor will still be linked to your previous choice.
+    inputBox.focusout( function() { window.setTimeout( function() {
+    updateMathEditButton(); }, 100 ); });
+    */
     
     inputBox.focus( function() {
 	$(this).attr( 'data-input-box', true );
