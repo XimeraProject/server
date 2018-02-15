@@ -62,6 +62,7 @@ $(function() {
 	}	
 
 	symbolizer( 'pi', 'pi' );
+	symbolizer( 'theta', 'theta' );	
 	symbolizer( 'sqrt', 'sqrt' );
 	symbolizer( 'root', 'root' );
 	stringizer( 'times', '*' );
