@@ -45,6 +45,8 @@ var Desmos = require('./desmos');
 
 var Javascript = require('./javascript');
 
+var sagemath = require('./sagemath');
+
 MathJax.Hub.Config(
     {
 	// You might think putput/SVG would be better,
@@ -82,13 +84,41 @@ MathJax.Hub.Register.MessageHook("Math Processing Error",function (message) {
     //  do something with the error.  message[2] is the Error object that records the problem.
     console.log(message);
 });
-
+     
 MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+    
     // Remove CDATA's from the script tags
     MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
 	data.math = data.math.replace(/<!\[CDATA\[\s*((.|\n)*)\s*\]\]>/m,"$1");
     });
 
+    /*
+    MathJax.InputJax.TeX.postfilterHooks.Add(
+	MathJax.Callback([function(data) {
+	    console.log("postfilter",data);
+
+	    var f = function (callback) {
+		console.log("callback from postfilter");
+		return true;
+	    };
+	    return MathJax.Callback([f]);
+	}]);
+    */
+	/*
+    MathJax.InputJax.TeX.postfilterHooks.Add([function (data) {
+	console.log("postfilter",data);
+
+	var f = function (callback) {
+	    console.log("callback from postfilter");
+	    return true;
+	};
+
+	//f.isCallback = true;
+	//return f;
+	//return MathJax.Callback.After([f]);
+    }]);
+	*/
+    
     // Replace "answer" commands with DOM elements
     var VERSION = "1.0";
     
@@ -143,7 +173,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     var sageCounter = 0;
     
     TEX.Parse.Augment({
-	/* sagetex emits delimiter commands pretty frequently */
+	/* sage emits delimiter commands pretty frequently? */
 	delimiter: function(name) {
 	    var d = this.GetArgument(name);
 
@@ -160,19 +190,42 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 	    }	    
 	},
 	
-	/* Implements sagetex */
-	newlabel: function(name) {
-	    var label = this.GetArgument(name);
-	    var expansion = this.ParseArg(name);
-	    
-	    /* The primary assumption is that these appear in order. */
-	    sagetexExpansions.push( expansion );
-	},
-	sage: function(name) {
+	// https://stackoverflow.com/questions/38726590/replace-variable-in-mathjax-equation
+	sage: function(name, bad) {
 	    var code = this.GetArgument(name);
+	    code = "latex(" + code + ")";
 	    
-	    this.Push(sagetexExpansions[sageCounter]);
-	    sageCounter++;
+	    var fakefence = MML.mfenced( "??" ).With({open:'',close:''});
+	    this.Push(fakefence);
+
+	    var env = this.stack.env;
+	    var that = this;
+
+	    sagemath.sage(code).then( function(result) {
+		MathJax.Hub.Queue( [function () {
+		    var mml = TEX.Parse(result, env).mml();
+		    
+		    if (mml.inferred)
+			mml = MML.apply(MathJax.ElementJax,mml.data);
+		    else
+			mml = MML(mml);
+		    
+		    fakefence.data = mml.root.data;
+		
+		    var parent = fakefence;
+		    while( parent.parent != undefined )
+			parent = parent.parent;
+		
+		    MathJax.Hub.Queue(["Rerender", MathJax.Hub, parent.inputID]);
+		    
+		    return;
+		}]);
+
+	    }, function(err) {
+		// BADBAD: Display the error
+	    });
+	    
+	    return;
 	},
 	
 	/* Implements \graph{y=x^2, r = theta} and the like */
@@ -373,7 +426,7 @@ $(document).ready(function() {
 	    event.preventDefault();
 	}
     });
-    
+
     $(".dropdown-toggle").dropdown();
 
     $('[data-toggle="tooltip"]').tooltip();
