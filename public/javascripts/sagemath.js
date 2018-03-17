@@ -9,6 +9,17 @@ $(function() {
     }
 });
 
+var setSeed = _.once(function() {
+    if ($('main.activity').length > 0) {
+	var activityPath = $('main.activity').attr( 'data-path' );
+	var currfilebase = activityPath.split('/').slice(-1)[0];
+	var code = 'jobname="' + currfilebase + '"' + "\n";
+	code = code + "import hashlib\n";
+	code = code + "set_random_seed(int(hashlib.sha256(jobname.encode('utf-8')).hexdigest(), 16))\n";
+	exports.sage(code);
+    }
+});
+
 var executeSageSilents = _.once(function() {
     // Execute any sagesilent blocks
     $('script[type="text/sagemath"]').each( function() {
@@ -65,6 +76,7 @@ exports.createKernel = _.once(function() {
 });
 
 exports.sage = function(code) {
+    setSeed();
     executeSageSilents();
     return new Promise(function(resolve, reject) {
 	var output = function(msg) {
