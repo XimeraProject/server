@@ -9,6 +9,18 @@ $(function() {
     }
 });
 
+var executeSageSilents = _.once(function() {
+    // Execute any sagesilent blocks
+    $('script[type="text/sagemath"]').each( function() {
+	var code = $(this).text();
+	
+	// Remove any CDATA
+	code = code.replace(/#<!\[CDATA\[\s*((.|\n)*)\s*#\]\]>/m,"$1");
+	
+	exports.sage(code);
+    });
+});
+
 exports.createKernel = _.once(function() {
     return new Promise(function(resolve, reject) {
 	// There's a race condition here: window.sagecell may not be
@@ -53,6 +65,7 @@ exports.createKernel = _.once(function() {
 });
 
 exports.sage = function(code) {
+    executeSageSilents();
     return new Promise(function(resolve, reject) {
 	var output = function(msg) {
 	    if (msg.msg_type == "error") {
