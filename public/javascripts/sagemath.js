@@ -1,11 +1,20 @@
 var $ = require('jquery');
 var _ = require('underscore');
 
+$(function() {
+    // If there are any sage cells on the page
+    if ( ($( ".sage" ).length > 0) || ($( ".sageOutput" ).length > 0)) {
+	// Creating a kernel incidentally processes sagecells
+	exports.createKernel();
+    }
+});
+
 exports.createKernel = _.once(function() {
     return new Promise(function(resolve, reject) {
 	// There's a race condition here: window.sagecell may not be
 	// set quickly enough.  So we wait until window.sagecell is
 	// set
+	var walkback = 50;
 	function sagecellReady() {
 	    
 	    if ((typeof window.sagecell !== "undefined") &&
@@ -29,9 +38,14 @@ exports.createKernel = _.once(function() {
 		var d = document.createElement('div');    
 		window.sagecell.makeSagecell({inputLocation: d, linked: true});
 		d.children[0].children[1].click();
+
+		// Make sage cells---but make them linked so there's just one kernel.
+		window.sagecell.makeSagecell({"inputLocation": ".sage", linked: true});
+		window.sagecell.makeSagecell({"inputLocation": ".sageOutput", "hide": ["editor","evalButton"], "autoeval": true, linked: true });
 	    }
 	    else{
-		window.setTimeout(sagecellReady, 100);
+		walkback = walkback * 2;
+		window.setTimeout(sagecellReady, walkback);
 	    }
 	}
 	sagecellReady();

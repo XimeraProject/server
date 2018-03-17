@@ -366,15 +366,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 MathJax.Hub.Configured();
 
 $(document).ready(function() {
-    // BADBAD: this will not interact well with the \sage command.
-
-    // If we managed to load the sagecell code...
-    if (window.sagecell) {
-	// Make sage cells!
-	sagecell.makeSagecell({"inputLocation": ".sage"});
-	sagecell.makeSagecell({"inputLocation": ".sageOutput", "hide": ["editor","evalButton"], "autoeval": true });
-    }
-    
     // Make anchors with references from \ref actually work
     $('a.reference').reference();
     references.highlightTarget();
