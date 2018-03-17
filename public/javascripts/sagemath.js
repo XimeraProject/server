@@ -7,7 +7,9 @@ exports.createKernel = _.once(function() {
 	// set quickly enough.  So we wait until window.sagecell is
 	// set
 	function sagecellReady() {
-	    if(typeof window.sagecell !== "undefined"){
+	    
+	    if ((typeof window.sagecell !== "undefined") &&
+		(typeof window.sagecell.kernels !== "undefined")) {
 		// Create a sagecell in order to trigger the creation of a kernel
 		var arrayChangeHandler = {
 		    set: function(target, property, value, receiver) {
