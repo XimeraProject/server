@@ -91,33 +91,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
 	data.math = data.math.replace(/<!\[CDATA\[\s*((.|\n)*)\s*\]\]>/m,"$1");
     });
-
-    /*
-    MathJax.InputJax.TeX.postfilterHooks.Add(
-	MathJax.Callback([function(data) {
-	    console.log("postfilter",data);
-
-	    var f = function (callback) {
-		console.log("callback from postfilter");
-		return true;
-	    };
-	    return MathJax.Callback([f]);
-	}]);
-    */
-	/*
-    MathJax.InputJax.TeX.postfilterHooks.Add([function (data) {
-	console.log("postfilter",data);
-
-	var f = function (callback) {
-	    console.log("callback from postfilter");
-	    return true;
-	};
-
-	//f.isCallback = true;
-	//return f;
-	//return MathJax.Callback.After([f]);
-    }]);
-	*/
     
     // Replace "answer" commands with DOM elements
     var VERSION = "1.0";
@@ -137,30 +110,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     TEXDEF.macros.js = "js";
 
     var calculatorCount = 0;		    
-
-    var getMathML = function(jax,callback) {
-	var mml;
-	try {
-	    //
-	    //  Try to produce the MathML (if an asynchronous
-	    //     action occurs, a reset error is thrown)
-	    //   Otherwise we got the MathML and call the
-	    //     user's callback passing the MathML.
-	    //
-	    mml = jax.root.toMathML("");
-	} catch(err) {
-	    if (!err.restart) {throw err} // an actual error
-	    //
-	    //  For a delay due to file loading
-	    //    call this routine again after waiting for the
-	    //    the asynchronous action to finish.
-	    //
-	    return MathJax.Callback.After([getMathML,jax,callback],err.restart);
-	}
-	//
-	//  Pass the MathML to the user's callback
-	MathJax.Callback(callback)(mml);
-    };
     
     /* Sometimes htlatex generates \relax's which should be ignored */
     MathJax.InputJax.TeX.Definitions.Add({
@@ -170,9 +119,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 	    xspace: ["Macro", ""]
 	}});
 
-    var sagetexExpansions = [];
-    var sageCounter = 0;
-    
     TEX.Parse.Augment({
 	/* sage emits delimiter commands pretty frequently? */
 	delimiter: function(name) {
@@ -369,12 +315,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 	/* Implements \answer[key=value]{text} */
 	answer: function(name) {
 	    var keys = this.GetBrackets(name);
-
-	    var input = HTML.Element("input",
-				     {type:"text",
-				      className:"mathjax-input",
-				      style: {width: "155px", marginBottom: "10px", marginTop: "10px" }
-				     });
 	    
 	    // Parse key=value pairs from optional [bracket] into data- attributes
 	    var options = {};
@@ -389,9 +329,12 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 		});
 	    }	    
 	    
+	    var input = HTML.Element("input",
+				     {type:"text",
+				      className:"mathjax-input",
+				      style: {width: "155px", marginBottom: "10px", marginTop: "10px" }
+				     });
 	    input.setAttribute("xmlns","http://www.w3.org/1999/xhtml");
-
-	    var text;
 	    
 	    var format = options['format'];
 	    var answer;
@@ -414,7 +357,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 	    this.Push(semantics);
 
             MathJax.Hub.Queue( function () {
-		console.log("the object=",$("#MathJax-Span-" + semantics.spanID));
 		mathAnswer.createMathAnswer( $("#MathJax-Span-" + semantics.spanID), answer, options );
 	    });
 	}
@@ -424,6 +366,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 MathJax.Hub.Configured();
 
 $(document).ready(function() {
+    // BADBAD: this will not interact well with the \sage command.
 
     // If we managed to load the sagecell code...
     if (window.sagecell) {

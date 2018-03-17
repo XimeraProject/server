@@ -94,6 +94,8 @@ exports.createMathAnswer = function(input, answer, options) {
     if (!buttonless)
 	// This width is set in main.js
 	result.find( "input.form-control" ).width( 155 - buttonWidth - 5 );
+    else
+	result.find( "input.form-control" ).width( 135 - 5 );
 
     // Number the answer boxes in order
     var count = result.parents( ".problem-environment" ).attr( "data-answer-count" );
