@@ -125,3 +125,9 @@ dt.enumerate-enumitem {
     padding-right: 0.5em;
 }
 
+/* marginpar's are just floated right, but they really should be put
+   into an actual margin. */
+.marginpar {
+    float: right;
+    margin-left: 1em;
+}
