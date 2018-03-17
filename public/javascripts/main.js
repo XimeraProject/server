@@ -131,6 +131,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     TEXDEF.macros.graph = "graph";
     TEXDEF.macros.newlabel = "newlabel";
     TEXDEF.macros.sage = "sage";
+    TEXDEF.macros.sagestr = "sagestr";
     TEXDEF.macros.delimiter = "delimiter";
     
     TEXDEF.macros.js = "js";
@@ -191,37 +192,63 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 	},
 	
 	// https://stackoverflow.com/questions/38726590/replace-variable-in-mathjax-equation
-	sage: function(name, bad) {
+	sage: function(name) {
+	    return this.sagestr(name, true);
+	},
+	
+	sagestr: function(name, latexify) {
 	    var code = this.GetArgument(name);
-	    code = "latex(" + code + ")";
+	    console.log("sage'd",code);
 	    
-	    var fakefence = MML.mfenced( "??" ).With({open:'',close:''});
-	    this.Push(fakefence);
+	    if (latexify)
+		code = "latex(" + code + ")";
+
+	    var spinner = HTML.Element("i", {className:"fa fa-spinner fa-spin"});
+	    var spinnerMml = MML["annotation-xml"](MML.xml(spinner)).With({encoding:"application/xhtml+xml",isToken:true});
+	    var placeholder = MML.none( MML.semantics(spinnerMml) );
+	    this.Push(placeholder);
 
 	    var env = this.stack.env;
 	    var that = this;
 
 	    sagemath.sage(code).then( function(result) {
+		// The sagecell server returns quoted strings?  Let's
+		// unquote them in this unsafe way.
+		if (latexify != true)
+		    result = eval(result);
+		
 		MathJax.Hub.Queue( [function () {
+		    // We act as if we are "Translate"ing the TeX into
+		    // MML, so most of this is copied from MathJax's
+		    // input/TeX/jax.js
 		    var mml = TEX.Parse(result, env).mml();
-		    
+
+		    // I have no idea what this does, but MathJax's
+		    // Translate command does it, and it doesn't work
+		    // without it.
 		    if (mml.inferred)
 			mml = MML.apply(MathJax.ElementJax,mml.data);
 		    else
 			mml = MML(mml);
-		    
-		    fakefence.data = mml.root.data;
-		
-		    var parent = fakefence;
+
+		    // Copy the newly Translate'd TeX over to the
+		    // placeholder "mnone" MathML element
+		    placeholder.data = mml.root.data;
+
+		    // We need to figure out our MathJax ID so we can
+		    // request a Rerender
+		    var parent = placeholder;
 		    while( parent.parent != undefined )
 			parent = parent.parent;
-		
-		    MathJax.Hub.Queue(["Rerender", MathJax.Hub, parent.inputID]);
 		    
+		    if (parent.inputID)
+			MathJax.Hub.Queue(["Rerender", MathJax.Hub, parent.inputID]);
+
 		    return;
 		}]);
 
 	    }, function(err) {
+		console.log(err);
 		// BADBAD: Display the error
 	    });
 	    
@@ -342,17 +369,15 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 	/* Implements \answer[key=value]{text} */
 	answer: function(name) {
 	    var keys = this.GetBrackets(name);
-	    
 
 	    var input = HTML.Element("input",
 				     {type:"text",
 				      className:"mathjax-input",
-				      style: {width: "175px", marginBottom: "10px", marginTop: "10px" }
+				      style: {width: "155px", marginBottom: "10px", marginTop: "10px" }
 				     });
-
-	    console.log(input);
 	    
 	    // Parse key=value pairs from optional [bracket] into data- attributes
+	    var options = {};
 	    if (keys !== undefined) {
 		keys.split(",").forEach( function(keyvalue) { 
 		    var key = keyvalue.split("=")[0];
@@ -360,7 +385,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 		    if (value === undefined)
 			value = true;
 		    
-		    input.setAttribute("data-" + key, value);
+		    options[key] = value;
 		});
 	    }	    
 	    
@@ -368,10 +393,11 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
 	    var text;
 	    
-	    var format = input.getAttribute("data-format");
+	    var format = options['format'];
+	    var answer;
+
 	    if ((format == 'string') || (format == 'integer') || (format == 'float')) {
-		text = this.GetArgument(name);
-		input.setAttribute("data-answer", text);
+		answer = this.GetArgument(name);
 	    } else {
 		// This actually PARSES the content of the \answer command
 		// with mathjax; the result will be MathML.  If we had
@@ -379,16 +405,18 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 		// gotten the raw string passed to \answer, but by using
 		// ParseArg, we can invoke \newcommand's from inside an
 		// \answer.
-		text = this.ParseArg(name);
-
-		// the \answer{contents} get placed in a data-answer attribute
-		getMathML( MML(text), function( mml ) {
-		    input.setAttribute("data-answer", mml);
-		});
+		answer = this.ParseArg(name);
 	    }
 	    
-	    var mml = MML["annotation-xml"](MML.xml(input)).With({encoding:"application/xhtml+xml",isToken:true});
-	    this.Push(MML.semantics(mml));
+	    var xml = MML.xml(input);
+	    var mml = MML["annotation-xml"](xml).With({encoding:"application/xhtml+xml",isToken:true});
+	    var semantics = MML.semantics(mml);
+	    this.Push(semantics);
+
+            MathJax.Hub.Queue( function () {
+		console.log("the object=",$("#MathJax-Span-" + semantics.spanID));
+		mathAnswer.createMathAnswer( $("#MathJax-Span-" + semantics.spanID), answer, options );
+	    });
 	}
     });
 });

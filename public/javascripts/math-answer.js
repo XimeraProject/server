@@ -72,8 +72,8 @@ function assignGlobalVariable( answerBox, text ) {
     }
 }
 
-var createMathAnswer = function() {
-    var input = $(this);
+exports.createMathAnswer = function(input, answer, options) {
+    input = $(input);
     var width = input.width();
 
     var result = $(template);
@@ -83,20 +83,17 @@ var createMathAnswer = function() {
 	buttonless = true;
     }
 
-    // Copy over the old attributes!
-    _.each( input, function(element) {
-	_.each( element.attributes, function(a) {
-	    if (a.name.match( /^data-/ )) {
-		result.attr( a.name, a.value );
-	    }
-	});
+    // Copy over the old attributes...
+    _.each( _.allKeys(options), function(key) {
+	result.attr( "data-" + key, options[key] );
     });
     
     input.replaceWith( result );
 
     var buttonWidth = $('.input-group-btn', result).width();
     if (!buttonless)
-	result.find( "input.form-control" ).width( width - 2*buttonWidth );
+	// This width is set in main.js
+	result.find( "input.form-control" ).width( 155 - buttonWidth - 5 );
 
     // Number the answer boxes in order
     var count = result.parents( ".problem-environment" ).attr( "data-answer-count" );
@@ -303,11 +300,20 @@ var createMathAnswer = function() {
     });
     
     result.find( ".btn-ximera-submit" ).click( function() {
-	var correctAnswerText = result.attr('data-answer');
+	// We're passing an "answer" from MathJax
+	var correctAnswerText = answer;
+
+	// Convert any internal mathjax representations a mathml
+	// string; we do this now in case the jax was changed
+	if (answer.toMathML) {
+	    correctAnswerText = answer.toMathML("");
+	    correctAnswerText = correctAnswerText.replace('<none>', '').replace('</none>','');
+	}
+	
 	var correctAnswer;
 	var format = result.attr('data-format');
 	if (format === undefined) format = 'expression';
-	
+
 	if (format == 'integer')
 	    correctAnswer = parseInt(correctAnswerText);
 	else if (format == 'float')
@@ -321,6 +327,7 @@ var createMathAnswer = function() {
 		try {
 		    correctAnswer = Expression.fromMml(correctAnswerText);
 		} catch (err) {
+		    console.log(correctAnswerText);
 		    console.log( "Instructor error in \\answer: " + err );
 		    correctAnswer = Expression.fromText( "sqrt(-1)" );
 		}
@@ -448,10 +455,5 @@ var createMathAnswer = function() {
     popover.bindPopover( result );
 };
 
-$.fn.extend({
-    mathAnswer: function() {
-	return this.each( createMathAnswer );
-    }
-});    
 
 
