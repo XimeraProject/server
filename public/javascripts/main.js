@@ -369,29 +369,33 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 });
 
 function searchJax(jax, spanID){
+    // Sometimes the jax is null?  I don't really know why.
+    if (jax === null)
+	return null;
+    
      if(jax.spanID == spanID){
           return jax;
-     }else if (jax.data != null){
+     } else if (jax.data != null){
           var i;
-          var result = null;
-          for(i=0; result == null && i < jax.data.length; i++){
-               result = searchJax(jax.data[i], spanID);
-          }
-          return result;
+         var result = null;
+         for(i=0; result == null && i < jax.data.length; i++){
+             result = searchJax(jax.data[i], spanID);
+         }
+         return result;
      }
      return null;
 }
 
 var answerIdBindings = {};
 
-MathJax.Hub.signal.Interest(function (message) {
+MathJax.Hub.signal.Interest(function (message) {    
     if (message[0] == "New Math") {
 	var id = message[1];
 
 	if (answerIdBindings[id] === undefined) {
 	    answerIdBindings[id] = {};
-	}	
-	
+	}
+
 	var element = $('#' + id + "-Frame");
 	var jax = MathJax.Hub.getAllJax(id);
 
@@ -399,7 +403,7 @@ MathJax.Hub.signal.Interest(function (message) {
 	
 	$(".mathjaxed-input", element).each( function() {
 	    var result = $(this);
-
+	    
 	    if (answerIdBindings[id][internalCount] === undefined) {
 		// Number the answer boxes in order
 		var count = result.parents( ".problem-environment" ).attr( "data-answer-count" );
@@ -416,11 +420,11 @@ MathJax.Hub.signal.Interest(function (message) {
 	    
 	    result.attr('id', answerIdBindings[id][internalCount] );
 	    internalCount = internalCount + 1;
-	    
+
 	    var answerDom = result.closest('.semantics').prev('.mpadded').find('.mphantom').first();
 	    var answerId = parseInt(answerDom.attr('id').replace('MathJax-Span-',''));
 	    var answer = searchJax(jax[0].root, answerId);
-	    
+
 	    mathAnswer.connectMathAnswer( result, answer );
 	});
     }

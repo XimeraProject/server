@@ -39,15 +39,7 @@ var createActivity = function() {
 	    }
 	});
 
-	var firstTime = true;
-	MathJax.Hub.Register.MessageHook( "End Process", function(message) {
-	    if (firstTime) {
-		console.log("End Process (1st time)");
-		firstTime = false;
-		// BADBAD: Arguably this should happen AFTER some of the other set up below?
-		ProgressBar.monitorActivity( activity );
-	    }
-	});
+	ProgressBar.monitorActivity( activity );
 
 	$(".problem-environment", activity).problemEnvironment();
 	$(".multiple-choice", activity).multipleChoice();
