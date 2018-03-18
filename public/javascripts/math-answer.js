@@ -308,6 +308,7 @@ exports.createMathAnswer = function(input, answer, options) {
 	// Convert any internal mathjax representations a mathml
 	// string; we do this now in case the jax was changed
 	if (answer.toMathML) {
+	    answer.parent = {inferRow: false};
 	    correctAnswerText = answer.toMathML("");
 	    correctAnswerText = correctAnswerText.replace('<none>', '').replace('</none>','');
 	}
