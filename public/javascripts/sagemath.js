@@ -25,10 +25,7 @@ var executeSageSilents = _.once(function() {
     $('script[type="text/sagemath"]').each( function() {
 	var code = $(this).text();
 	// Remove any CDATA
-	window.original = code.toString();	
 	code = code.replace(/[\s\S]*#<!\[CDATA\[\s*\n((.|\n)*)\s*#\]\]>/m,"$1");
-	window.thecode = code;
-	console.log(code);
 	
 	exports.sage(code);
     });
