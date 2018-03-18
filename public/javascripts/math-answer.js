@@ -140,10 +140,6 @@ exports.connectMathAnswer = function(result, answer) {
 	});
     });
 
-    
-    if (false) {
-    }
-
     result.on( 'ximera:statistics:answers', function(event, answers) {
 	var total = Object.keys( answers ).map( function(x) { return answers[x]; } ).reduce(function(a, b) { return a + b; });
 
@@ -280,31 +276,34 @@ exports.connectMathAnswer = function(result, answer) {
     });
     
     result.find( ".btn-ximera-submit" ).click( function() {
-	// We're passing an "answer" from MathJax
-	var correctAnswerText = answer;
-
-	// BADBAD: need to fix how we handle STRINGs and NUJMERICS which should be via mtext and mi
-	
-	// Convert any internal mathjax representations a mathml
-	// string; we do this now in case the jax was changed
-	if (answer.toMathML) {
-	    answer.parent = {inferRow: false};
-	    correctAnswerText = answer.toMathML("");
-	    correctAnswerText = correctAnswerText.replace('<none>', '').replace('</none>','');
-	    correctAnswerText = correctAnswerText.replace('<mphantom>', '<math>').replace('</mphantom>','</math>');
-	}
+	// We're passing an "answer" from MathJax, as "jax"
+	answer.parent = {inferRow: false};
+	var correctAnswerText = answer.toMathML("");	
+	correctAnswerText = correctAnswerText.replace('<none>', '').replace('</none>','');
+	correctAnswerText = correctAnswerText.replace('<mphantom>', '<math>').replace('</mphantom>','</math>');
 	
 	var correctAnswer;
 	var format = result.attr('data-format');
 	if (format === undefined) format = 'expression';
 
-	if (format == 'integer')
+	if ((format == 'integer') || (format == 'float')) {
+	    correctAnswerText = correctAnswerText.replace('<math>', '').replace('</math>','');
+	    correctAnswerText = correctAnswerText.replace('<mn>', '').replace('</mn>','');
+	}
+
+	if (format == 'string') {
+	    correctAnswerText = correctAnswerText.replace('<math>', '').replace('</math>','');
+	    correctAnswerText = correctAnswerText.replace('<mtext>', '').replace('</mtext>','');
+	    correctAnswerText = correctAnswerText.trim();
+	}
+
+	if (format == 'integer') {
 	    correctAnswer = parseInt(correctAnswerText);
-	else if (format == 'float')
+	} else if (format == 'float') {
 	    correctAnswer = parseFloat(correctAnswerText);
-	else if (format == 'string')
+	} else if (format == 'string') {
 	    correctAnswer = correctAnswerText;
-	else {
+	} else {
 	    try {	    
 		correctAnswer = Expression.fromLatex(correctAnswerText);
 	    } catch (err) {

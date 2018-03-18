@@ -329,6 +329,8 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 		    var value = keyvalue.split("=").slice(1).join('=');
 		    if (value === undefined)
 			value = true;
+
+		    input.setAttribute("data-" + key,value);
 		    
 		    options[key] = value;
 		});
@@ -339,7 +341,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 	    
 	    if (format == 'string') {
 		answer = this.GetArgument(name);
-		answer = MML.text(answer);
+		answer = MML.mtext(answer);
 	    } else if ((format == 'integer') || (format == 'float')) {
 		answer = this.GetArgument(name);
 		answer = MML.mn(answer);
