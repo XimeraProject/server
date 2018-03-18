@@ -126,11 +126,28 @@ function videoWatched(target, container, start, finish) {
     });
 }
 
+function updateViewedFraction(event, container) {
+    var currentTime = event.target.getCurrentTime();
+
+    if (event.target.getDuration() > 0) {
+	var duration = event.target.getDuration();
+	
+	if (container.persistentData('fractionViewed')) {
+	    if ((currentTime/duration) > container.persistentData('fractionViewed')) {
+		container.persistentData('fractionViewed', currentTime / duration);
+	    }
+	} else {
+	    container.persistentData('fractionViewed', currentTime / duration);
+	}
+    }
+}
+
 function onPlayerStateChange(event, container, videoId) {
     var container = $('#' + container);
     
     var lastPlayerState = container.data('lastPlayerState');
-
+    updateViewedFraction( event, container );
+    
     switch (event.data) {
     case (YT.PlayerState.PLAYING):
 	container.data( 'lastPlayedTime', event.target.getCurrentTime() );
@@ -162,7 +179,7 @@ function onPlayerStateChange(event, container, videoId) {
     case (YT.PlayerState.ENDED):
 	// BADBAD: I'm faking this as if it meant "completed" but it
 	// doesn't necessarily mean the learner watched ALL the video
-        videoWatched(event.target, container, container.data('lastPlayedTime'), event.target.getCurrentTime())	
+        videoWatched(event.target, container, container.data('lastPlayedTime'), event.target.getCurrentTime());
         videoEnded(event.target, container);
         break;
 	
@@ -180,11 +197,15 @@ function onPlayerReady(event, container, videoId) {
 
     // This is the only way I could capture the "watched" events
     container = $('#' + container);
-    setInterval( function(){
+    
+    window.setInterval( function(){
 	container.data( 'currentTime', target.getCurrentTime() );
     }, 200); // 200ms granularity seems good enough to me
-}
 
+    window.setInterval( function(){
+	updateViewedFraction( event, container );
+    }, 17011);
+}
 
 var videosToConstruct = [];    
 
@@ -227,20 +248,27 @@ window.onYouTubeIframeAPIReady = _.once( function() {
     });
 });    
 
-$(function() {
-    $('.youtube-player').each( function() {
-	var div = $(this);
-	div.uniqueId();
-	var id = div.attr('id');
-	
-	var url = div.attr('data-youtube');
+function createVideo() {
+    var div = $(this);
+    div.uniqueId();
+    var id = div.attr('id');
+    
+    var url = div.attr('data-youtube');
+    
+    if (url.match( /watch\?v=/ )) {
+	url = url.replace( /.*watch\?v=/, '' );
+    }
+    
+    player.playVideo( id, url );
 
-	if (url.match( /watch\?v=/ )) {
-	    url = url.replace( /.*watch\?v=/, '' );
-	}
+    console.log("Deploy player for",url);
+    
+}
 
-	player.playVideo( id, url );
-    });
+$.fn.extend({
+    youtube: function() {
+	return this.each( createVideo );
+    }
 });
 
 module.exports = player;

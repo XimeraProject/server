@@ -80,7 +80,7 @@ var calculateProgress = function(problem, depth) {
     children.each( function() {
 	total = total + calculateProgress( this, depth + 1 );
     });
-
+    
     return (total + nodeValue) / (children.length + nodeMaxValue);
 };
 
@@ -89,11 +89,32 @@ var activityToMonitor = undefined;
 var update = _.debounce( function() {
     var value = calculateProgress( activityToMonitor );
 
+    // Top level videos are also counted
+    var videoCount = 0;
+    var totalViewed = 0.0;
+    $('.youtube-player').each( function() {
+	videoCount = videoCount + 1;
+	var fraction = $(this).persistentData( 'fractionViewed' );
+	console.log( "fraction=",fraction );
+	if (fraction) {
+	    totalViewed = totalViewed + fraction;
+	}
+    });
+
     // Activities that have NO problems will have total progress
     // NaN because of the 0 denominator; let's give credit to
     // students who simply look at such activities
-    if (isNaN(value))
-	value = 1;
+    if (isNaN(value)) {
+	if (videoCount > 0) {	
+	    value = totalViewed / videoCount;
+	} else {
+	    value = 1;
+	}
+    } else {
+	if (videoCount > 0) {	
+	    value = (value + totalViewed) / (1 + videoCount);
+	}
+    }
 
     // Only display progress if there is no invigilator running
     if (!($('#invigilator').data( 'invigilator' ))) {
@@ -123,6 +144,11 @@ exports.monitorActivity = function( activity ) {
     $('.problem-environment', activity).each( function() {
 	$(this).persistentData( update );
     });
+
+    $('.youtube-player', activity).each( function() {
+	$(this).persistentData( update );
+    });
+
 };
 
 

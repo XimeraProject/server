@@ -70,13 +70,15 @@ exports.createMathAnswer = function(input, answer) {
 
     var result = $(template);
     var buttonless = false;
+
+    // BADBAD: since the thing isn't in the DOM, I can't tell if it should be buttonless.
+    
     if (input.parents('.validator').length > 0) {
 	var result = $(buttonlessTemplate);
 	buttonless = true;
     }
     
     input.append( result );
-    result = input;
 
     return;
 }

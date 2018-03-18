@@ -34,7 +34,6 @@ var StickyScroll = require('./sticky-scroll' );
 var xourse = require('./xourse');
 var imageEnvironment = require('./image-environment');
 
-var youtube = require('./youtube');
 var instructor = require('./instructor');
 
 var rowclick = require('./rowclick');

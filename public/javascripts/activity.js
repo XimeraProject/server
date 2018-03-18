@@ -12,6 +12,7 @@ var selectAll = require('./select-all');
 var wordChoice = require('./word-choice');
 var hint = require('./hint');
 var foldable = require('./foldable');
+var youtube = require('./youtube');
 
 var freeResponse = require('./free-response');
 var shuffle = require('./shuffle');
@@ -60,7 +61,8 @@ var createActivity = function() {
 	$(".feedback", activity).feedback();
 	$(".validator", activity).validator();
 	$(".inline-javascript", activity).javascript();
-
+	$('.youtube-player', activity).youtube();
+	
 	connectInteractives();
 	
 	$('.activity-card').activityCard();
