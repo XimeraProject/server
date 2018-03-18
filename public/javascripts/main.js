@@ -144,7 +144,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 	
 	sagestr: function(name, latexify) {
 	    var code = this.GetArgument(name);
-	    console.log("sage'd",code);
 	    
 	    if (latexify)
 		code = "latex(" + code + ")";
@@ -315,6 +314,12 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 	/* Implements \answer[key=value]{text} */
 	answer: function(name) {
 	    var keys = this.GetBrackets(name);
+
+	    var input = HTML.Element("form",
+				     {className:"form-inline mathjaxed-input",
+				      style: {width: "155px", marginBottom: "10px", marginTop: "10px", display: "inline-block" },
+				     });
+	    input.setAttribute("xmlns","http://www.w3.org/1999/xhtml");
 	    
 	    // Parse key=value pairs from optional [bracket] into data- attributes
 	    var options = {};
@@ -327,20 +332,17 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 		    
 		    options[key] = value;
 		});
-	    }	    
-	    
-	    var input = HTML.Element("input",
-				     {type:"text",
-				      className:"mathjax-input",
-				      style: {width: "155px", marginBottom: "10px", marginTop: "10px" }
-				     });
-	    input.setAttribute("xmlns","http://www.w3.org/1999/xhtml");
-	    
+	    }
+	    	    
 	    var format = options['format'];
 	    var answer;
-
-	    if ((format == 'string') || (format == 'integer') || (format == 'float')) {
+	    
+	    if (format == 'string') {
 		answer = this.GetArgument(name);
+		answer = MML.text(answer);
+	    } else if ((format == 'integer') || (format == 'float')) {
+		answer = this.GetArgument(name);
+		answer = MML.mn(answer);
 	    } else {
 		// This actually PARSES the content of the \answer command
 		// with mathjax; the result will be MathML.  If we had
@@ -350,18 +352,80 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 		// \answer.
 		answer = this.ParseArg(name);
 	    }
+
+	    this.Push(MML.mpadded(MML.mphantom(answer)).With({height: 0, width: 0}));
 	    
+	    mathAnswer.createMathAnswer( input );
+
 	    var xml = MML.xml(input);
 	    var mml = MML["annotation-xml"](xml).With({encoding:"application/xhtml+xml",isToken:true});
 	    var semantics = MML.semantics(mml);
 	    this.Push(semantics);
 
-            MathJax.Hub.Queue( function () {
-		mathAnswer.createMathAnswer( $("#MathJax-Span-" + semantics.spanID), answer, options );
-	    });
+	    return;
 	}
     });
 });
+
+function searchJax(jax, spanID){
+     if(jax.spanID == spanID){
+          return jax;
+     }else if (jax.data != null){
+          var i;
+          var result = null;
+          for(i=0; result == null && i < jax.data.length; i++){
+               result = searchJax(jax.data[i], spanID);
+          }
+          return result;
+     }
+     return null;
+}
+
+var answerIdBindings = {};
+
+MathJax.Hub.signal.Interest(function (message) {
+    if (message[0] == "New Math") {
+	var id = message[1];
+
+	if (answerIdBindings[id] === undefined) {
+	    answerIdBindings[id] = {};
+	}	
+	
+	var element = $('#' + id + "-Frame");
+	var jax = MathJax.Hub.getAllJax(id);
+
+	var internalCount = 0;
+	
+	$(".mathjaxed-input", element).each( function() {
+	    var result = $(this);
+
+	    if (answerIdBindings[id][internalCount] === undefined) {
+		// Number the answer boxes in order
+		var count = result.parents( ".problem-environment" ).attr( "data-answer-count" );
+		if (typeof count === typeof undefined || count === false)
+		    count = 0;
+    
+		result.parents( ".problem-environment" ).attr( "data-answer-count", parseInt(count) + 1 );
+		var problem = result.parents( ".problem-environment" ).first();
+		var problemIdentifier = result.parents( ".problem-environment" ).attr( "id" );
+
+		// Store the answer index as an id
+		answerIdBindings[id][internalCount] = "answer" + count + problemIdentifier;
+	    }
+	    
+	    result.attr('id', answerIdBindings[id][internalCount] );
+	    internalCount = internalCount + 1;
+	    
+	    var answerDom = result.closest('.semantics').prev('.mpadded').find('.mphantom').first();
+	    var answerId = parseInt(answerDom.attr('id').replace('MathJax-Span-',''));
+	    var answer = searchJax(jax[0].root, answerId);
+	    
+	    mathAnswer.connectMathAnswer( result, answer );
+	});
+    }
+});
+
+
 
 MathJax.Hub.Configured();
 

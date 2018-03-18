@@ -10,17 +10,10 @@ var Javascript = require('./javascript');
 var palette = require('./math-palette');
 
 // I comment these out to make sure that the input box is rounded, but this breaks the display of the statistics
-var buttonlessTemplate = '<form class="form-inline mathjaxed-input" style="display: inline-block;">' +
-//	'<span class="input-group">' +
-   	'<input class="form-control" type="text"/>' +
-//	'<span class="input-group-btn">' +
-//	'</span>' +
-//	'</span>' +
-	'</form>';
+var buttonlessTemplate = '<input class="form-control" type="text"/>';
 
 // add labels for screenreader
-var template = '<form class="form-inline mathjaxed-input" style="display: inline-block;">' +
-    '<div class="input-group">' +
+var template = '<div class="input-group">' +
    	'<input class="form-control" aria-label="answer" type="text"/>' +
         '<span class="input-group-btn">' +
 	'<button class="px-0 btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Correct answer!" style="display: none; z-index: 1;" aria-label="correct answer" aria-live="assertive">' +
@@ -29,15 +22,14 @@ var template = '<form class="form-inline mathjaxed-input" style="display: inline
 	'<button class="px-0 btn btn-danger btn-ximera-incorrect" data-toggle="tooltip" data-placement="top" title="Incorrect.  Try again!" style="display: none; z-index: 1;" aria-label="incorrect!  try again" aria-live="assertive">' +
 	'<i class="fa fa-fw fa-times"/>' +
         '</button>' +
-	'<button class="px-0 btn btn-primary disabled btn-ximera-checking" aria-label="evaluating your work" data-toggle="tooltip" data-placement="top" title="Evaluating your work..." style="z-index: 1;">' +
+	'<button class="px-0 btn btn-primary disabled btn-ximera-checking" aria-label="evaluating your work" data-toggle="tooltip" data-placement="top" title="Evaluating your work..." style="z-index: 1; display: none;">' +
 	'<i class="fa fa-fw fa-spinner fa-spin"/>' +
 	'</button>' +
 	'<button class="px-0 btn btn-primary btn-ximera-submit" aria-label="check work" data-toggle="tooltip" data-placement="top" title="Click to check your answer." style="z-index: 1;">' +
 	'<i class="fa fa-fw fa-question"/>' +
 	'</button>' +
 	'</span>' +
-	'</div>' +
-        '</form>';
+    '</div>';
 
 function parseFormattedInput( format, input ) {
     if (format == 'integer')
@@ -72,7 +64,7 @@ function assignGlobalVariable( answerBox, text ) {
     }
 }
 
-exports.createMathAnswer = function(input, answer, options) {
+exports.createMathAnswer = function(input, answer) {
     input = $(input);
     var width = input.width();
 
@@ -82,32 +74,18 @@ exports.createMathAnswer = function(input, answer, options) {
 	var result = $(buttonlessTemplate);
 	buttonless = true;
     }
-
-    // Copy over the old attributes...
-    _.each( _.allKeys(options), function(key) {
-	result.attr( "data-" + key, options[key] );
-    });
     
-    input.replaceWith( result );
+    input.append( result );
+    result = input;
 
-    var buttonWidth = $('.input-group-btn', result).width();
-    if (!buttonless)
-	// This width is set in main.js
-	result.find( "input.form-control" ).width( 155 - buttonWidth - 5 );
-    else
-	result.find( "input.form-control" ).width( 135 - 5 );
+    return;
+}
 
-    // Number the answer boxes in order
-    var count = result.parents( ".problem-environment" ).attr( "data-answer-count" );
-    if (typeof count === typeof undefined || count === false)
-	count = 0;
-    
-    result.parents( ".problem-environment" ).attr( "data-answer-count", parseInt(count) + 1 );
-    var problem = result.parents( ".problem-environment" ).first();
-    var problemIdentifier = result.parents( ".problem-environment" ).attr( "id" );
-
-    // Store the answer index as an id
-    result.attr('id', "answer" + count + problemIdentifier);
+exports.connectMathAnswer = function(result, answer) {
+    var buttonless = false;
+    if (result.parents('.validator').length > 0) {
+	buttonless = true;
+    }
     
     // When the box changes, update the database AND any javascript variables
     var inputBox = result.find( "input.form-control" );
@@ -118,12 +96,19 @@ exports.createMathAnswer = function(input, answer, options) {
 	assignGlobalVariable( result, text );	
     });
 
+    // ACCESSIBILITY: unfortunately, we prevent spacebar from opening
+    // a mathjax menu.  By enabling menus in mathjax, right-clicking
+    // still opens the menu.
+    //inputBox.on( 'keydown', function(event) {
+    inputBox.on( 'keydown', function(event) {	
+	if (event.keyCode == 32) {
+	    event.stopPropagation();
+	}
+    });
+
     ////////////////////////////////////////////////////////////////
     // Link the "math editor" button in the toolbar to the CURRENTLY
     // FOCUSED textfield
-    var timer = undefined;
-
-    
     function updateMathEditButton() {
 	if ($(document.activeElement).attr('data-input-box'))
 	    $("#math-edit-button").show();
@@ -155,16 +140,9 @@ exports.createMathAnswer = function(input, answer, options) {
 	});
     });
 
-
-
-    // ACCESSIBILITY: unfortunately, we prevent spacebar from opening
-    // a mathjax menu.  By enabling menus in mathjax, right-clicking
-    // still opens the menu.
-    inputBox.on( 'keydown', function(event) {
-	if (event.keyCode == 32) {
-	    event.stopPropagation();
-	}
-    });
+    
+    if (false) {
+    }
 
     result.on( 'ximera:statistics:answers', function(event, answers) {
 	var total = Object.keys( answers ).map( function(x) { return answers[x]; } ).reduce(function(a, b) { return a + b; });
@@ -305,12 +283,15 @@ exports.createMathAnswer = function(input, answer, options) {
 	// We're passing an "answer" from MathJax
 	var correctAnswerText = answer;
 
+	// BADBAD: need to fix how we handle STRINGs and NUJMERICS which should be via mtext and mi
+	
 	// Convert any internal mathjax representations a mathml
 	// string; we do this now in case the jax was changed
 	if (answer.toMathML) {
 	    answer.parent = {inferRow: false};
 	    correctAnswerText = answer.toMathML("");
 	    correctAnswerText = correctAnswerText.replace('<none>', '').replace('</none>','');
+	    correctAnswerText = correctAnswerText.replace('<mphantom>', '<math>').replace('</mphantom>','</math>');
 	}
 	
 	var correctAnswer;
