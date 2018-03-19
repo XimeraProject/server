@@ -12,26 +12,15 @@ $pulsate-colors: (
 
 @each $pulsator in $pulsate-list {
 
-.#{$pulsator}.pulsate {
-    -webkit-animation: pulsate-#{$pulsator} 1s infinite alternate;
-    -moz-animation: pulsate-#{$pulsator} 1s infinite alternate;
-    -animation: pulsate-#{$pulsator} 1s infinite alternate;
-    text-shadow: 0 0 8px #ccc;
-}
+  .#{$pulsator}.pulsate {
+      animation: pulsate-#{$pulsator} 0.5s infinite alternate;
+      animation-timing-function: linear;
+      text-shadow: 0 0 8px #ccc;
+  }
 
-@-webkit-keyframes pulsate-#{$pulsator} {
-    from { box-shadow: 0 0 10px #333; }
-    to { box-shadow: 0 0 20px map-get($pulsate-colors,$pulsator); }
-}
-
-@-moz-keyframes pulsate-#{$pulsator} {
-    from { box-shadow: 0 0 10px #333; }
-    to { box-shadow: 0 0 20px map-get($pulsate-colors,$pulsator); }
-}
-
-@keyframes pulsate-#{$pulsator} {
-    from { box-shadow: 0 0 10px #333; }
-    to { box-shadow: 0 0 20px map-get($pulsate-colors,$pulsator); }
-}
+  @keyframes pulsate-#{$pulsator} {
+      from { box-shadow: 0 0 10px #333; transform: rotate(-2deg); }
+      to { box-shadow: 0 0 20px map-get($pulsate-colors,$pulsator); transform: rotate(2deg); }
+  }
 }
 
