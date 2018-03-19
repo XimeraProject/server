@@ -53,7 +53,10 @@ $(function() {
 	}	
 
 	symbolizer( 'pi', 'pi' );
-	symbolizer( 'theta', 'theta' );	
+	symbolizer( 'theta', 'theta' );
+	symbolizer( 'phi', 'phi' );
+	symbolizer( 'rho', 'rho' );
+	
 	symbolizer( 'sqrt', 'sqrt' );
 	symbolizer( 'root', 'root' );
 	stringizer( 'times', '*' );
