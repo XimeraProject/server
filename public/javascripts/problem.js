@@ -3,7 +3,7 @@ var _ = require('underscore');
 var TinCan = require('./tincan');
 var database = require('./database');
 
-var hintCountdown = 1;
+var hintCountdown = 30;
 
 $(function() {
     var timer = window.setInterval( function() {
