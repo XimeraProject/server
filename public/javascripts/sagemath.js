@@ -22,12 +22,12 @@ var setSeed = function(callback) {
     }
 };
 
-var seed = undefined;
+var seed = null;
 var sendSeed = function(newSeed) {
-    if (seed == newSeed)
+    if ((seed == newSeed) && (seed !== null))
 	return;
 
-    newSeed = seed;
+    seed = newSeed;
     
     if (newSeed !== undefined) {
 	exports.sage("set_random_seed(" + newSeed + ")");
@@ -76,12 +76,13 @@ $(function() {
     $("#show-me-another-button").click( function() {
 	// A different seed algorithm would be better here, just so
 	// students get different problems
-	
+	var oldSeed = $("#seed").persistentData( 'seed' );
+	    
 	seed = undefined;	
 	database.resetWork();
 	
-	if (seed !== undefined) {
-	    $("#seed").persistentData( 'seed', seed + 1 );
+	if (oldSeed !== undefined) {
+	    $("#seed").persistentData( 'seed', oldSeed + 1 );
 	} else {
 	    $("#seed").persistentData( 'seed', 0 );	    
 	}
