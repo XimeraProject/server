@@ -138,3 +138,9 @@ dt.enumerate-enumitem {
 ul.itemize1 {
     padding-left: 40px;
 }
+
+div.quote {
+    @extend .blockquote;
+    margin-top: 1em;
+    margin-bottom: 1em;    
+}
