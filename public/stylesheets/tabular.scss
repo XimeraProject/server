@@ -1,0 +1,19 @@
+table.tabular {
+    @extend .table;
+}
+
+table.tabular th, table.tabular td {
+    border-top: none;
+}
+
+tr.hline hr {
+    display: none;
+}
+
+tr.hline {
+    border-top: 1px solid black;
+}
+
+table.tabular td {
+    padding: 0;
+}
