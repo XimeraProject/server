@@ -11,7 +11,6 @@ var jsondiffpatch = require('jsondiffpatch');
 var chat = require('./chat');
 var users = require('./users');
 
-
 var CANON = require('canon');
 var XXH = require('xxhashjs');
 function checksumObject(object) {
@@ -410,6 +409,8 @@ var clickResetWorkButton = function() {
     synchronizePageWithDatabase();
     differentialSynchronization();
 };
+
+module.exports.resetWork = clickResetWorkButton;
 
 // After the document loads, every few seconds, make sure the database is saved.
 $(document).ready(function() {

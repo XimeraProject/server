@@ -1,5 +1,7 @@
 var $ = require('jquery');
 var _ = require('underscore');
+var MathJax = require('mathjax');
+var database = require('./database');
 
 $(function() {
     // If there are any sage cells on the page
@@ -9,27 +11,102 @@ $(function() {
     }
 });
 
-var setSeed = _.once(function() {
-    if ($('main.activity').length > 0) {
-	var activityPath = $('main.activity').attr( 'data-path' );
-	var currfilebase = activityPath.split('/').slice(-1)[0];
-	var code = 'jobname="' + currfilebase + '"' + "\n";
-	code = code + "import hashlib\n";
-	code = code + "set_random_seed(int(hashlib.sha256(jobname.encode('utf-8')).hexdigest(), 16))\n";
-	exports.sage(code);
+var seeded = false;
+var seedCallbacks = [];
+var setSeed = function(callback) {
+    if (seeded) {
+	callback();
+    } else {
+	seedCallbacks.push( callback );
+	getSeed();
     }
-});
+};
 
-var executeSageSilents = _.once(function() {
-    // Execute any sagesilent blocks
-    $('script[type="text/sagemath"]').each( function() {
-	var code = $(this).text();
-	// Remove any CDATA
-	code = code.replace(/[\s\S]*#<!\[CDATA\[\s*\n((.|\n)*)\s*#\]\]>/m,"$1");
+var seed = undefined;
+var sendSeed = function(newSeed) {
+    if (seed == newSeed)
+	return;
+
+    newSeed = seed;
+    
+    if (newSeed !== undefined) {
+	exports.sage("set_random_seed(" + newSeed + ")");
+    } else {
+	if ($('main.activity').length > 0) {
+	    var activityPath = $('main.activity').attr( 'data-path' );
+	    var currfilebase = activityPath.split('/').slice(-1)[0];
 	
-	exports.sage(code);
+	    var code = 'jobname="' + currfilebase + '"' + "\n";
+	    code = code + "import hashlib\n";
+	    code = code + "set_random_seed(int(hashlib.sha256(jobname.encode('utf-8')).hexdigest(), 16))\n";
+	    exports.sage(code);
+	}
+    }
+};
+
+var getSeed = _.once( function() {
+    var seedDiv = $('<div id="seed" style="display: none;"></div>');
+    $('main.activity').append( seedDiv );
+	
+    seedDiv.fetchData( function() {
+	seeded = true;
+	    
+	var seed = seedDiv.persistentData('seed');
+	sendSeed(seed);
+
+	seedDiv.persistentData( function() {
+	    var newSeed = seedDiv.persistentData('seed');
+	    if (newSeed == seed) {
+		return;
+	    }
+	    sendSeed(newSeed);
+	    executedSageSilents = false;
+	    executeSageSilents();
+	    MathJax.Hub.Queue(["Reprocess", MathJax.Hub]);
+	});
+	
+	seedCallbacks.forEach( function(callback) {
+	    callback();
+	});
+	seedCallbacks = [];
     });
 });
+
+$(function() {
+    $("#show-me-another-button").click( function() {
+	// A different seed algorithm would be better here, just so
+	// students get different problems
+	
+	seed = undefined;	
+	database.resetWork();
+	
+	if (seed !== undefined) {
+	    $("#seed").persistentData( 'seed', seed + 1 );
+	} else {
+	    $("#seed").persistentData( 'seed', 0 );	    
+	}
+    });
+});
+
+var executedSageSilents = false;
+var executeSageSilents = function() {
+    if (executedSageSilents == false) {
+	executedSageSilents = true;
+	// Execute any sagesilent blocks
+	$('script[type="text/sagemath"]').each( function() {
+	    var code = $(this).text();
+	    // Remove any CDATA
+	    code = code.replace(/[\s\S]*#<!\[CDATA\[\s*\n((.|\n)*)\s*#\]\]>/m,"$1");
+	    
+	    // The snippet "rand" is enough to trigger the "Another..." button
+	    if (code.match('rand')) {
+		$("#show-me-another-button").show();
+	    }
+	    
+	    exports.sage(code);
+	});
+    }
+};
 
 exports.createKernel = _.once(function() {
     return new Promise(function(resolve, reject) {
@@ -75,24 +152,31 @@ exports.createKernel = _.once(function() {
 });
 
 exports.sage = function(code) {
-    setSeed();
+    // Perversely, these are presented out of order -- and despite
+    // that fact, the code from setSeed will actually be executed
+    // first.
     executeSageSilents();
     return new Promise(function(resolve, reject) {
-	var output = function(msg) {
-	    if (msg.msg_type == "error") {
-		reject(msg.content);
-	    }
-	    if (msg.msg_type == "execute_result") {
-		resolve( msg.content.data["text/plain"] );
-	    }
-	};
-	
-	var callbacks = {iopub: {"output": output}};
+	setSeed(function() {
+	    
+	    var output = function(msg) {
+		if (msg.msg_type == "error") {
+		    reject(msg.content);
+		}
+		if (msg.msg_type == "execute_result") {
+		    resolve( msg.content.data["text/plain"] );
+		}
+	    };
+	    
+	    var callbacks = {iopub: {"output": output}};
 
-	exports.createKernel().then( function(kernel) {
-	    kernel.execute(code, callbacks, {
-		"silent": false,
-		"user_expressions": {"_sagecell_files": "sys._sage_.new_files()"}
+	    exports.createKernel().then( function(kernel) {
+		console.log("sage: ",code);
+		
+		kernel.execute(code, callbacks, {
+		    "silent": false,
+		    "user_expressions": {"_sagecell_files": "sys._sage_.new_files()"}
+		});
 	    });
 	});
     });
