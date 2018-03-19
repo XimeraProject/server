@@ -52,7 +52,7 @@ var createProblem = function() {
 		visible = true;
 
 	    var parent = problem.parents(".problem-environment").first();
-	    if ( ! (parent.persistentData( 'blocking' )))
+	    if (!$(parent).attr('data-blocking'))
 		visible = true;
 	    
 	    if (visible) {
@@ -94,7 +94,6 @@ var createProblem = function() {
 
 	// 'blocking' is used for progress calculations, which must
 	// survive the erase work button
-	problem.persistentData( 'blocking', true );	
 	problem.attr( 'data-blocking', true );
 	
 	return false;
