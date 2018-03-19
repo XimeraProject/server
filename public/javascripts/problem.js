@@ -3,7 +3,7 @@ var _ = require('underscore');
 var TinCan = require('./tincan');
 var database = require('./database');
 
-var hintCountdown = 30;
+var hintCountdown = 1;
 
 $(function() {
     var timer = window.setInterval( function() {
@@ -133,22 +133,24 @@ var createProblem = function() {
 
 		nextHint = _.first( _.filter( hints, function(element) { return ! $(element).persistentData('available'); } ) );		
 		if (!nextHint) {
-		    $(hintButton).fadeOut();
+		    problem.persistentData('uncovered-all-hints', true );
 		}
 	    });
 
+	    problem.persistentData( function() {
+		if (problem.persistentData( 'uncovered-all-hints' ))
+		    $(hintButton).fadeOut();		    
+		else
+		    hintButton.show();	    
+	    });
+	    
 	    problem.prepend( hintButton );	    
 	} else {
 	    hintButton.find( ".total" ).html( hints.length );
 	}
 
 	var revealed = _.filter( hints, function(element) { return $(element).persistentData('available'); } );
-	if (hints.length == revealed.length) {
-	    hintButton.hide();
-	} else {
-	    hintButton.show();	    
-	}
-	
+		
 	return false;
     });
 
