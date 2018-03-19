@@ -91,7 +91,6 @@ If you are having trouble installing the canvas package and are on a Debian-base
 You should run gulp with the following commands
 
         node ./node_modules/bower/bin/bower install
-        cd ./components/mathquill
         npm install
         cd ../..
         mkdir -p components/syntaxhighlighter/amd
