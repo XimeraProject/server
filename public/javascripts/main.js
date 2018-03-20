@@ -406,13 +406,14 @@ MathJax.Hub.signal.Interest(function (message) {
 	    
 	    if (answerIdBindings[id][internalCount] === undefined) {
 		// Number the answer boxes in order
-		var count = result.parents( ".problem-environment" ).attr( "data-answer-count" );
-		if (typeof count === typeof undefined || count === false)
-		    count = 0;
-    
-		result.parents( ".problem-environment" ).attr( "data-answer-count", parseInt(count) + 1 );
 		var problem = result.parents( ".problem-environment" ).first();
-		var problemIdentifier = result.parents( ".problem-environment" ).attr( "id" );
+		var count = problem.attr( "data-answer-count" );
+		if (typeof count === typeof undefined || count === false) {
+		    count = 0;
+		}
+    
+		problem.attr( "data-answer-count", parseInt(count) + 1 );
+		var problemIdentifier = problem.attr( "id" );
 
 		// Store the answer index as an id
 		answerIdBindings[id][internalCount] = "answer" + count + problemIdentifier;

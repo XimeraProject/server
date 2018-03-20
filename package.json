@@ -1,7 +1,7 @@
 {
   "name": "ximera",
   "description": "Ximera interactive textbook server",
-  "version": "1.2.3",
+  "version": "1.2.5",
   "private": true,
   "scripts": {
     "start": "node app.js",
@@ -50,7 +50,6 @@
     "github": "0.2.4",
     "gpg": "^0.6.0",
     "gridfs-stream": "1.1.1",
-    "gulp-pug-lint": "github:akoutmos/gulp-pug-lint",
     "guppy-dev": "github:daniel3735928559/guppy#b5055b963fdbea5c6c1e92dbf58fdaf3ea0cd8ba",
     "htmllint-cli": "0.0.6",
     "ims-lti": "3.0.1",
@@ -127,6 +126,7 @@
     "gulp-if": "2.0.0",
     "gulp-less": "3.0.5",
     "gulp-minify-css": "1.2.4",
+    "gulp-pug-lint": "github:akoutmos/gulp-pug-lint",
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "1.6.0",
     "gulp-uglify": "1.5.3",
