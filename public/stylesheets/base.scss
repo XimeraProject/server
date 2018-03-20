@@ -146,3 +146,24 @@ div.quote {
     margin-top: 1em;
     margin-bottom: 1em;    
 }
+
+/****************************************************************/
+@import "./syntaxHighlighter.scss";
+
+.syntaxhighlighter .toolbar {
+    display: none;
+}
+
+/* Some fixes for bootstrap interaction with syntaxhighlighter */
+.syntaxhighlighter .container:before {
+    display: block;
+}
+.syntaxhighlighter .container:after {
+    display: block;
+}
+
+.syntaxhighlighter code {
+    background-color: white;
+    vertical-align: top !important;
+    padding: 0;
+}
