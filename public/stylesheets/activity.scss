@@ -56,3 +56,17 @@ span.LATEX .TEX .E {
 .likesubsectionHead {
     @extend .mt-3;
 }
+
+/****************************************************************/
+/* tex4ht generates description lists from \begin{description} */
+
+dl.description {
+    margin-top: 12px;
+    margin-bottom: 12px;    
+}
+
+dl.description dt.description {
+    float: left;
+    clear: left;
+    padding-right: 0.5em;
+}
