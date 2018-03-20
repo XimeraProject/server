@@ -95,7 +95,6 @@ var update = _.debounce( function() {
     $('.youtube-player').each( function() {
 	videoCount = videoCount + 1;
 	var fraction = $(this).persistentData( 'fractionViewed' );
-	console.log( "fraction=",fraction );
 	if (fraction) {
 	    totalViewed = totalViewed + fraction;
 	}
