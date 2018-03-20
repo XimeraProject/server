@@ -1,4 +1,5 @@
 var $ = require('jquery');
+var jqueryUI = require('jquery-ui/ui/unique-id');
 var _ = require('underscore');
 var MathJax = require('./mathjax');
 var TinCan = require('./tincan');

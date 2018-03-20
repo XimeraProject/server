@@ -1,4 +1,5 @@
 var $ = require('jquery');
+var jqueryUI = require('jquery-ui/ui/unique-id');
 var _ = require('underscore');
 var TinCan = require('./tincan');
 
@@ -250,6 +251,7 @@ window.onYouTubeIframeAPIReady = _.once( function() {
 
 function createVideo() {
     var div = $(this);
+
     div.uniqueId();
     var id = div.attr('id');
     
