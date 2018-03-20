@@ -19,6 +19,15 @@ function checksumObject(object) {
 
 var socket = undefined;
 
+// Some heartbeat code to provide feedback when we aren't receiving pings
+var lastPing = undefined;
+window.setInterval( function() {
+    var interval = new Date() - lastPing;
+    if (interval > 120000) {
+	saveWorkStatus( 'error', "The connection is slow. Your work is not being saved." );
+    }
+}, 10000);
+
 var SAVE_WORK_BUTTON_ID = '#save-work-button';
 var RESET_WORK_BUTTON_ID = '#reset-work-button';    
 
@@ -214,7 +223,8 @@ $(document).ready(function() {
 	return;
     
     try {
-	socket = io.connect();
+	// We don't have to support IE9
+	socket = io({transports: ['websocket']});
     } catch (err) {
 	saveWorkStatus( 'error', "Could not connect.  Your work is not being saved." );
 	socket = { on: function() {}, emit: function() {} };
@@ -312,6 +322,7 @@ $(document).ready(function() {
     });
     
     socket.on('pong', function(latency)  {
+	lastPing = new Date();
 	console.log( "ping: " + latency.toString() + "ms" );
 	$(SAVE_WORK_BUTTON_ID).attr( 'title', latency.toString() + "ms ping" );
     });
