@@ -2,6 +2,46 @@ var $ = require('jquery');
 var _ = require('underscore');
 var MathJax = require('./mathjax');
 
+$( function() {
+    var anyRandomness = false;
+    
+    $('.javascript script').each( function() {
+	if ($(this).html().match( /random/ ))
+	    anyRandomness = true;
+    });
+
+    if (anyRandomness) {
+	$("#show-me-another-button").show();
+
+	var seedDiv;
+	if ($("#seed").length > 0) {
+	    seedDiv = $("#seed").first();
+	} else {
+	    seedDiv = $('<div id="seed" style="display: none;"></div>');
+	    $('main.activity .activity-body').append( seedDiv );
+	}
+	
+	seedDiv.fetchData( function() {
+	    seedDiv.persistentData( function() {
+		var newSeed = seedDiv.persistentData('seed');
+		
+		if (newSeed) {
+		    Math.seedrandom(newSeed);
+		} else {
+		    var activityPath = $('main.activity').attr( 'data-path' );
+		    var currfilebase = activityPath.split('/').slice(-1)[0];		
+		    Math.seedrandom(currfilebase);
+		}
+		
+		$('.javascript script').each( function() {
+		    $.globalEval( $(this).html() );
+		});
+		exports.reevaluate( seedDiv );
+	    });
+	});
+    }
+});
+
 var createJavascript = function() {
     var element = $(this);
 
@@ -53,7 +93,9 @@ var evaluateLatex = exports.evaluateLatex = function(code) {
 
 var reevaluateMathjaxNow = function(element) {
     var activity = element.closest('.activity-body');
-    
+
+    var ids = new Set();
+	
     $('.mathjax-javascript', activity ).each( function(i,e) {
 	var value;
 	var code = $(e).attr('data-code');
@@ -65,9 +107,13 @@ var reevaluateMathjaxNow = function(element) {
 
 	if (value != $(e).attr('data-value')) {
 	    var id = $(e).closest(".MathJax").attr('id').replace('-Frame', '');
-	    MathJax.Hub.Queue(["Reprocess",MathJax.Hub,id]);
+	    ids.add(id);
 	}
-    });    
+    });
+
+    ids.forEach( function(id) {
+	MathJax.Hub.Queue(["Reprocess",MathJax.Hub,id]);
+    });
 };
 
 var reevaluateMathjax = _.debounce(reevaluateMathjaxNow, 250);

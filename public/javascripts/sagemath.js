@@ -44,9 +44,18 @@ var sendSeed = function(newSeed) {
     }
 };
 
+var reprocessMathjax = _.debounce(function() {
+    MathJax.Hub.Queue(["Reprocess", MathJax.Hub]);    
+}, 250);
+
 var getSeed = _.once( function() {
-    var seedDiv = $('<div id="seed" style="display: none;"></div>');
-    $('main.activity').append( seedDiv );
+    var seedDiv;
+    if ($("#seed").length > 0) {
+	seedDiv = $("#seed").first();
+    } else {
+	seedDiv = $('<div id="seed" style="display: none;"></div>');
+	$('main.activity').append( seedDiv );
+    }
 	
     seedDiv.fetchData( function() {
 	seeded = true;
@@ -60,9 +69,11 @@ var getSeed = _.once( function() {
 		return;
 	    }
 	    sendSeed(newSeed);
+
 	    executedSageSilents = false;
 	    executeSageSilents();
-	    MathJax.Hub.Queue(["Reprocess", MathJax.Hub]);
+	    
+	    reprocessMathjax();
 	});
 	
 	seedCallbacks.forEach( function(callback) {
@@ -114,11 +125,10 @@ exports.createKernel = _.once(function() {
 	// There's a race condition here: window.sagecell may not be
 	// set quickly enough.  So we wait until window.sagecell is
 	// set
-	var walkback = 50;
+	var walkback = 10;
 	function sagecellReady() {
-	    
-	    if ((typeof window.sagecell !== "undefined") &&
-		(typeof window.sagecell.kernels !== "undefined")) {
+	    if ((typeof window.sagecell !== typeof undefined) &&
+		(typeof window.sagecell.kernels !== typeof undefined)) {
 		// Create a sagecell in order to trigger the creation of a kernel
 		var arrayChangeHandler = {
 		    set: function(target, property, value, receiver) {
@@ -138,13 +148,14 @@ exports.createKernel = _.once(function() {
 		var d = document.createElement('div');    
 		window.sagecell.makeSagecell({inputLocation: d, linked: true});
 		d.children[0].children[1].click();
-
+		
 		// Make sage cells---but make them linked so there's just one kernel.
 		window.sagecell.makeSagecell({"inputLocation": ".sage", linked: true});
 		window.sagecell.makeSagecell({"inputLocation": ".sageOutput", "hide": ["editor","evalButton"], "autoeval": true, linked: true });
 	    }
 	    else{
-		walkback = walkback * 2;
+		walkback = walkback * 1.05;
+		console.log("Walking back", walkback );
 		window.setTimeout(sagecellReady, walkback);
 	    }
 	}
