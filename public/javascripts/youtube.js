@@ -263,8 +263,6 @@ function createVideo() {
     
     player.playVideo( id, url );
 
-    console.log("Deploy player for",url);
-    
 }
 
 $.fn.extend({
