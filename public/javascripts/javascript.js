@@ -25,13 +25,15 @@ $( function() {
 	    seedDiv.persistentData( function() {
 		var newSeed = seedDiv.persistentData('seed');
 		
-		if (newSeed) {
+		if (newSeed !== undefined) {
 		    Math.seedrandom(newSeed);
 		} else {
 		    var activityPath = $('main.activity').attr( 'data-path' );
 		    var currfilebase = activityPath.split('/').slice(-1)[0];		
 		    Math.seedrandom(currfilebase);
 		}
+		console.log("newSeed=", newSeed);
+		console.log("reevaluate",seedDiv);
 		
 		$('.javascript script').each( function() {
 		    $.globalEval( $(this).html() );
