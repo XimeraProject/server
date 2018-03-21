@@ -83,8 +83,24 @@ var getSeed = _.once( function() {
     });
 });
 
+var stopSpinning = _.debounce(function() {
+    $("#show-me-another-button i").css('animation-play-state', 'paused');    
+}, 250);
+
+MathJax.Hub.signal.Interest(function (message) {
+    if (message[0] == "End Reprocess") {
+	stopSpinning();
+    }
+    if (message[0] == "End Rerender") {
+	stopSpinning();
+    }    
+});
+
 $(function() {
     $("#show-me-another-button").click( function() {
+	$("i", this).addClass("fa-spin");
+	$("#show-me-another-button i").css('animation-play-state', 'running');
+	
 	// A different seed algorithm would be better here, just so
 	// students get different problems
 	var oldSeed = $("#seed").persistentData( 'seed' );
