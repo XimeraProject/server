@@ -262,7 +262,6 @@ function createVideo() {
     }
     
     player.playVideo( id, url );
-
 }
 
 $.fn.extend({
