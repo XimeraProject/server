@@ -252,6 +252,10 @@ window.onYouTubeIframeAPIReady = _.once( function() {
 function createVideo() {
     var div = $(this);
 
+    div.wrap( '<div class="embed-responsive embed-responsive-16by9"></div>' );
+    
+    // <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" allowfullscreen></iframe>
+    
     div.uniqueId();
     var id = div.attr('id');
     
