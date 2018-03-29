@@ -455,7 +455,7 @@ $(document).ready(function() {
     }
 
     // This is both mouseup and touchend because on tablets, we want
-    // the touchend to be a click
+    // the touchend to be a click?
     $('.activity-card a').bind( "mouseup touchend", function(event){
 	if (( $('.kinetic-moving-left').length > 0 ) || ( $('.kinetic-moving-right').length > 0 )) {
 	    event.preventDefault();

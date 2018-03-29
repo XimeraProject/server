@@ -27,6 +27,9 @@ $red:    #bb0000 !default;
     background-color: $gray-lightest;
 }
 
+.card.activity-card, .card.activity-card a {
+    cursor: pointer;
+}
 
 // A lot of buttons pulsate
 @import "pulsate";
