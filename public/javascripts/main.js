@@ -453,11 +453,15 @@ $(document).ready(function() {
 	var windowWidth = $('.kinetic').width();
 	$('.kinetic').scrollLeft( left - windowWidth / 2 + cardWidth / 2 );
     }
-    $('.activity-card a').mouseup(function(event) {
+
+    // This is both mouseup and touchend because on tablets, we want
+    // the touchend to be a click
+    $('.activity-card a').bind( "mouseup touchend", function(event){
 	if (( $('.kinetic-moving-left').length > 0 ) || ( $('.kinetic-moving-right').length > 0 )) {
 	    event.preventDefault();
 	}
     });
+    
 
     $(".dropdown-toggle").dropdown();
 
