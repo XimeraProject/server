@@ -53,7 +53,7 @@ MathJax.Hub.Config(
 	// answer input boxes to appear in the most
 	// appropriate places
 	jax: ["input/TeX","output/HTML-CSS"],
-	extensions: ["tex2jax.js","MathMenu.js","CHTML-preview.js"],
+	extensions: ["tex2jax.js","MathMenu.js","CHTML-preview.js", "cancel.js"],
 
 	"HTML-CSS": {
 	    availableFonts: ["TeX"],
