@@ -53,7 +53,7 @@ MathJax.Hub.Config(
 	// answer input boxes to appear in the most
 	// appropriate places
 	jax: ["input/TeX","output/HTML-CSS"],
-	extensions: ["tex2jax.js","MathMenu.js","CHTML-preview.js", "cancel.js"],
+	extensions: ["tex2jax.js","MathMenu.js","CHTML-preview.js"],
 
 	"HTML-CSS": {
 	    availableFonts: ["TeX"],
@@ -66,7 +66,7 @@ MathJax.Hub.Config(
 	//showMathMenu: false,
 	TeX: {
 	    equationNumbers: { autoNumber: "AMS" },
-	    extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js", "color.js"],
+	    extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js", "color.js", "cancel.js"],
 	    Macros: {
 		xspace: '',
 		ensuremath: ''
