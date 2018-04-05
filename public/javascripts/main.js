@@ -454,14 +454,36 @@ $(document).ready(function() {
 	$('.kinetic').scrollLeft( left - windowWidth / 2 + cardWidth / 2 );
     }
 
-    // This is both mouseup and touchend because on tablets, we want
-    // the touchend to be a click?
-    $('.activity-card a').bind( "mouseup touchend", function(event){
+    // This is both mouseup for desktop
+    $('.activity-card a').bind( "mouseup", function(event){
 	if (( $('.kinetic-moving-left').length > 0 ) || ( $('.kinetic-moving-right').length > 0 )) {
 	    event.preventDefault();
 	}
     });
+
+    // This handles touchscreens; moving less than 100 pixels in less
+    // than 500 ms should count as a click
+    var position = 0;
+    var distance = 0;
+    var startTime = 0;
+    $('.activity-card').on( "touchstart", function(e){
+	position = e.originalEvent.touches[0].screenX;
+	distance = 0;
+	startTime = e.originalEvent.timeStamp
+    });
     
+    $('.activity-card').on( "touchmove", function(e){
+	var newPosition = e.originalEvent.touches[0].screenX;
+	distance = distance + Math.abs( newPosition - position );
+	position = newPosition;
+    });    
+
+    $('.activity-card').on( "touchend", function(e){
+	var duration = e.originalEvent.timeStamp - startTime;
+	if ((distance < 100) && (duration < 500)) {
+	    window.location.href = $(this).children('a').attr('href');
+	}
+    });
 
     $(".dropdown-toggle").dropdown();
 
