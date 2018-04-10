@@ -4,7 +4,6 @@ var $ = require('jquery');
 var Guppy = require('guppy-dev/src/guppy.js');
 
 var Expression = require('math-expressions');
-
 var guppyDiv = undefined;
 var callback = undefined;
 
