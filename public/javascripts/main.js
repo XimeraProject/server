@@ -6,6 +6,8 @@ window.diff_match_patch = require('diff-match-patch');
 
 require('./cache-bust');
 
+var Expression = require('math-expressions');
+
 var jqueryUI = require('jquery-ui');
 var jqueryTransit = require('jquery.transit');
 var tether = require('tether');
@@ -354,6 +356,19 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 		answer = this.ParseArg(name);
 	    }
 
+	    // Attempt to change size if we have a short answer
+	    try {
+		answer.parent = {inferRow: false};
+		var correctAnswerMml = answer.toMathML("");	
+		var correctAnswer = Expression.fromMml(correctAnswerMml).toString().toString();
+		console.log( correctAnswer.length );		
+		if (correctAnswer.length <= 3) {
+		    input.classList.add('narrow'); // to eliminate some padding
+		    input.style.width = "70px";
+		}
+	    } catch (err) {
+	    }
+	    
 	    this.Push(MML.mpadded(MML.mphantom(answer)).With({height: 0, width: 0}));
 	    
 	    mathAnswer.createMathAnswer( input );

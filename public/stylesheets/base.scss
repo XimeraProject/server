@@ -48,6 +48,11 @@ about it and choose the background color. */
 
 @import "mathjax";
 
+.mathjaxed-input.narrow .form-control {
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
 // Body text is in a math-compatible font...
 .container-fluid {
     font-family: MJX_Main;
