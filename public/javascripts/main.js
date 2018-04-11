@@ -48,6 +48,8 @@ var Javascript = require('./javascript');
 
 var sagemath = require('./sagemath');
 
+var pencil = require('./pencil');
+
 MathJax.Hub.Config(
     {
 	// You might think putput/SVG would be better,
