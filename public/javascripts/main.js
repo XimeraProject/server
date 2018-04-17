@@ -1,3 +1,15 @@
+/*
+if ('serviceWorker' in navigator) {
+    console.log("Searching for service worker...");
+    navigator.serviceWorker.register('/sw.js', {scope: '/'})
+	.then(function(reg) {
+	    reg.unregister();
+	    console.log('Registration succeeded. Scope is ' + reg.scope);
+	}).catch(function(error) {
+	    console.log('Registration failed with ' + error);
+	});
+}*/
+
 // bootstrap is expecting a global jQuery object
 var $ = window.$ = window.jQuery = require('jquery');
 

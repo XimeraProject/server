@@ -130,7 +130,6 @@
     "gulp-pug-lint": "github:akoutmos/gulp-pug-lint",
     "gulp-sass": "^3.2.1",
     "gulp-sourcemaps": "1.6.0",
-    "gulp-uglify": "1.5.3",
     "gulp-util": "3.0.7",
     "lodash.assign": "4.0.7",
     "napa": "2.3.0",

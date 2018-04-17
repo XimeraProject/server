@@ -11,7 +11,6 @@ var argv = require('yargs').argv,
     sourcemaps = require('gulp-sourcemaps'),
     browserify = require('browserify'),
     watchify   = require('watchify'),
-    uglify     = require('gulp-uglify'),
     aliasify   = require('aliasify'),
     babelify   = require('babelify'),
     sass       = require('gulp-sass'),
@@ -50,7 +49,6 @@ var options = {
 	}]
     ],
     extensions: ['.js'],
-    debug: !argv.production,
     cache: {}, packageCache: {}, fullPaths: true // for watchify
 };
 
@@ -64,7 +62,6 @@ function buildPipeline(b) {
         .pipe(buffer())
         .pipe(gulpif(!argv.production, sourcemaps.init({loadMaps: true}))) // loads map from browserify file
         .pipe(gulpif(!argv.production, sourcemaps.write('./', {sourceMappingURLPrefix: '.'}))) // writes .map file
-        .pipe(gulpif(argv.production, uglify()))
         .pipe(gulp.dest(staticDirectoryJavascripts));
 }
 
