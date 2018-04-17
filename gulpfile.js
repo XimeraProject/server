@@ -19,9 +19,6 @@ var argv = require('yargs').argv,
     assign     = require('lodash.assign');
 
 
-
-
-
 // Directory where static files are found. Don't forget the slash at the end.
 var staticDirectoryCSS = './public/stylesheets/';
 // but now I am purposefully forgetting the slash?!

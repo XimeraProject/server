@@ -1,6 +1,8 @@
 // bootstrap is expecting a global jQuery object
 var $ = window.$ = window.jQuery = require('jquery');
 
+require('./version');
+
 // jsondiffpatch expects this loaded globally
 window.diff_match_patch = require('diff-match-patch');
 

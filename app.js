@@ -201,6 +201,14 @@ passport.deserializeUser(function(id, done) {
     ////////////////////////////////////////////////////////////////
     // Static content    
 
+    app.get('/version', function(req, res) {
+	res.send(app.version);
+    });
+    
+    app.get('/sw.js', function(req, res) {
+	res.sendFile('public/javascripts/sw.js', { root: __dirname });
+    });    
+    
     versionator = versionator.createBasic('v' + app.version);
     app.locals.versionPath = function(url) {
 	if (url.match(/^\/public\//)) {
