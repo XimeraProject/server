@@ -202,6 +202,8 @@ passport.deserializeUser(function(id, done) {
     // Static content    
 
     app.get('/version', function(req, res) {
+	res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+	res.header('Expires',  (new Date()).toUTCString() );
 	res.send(app.version);
     });
     
