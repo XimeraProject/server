@@ -4,6 +4,11 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js', {scope: '/'})
 	.then(function(reg) {
 	    console.log('Registered Service Worker.');
+
+	    window.updateServiceWorker = function() {
+		console.log('updating sw');
+		reg.update();
+	    };
 	}).catch(function(error) {
 	    console.log('Registration failed: ' + error);
 	});

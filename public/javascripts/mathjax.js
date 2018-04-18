@@ -2,8 +2,10 @@ window.MathJax = {
     delayStartupUntil : "configured",
 
     jax: ["input/TeX","output/HTML-CSS"],
-    extensions: ["tex2jax.js","MathMenu.js","MathZoom.js", "fast-preview.js", "CHTML-preview.js", "toMathML.js", "AssistiveMML.js", "a11y/accessibility-menu.js"],
+    extensions: ["tex2jax.js","MathMenu.js","MathZoom.js", "fast-preview.js", "CHTML-preview.js", "toMathML.js", "AssistiveMML.js", "[a11y]/accessibility-menu.js"],
 
+    tex2jax: {preview: "none"},
+    
     "HTML-CSS": {
 	availableFonts: ["TeX"],
 	imageFont: null
@@ -11,7 +13,8 @@ window.MathJax = {
 	
     processEnvironments: true,
     showProcessingMessages: false,
-
+    messageStyle: 'none',
+    
     // BADBAD: this also breaks the layout triggers
     // showMathMenu: false,
     
@@ -23,10 +26,8 @@ window.MathJax = {
 	    ensuremath: ''
 	}
     },
-    
-    AuthorInit : function() {
-        MathJax.Ajax.config.root = "/node_modules/mathjax";
-    }    
+
+    root: "/node_modules/mathjax/"
 };
 
 require('mathjax2');

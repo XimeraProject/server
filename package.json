@@ -1,7 +1,7 @@
 {
   "name": "ximera",
   "description": "Ximera interactive textbook server",
-  "version": "1.2.22",
+  "version": "1.2.22-alpha4",
   "private": true,
   "scripts": {
     "start": "node app.js",
@@ -63,7 +63,7 @@
     "jsondiffpatch": "^0.2.5",
     "markdown": "0.5.0",
     "math-expressions": "^2.0.4-alpha",
-    "mathjax": "2.6.1",
+    "mathjax": "^2.7.3",
     "method-override": "2.3.5",
     "mocha": "^3.5.3",
     "moment": "2.19.3",
@@ -111,7 +111,7 @@
   "aliasify": {
     "aliases": {
       "mathjax": "./public/javascripts/mathjax.js",
-      "mathjax2": "./node_modules/mathjax/MathJax.js",
+      "mathjax2": "./node_modules/mathjax/unpacked/MathJax.js",
       "jquery-fullsizable": "./node_modules/jquery-fullsizable/js/jquery-fullsizable.min.js",
       "pagedown-converter": "./node_modules/pagedown-bootstrap/Markdown.Converter.js",
       "pagedown-sanitizer": "./node_modules/pagedown-bootstrap/Markdown.Sanitizer.js",
