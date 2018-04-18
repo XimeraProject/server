@@ -158,6 +158,10 @@ div.quote {
     margin-bottom: 1em;    
 }
 
+div.quote p {
+    margin-bottom: 0em;
+}
+
 /****************************************************************/
 @import "./syntaxHighlighter.scss";
 
