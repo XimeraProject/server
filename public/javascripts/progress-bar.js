@@ -88,6 +88,7 @@ var activityToMonitor = undefined;
 
 var update = _.debounce( function() {
     var value = calculateProgress( activityToMonitor );
+    console.log("UPDATEing with ", value);
 
     // Top level videos are also counted
     var videoCount = 0;
@@ -110,15 +111,12 @@ var update = _.debounce( function() {
 	    value = 1;
 	}
     } else {
-	if (videoCount > 0) {	
+	if (videoCount > 0) {
 	    value = (value + totalViewed) / (1 + videoCount);
 	}
     }
 
-    // Only display progress if there is no invigilator running
-    if (!($('#invigilator').data( 'invigilator' ))) {
-	exports.progressProportion( value );
-    }
+    exports.progressProportion( value );
     
     // Store the progress as the "score" in the database
     $(activityToMonitor).persistentData( 'score', value );
@@ -133,21 +131,27 @@ var update = _.debounce( function() {
 	$('#next-activity .page-link').addClass('pulsate');
     }
     
-}, 300 );
+}, 217 );
+
+var MathJax = require('./mathjax');
 
 exports.monitorActivity = function( activity ) {
     activityToMonitor = activity;
 
-    update();
+    // BADBAD: Is this really always called after the math is done
+    // being processed?
+    MathJax.Hub.Register.StartupHook("End",function () {
+	update();
     
-    $('.problem-environment', activity).each( function() {
-	$(this).persistentData( update );
-    });
+	$('.problem-environment', activity).each( function() {
+	    $(this).persistentData( update );
+	});
 
-    $('.youtube-player', activity).each( function() {
-	$(this).persistentData( update );
+	$('.youtube-player', activity).each( function() {
+	    $(this).persistentData( update );
+	});
     });
-
+    
 };
 
 
