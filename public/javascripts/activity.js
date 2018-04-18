@@ -15,6 +15,7 @@ var foldable = require('./foldable');
 var youtube = require('./youtube');
 
 var freeResponse = require('./free-response');
+var coding = require('./coding');
 var shuffle = require('./shuffle');
 var feedback = require('./feedback');
 var validator = require('./validator');
@@ -48,6 +49,7 @@ var createActivity = function() {
 	$(".hint", activity).hint();
 	$(".foldable", activity).foldable();
 	$(".free-response", activity).freeResponse();
+	$(".javascript-code", activity).coding();	
 	
 	$(".shuffle", activity).shuffle();
 	$(".feedback", activity).feedback();
