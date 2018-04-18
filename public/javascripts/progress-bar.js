@@ -88,7 +88,6 @@ var activityToMonitor = undefined;
 
 var update = _.debounce( function() {
     var value = calculateProgress( activityToMonitor );
-    console.log("UPDATEing with ", value);
 
     // Top level videos are also counted
     var videoCount = 0;
