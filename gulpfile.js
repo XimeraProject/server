@@ -17,20 +17,22 @@ var argv = require('yargs').argv,
     minifyCSS  = require('gulp-minify-css'),
     assign     = require('lodash.assign');
 
-
 // Directory where static files are found. Don't forget the slash at the end.
 var staticDirectoryCSS = './public/stylesheets/';
 // but now I am purposefully forgetting the slash?!
 var staticDirectoryJavascripts = './public/javascripts';
 
 // Source and target JS files for Browserify
-var jsMainFile      = './public/javascripts/main.js';
-var jsBundleFile    = 'main.min.js';
+var jsMainFile                = './public/javascripts/main.js';
+var jsBundleFile              = 'main.min.js';
+var jsServiceWorkerFile       = './public/javascripts/sw.js';
+var jsServiceWorkerBundleFile = 'sw.min.js';
 
 // Source and target SCSS files
 var cssMainFile     = './public/stylesheets/base.scss';
 var cssFiles        = './public/stylesheets/**/*.scss';
 
+////////////////////////////////////////////////////////////////
 // Browserify bundler
 var options = {
     entries: [jsMainFile],
@@ -60,8 +62,8 @@ function buildPipeline(b) {
         .bundle()
         .pipe(source(jsBundleFile))
         .pipe(buffer())
-        .pipe(gulpif(!argv.production, sourcemaps.init({loadMaps: true}))) // loads map from browserify file
-        .pipe(gulpif(!argv.production, sourcemaps.write('./', {sourceMappingURLPrefix: '.'}))) // writes .map file
+        .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
+        .pipe(sourcemaps.write('./', {sourceMappingURLPrefix: '.'})) // writes .map file
         .pipe(gulp.dest(staticDirectoryJavascripts));
 }
 
@@ -70,6 +72,43 @@ gulp.task('js', function() {
     return buildPipeline(bundler);
 });
 
+////////////////////////////////////////////////////////////////
+// Bundler for the service worker
+var serviceWorkerBundler = browserify({
+    entries: [jsServiceWorkerFile],
+    transform: [
+	[aliasify],
+	[babelify, {
+	    global: true,
+	    "presets": [
+		["env", {
+		    "targets": {
+			"browsers": ["last 2 versions", "safari >= 7"]
+		    }
+		}]
+	    ]
+	}]
+    ],
+    extensions: ['.js'],
+    cache: {}, packageCache: {}, fullPaths: true // for watchify
+});
+
+function buildServiceWorkerPipeline(b) {
+    return b
+        .bundle()
+        .pipe(source(jsServiceWorkerBundleFile))
+        .pipe(buffer())
+        .pipe(gulpif(!argv.production, sourcemaps.init({loadMaps: true}))) // loads map from browserify file
+        .pipe(gulpif(!argv.production, sourcemaps.write('./', {sourceMappingURLPrefix: '.'}))) // writes .map file
+        .pipe(gulp.dest(staticDirectoryJavascripts));
+}
+
+// Build JavaScript using Browserify
+gulp.task('service-worker', function() {
+    return buildServiceWorkerPipeline(serviceWorkerBundler);
+});
+
+////////////////////////////////////////////////////////////////
 // Build CSS
 gulp.task('css', function(){
     return gulp.src(cssMainFile)
@@ -78,6 +117,7 @@ gulp.task('css', function(){
         .pipe(gulp.dest(staticDirectoryCSS));
 });
 
+////////////////////////////////////////////////////////////////
 // Watch JS + CSS using watchify + gulp.watch
 
 gulp.task('watchify', function() {
@@ -98,12 +138,16 @@ gulp.task('csswatch', function () {
     gulp.watch(cssFiles, ['css']);
 });
 
+gulp.task('service-worker-watch', function () {
+    gulp.watch([jsServiceWorkerFile], ['service-worker']);
+});
+
 gulp.task('lint', function () {
     return gulp
 	.src('views/**/*.pug')
 	.pipe(puglint());
 });
 
-gulp.task('watch', ['watchify', 'csswatch']);
-gulp.task('default', ['js', 'css']);
+gulp.task('watch', ['watchify', 'csswatch', 'service-worker-watch']);
+gulp.task('default', ['js', 'css', 'service-worker']);
 

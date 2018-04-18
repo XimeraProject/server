@@ -208,7 +208,7 @@ passport.deserializeUser(function(id, done) {
     });
     
     app.get('/sw.js', function(req, res) {
-	res.sendFile('public/javascripts/sw.js', { root: __dirname });
+	res.sendFile('public/javascripts/sw.min.js', { root: __dirname });
     });    
     
     versionator = versionator.createBasic('v' + app.version);

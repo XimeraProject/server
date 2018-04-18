@@ -9,6 +9,7 @@ if [ $(hostname) = ximera-1.asc.ohio-state.edu ]; then
     npm install
     echo Running gulp...
     node ./node_modules/gulp/bin/gulp.js js
+    node ./node_modules/gulp/bin/gulp.js service-worker
     node ./node_modules/gulp/bin/gulp.js css    
     echo Stopping old copies of app.js...
     pm2 stop ximera

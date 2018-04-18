@@ -1,19 +1,16 @@
-/*
+require('./version');
+
 if ('serviceWorker' in navigator) {
-    console.log("Searching for service worker...");
     navigator.serviceWorker.register('/sw.js', {scope: '/'})
 	.then(function(reg) {
-	    reg.unregister();
-	    console.log('Registration succeeded. Scope is ' + reg.scope);
+	    console.log('Registered Service Worker.');
 	}).catch(function(error) {
-	    console.log('Registration failed with ' + error);
+	    console.log('Registration failed: ' + error);
 	});
-}*/
+}
 
 // bootstrap is expecting a global jQuery object
 var $ = window.$ = window.jQuery = require('jquery');
-
-require('./version');
 
 // jsondiffpatch expects this loaded globally
 window.diff_match_patch = require('diff-match-patch');
@@ -63,34 +60,6 @@ var Javascript = require('./javascript');
 var sagemath = require('./sagemath');
 
 var pencil = require('./pencil');
-
-MathJax.Hub.Config(
-    {
-	// You might think putput/SVG would be better,
-	// but HTML-CSS is needed in order for the
-	// answer input boxes to appear in the most
-	// appropriate places
-	jax: ["input/TeX","output/HTML-CSS"],
-	extensions: ["tex2jax.js","MathMenu.js","CHTML-preview.js"],
-
-	"HTML-CSS": {
-	    availableFonts: ["TeX"],
-	    imageFont: null
-	},
-	
-	processEnvironments: true,
-	showProcessingMessages: false,
-	// BADBAD: this also breaks the layout triggers
-	//showMathMenu: false,
-	TeX: {
-	    equationNumbers: { autoNumber: "AMS" },
-	    extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js", "color.js", "cancel.js"],
-	    Macros: {
-		xspace: '',
-		ensuremath: ''
-	    }
-	}
-    });
 
 MathJax.Hub.Register.MessageHook("TeX Jax - parse error",function (message) {
     // do something with the error.  message[1] will contain the data about the error.
@@ -461,7 +430,6 @@ MathJax.Hub.signal.Interest(function (message) {
 	});
     }
 });
-
 
 
 MathJax.Hub.Configured();
