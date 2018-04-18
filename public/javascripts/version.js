@@ -10,8 +10,19 @@ $(function() {
 	.done(function(data) {
 	    // If the server can offer a newer version, let's update
 	    if (data != version) {
-		// This SHOULD force a reload
-		window.location.reload(true);		
+		console.log("Uppdating from version " + version + " to version " + data );
+
+		// This is needed in Chrome
+		$.ajax({
+		    url: window.location.href,
+		    headers: {
+			"Pragma": "no-cache",
+			"Expires": -1,
+			"Cache-Control": "no-cache"
+		    }
+		}).done(function () {
+		    window.location.reload(true);
+		});
 	    }
 	});
 });

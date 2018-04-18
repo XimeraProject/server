@@ -1,5 +1,11 @@
+console.log("  ▀██▄   ▄██▀ ██ █████     █████ ▄███████████████████▄    ███");
+console.log("    ▀██▄██▀   ██▐██ ▐██   ██▌ ██▌██                 ██▌  ██▀██");
+console.log("      ███     ██▐██  ██▌ ▐██  ██▌▐█████████ ▄████████▀  ██▀ ▀██");
+console.log("    ▄██▀██▄   ██▐██  ▐██ ██▌  ██▌██        ▐█▌  ▀██▄   ██▀   ▀██");
+console.log("  ▄██▀   ▀██▄ ██▐██   ▀███▀   ██▌▀█████████▐█▌    ▀██▄██▀     ▀██");
 require('./version');
 
+/* Definitely not ready for a serviceworker
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js', {scope: '/'})
 	.then(function(reg) {
@@ -13,6 +19,7 @@ if ('serviceWorker' in navigator) {
 	    console.log('Registration failed: ' + error);
 	});
 }
+*/
 
 // bootstrap is expecting a global jQuery object
 var $ = window.$ = window.jQuery = require('jquery');

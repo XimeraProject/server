@@ -2,7 +2,7 @@ window.MathJax = {
     delayStartupUntil : "configured",
 
     jax: ["input/TeX","output/HTML-CSS"],
-    extensions: ["tex2jax.js","MathMenu.js","MathZoom.js", "fast-preview.js", "CHTML-preview.js", "toMathML.js", "AssistiveMML.js", "[a11y]/accessibility-menu.js"],
+    extensions: ["tex2jax.js","MathMenu.js","MathZoom.js", "toMathML.js", "AssistiveMML.js", "[a11y]/accessibility-menu.js"],
 
     tex2jax: {preview: "none"},
     
