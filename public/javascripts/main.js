@@ -374,6 +374,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 	    var mml = MML["annotation-xml"](xml).With({encoding:"application/xhtml+xml",isToken:true});
 	    var semantics = MML.semantics(mml);
 	    this.Push(semantics);
+	    this.Push(MML.mpadded().With({height: "30px", width: 0}));
 
 	    return;
 	}
