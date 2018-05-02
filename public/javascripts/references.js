@@ -38,11 +38,7 @@ var createLabel = function() {
     var label = $(this);
     var href = label.attr('id');
 
-    console.log(label);
-
     function addLabel(reference) {
-	console.log( MathJax.Extension["TeX/AMSmath"].labels );
-	
 	if ( ! (href in MathJax.Extension["TeX/AMSmath"].labels)) {
 	    var tag = undefined;
 	    
