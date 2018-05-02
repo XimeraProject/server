@@ -6,7 +6,7 @@ var TinCan = require('./tincan');
 
 var buttonTemplate = _.template( '<label class="btn btn-default <%= correct %>" id="<%= id %>"></label>' );
 
-var template = '<form class="form-inline" style="display: inline-block;">' +
+var oldtemplate = '<form class="form-inline" style="display: inline-block;">' +
 	'<span class="input-group">' +
    	'<select class="form-control">' +
 	'<option class="blank"></option>' +
@@ -23,94 +23,103 @@ var template = '<form class="form-inline" style="display: inline-block;">' +
 	'</button>' +
 	'</span>' +
 	'</span>' +
-	'</form>';
+    '</form>';
+
+var template = '<div class="dropdown word-choice">' +
+    '<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+    'Dropdown button' +
+    '</button>' +
+    '<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">' +
+    '<a class="dropdown-item" href="#">Action</a>' +
+    '<a class="dropdown-item" href="#">Another action</a>' +
+    '<a class="dropdown-item" href="#">Something else here</a>' +
+    '</div>' +
+    '</div>';
 
 var createWordChoice = function() {
     var wordChoice = $(this);
-
-    var element = $(template);
-
-    wordChoice.find( ".choice" ).each( function() {
-	var correct = '';
-	if ($(this).hasClass( "correct" ))
-	    correct = "correct";
-	
-	var identifier = $(this).attr('id');
-	var label = $(this);
-
-	element.find('select.form-control').append( '<option class="' + correct + '" id="'+ identifier + '">' + label.text() + '</option>' );
-    });
-
-    wordChoice.replaceWith( element );
-    element.attr('id', wordChoice.attr('id') );
     
+    var id = wordChoice.attr('id');
+    var element = $('<div class="dropdown word-choice btn-ximera-submit"><button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">&mdash;</button></div>');
+    var button = $('button', element);
+    button.attr('id', id);
+
+    var menu = $('<div class="dropdown-menu" aria-labelledby="' + id + '"></div>');
+    element.append(menu);
+    
+    $('.choice', wordChoice).each( function() {
+	var choice = $(this);
+
+	var link = $('<button class="dropdown-item choice" type="button"></button>');
+	if (choice.hasClass( "correct" ))
+	    link.addClass("correct");
+	link.attr( 'id', choice.attr('id') );
+	
+	link.append( choice.contents() );
+	menu.append( link );
+
+	link.click( function() {
+	    element.persistentData( 'response', choice.attr('id') );
+	    
+	    if (link.hasClass("correct")) {
+		element.persistentData('correct', true);
+	    } else {
+		element.persistentData('correct', false);		
+	    }
+
+	    element.trigger( 'ximera:attempt' );
+	    
+	    if (element.persistentData('correct')) {
+		element.trigger( 'ximera:correct' );
+	    }	    
+	
+	    TinCan.answer( element, { response: element.persistentData('response'),
+				      success: element.persistentData('correct') } );
+	    
+	});
+    });
+    
+    wordChoice.replaceWith( element );
+
     element.trigger( 'ximera:answer-needed' );
 
     element.persistentData( function(event) {
 	if (element.persistentData('response')) {
-	    element.find('option').prop( 'selected', false );		    
-	    element.find( '#' + element.persistentData('response') ).prop( 'selected', true );
+	    var link = element.find( '#' + element.persistentData('response') );
+	    button.empty();
+	    button.append( link.clone().contents() );
 	} else {
-	    element.find( 'option' ).prop( 'selected', false );
-	    element.find( '.blank' ).prop( 'selected', true );
-	    console.log( "bank" );
+	    button.html( '&mdash;' );
 	}
 
 	if (element.persistentData('correct')) {
-	    element.find('.btn-ximera-correct').show();
-	    element.find('.btn-ximera-incorrect').hide();
-	    element.find('.btn-ximera-submit').hide();
-	    
-	    element.find('select').prop( 'disabled', true );
+	    element.addClass('btn-ximera-correct');
+	    element.removeClass('btn-ximera-incorrect');
+	    element.removeClass('btn-ximera-submit');
+	    button.addClass('btn-success');
+	    button.removeClass('btn-danger');
+	    button.removeClass('btn-primary');	    	    	    
 	} else {
-	    element.find('select').prop( 'disabled', false );		
-	    element.find('.btn').hide();
-
-	    if ((element.persistentData('response') == element.persistentData('attempt')) &&
-		(element.persistentData('response')))
-		element.find('.btn-ximera-incorrect').show();
-	    else
-		element.find('.btn-ximera-submit').show();
+	    if (element.persistentData('correct') === undefined) {
+		element.removeClass('btn-ximera-correct');
+		element.removeClass('btn-ximera-incorrect');
+		element.addClass('btn-ximera-submit');
+		button.removeClass('btn-success');
+		button.removeClass('btn-danger');
+		button.addClass('btn-primary');	    	    	    
+	    } else {
+		element.removeClass('btn-ximera-correct');
+		element.addClass('btn-ximera-incorrect');
+		element.removeClass('btn-ximera-submit');
+		button.removeClass('btn-success');
+		button.addClass('btn-danger');
+		button.removeClass('btn-primary');
+	    }
 	}
-
-	return false;
-    });
-
-    element.find('select').change( function() {
-	var selected = element.find('select option:selected');
-	element.persistentData( 'response', selected.attr('id') );
-
-	console.log( element.persistentData( 'response' ) );
-    });
-    
-    element.find( ".btn-ximera-correct" ).click( function() {
-	return false;
-    });
-
-    element.find( ".btn-ximera-incorrect" ).click( function() {
-	element.find( ".btn-ximera-submit" ).click();
-	return false;
-    });
-    
-    element.find( ".btn-ximera-submit" ).click( function() {
-	var selected = element.find('select option:selected');
-
-	element.persistentData( 'correct', selected.hasClass('correct') );
-	element.persistentData( 'attempt', selected.attr('id') );
-
-	element.trigger( 'ximera:attempt' );
-	
-	if (element.persistentData('correct')) {
-	    element.trigger( 'ximera:correct' );
-	}	    
-	
-	TinCan.answer( element, { response: element.persistentData('response'),
-				  success: element.persistentData('correct') } );
 	
 	return false;
     });
-
-    
+        
 };
 
 $.fn.extend({

@@ -186,3 +186,53 @@ div.quote p {
     vertical-align: top !important;
     padding: 0;
 }
+
+/****************************************************************/
+/* Dropdowns can be inline */
+
+.word-choice {
+    display:inline-block;
+}
+
+.word-choice .dropdown-toggle::after {
+    content: none;
+}
+
+.word-choice.btn-ximera-submit .dropdown-toggle::after {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 0.3em;
+    vertical-align: baseline;
+    font: normal normal normal 14px/1 FontAwesome;
+    content: "";
+    border-top: none;
+    border-right: none;
+    border-left: none;
+}
+
+.word-choice.btn-ximera-incorrect .dropdown-toggle::after {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 0.3em;
+    vertical-align: baseline;
+    font: normal normal normal 14px/1 FontAwesome;
+    content: "";
+    border-top: none;
+    border-right: none;
+    border-left: none;
+}
+
+.word-choice.btn-ximera-correct .dropdown-toggle::after {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 0.3em;
+    vertical-align: baseline;
+    font: normal normal normal 14px/1 FontAwesome;
+    content: "";
+    border-top: none;
+    border-right: none;
+    border-left: none;
+}
