@@ -449,6 +449,7 @@ MathJax.Hub.Configured();
 
 $(document).ready(function() {
     // Make anchors with references from \ref actually work
+    $('a.ximera-label').texLabel();
     $('a.reference').reference();
     references.highlightTarget();
     

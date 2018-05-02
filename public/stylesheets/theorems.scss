@@ -97,7 +97,7 @@ We want to stop when the index reaches the end of the list of environments. */
    .#{$nameOfClass}::before {
       /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
       /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
-      content:"#{$nameOfClass}.";
+      content:"#{$nameOfClass}" attr(numbered) ".";
       display: inline;
       text-transform: capitalize;   /* CSS here only applies to one word, like "Theorem." or "Example." */
       font-weight: bold;

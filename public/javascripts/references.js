@@ -3,11 +3,13 @@ var MathJax = require('./mathjax');
 
 function zoomTo( id ) {
     var target = $(document.getElementById(id));
-    target = target.closest( 'div' );
+    target = target.closest( 'div, dl' );
 
     // Make the div flash
-    target.stop().css("background-color", "#FFFF9C")
-	.animate({ backgroundColor: "#FFFFFF"}, 5000);
+    target.addClass("flash");
+    window.setTimeout( function(){
+        target.removeClass("flash");
+    }, 5000);
 
     // This is pretty hacky
     var el = target; 
@@ -30,14 +32,46 @@ function zoomTo( id ) {
     }, 1000);
 }
 
+var maximumNumber = 1;
+
+var createLabel = function() {
+    var label = $(this);
+    var href = label.attr('id');
+
+    console.log(label);
+
+    function addLabel(reference) {
+	console.log( MathJax.Extension["TeX/AMSmath"].labels );
+	
+	if ( ! (href in MathJax.Extension["TeX/AMSmath"].labels)) {
+	    var tag = undefined;
+	    
+	    var enumerated = label.closest( 'dd.enumerate-enumitem' );
+	    if (enumerated.length > 0) {
+		tag = $.trim( enumerated.prev('dt').text() );
+	    } else {
+		var problem = label.closest('.problem-environment');
+		tag = maximumNumber.toString();
+		maximumNumber = maximumNumber + 1;
+		problem.attr('numbered', ' ' + tag);
+	    }
+	    
+	    MathJax.Extension["TeX/AMSmath"].labels[href] = { id: href, tag: tag };
+	}
+    }
+
+    MathJax.Hub.Queue(
+	[addLabel]
+    );
+
+};
+
 var createReference = function() {
     var reference = $(this);
 
     function checkLabel(reference) {
-	console.log("checking ",reference);
 	var href = reference.attr('href');
 	href = href.replace(/^#/, '' );	
-	console.log("with its ",href);
 	if (MathJax.Extension["TeX/AMSmath"].labels[href]) {
 	    var label = MathJax.Extension["TeX/AMSmath"].labels[href];
 	    reference.text( label.tag );
@@ -99,7 +133,11 @@ var createReference = function() {
 $.fn.extend({
     reference: function() {
 	return this.each( createReference );
-    }
+    },
+
+    texLabel: function() {
+	return this.each( createLabel );
+    }    
 });
 
 
