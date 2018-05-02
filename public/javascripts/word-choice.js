@@ -42,9 +42,10 @@ var createWordChoice = function() {
     var id = wordChoice.attr('id');
     var element = $('<div class="dropdown word-choice btn-ximera-submit"><button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">&mdash;</button></div>');
     var button = $('button', element);
-    button.attr('id', id);
+    element.attr('id', id );
+    button.attr('id', id + "-button");
 
-    var menu = $('<div class="dropdown-menu" aria-labelledby="' + id + '"></div>');
+    var menu = $('<div class="dropdown-menu" aria-labelledby="' + id + '-button"></div>');
     element.append(menu);
     
     $('.choice', wordChoice).each( function() {
