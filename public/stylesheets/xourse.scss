@@ -56,16 +56,16 @@ main.xourse:before {
     width: 11rem;
 }
 
-// The first (and only) anchor inside a card covers the whole card,
-// making it clickable.
-.activity-card a {
+// The first anchor inside a card covers the whole card, making it
+// clickable.
+.activity-card a:first-child {
     z-index: 900;
     position: absolute;
     top: 0; left: 0;
     height: 100%; width: 100%;
 }
 
-.xourse-card a {
+.xourse-card a:first-child {
     z-index: 900;
     position: absolute;
     top: 0; left: 0;
