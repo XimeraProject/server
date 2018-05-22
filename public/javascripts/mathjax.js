@@ -31,7 +31,7 @@ window.MathJax = {
 };
 
 if (window.standalone)
-    window.MathJax.root = "http://localhost:3000/node_modules/mathjax";
+    window.MathJax.root = "https://ximera.osu.edu/node_modules/mathjax";
 
 require('mathjax2');
 
