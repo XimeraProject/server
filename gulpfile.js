@@ -27,10 +27,13 @@ var jsMainFile                = './public/javascripts/main.js';
 var jsBundleFile              = 'main.min.js';
 var jsServiceWorkerFile       = './public/javascripts/sw.js';
 var jsServiceWorkerBundleFile = 'sw.min.js';
+var jsStandaloneFile          = './public/javascripts/standalone.js';
+var jsStandaloneBundleFile    = 'standalone.min.js';
 
 // Source and target SCSS files
-var cssMainFile     = './public/stylesheets/base.scss';
-var cssFiles        = './public/stylesheets/**/*.scss';
+var cssMainFile       = './public/stylesheets/base.scss';
+var cssStandaloneFile = './public/stylesheets/standalone.scss';
+var cssFiles          = './public/stylesheets/**/*.scss';
 
 ////////////////////////////////////////////////////////////////
 // Browserify bundler
@@ -109,9 +112,57 @@ gulp.task('service-worker', function() {
 });
 
 ////////////////////////////////////////////////////////////////
+// Bundler for the service worker
+var standaloneOptions = {
+    entries: [jsStandaloneFile],
+    transform: [
+	[aliasify],
+	[babelify, {
+	    global: true,
+	    ignore: /\/node_modules\/(?!syntaxhighlighter|brush-)/,	    
+	    "presets": [
+		["env", {
+		    "targets": {
+			"browsers": ["last 2 versions", "safari >= 7"]
+		    }
+		}]
+	    ]
+	}]
+    ],
+    extensions: ['.js'],
+    cache: {}, packageCache: {}, fullPaths: true // for watchify
+};
+
+var completeStandaloneOptions = assign({}, watchify.args, standaloneOptions);
+var standaloneBundler = browserify(completeStandaloneOptions);
+
+function buildStandalonePipeline(b) {
+    return b
+        .bundle()
+        .pipe(source(jsStandaloneBundleFile))
+        .pipe(buffer())
+        .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
+        .pipe(sourcemaps.write('./', {sourceMappingURLPrefix: '.'})) // writes .map file
+        .pipe(gulp.dest(staticDirectoryJavascripts));
+}
+
+// Build JavaScript using Browserify
+gulp.task('standalone', function() {
+    return buildStandalonePipeline(standaloneBundler);
+});
+
+
+////////////////////////////////////////////////////////////////
 // Build CSS
 gulp.task('css', function(){
     return gulp.src(cssMainFile)
+        .pipe(sass())
+        .pipe(gulpif(argv.production, minifyCSS({keepBreaks:true})))
+        .pipe(gulp.dest(staticDirectoryCSS));
+});
+
+gulp.task('css-standalone', function(){
+    return gulp.src(cssStandaloneFile)
         .pipe(sass())
         .pipe(gulpif(argv.production, minifyCSS({keepBreaks:true})))
         .pipe(gulp.dest(staticDirectoryCSS));
@@ -135,7 +186,7 @@ gulp.task('watchify', function() {
 });
 
 gulp.task('csswatch', function () {
-    gulp.watch(cssFiles, ['css']);
+    gulp.watch(cssFiles, ['css', 'css-standalone']);
 });
 
 gulp.task('service-worker-watch', function () {
@@ -149,5 +200,5 @@ gulp.task('lint', function () {
 });
 
 gulp.task('watch', ['watchify', 'csswatch', 'service-worker-watch']);
-gulp.task('default', ['js', 'css', 'service-worker']);
+gulp.task('default', ['js', 'css', 'css-standalone', 'service-worker', 'standalone']);
 

@@ -30,6 +30,9 @@ window.MathJax = {
     root: "/node_modules/mathjax/"
 };
 
+if (window.standalone)
+    window.MathJax.root = "http://localhost:3000/node_modules/mathjax";
+
 require('mathjax2');
 
 module.exports = window.MathJax;
