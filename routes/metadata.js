@@ -13,6 +13,7 @@ exports.parseActivityBlob = function( repositoryName, filename, blobHash, callba
 		 repositories.readBlob( repositoryName, blobHash )
 		     .then( function(source) {
 			 var activity = { kind: 'activity' };
+			 
 			 var $ = cheerio.load( source, {xmlMode: true} );
 
 			 var isXourse = $('meta[name="description"]').attr('content') == 'xourse';
@@ -29,7 +30,14 @@ exports.parseActivityBlob = function( repositoryName, filename, blobHash, callba
 			     });
 			     
 			     activity.title = $('title').html();
-			     activity.html = $('body').html();
+
+			     //activity.html = $('body').html();
+			     var pattern = /<body[^>]*>((.|[\n\r])*)<\/body>/im;
+			     var matches = pattern.exec(source);
+			     if (matches) {
+				 activity.html = matches[1];
+			     }
+			     
 			     activity.hash = blobHash;
 			     activity.description = $('div.abstract').html();
 
