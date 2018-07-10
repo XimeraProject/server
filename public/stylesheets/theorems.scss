@@ -39,6 +39,10 @@ problem $color-sky,
 question $color-sky,
 explanation $color-grass,
 exploration $color-sky;
+model $color-sky;
+formula $color-sky;
+procedure $color-sky;
+template $color-sky;
 
 /* This is a faux loop that doesn't end up in the final css. 
 Writing this does not actually cause the loop to be executed; see below
