@@ -19,8 +19,21 @@ var answerHtml = '<div class="btn-group" style="vertical-align: bottom; " aria-l
 	'<button class="btn btn-primary btn-ximera-submit" data-toggle="tooltip" data-placement="top" title="Click to check your answer.">' +
 	'<i class="fa fa-question"/>&nbsp;Check work' +
 	'</button>' +
-	'</div>';
+        '</div>';
 
+var ungradedAnswerHtml = '<div class="btn-group" style="vertical-align: bottom; " aria-live="assertive">' +
+    '<button class="btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Thank you for your submission" style="display: none">' +
+	'<i class="fa fa-envelope"/>&nbsp;Submitted' +    
+	'</button></div>' +
+	'<div class="btn-group" style="vertical-align: bottom; " aria-live="assertive">' +
+	'<button class="btn btn-danger btn-ximera-incorrect" data-toggle="tooltip" data-placement="top" title="Submit again!" style="display: none">' +
+	'<i class="fa fa-times"/>&nbsp;Try again' +
+	'</button></div>' +
+	'<div class="btn-group" style="vertical-align: bottom; ">' +
+	'<button class="btn btn-primary btn-ximera-submit" data-toggle="tooltip" data-placement="top" title="Click to submit your answer.">' +
+	'<i class="fa fa-envelope-open"/>&nbsp;Submit your work' +
+	'</button>' +
+        '</div>';
 
 function assignGlobalVariable( multipleChoice, choice ) {
     if (multipleChoice.attr('data-id')) {
@@ -38,12 +51,24 @@ var createMultipleChoice = function() {
     var multipleChoice = $(this);
 
     multipleChoice.wrapInner( '<div class="ximera-horizontal"><div class="btn-group-vertical" role="group" data-toggle="buttons" style="padding-right: 1em;"></div></div>' );
-    $('.ximera-horizontal', multipleChoice).append( $(answerHtml) );
+    
+    var isUngraded = multipleChoice.closest(".ungraded").length > 0;
+
+    var replacement = $(answerHtml);
+    if (isUngraded)
+	replacement = $(ungradedAnswerHtml);
+	
+    $('.ximera-horizontal', multipleChoice).append( replacement );
 
     multipleChoice.find( ".choice" ).each( function() {
 	var correct = '';
 	if ($(this).hasClass( "correct" ))
 	    correct = "correct";
+
+	if (isUngraded) {
+	    $(this).addClass( "correct" )
+	    correct = "correct";
+	}
 	
 	var identifier = $(this).attr('id');
 	$(this).removeAttr('id');
