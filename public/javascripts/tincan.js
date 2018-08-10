@@ -16,15 +16,26 @@ var verb = function(word) {
     };
 };
 
+var xAPIverb = function(word) {
+    return {
+	id: "http://activitystrea.ms/schema/1.0/" + word,
+	display: {
+	    "en-US": word
+	}
+    };
+};
+
 var verbExperienced = verb("experienced");
 var verbAttempted = verb("attempted");
 var verbAnswered = verb("answered");
 var verbCompleted = verb("completed");
+var verbSubmitted = xAPIverb("submit");
 
 exports.verbExperienced = verb("experienced");
 exports.verbAttempted = verb("attempted");
 exports.verbAnswered = verb("answered");
 exports.verbCompleted = verb("completed");
+exports.verbSubmitted = xAPIverb("submit");
 
 exports.activityHashToActivityObject = function(activityHash) {
     var result = {
@@ -114,6 +125,25 @@ exports.answer = function(element, result) {
     });
 };
 
+var freeResponseUrl = function(element) {
+    var activityHash = $(element).activityHash();
+    var answerId = $(element).attr('id');
+    
+    var url = ximeraUrl + "activities/" + activityHash + "/freeResponse/" + answerId;
+
+    return url;
+};
+
+exports.submitted = function(element, response) {
+    exports.recordVerbObject( verbSubmitted, {
+	objectType: "Activity",
+	id: freeResponseUrl(element)
+    },{
+	result: { response: response }
+    });
+};
+
+
 exports.completeProblem = function(element) {
     exports.recordStatement( {
 	verb: verbCompleted,
@@ -181,6 +211,8 @@ exports.recordVerbObject = function( verb, object, others ) {
     
     if (others)
 	_.extend( statement, others );
+
+    console.log( statement );
     
     return exports.recordStatement( statement );
 };    

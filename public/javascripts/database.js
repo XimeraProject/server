@@ -114,7 +114,8 @@ $.fn.extend({ repositoryName: function() {
 // Return the database hash associated to the given element
 module.exports.get = function(element) {
     if (DATABASE === undefined) {
-	throw "Database not loaded.";
+	DATABASE = {};
+	//throw "Database not loaded.";
     }
     
     var identifier = $(element).attr('id');

@@ -7,6 +7,8 @@ var Converter = Markdown.Converter;
 var Sanitizer = require('pagedown-sanitizer').getSanitizingConverter;
 var editor = require('pagedown-editor');
 
+var TinCan = require('./tincan');
+
 var createFreeResponse = function() {
     var element = $(this);
 
@@ -50,6 +52,22 @@ var createFreeResponse = function() {
     
     var toolbar = $('#wmd-button-row' + wmdName, form);
     //toolbar.append( $('<div class="btn-group"><button class="btn btn-primary"><i class="fa fa-share"></i>&nbsp;Submit to Peers</button><button class="btn btn-warning"><i class="fa fa-thumbs-up"></i>&nbsp;Review Peers</button></div>') );
+
+    var buttonGroup = $('<div class="btn-group"></div>');
+    
+    var submit = $( '<button class="btn btn-primary"><i class="fa fa-share"></i>&nbsp;<span class="submit-label">Submit</span></button>' );
+    buttonGroup.append( submit );
+    toolbar.append( buttonGroup );
+
+    submit.on( 'click', function() {
+	var e = $(this);
+	$('.submit-label', e).text( 'Submitted!' );
+	
+	var result = $(element).persistentData( 'response' );
+
+	TinCan.submitted( element, result );
+    });
+    
     /*
      var button = '<button class="btn btn-info" ng-click="db.viewSolution = true;" ng-hide="db.viewSolution"><i class="fa fa-eye"></i>&nbsp;View model solution</button><button class="btn btn-info" ng-click="db.viewSolution = false;" ng-show="db.viewSolution"><i class="fa fa-eye-slash"></i>&nbsp;Hide model solution</button>';
      toolbar.append( $(button) );

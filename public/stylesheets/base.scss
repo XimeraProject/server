@@ -236,3 +236,7 @@ div.quote p {
     border-right: none;
     border-left: none;
 }
+
+.verb {
+    @extend code;
+}
