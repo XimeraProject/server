@@ -85,7 +85,7 @@ $.fn.extend({ activityPath: function() {
 function differentialSynchronization() {
     if ((!socket) || (!(socket.connected))) {
 	saveWorkStatus( 'error', "Synchronization failed" );
-	window.setTimeout(differentialSynchronizationDebounced, 3001);
+	window.setTimeout(differentialSynchronizationDebounced, 7001);
 	return;
     }
 
@@ -98,7 +98,7 @@ function differentialSynchronization() {
     }
 }
 
-var differentialSynchronizationDebounced = _.debounce( differentialSynchronization, 3001 );
+var differentialSynchronizationDebounced = _.debounce( differentialSynchronization, 7001 );
 
 var findRepositoryName = _.memoize( function( element ) {
     if ($(element).hasClass('activity'))

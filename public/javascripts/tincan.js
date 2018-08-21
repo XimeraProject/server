@@ -192,7 +192,7 @@ var uploadQueue = _.throttle( function() {
 		queue.push( statement );
 	    });
 	    // and try again later
-	    window.setTimeout(uploadQueue, 7001);
+	    window.setTimeout(uploadQueue, 15001);
 	}
     });
 }, 1009 );
