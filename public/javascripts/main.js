@@ -82,7 +82,11 @@ MathJax.Hub.Register.MessageHook("Math Processing Error",function (message) {
     //  do something with the error.  message[2] is the Error object that records the problem.
     console.log(message);
 });
-     
+
+// Cervone says this will speed things up
+MathJax.Hub.processSectionDelay = 0;
+MathJax.Hub.processUpdateTime = 0;
+
 MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     
     // Remove CDATA's from the script tags
@@ -367,7 +371,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 	    }
 	    
 	    this.Push(MML.mpadded(MML.mphantom(answer)).With({height: 0, width: 0}));
-	    
+
 	    mathAnswer.createMathAnswer( input );
 
 	    var xml = MML.xml(input);
