@@ -150,7 +150,19 @@ passport.deserializeUser(function(id, done) {
 });
 
     app.version = require('./package.json').version;
-
+    
+    function redirectMasqueradesAsSelf( req, res, next ) {
+	if (req.params.masqueradingUserId) {
+	    if (req.user && req.user._id) {
+		if (req.params.masqueradingUserId == req.user._id) {
+		    var cleanUrl = req.url.replace('users/' + req.params.masqueradingUserId + '/', '' );
+		    res.redirect( 301, cleanUrl );
+		}
+	    }
+	}
+	next();
+    }
+    
     function redirectUnnormalizeRepositoryName( req, res, next ) {
 	if (req.params.repository) {
 	    var normalized = req.params.repository.replace( /[^0-9A-Za-z-]/, '' ).toLowerCase();
@@ -162,7 +174,7 @@ passport.deserializeUser(function(id, done) {
 	    }
 	}
 	next();
-    }
+    }	
     
     function normalizeRepositoryName( req, res, next ) {
 	if (req.params.repository)
@@ -392,7 +404,7 @@ passport.deserializeUser(function(id, done) {
     var serveContent = function( regexp, callback ) {
 	// Just ignore masquerades for non-page resources
 	app.get( '/users/:masqueradingUserId/:repository/:path(' + regexp + ')',
-		 normalizeRepositoryName,
+		 normalizeRepositoryName,	
 		 page.activitiesFromRecentCommitsOnMaster,		 
 		 callback );
 	
@@ -465,7 +477,8 @@ passport.deserializeUser(function(id, done) {
 	     instructors.index );
 
     app.get( '/users/:masqueradingUserId/:repository/:path(*)',
-	     redirectUnnormalizeRepositoryName,	     	     
+	     redirectUnnormalizeRepositoryName,
+	     redirectMasqueradesAsSelf,	     
 	     supervising.masquerade,
 	     page.activitiesFromRecentCommitsOnMaster,
 	     page.chooseMostRecentBlob,
