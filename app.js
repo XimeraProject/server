@@ -42,6 +42,7 @@ var express = require('express')
   , sendSeekable = require('send-seekable')
   , url = require('url')
   , versionator = require('versionator')
+  , WebSocketServer = require("ws").Server 
   ;
 
 // Some filters for Pug; admittedly, Pug comes with its own Markdown
@@ -443,23 +444,34 @@ passport.deserializeUser(function(id, done) {
     // Start HTTP server for fully configured express App.
     var server = http.createServer(app);
 
-    // Connect up to socket.io
-    var ios = require('socket.io-express-session');
-    var io = require('socket.io')(server, {
-    });
-    io.use(ios(theSession, cookieParser(config.session.secret)));
-
-    io.on( 'connection', function() {
-	console.log( "USER COUNT:", io.engine.clientsCount );
-    });
+    var wss = new WebSocketServer({server: server});
 
     ////////////////////////////////////////////////////////////////
     // State storage    
     
     var state = require('./routes/state.js');
-    state.io = io;
-    io.on( 'connection', state.connection );
-
+    
+    state.wss = wss;
+    
+    wss.on("connection", function (ws, req) {
+	cookieParser(config.session.secret)(req, null, function(err) {
+	    if (err) {
+		winston.error(err);
+		return;
+	    }
+	    
+	    theSession(req, {}, function(err, session) {
+		if (err) {
+		    winston.error(err);
+		    return;		    
+		} else {
+		    ws.session = req.session;
+		    state.connection(ws);
+		}
+	    });
+	});
+    });
+    
     app.get( '/:repository/:path(*)/gradebook',
 	     normalizeRepositoryName,
 	     gradebook.record );

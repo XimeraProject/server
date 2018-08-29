@@ -362,7 +362,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 		answer.parent = {inferRow: false};
 		var correctAnswerMml = answer.toMathML("");	
 		var correctAnswer = Expression.fromMml(correctAnswerMml).toString().toString();
-		console.log( correctAnswer.length );		
 		if (correctAnswer.length <= 3) {
 		    input.classList.add('narrow'); // to eliminate some padding
 		    input.style.width = "70px";
