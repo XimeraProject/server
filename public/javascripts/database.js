@@ -83,11 +83,16 @@ $.fn.extend({ activityPath: function() {
     return findActivityPath( this );
 }});
 
+window.addEventListener('online', connectToServer );
+			
+window.addEventListener('offline', function () {
+    saveWorkStatus( 'error', "No internet available" );
+});
 
 function differentialSynchronization() {
     if ((!socket) || (!(socket.readyState == WebSocket.OPEN))) {
 	saveWorkStatus( 'error', "Synchronization failed" );
-	window.setTimeout(connectToServerDebounced, 3001);	
+	connectToServer();
 	window.setTimeout(differentialSynchronizationDebounced, DIFFSYNC_DEBOUNCE );
 	return;
     }
@@ -224,11 +229,14 @@ var backOff = 1000;
 function connectToServer() {
     // If we're currently connected...
     if (socket) {
-	if (socket.readyState == WebSocket.OPEN)
+	if (socket.readyState == WebSocket.OPEN) {	    
 	    // just ignore the request to reconnect
 	    return;
-	if (socket.readyState == WebSocket.CONNECTING)
+	}
+	if (socket.readyState == WebSocket.CONNECTING) {
+	    console.log("Still connecting...");
 	    return;
+	}
     }
 
     // Build an appropriate URL based on the page URL
@@ -266,8 +274,8 @@ function connectToServer() {
 	if (backOff > 15000) backOff = 15000;
 
 	saveWorkStatus( 'error', "You have been disconnected.  Reconnecting in " + Math.round(backOff/1000).toString() + " seconds" );
-	console.log( "You have been disconnected.  Reconnecting in " + Math.round(backOff).toString() + " seconds" );
-	window.setTimeout(connectToServerDebounced, backOff);
+	console.log( "You have been disconnected.  Reconnecting in " + Math.round(backOff/1000).toString() + " seconds" );
+	window.setTimeout(connectToServer, backOff);
     });
 
     var learnerId = $('main').attr( 'data-learner' );
@@ -423,8 +431,6 @@ function connectToServer() {
 	});
     });
 }
-
-var connectToServerDebounced = _.debounce( connectToServer, 15001, true );
 
 $(document).ready(function() {
     var activityHash = findActivityHash();
