@@ -95,7 +95,7 @@ function toInstructors( socket, message, payload ) {
 	var contexts = unique(bridges.map( function(b) { return b.contextId; } ));
 	
 	contexts.forEach( function(context) {
-	    contextRooms( context, null, message, payload );
+	    contextRooms.broadcast( context, null, message, payload );
 	});	
     });
 }

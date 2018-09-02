@@ -97,28 +97,49 @@ function completion( userId, repositoryName, activityPath, complete ) {
 }
 
 function supervise() {
+    // Build an appropriate URL based on the page URL
+    var websocketUrl = "ws:";
+    if (window.location.protocol === "https:") {
+	websocketUrl = "wss:";
+    }
+    websocketUrl += "//" + window.location.host + "/ws";
+
     try {
-	socket = io.connect();
+	console.log( "Attempting websocket connection...");
+	
+	socket = new WebSocket(	websocketUrl );
+
+	// It would be nicer to use ...parameters, and I can't just
+	// use arguments because it's not actually an array
+	socket.sendJSON = function() {
+	    var parameters = [];
+	    var i;
+	    for( i=0; i<arguments.length; i++ )
+		parameters[i] = arguments[i];
+	    socket.send( JSON.stringify( parameters ) );
+	};
     } catch (err) {
-	alert( "Could not connect.  We are not supervising." );
+	alert( "Could not connect.  We are not supervising." );	
     }
 
-    socket.emit( 'supervise' );
+    socket.sendJSON( 'supervise' );
 
-    socket.on('enter', function(user) {
+    var handlers = {};
+    
+    handlers.enter = function(user) {
 	upvoteUser(user._id);
 	updateUser(user._id, user);
-    });
+    };
 
-    socket.on('leave', function(payload) {
+    handlers.leave = function(payload) {
 	var userId = payload.userId;
 	var repositoryName = payload.repositoryName;
 	var activityPath = payload.activityPath;
 
 	downvoteUser(userId, repositoryName, activityPath);
-    });
+    };
 
-    socket.on('completions', function(payload) {
+    handlers.completions = function(payload) {
 	console.log(payload);	
 	payload.forEach( function(c) {
 	    completion( c.userId,
@@ -126,7 +147,30 @@ function supervise() {
 			c.activityPath,
 			c.complete  );
 	});
-    });
+    };
+
+    socket.addEventListener('message', function (event) {
+	var payload = JSON.parse( event.data );
+
+	if (! Array.isArray(payload)) {
+	    console.log("WebSocket message is not an array.");
+	    return;
+	}
+
+	if (payload.length == 0) {
+	    console.log("WebSocket message is empty.");
+	    return;
+	}
+	    
+	var message = payload[0];
+	var camelCased = message.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+
+	if (handlers[camelCased]) {
+	    handlers[camelCased].apply( socket, payload.slice(1) );
+	} else {
+	    console.log( "Do not know how to handle " + message );
+	}
+    });    
 }
 
 $(function() {
