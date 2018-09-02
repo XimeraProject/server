@@ -439,7 +439,7 @@ module.exports.setCompletion = function(repositoryName, activityPath, complete) 
 	return;
     }
 
-    if (socket.readyState !== WebSocket.OPEN)
+    if (socket.readyState !== WebSocket.OPEN) {
 	saveWorkStatus( 'error', "Socket not open for progress bar" );	
 	return;
     }
