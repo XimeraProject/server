@@ -12,6 +12,11 @@ $pulsate-colors: (
 
 @each $pulsator in $pulsate-list {
 
+  .disabled .#{$pulsator}.pulsate {
+    animation: none;
+    text-shadow: none;	      
+  }
+    
   .#{$pulsator}.pulsate {
       animation: pulsate-#{$pulsator} 0.5s infinite alternate;
       animation-timing-function: linear;
