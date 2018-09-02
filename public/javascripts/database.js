@@ -85,7 +85,7 @@ $.fn.extend({ activityPath: function() {
 
 
 function differentialSynchronization() {
-    if ((!socket) || (!(socket.readyState == 1))) {
+    if ((!socket) || (!(socket.readyState == WebSocket.OPEN))) {
 	saveWorkStatus( 'error', "Synchronization failed" );
 	window.setTimeout(connectToServerDebounced, 3001);	
 	window.setTimeout(differentialSynchronizationDebounced, DIFFSYNC_DEBOUNCE );
@@ -434,7 +434,15 @@ $(document).ready(function() {
 });
 
 module.exports.setCompletion = function(repositoryName, activityPath, complete) {
-    if ((!socket) || (!(socket.connected))) return;
+    if (!socket) {
+	saveWorkStatus( 'error', "No socket for progress bar" );	
+	return;
+    }
+
+    if (socket.readyState !== WebSocket.OPEN)
+	saveWorkStatus( 'error', "Socket not open for progress bar" );	
+	return;
+    }
 
     socket.sendJSON( 'completion', {repositoryName: repositoryName, activityPath: activityPath, complete: complete} );
 };
