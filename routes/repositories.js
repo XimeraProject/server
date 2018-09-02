@@ -34,6 +34,12 @@ client.on('error', function (err) {
 
 var repositoryCache = {};
 
+exports.normalizeName = function( req, res, next ) {
+    if (req.params.repository)
+	req.params.repository = req.params.repository.replace( /[^0-9A-Za-z-]/, '' ).toLowerCase();
+    next();
+}
+
 function invalidateRepositoryCache(repositoryName) {
     delete repositoryCache[repositoryName];
 

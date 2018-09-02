@@ -177,12 +177,6 @@ passport.deserializeUser(function(id, done) {
 	next();
     }	
     
-    function normalizeRepositoryName( req, res, next ) {
-	if (req.params.repository)
-	    req.params.repository = req.params.repository.replace( /[^0-9A-Za-z-]/, '' ).toLowerCase();
-	next();
-    }
-    
     ////////////////////////////////////////////////////////////////
     // API endpoints for the xake tool
 
@@ -194,22 +188,22 @@ passport.deserializeUser(function(id, done) {
 
     app.use( '/gpg/', limiter );
     app.use( '/pks/', limiter );
-    app.use( '/:repository.git', normalizeRepositoryName, limiter );
+    app.use( '/:repository.git', repositories.normalizeName, limiter );
     
     app.get( '/gpg/token/:keyid', keyserver.token );
     app.get( '/gpg/tokens/:keyid', keyserver.token );
     app.get( '/gpg/secret/:ltiKey/:keyid', keyserver.ltiSecret );
     app.post( '/pks/add', keyserver.add );
 
-    app.post( '/:repository.git', normalizeRepositoryName, keyserver.authorization );
-    app.post( '/:repository.git', normalizeRepositoryName, hashcash.hashcash );
-    app.post( '/:repository.git', normalizeRepositoryName, page.create );
+    app.post( '/:repository.git', repositories.normalizeName, keyserver.authorization );
+    app.post( '/:repository.git', repositories.normalizeName, hashcash.hashcash );
+    app.post( '/:repository.git', repositories.normalizeName, page.create );
 
-    app.use( '/:repository.git/log.sz', normalizeRepositoryName, page.authorization );
-    app.use( '/:repository.git/log.sz', normalizeRepositoryName, sendSeekable );
-    app.get( '/:repository.git/log.sz', normalizeRepositoryName, tincan.get );
+    app.use( '/:repository.git/log.sz', repositories.normalizeName, page.authorization );
+    app.use( '/:repository.git/log.sz', repositories.normalizeName, sendSeekable );
+    app.get( '/:repository.git/log.sz', repositories.normalizeName, tincan.get );
     
-    app.use( '/:repository.git', normalizeRepositoryName, repositories.git );
+    app.use( '/:repository.git', repositories.normalizeName, repositories.git );
 
     ////////////////////////////////////////////////////////////////
     // Static content    
@@ -262,7 +256,7 @@ passport.deserializeUser(function(id, done) {
 
     app.post('/xAPI/statements', function(req,res) { res.status(200).send('ignoring statements without a repository.'); } );
     
-    app.post('/:repository/xAPI/statements', normalizeRepositoryName, tincan.postStatements);    
+    app.post('/:repository/xAPI/statements', repositories.normalizeName, tincan.postStatements);    
     
     ////////////////////////////////////////////////////////////////
     // User identity
@@ -317,7 +311,7 @@ passport.deserializeUser(function(id, done) {
     
     app.get( '/statistics/:repository/:path(*)/:activityHash',
 	     // include some sort of authorization here -- being an LTI "instuctor" in any xourse in the repo suffices
-	     normalizeRepositoryName,
+	     repositories.normalizeName,
 	     statistics.get );
     
     // app.get( '/statistics/:commit/:hash/successes', course.successes );
@@ -405,7 +399,7 @@ passport.deserializeUser(function(id, done) {
     var serveContent = function( regexp, callback ) {
 	// Just ignore masquerades for non-page resources
 	app.get( '/users/:masqueradingUserId/:repository/:path(' + regexp + ')',
-		 normalizeRepositoryName,	
+		 repositories.normalizeName,	
 		 page.activitiesFromRecentCommitsOnMaster,		 
 		 callback );
 	
@@ -473,10 +467,10 @@ passport.deserializeUser(function(id, done) {
     });
     
     app.get( '/:repository/:path(*)/gradebook',
-	     normalizeRepositoryName,
+	     repositories.normalizeName,
 	     gradebook.record );
     app.put( '/:repository/:path(*)/gradebook',
-	     normalizeRepositoryName,
+	     repositories.normalizeName,
 	     gradebook.record );    
 
     // Instructors should be based around a context instead?
@@ -532,7 +526,7 @@ passport.deserializeUser(function(id, done) {
     ////////////////////////////////////////////////////////////////
     // Present errors to the user
     
-    if ('d2evelopment' == app.get('env')) {
+    if ('development' == app.get('env')) {
 	// Middleware for development only, since this will dump a
 	// stack trace
 	errorHandler.title = 'Ximera';
