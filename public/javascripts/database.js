@@ -16,6 +16,7 @@ function checksumObject(object) {
     return XXH.h32( CANON.stringify( object ), 0x1337 ).toString(16);
 }
 
+var DIFFSYNC_DEBOUNCE = 313; // milliseconds to wait to save
 var socket = undefined;
 
 // Some heartbeat code to provide feedback when we aren't receiving pings
@@ -87,7 +88,7 @@ function differentialSynchronization() {
     if ((!socket) || (!(socket.readyState == 1))) {
 	saveWorkStatus( 'error', "Synchronization failed" );
 	window.setTimeout(connectToServerDebounced, 3001);	
-	window.setTimeout(differentialSynchronizationDebounced, 7001);
+	window.setTimeout(differentialSynchronizationDebounced, DIFFSYNC_DEBOUNCE );
 	return;
     }
 
@@ -100,7 +101,7 @@ function differentialSynchronization() {
     }
 }
 
-var differentialSynchronizationDebounced = _.debounce( differentialSynchronization, 7001 );
+var differentialSynchronizationDebounced = _.debounce( differentialSynchronization, DIFFSYNC_DEBOUNCE );
 
 var findRepositoryName = _.memoize( function( element ) {
     if ($(element).hasClass('activity'))
