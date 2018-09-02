@@ -16,7 +16,6 @@ $(function() {
 module.exports.onSendMessage = function( callback ) {
     $('.chat input').keypress(function (event) {
         if (event.which == 13) {
-	    module.exports.appendToTranscript( 'me', $(this).val() );
 	    callback( $(this).val() );
 	    $(this).val('');
 	    return false;

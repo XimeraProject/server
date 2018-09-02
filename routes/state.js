@@ -15,33 +15,47 @@ function checksumObject(object) {
 
 exports.wss = undefined;
 
+var redis = require('redis');
+var publisher = redis.createClient();
+
 class Building {
-    constructor() {
-	this.rooms = {};
+    constructor(name) {
+	var building = this;
+	building.name = name;
+	building.rooms = {};
+	building.client = redis.createClient();
+	building.client.on("message", function(channel, message) {
+	    if (building.rooms[channel]) {
+		building.rooms[channel].forEach( function(socket) {
+		    // BADBAD: if it is closed, should unsubscribe maybe
+		    if (socket.readyState == 1) 		    
+			socket.send( message );
+		});
+	    }
+	});
     }
 
     join(room, socket) {
-	if (this.rooms[room] === undefined)
-	    this.rooms[room] = new Set();
+	var channel = this.name + ":" + room;
 	
-	this.rooms[room].add( socket );
+	if (this.rooms[channel] === undefined)
+	    this.rooms[channel] = new Set();
+	
+	this.rooms[channel].add( socket );
+	
+	this.client.subscribe(channel);
     }
 
     broadcast(room, sender, ...parameters) {
-	if (this.rooms[room]) {
-	    this.rooms[room].forEach( function(socket) {
-		if (socket != sender) {
-		    socket.sendJSON.apply( socket, parameters );
-		}
-	    } );
-	}
+	var channel = this.name + ":" + room;
+	publisher.publish( channel, JSON.stringify( parameters ) );
     }
 }
 
-var repositoryRooms = new Building();
-var userRooms = new Building();
-var contextRooms = new Building();
-var activityRooms = new Building(); 
+var repositoryRooms = new Building("repository");
+var userRooms = new Building("user");
+var contextRooms = new Building("context");
+var activityRooms = new Building("activity"); 
 
 exports.push = function(repositoryName) {
     repositoryRooms.broadcast( repositoryName, null, 'push' );
@@ -127,7 +141,8 @@ handlers.xakeChat = function( payload ) {
     
 handlers.chat = function(name, message) {
     var socket = this;
-    userRooms.broadcast( socket.userId, socket, 'chat', name, message );
+    // everybody receives the chat message, including the sender
+    userRooms.broadcast( socket.userId, null, 'chat', name, message );
 
     /* BADBAD
     socket.to('/repositories/' + socket.repositoryName + '/instructor')
@@ -273,10 +288,12 @@ handlers.patch = function(delta, checksum, truth) {
 	}
 	
 	mdb.State.update({activityHash: activityHash, user: userId}, {$set: {data: data}}, {upsert: true}, function (err, affected, raw) {
-	    socket.sendJSON('patched', err);
-	    
-	    // tell other people in the room that we have a differential if they want it
-	    activityRooms.broadcast( socket.activityRoom, socket, 'have-differential' );
+	    if (err) {
+		socket.sendJSON('patched', err);
+	    } else {
+		// tell other people in the room that we have a differential if they want it
+		activityRooms.broadcast( socket.activityRoom, null, 'have-differential', checksumObject( data ) );
+	    }
 	});
     });
 };
@@ -306,7 +323,7 @@ handlers.completion = function(c) {
 			complete: c.complete}];
 	
 	// Tell other browsers viewing this user
-	userRooms.broadcast( socket.userId, 'completions', payload );
+	userRooms.broadcast( socket.userId, null, 'completions', payload );
 	
 	// And tell any instructors what this student is doing
 	toInstructors( socket, 'completions', payload);
@@ -332,7 +349,7 @@ socket.on('disconnect', function() {
 
 exports.connection = function( socket ) {
     socket.sendJSON = function(...parameters) {
-	// BADBAD: should remove from buildings if this happens
+	// BADBAD: should remove from buildings if we get disconnected
 	if (socket.readyState == 1) 
 	    socket.send( JSON.stringify( parameters ) );
     };

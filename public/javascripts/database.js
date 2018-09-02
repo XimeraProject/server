@@ -324,16 +324,18 @@ function connectToServer() {
 	socket.sendJSON( 'sync', SHADOW );
     };
 
-    handlers.haveDifferential = _.debounce( function() {
-	socket.sendJSON( 'want-differential' );
+    handlers.haveDifferential = _.debounce( function(checksum) {
+	if (checksumObject(SHADOW) != checksum) {	
+	    socket.sendJSON( 'want-differential' );
+	} else {
+	    saveWorkStatus( 'saved', 'Uploaded at ' + (new Date()).toLocaleTimeString() );
+	}
     }, 100 );
 
     handlers.patched = function(err) {
 	if (err) {
 	    saveWorkStatus( 'error', err );
 	    console.log(err);	    
-	} else {
-	    saveWorkStatus( 'saved', 'Uploaded at ' + (new Date()).toLocaleTimeString() );
 	}
     };
 
