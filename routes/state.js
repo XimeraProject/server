@@ -27,14 +27,41 @@ class Building {
 	building.client.on("message", function(channel, message) {
 	    if (building.rooms[channel]) {
 		building.rooms[channel].forEach( function(socket) {
-		    // BADBAD: if it is closed, should unsubscribe maybe
 		    if (socket.readyState == 1) 		    
 			socket.send( message );
+		    else if (socket.readyState == 3) {
+			building.rooms[channel].delete( socket );
+			if (building.rooms[channel].size == 0) {
+			    building.client.unsubscribe(channel);
+			}
+		    }
 		});
 	    }
 	});
+
+	// Clean out closed connections every few minutes
+	setInterval( function() {
+	    building.clean();
+	}, 1000*60*10 );
     }
 
+    clean() {
+	var building = this;
+	
+	Object.keys(building.rooms).forEach(function(channel) {
+	    var sockets = building.rooms[channel];
+
+	    sockets.forEach( function(socket) {
+		if (socket.readyState == 3) {
+		    building.rooms[channel].delete( socket );
+		    if (building.rooms[channel].size == 0) {
+			building.client.unsubscribe(channel);
+		    }
+		}
+	    });
+	});
+    }
+    
     join(room, socket) {
 	var channel = this.name + ":" + room;
 	
@@ -349,7 +376,6 @@ socket.on('disconnect', function() {
 
 exports.connection = function( socket ) {
     socket.sendJSON = function(...parameters) {
-	// BADBAD: should remove from buildings if we get disconnected
 	if (socket.readyState == 1) 
 	    socket.send( JSON.stringify( parameters ) );
     };
