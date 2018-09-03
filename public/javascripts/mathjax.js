@@ -15,6 +15,11 @@ window.MathJax = {
     showProcessingMessages: false,
     messageStyle: 'none',
     
+    MathMenu: {
+	showRenderer: false,
+	showMathPlayer: false
+    },
+    
     // BADBAD: this also breaks the layout triggers
     // showMathMenu: false,
 
