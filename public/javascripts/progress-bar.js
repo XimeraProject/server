@@ -67,11 +67,30 @@ var calculateProgress = function(problem, depth) {
 
     if (depth != 0) {
 	if ($(problem).attr('data-blocking')) {
-	    nodeValue = $(problem).persistentData('complete') ? 1 : 0;
-	    nodeMaxValue = 1;
+	    if ($(problem).persistentData('complete')) {
+		nodeValue = 1;
+		nodeMaxValue = 1;
+	    } else {
+		var answersNeeded = 0;
+		var answersCorrect = 0;
+		$(problem).data('answers-needed').forEach( function(answer) {
+		    if ($(answer).persistentData('correct'))
+			answersCorrect++;
+		    answersNeeded++;
+
+		});
+
+		if (answersNeeded == 0) {
+		    nodeValue = 1;
+		    nodeMaxValue = 1;
+		} else {
+		    nodeValue = answersCorrect / answersNeeded;
+		    nodeMaxValue = 1;
+		}
+	    }
 	} else {
 	    nodeValue = 1;
-	    nodeMaxValue = 1;		
+	    nodeMaxValue = 1;
 	}
     }
 
