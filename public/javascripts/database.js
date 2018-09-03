@@ -279,15 +279,15 @@ function connectToServer() {
     });
 
     var learnerId = $('main').attr( 'data-learner' );
-    
+    var repositoryName = $('main').attr('data-repository-name');
+    var filename = $('main').attr('data-path');
+
     socket.addEventListener('open', function (event) {
 	console.log( "WebSocket open!");
 	saveWorkStatus( 'save' );	
 	socket.sendJSON( 'watch', learnerId, findActivityHash() );
+	socket.sendJSON( 'want-commit', repositoryName, filename );
     });
-
-    var repositoryName = $('main').attr('data-repository-name');
-    var filename = $('main').attr('data-path');
 
     var handlers = {};
     
