@@ -20,7 +20,7 @@ client.on('error', function (err) {
 var passback = pug.compileFile(path.join(__dirname,'../views/lti/passback.pug'));
 
 // We now wait many minutes for grades to settle
-var DEBOUNCE = 1000 * 60 * 5;
+var DEBOUNCE = 1000 * 60 * 3;
 
 function processGradebook(id, callback) {
     mdb.LtiBridge.findOne( {_id: new mongo.ObjectID(id) }, function(err, bridge) {
@@ -67,7 +67,8 @@ function processGradebook(id, callback) {
 			    if (err) {
 				callback(err);
 			    } else {
-				callback(null);
+				bridge.submittedScore = true;
+				bridge.save(callback);
 			    }
 			});
 		    }
@@ -128,6 +129,7 @@ exports.record = function(req, res, next) {
 				}
 
 				var better = false;
+
 				if (((!bridge.resultScore) || (bridge.resultScore < resultScore)) && (!isNaN(resultScore))) { 
 				    bridge.resultScore = resultScore;
 				    better = true;
@@ -142,9 +144,15 @@ exports.record = function(req, res, next) {
 				    return;
 				}
 
+				bridge.submittedScore = false;
+				
 				bridge.save(function(err) {
 				    if (!err) {
-					client.zadd('gradebook', Date.now() + DEBOUNCE, bridge._id.toString());
+					var debouncedTime = Date.now() + DEBOUNCE;
+					if (debouncedTime > bridge.dueDate)
+					    debouncedTime = bridge.dueDate;
+					
+					client.zadd('gradebook', debouncedTime, bridge._id.toString());
 				    }
 				    
 				    callback(err);

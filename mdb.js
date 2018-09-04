@@ -80,7 +80,8 @@ exports.initialize = function initialize(callback) {
 					   pointsPossible: Number,
 
 					   resultScore: Number,
-					   resultTotalScore: Number,					   
+					   resultTotalScore: Number,
+					   submittedScore: Boolean,
 					   
 					   oauthConsumerKey: String,
 					   oauthSignatureMethod: String,
