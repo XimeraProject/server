@@ -16,7 +16,7 @@ function checksumObject(object) {
     return XXH.h32( CANON.stringify( object ), 0x1337 ).toString(16);
 }
 
-var DIFFSYNC_DEBOUNCE = 313; // milliseconds to wait to save
+var DIFFSYNC_DEBOUNCE = 5003; // milliseconds to wait to save
 var socket = undefined;
 
 // Some heartbeat code to provide feedback when we aren't receiving pings
