@@ -28,4 +28,7 @@
     /* Sometimes mathjax elements cover up the hint collapse button */
     z-index: 1;
     position: relative;
+    width: 1.75em;
+    height: 1.75em;
+    border-radius: 50%;
 }
