@@ -98,12 +98,19 @@ mdb.initialize(function (err) {
     // Store session data in the mongo database; this is needed if we're
     // going to have multiple web servers sharing a single db
     var MongoStore = require('connect-mongo')(session);
+
+    var second            = 1000;
+    var minute            = 60 * second;
+    var hour              = 60 * minute;
+    var day               = (hour * 24);
+    var year              = 365*day;
     
     var theSession = session({
 	secret: config.session.secret,
 	resave: false,
 	saveUninitialized: false,
-	store: new MongoStore({ mongooseConnection: mdb.mongoose.connection })
+	store: new MongoStore({ mongooseConnection: mdb.mongoose.connection }),
+	cookie: { maxAge: year }
     });
     
     app.use(theSession);
