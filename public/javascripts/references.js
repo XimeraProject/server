@@ -33,6 +33,7 @@ function zoomTo( id ) {
 }
 
 var maximumNumber = 1;
+var problemNumber = 1;
 
 var createLabel = function() {
     var label = $(this);
@@ -47,9 +48,15 @@ var createLabel = function() {
 		tag = $.trim( enumerated.prev('dt').text() );
 	    } else {
 		var problem = label.closest('.problem-environment');
-		tag = maximumNumber.toString();
-		maximumNumber = maximumNumber + 1;
-		problem.attr('numbered', ' ' + tag);
+		if (problem.hasClass('problem')) {
+		    tag = problemNumber.toString();
+		    problemNumber = problemNumber + 1;
+		} else {
+		    tag = maximumNumber.toString();
+		    maximumNumber = maximumNumber + 1;
+		}
+
+		problem.attr('numbered', ' ' + tag);		    
 	    }
 	    
 	    MathJax.Extension["TeX/AMSmath"].labels[href] = { id: href, tag: tag };
