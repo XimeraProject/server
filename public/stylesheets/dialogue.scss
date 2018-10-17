@@ -14,6 +14,7 @@ dl.dialogue dd {
 
 @media screen and (min-width: 48em){
     dl.dialogue dt {
-	@extend .text-right;
+	// @extend .text-right; but that doesn't work inside a media query
+	text-align: right !important;
     }    
 }
