@@ -6,10 +6,14 @@ dl.dialogue {
 
 dl.dialogue dt {
     @extend .col-md-2;
-    @extend .text-right;
-    
 }
 
 dl.dialogue dd {
     @extend .col-md-10;
+}
+
+@media screen and (min-width: 48em){
+    dl.dialogue dt {
+	@extend .text-right;
+    }    
 }
