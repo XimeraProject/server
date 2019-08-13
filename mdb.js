@@ -34,7 +34,7 @@ exports.initialize = function initialize(callback) {
 				      replacedBy: {type: ObjectId, ref:"User"},
 				      course: String,
 				      superuser: Boolean,
-				      username: String,
+				      username: {type: String, index: true, unique: true, sparse: true},
 				      password: String,				      
                                       name: String,
                                       email: String,
