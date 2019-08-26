@@ -308,15 +308,23 @@ exports.connectMathAnswer = function(result, answer) {
 	    correctAnswer = correctAnswerText;
 	} else {
 	    try {	    
-		correctAnswer = Expression.fromLatex(correctAnswerText);
+	      correctAnswer = Expression.fromLatex(correctAnswerText);
+              
+              if (!correctAnswer) {
+                try {
+                  correctAnswer = Expression.fromLatex(correctAnswerText.toLowerCase());
+                } catch (err) {
+                  correctAnswer = false;
+                }
+              }
 	    } catch (err) {
-		try {
-		    correctAnswer = Expression.fromMml(correctAnswerText);
-		} catch (err) {
-		    console.log(correctAnswerText);
-		    console.log( "Instructor error in \\answer: " + err );
-		    correctAnswer = Expression.fromText( "sqrt(-1)" );
-		}
+	      try {
+		correctAnswer = Expression.fromMml(correctAnswerText);
+	      } catch (err) {
+		console.log(correctAnswerText);
+		console.log( "Instructor error in \\answer: " + err );
+		correctAnswer = Expression.fromText( "sqrt(-1)" );
+	      }
 	    }
 	}
 
