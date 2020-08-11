@@ -38,8 +38,6 @@ window.Tether = tether;
 var bootstrap = require('bootstrap');
 var kinetic = require('jquery.kinetic/jquery.kinetic.min.js');
 
-require('./chat');
-
 var syntaxHighlighter = require('syntaxhighlighter');
 window.sh = syntaxHighlighter;
 syntaxHighlighter.registerBrush(require('./brushes/shBrushLatex'));

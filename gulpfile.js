@@ -199,6 +199,6 @@ gulp.task('lint', function () {
 	.pipe(puglint());
 });
 
-gulp.task('watch', ['watchify', 'csswatch', 'service-worker-watch']);
-gulp.task('default', ['js', 'css', 'css-standalone', 'service-worker', 'standalone']);
+gulp.task('watch', gulp.series('watchify', 'csswatch', 'service-worker-watch'));
+gulp.task('default', gulp.series('js', 'css', 'css-standalone', 'service-worker', 'standalone'));
 
