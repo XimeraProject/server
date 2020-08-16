@@ -46,7 +46,7 @@
     "file": "0.2.2",
     "font-awesome": "^4.7.0",
     "fs-extra": "^3.0.1",
-    "fstream": "1.0.10",
+    "fstream": "1.0.12",
     "git-http-backend": "^1.0.2",
     "github": "0.2.4",
     "gpg": "^0.6.0",
