@@ -6,6 +6,7 @@ var $ = require('jquery');
 var _ = require('underscore');
 var async = require('async');
 var jsondiffpatch = require('jsondiffpatch');
+var uuidv4 = require('uuid').v4;
 
 var users = require('./users');
 
@@ -15,19 +16,7 @@ function checksumObject(object) {
     return XXH.h32( CANON.stringify( object ), 0x1337 ).toString(16);
 }
 
-var DIFFSYNC_DEBOUNCE = 5003; // milliseconds to wait to save
-var socket = undefined;
-
-// Some heartbeat code to provide feedback when we aren't receiving pings
-/* BADBAD disabled pings for now
-var lastPing = undefined;
-window.setInterval( function() {
-    var interval = new Date() - lastPing;
-    if (interval > 120000) {
-	saveWorkStatus( 'error', "The connection is slow. Your work is not being saved." );
-    }
-}, 10000);
-*/
+var DIFFSYNC_DEBOUNCE = 1009; // milliseconds to wait to save
 
 var SAVE_WORK_BUTTON_ID = '#save-work-button';
 var RESET_WORK_BUTTON_ID = '#reset-work-button';    
@@ -49,16 +38,8 @@ function saveWorkStatus(status, tooltip) {
     }
 }
 
-var DATABASE = undefined;
-var SHADOW = undefined;
-var COMPLETIONS = {};
-var completionCallbacks = {};
-
-module.exports.DATABASE = DATABASE;
-
-var wantPageUpdates = [];
 module.exports.onPageUpdate = function(callback) {
-    wantPageUpdates.unshift(callback);
+    console.log("warning: called onPageUpdate() in database.js"); 
 };
 
 /****************************************************************/
@@ -82,31 +63,6 @@ $.fn.extend({ activityPath: function() {
     return findActivityPath( this );
 }});
 
-window.addEventListener('online', connectToServer );
-			
-window.addEventListener('offline', function () {
-    saveWorkStatus( 'error', "No internet available" );
-});
-
-function differentialSynchronization() {
-    if ((!socket) || (!(socket.readyState == WebSocket.OPEN))) {
-	saveWorkStatus( 'error', "Synchronization failed" );
-	connectToServer();
-	window.setTimeout(differentialSynchronizationDebounced, DIFFSYNC_DEBOUNCE );
-	return;
-    }
-
-    var delta = jsondiffpatch.diff( SHADOW, DATABASE );
-
-    if (delta !== undefined) {
-	saveWorkStatus( 'saving' );
-	socket.sendJSON( 'patch', delta, checksumObject(SHADOW) );
-	SHADOW = jsondiffpatch.clone(DATABASE);
-    }
-}
-
-var differentialSynchronizationDebounced = _.debounce( differentialSynchronization, DIFFSYNC_DEBOUNCE );
-
 var findRepositoryName = _.memoize( function( element ) {
     if ($(element).hasClass('activity'))
 	return $(element).attr( 'data-repository-name' );
@@ -117,6 +73,205 @@ var findRepositoryName = _.memoize( function( element ) {
 $.fn.extend({ repositoryName: function() {
     return findRepositoryName( this );
 }});
+
+////////////////////////////////////////////////////////////////
+// completion code
+
+var COMPLETIONS = {};
+var completionCallbacks = {};
+
+module.exports.setCompletion = function(repositoryName, activityPath, complete) {
+    var url = repositoryName + '/' + activityPath;
+    
+    $.ajax({
+	url: '/completions/' + url,
+	type: 'PUT',
+	data: JSON.stringify({complete: complete}),
+	contentType: 'application/json',	
+	success: function( result ) {
+            COMPLETIONS[url] = complete;
+            
+            _.each( completionCallbacks[url], function(callback) {
+		callback(COMPLETIONS[url]);
+	    });
+	},
+	error: function(jqXHR, err, exception) {
+            saveWorkStatus( 'error', "Could not save progress bar" );
+	}
+    });
+};
+
+module.exports.onCompletion = function(repositoryName, activityPath, callback) {
+    var url = repositoryName + '/' + activityPath;
+    
+    if (!(url in completionCallbacks))
+	completionCallbacks[url] = [];
+
+    completionCallbacks[url].unshift(callback);
+
+    if (COMPLETIONS[url]) {
+	callback(COMPLETIONS[url]);
+    }
+};
+
+
+function fetchCompletions() {
+    $.ajax({
+	url: '/completions',
+	type: 'GET',
+	contentType: 'application/json',	
+	success: function( completions ) {
+            console.log(completions);
+            
+	    _.each( completions, function(c) {
+	        var url = c.repositoryName + '/' + c.activityPath;
+	        var changed = false;
+	        if (url in COMPLETIONS) {
+		    if (COMPLETIONS[url] < c.complete) {
+		        COMPLETIONS[url] = c.complete;
+		        changed = true;
+		    }
+	        } else {
+		    COMPLETIONS[url] = c.complete;
+		    changed = true;		
+	        }
+	        
+	        if ((changed) && (completionCallbacks[url])) {
+		    _.each( completionCallbacks[url], function(callback) {
+		        callback(c.complete);
+		    });
+	        }
+	    });
+	},
+	error: function(jqXHR, err, exception) {
+            saveWorkStatus( 'error', "Could not read progress bars" );
+	}
+    });
+}
+
+
+////////////////////////////////////////////////////////////////
+//
+
+
+
+////////////////////////////////////////////////////////////////
+// actual database code
+var DATABASE = undefined;
+var SHADOW = undefined;
+var uuid = uuidv4();
+
+function fetchDatabase() {
+    var activityHash = findActivityHash();
+
+    $.ajax({
+	url: '/state/' + activityHash + '/' + uuid,
+	type: 'GET',
+	contentType: 'application/json',	
+	success: function( remoteDatabase ) {
+	    SHADOW = jsondiffpatch.clone(remoteDatabase);
+	    saveWorkStatus( 'saved', 'Shadow synchronized at ' + (new Date()).toLocaleTimeString() );
+
+	    if (DATABASE === undefined) {
+	        DATABASE = {};
+	    
+	        _.each( remoteDatabase,
+		        function( database, identifier, list ) {
+			    // It's possible that, for some reason, I've
+			    // already made changes to the database, so I
+			    // just want to merge in the remote
+			    if (identifier in DATABASE)
+			        _.extend( DATABASE[identifier], database );
+			    else {
+			        DATABASE[identifier] = database;
+			    }
+		        });
+	        
+	        synchronizePageWithDatabase();
+	        
+	        _.each( fetcherCallbacks, function(callback) {
+		    callback(DATABASE);
+	        });
+	    }
+	},
+	error: function(jqXHR, err, exception) {
+            saveWorkStatus( 'error', "Could not read database" );
+	}
+    });
+}
+
+// BADBAD
+function differentialSynchronization() {
+    var delta = jsondiffpatch.diff( SHADOW, DATABASE );
+    
+    if (delta !== undefined) {
+	saveWorkStatus( 'saving' );
+
+        var activityHash = findActivityHash();
+
+        $.ajax({
+	    url: '/state/' + activityHash + '/' + uuid,
+	    type: 'PATCH',
+	    contentType: 'application/json',
+            headers: {
+                'Ximera-Shadow-Checksum': checksumObject(SHADOW),
+            },
+            data: JSON.stringify(delta),
+	    success: function(serverDelta, textStatus, xhr) {
+                if (xhr.status === 200) {
+                    // Apply patch to the client state...
+	            jsondiffpatch.patch( DATABASE, serverDelta );
+                    
+	            var checksum = xhr.getResponseHeader("Ximera-Shadow-Checksum");
+                    
+	            synchronizePageWithDatabase();	
+	
+	            // Confirm that our shadow now matches their shadow
+	            if (checksumObject(SHADOW) != checksum) {
+	                //  We are out of sync, and should request synchronization
+                        $.ajax({
+	                    url: '/state/' + activityHash + '/' + uuid,
+	                    type: 'GET',
+	                    contentType: 'application/json',	
+	                    success: function( remoteDatabase ) {
+	                        SHADOW = jsondiffpatch.clone(remoteDatabase);
+                                saveWorkStatus( 'saved', 'Resynchronized at ' + (new Date()).toLocaleTimeString() );
+                            }
+                        });
+	            } else {
+	                jsondiffpatch.patch(SHADOW, serverDelta);
+                        SHADOW = jsondiffpatch.clone(DATABASE);
+                        saveWorkStatus( 'saved', 'Patched at ' + (new Date()).toLocaleTimeString() );
+	            }
+                } else {
+	            SHADOW = jsondiffpatch.clone(DATABASE);
+                    saveWorkStatus( 'saved', 'Synchronized at ' + (new Date()).toLocaleTimeString() );
+                }
+	    },
+	    error: function(xhr, err, exception) {
+                if (xhr.status === 422) {
+                    saveWorkStatus( 'saving', "Downloading shadow..." );
+
+                    //  We are out of sync, and should request synchronization
+                    $.ajax({
+	                url: '/state/' + activityHash + '/' + uuid,
+	                type: 'GET',
+	                contentType: 'application/json',	
+	                success: function( remoteDatabase ) {
+	                    SHADOW = jsondiffpatch.clone(remoteDatabase);
+
+                            differentialSynchronizationDebounced();   
+                        }
+                    });
+                } else {
+                    saveWorkStatus( 'error', "Could not synchronize database" );
+                }
+	    }
+        });
+    }
+}
+
+var differentialSynchronizationDebounced = _.debounce( differentialSynchronization, DIFFSYNC_DEBOUNCE );
 
 // Return the database hash associated to the given element
 module.exports.get = function(element) {
@@ -223,234 +378,44 @@ function synchronizePageWithDatabase() {
 	    });
 }
 
-var backOff = 1000;
 
-function connectToServer() {
-    // If we're currently connected...
-    if (socket) {
-	if (socket.readyState == WebSocket.OPEN) {	    
-	    // just ignore the request to reconnect
-	    return;
-	}
-	if (socket.readyState == WebSocket.CONNECTING) {
-	    console.log("Still connecting...");
-	    return;
-	}
-    }
+////////////////////////////////////////////////////////////////
+// get commit
 
-    // Build an appropriate URL based on the page URL
-    var websocketUrl = "ws:";
-    if (window.location.protocol === "https:") {
-	websocketUrl = "wss:";
-    }
-    websocketUrl += "//" + window.location.host + "/ws";
-
-    saveWorkStatus( 'error', "Connecting..." );
-    
-    try {
-	console.log( "Attempting websocket connection...");
-	socket = new WebSocket(	websocketUrl );
-
-	// It would be nicer to use ...parameters, and I can't just
-	// use arguments because it's not actually an array
-	socket.sendJSON = function() {
-	    var parameters = [];
-	    var i;
-	    for( i=0; i<arguments.length; i++ )
-		parameters[i] = arguments[i];
-	    socket.send( JSON.stringify( parameters ) );
-	};
-    } catch (err) {
-	saveWorkStatus( 'error', "Could not connect.  Your work is not being saved." );
-    }
-
-    socket.addEventListener('error', function (event) {
-	saveWorkStatus( 'error', "There was an error with the WebSocket" );
-    });
-
-    socket.addEventListener('close', function (event) {
-	backOff = backOff * 2.0;
-	if (backOff > 15000) backOff = 15000;
-
-	saveWorkStatus( 'error', "You have been disconnected.  Reconnecting in " + Math.round(backOff/1000).toString() + " seconds" );
-	console.log( "You have been disconnected.  Reconnecting in " + Math.round(backOff/1000).toString() + " seconds" );
-	window.setTimeout(connectToServer, backOff);
-    });
-
-    var learnerId = $('main').attr( 'data-learner' );
+function fetchCommit() {
     var repositoryName = $('main').attr('data-repository-name');
     var filename = $('main').attr('data-path');
-
-    socket.addEventListener('open', function (event) {
-	console.log( "WebSocket open!");
-	saveWorkStatus( 'save' );	
-	socket.sendJSON( 'watch', learnerId, findActivityHash() );
-	socket.sendJSON( 'want-commit', repositoryName, filename );
-    });
-
-    var handlers = {};
-    
-    handlers.push = function() {
-	socket.sendJSON( 'want-commit', repositoryName, filename );	
-    };
-
-    handlers.commit = function (remoteRepositoryName, remoteFilename, commitHash, remoteContentHash) {
-	if (remoteContentHash != activityHash) {
-	    $('#update-version-button').attr('href', window.location.pathname + "?" + commitHash );
-	    $('#pageUpdate').show();
-	}
-    };
-
-    handlers.sync = function(remoteDatabase) {
-	SHADOW = jsondiffpatch.clone(remoteDatabase);
-	
-	if (DATABASE === undefined) {
-	    DATABASE = {};
-	    
-	    _.each( remoteDatabase,
-		    function( database, identifier, list ) {
-			// It's possible that, for some reason, I've
-			// already made changes to the database, so I
-			// just want to merge in the remote
-			if (identifier in DATABASE)
-			    _.extend( DATABASE[identifier], database );
-			else {
-			    DATABASE[identifier] = database;
-			}
-		    });
-	    
-	    synchronizePageWithDatabase();
-	    
-	    _.each( fetcherCallbacks, function(callback) {
-		callback(DATABASE);
-	    });
-	}
-    };
-
-    handlers.outOfSync = function() {
-	socket.sendJSON( 'sync', SHADOW );
-    };
-
-    handlers.haveDifferential = _.debounce( function(checksum) {
-	if (checksumObject(SHADOW) != checksum) {	
-	    socket.sendJSON( 'want-differential' );
-	} else {
-	    saveWorkStatus( 'saved', 'Uploaded at ' + (new Date()).toLocaleTimeString() );
-	}
-    }, 100 );
-
-    handlers.patched = function(err) {
-	if (err) {
-	    saveWorkStatus( 'error', err );
-	    console.log(err);	    
-	}
-    };
-
-    handlers.patch = function( delta, checksum ) {
-	// Apply patch to the client state...
-	jsondiffpatch.patch( DATABASE, delta);
-	
-	synchronizePageWithDatabase();	
-	
-	// Confirm that our shadow now matches their shadow
-	if (checksumObject(SHADOW) != checksum) {
-	    // We are out of sync, and should request synchronization
-	    socket.sendJSON( 'out-of-sync' );
-	} else {
-	    jsondiffpatch.patch(SHADOW, delta);
-	}
-    };
-
-    handlers.completions = function(completions) {
-	_.each( completions, function(c) {
-	    var url = c.repositoryName + '/' + c.activityPath;
-	    var changed = false;
-	    if (url in COMPLETIONS) {
-		if (COMPLETIONS[url] < c.complete) {
-		    COMPLETIONS[url] = c.complete;
-		    changed = true;
-		}
-	    } else {
-		COMPLETIONS[url] = c.complete;
-		changed = true;		
-	    }
-	    
-	    if ((changed) && (completionCallbacks[url])) {
-		_.each( completionCallbacks[url], function(callback) {
-		    callback(c.complete);
-		});
-	    }
-	});
-    };
-
-    /*
-    handlers.pong = function(latency)  {
-	lastPing = new Date();
-	console.log( "ping: " + latency.toString() + "ms" );
-	$(SAVE_WORK_BUTTON_ID).attr( 'title', latency.toString() + "ms ping" );
-    };
-    */
-
-    socket.addEventListener('message', function (event) {
-	var payload = JSON.parse( event.data );
-
-	if (! Array.isArray(payload)) {
-	    console.log("WebSocket message is not an array.");
-	    return;
-	}
-
-	if (payload.length == 0) {
-	    console.log("WebSocket message is empty.");
-	    return;
-	}
-	    
-	var message = payload[0];
-	var camelCased = message.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
-
-	if (handlers[camelCased]) {
-	    handlers[camelCased].apply( socket, payload.slice(1) );
-	} else {
-	    console.log( "Do not know how to handle " + message );
-	}
-    });
-    
-}
-
-$(document).ready(function() {
     var activityHash = findActivityHash();
     
-    if (!activityHash)
-	return;
-
-    connectToServer();
-});
-
-module.exports.setCompletion = function(repositoryName, activityPath, complete) {
-    if (!socket) {
-	saveWorkStatus( 'error', "No socket for progress bar" );	
-	return;
-    }
-
-    if (socket.readyState !== WebSocket.OPEN) {
-	saveWorkStatus( 'error', "Socket not open for progress bar" );	
-	return;
-    }
-
-    socket.sendJSON( 'completion', {repositoryName: repositoryName, activityPath: activityPath, complete: complete} );
-};
-
-module.exports.onCompletion = function(repositoryName, activityPath, callback) {
-    var url = repositoryName + '/' + activityPath;
+    var url = repositoryName + '/' + filename;
     
-    if (!(url in completionCallbacks))
-	completionCallbacks[url] = [];
+    $.ajax({
+	url: '/commits/' + url,
+	type: 'GET',
+	contentType: 'application/json',	
+	success: function( result ) {
+            var remoteContentHash = result.hash;
+            
+	    if (remoteContentHash != activityHash) {
+	        $('#update-version-button').attr('href', window.location.pathname + "?" + result.sourceSha );
+	        $('#pageUpdate').show();
+	    }
+	},
+	error: function(jqXHR, err, exception) {
+            saveWorkStatus( 'error', "Could not read commit hash" );
+	}
+    });
 
-    completionCallbacks[url].unshift(callback);
+}
 
-    if (COMPLETIONS[url]) {
-	callback(COMPLETIONS[url]);
-    }
-};
+////////////////////////////////////////////////////////////////
+// setup
+
+function connectToServer() {
+    fetchCompletions();
+    fetchCommit();
+    fetchDatabase();
+}
 
 // No need to confirm with the user to delete work---that happens via a Bootstrap Modal
 var clickResetWorkButton = function() {
@@ -471,9 +436,23 @@ var clickResetWorkButton = function() {
 
 module.exports.resetWork = clickResetWorkButton;
 
+window.addEventListener('online', connectToServer );
+			
+window.addEventListener('offline', function () {
+    saveWorkStatus( 'error', "No internet available" );
+});
+
 // After the document loads, every few seconds, make sure the database is saved.
 $(document).ready(function() {
     activityHash = findActivityHash();
+
+    if (!activityHash) {
+        console.log("warning: no activity hash found by database.js");
+	return;
+    }
+    
+    saveWorkStatus( 'error', "Connecting..." );
+    connectToServer();
     
     window.onbeforeunload = function() {
 	// Before the page disappears, let's test to see if there is unsaved data

@@ -451,27 +451,26 @@ passport.deserializeUser(function(id, done) {
     // State storage    
     
     var state = require('./routes/state.js');
+
+    app.get( '/completions',
+             state.getCompletions );
+    app.put( '/completions/:repository/:path(*)',
+	     repositories.normalizeName,
+             state.putCompletion );
+    app.get( '/commits/:repository/:path(*)',
+	     repositories.normalizeName,
+             state.getCommit );
+
+    app.get( '/state/:activityHash/:uuid',
+	     repositories.normalizeName,
+             state.getState );
     
-    state.wss = wss;
-    
-    wss.on("connection", function (ws, req) {
-	cookieParser(config.session.secret)(req, null, function(err) {
-	    if (err) {
-		winston.error(err);
-		return;
-	    }
-	    
-	    theSession(req, {}, function(err, session) {
-		if (err) {
-		    winston.error(err);
-		    return;		    
-		} else {
-		    ws.session = req.session;
-		    state.connection(ws);
-		}
-	    });
-	});
-    });
+    app.patch( '/state/:activityHash/:uuid',
+	       repositories.normalizeName,
+               state.patchState );
+             
+    ////////////////////////////////////////////////////////////////
+    // Gradebook    
     
     app.get( '/:repository/:path(*)/gradebook',
 	     repositories.normalizeName,
