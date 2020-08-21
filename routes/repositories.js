@@ -153,9 +153,10 @@ exports.readRepositoryToken = function( repositoryName ) {
 
     return new Promise( function(resolve, reject) {
 	nodegit.Repository.openBare(repositoryPath).then(function(repository) {
-	    repository.configSnapshot().then(function(config) {
-		config.getStringBuf('ximera.token').then(function(buf) {
-		    resolve(buf);
+	  repository.config().then( function(config) {
+            config.snapshot().then(function(snapshot) {
+		snapshot.getStringBuf('ximera.token').then(function(buf) {
+  		    resolve(buf);
 		}).catch(function(e) {
 		    reject('Repository ' + repositoryName + '.git is missing a Ximera token.');
 		});
