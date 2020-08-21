@@ -154,13 +154,14 @@ exports.readRepositoryToken = function( repositoryName ) {
     return new Promise( function(resolve, reject) {
 	nodegit.Repository.openBare(repositoryPath).then(function(repository) {
 	  repository.config().then( function(config) {
-            config.snapshot().then(function(snapshot) {
+            config.snapshot().then( function(snapshot) {
 		snapshot.getStringBuf('ximera.token').then(function(buf) {
   		    resolve(buf);
 		}).catch(function(e) {
 		    reject('Repository ' + repositoryName + '.git is missing a Ximera token.');
 		});
 	    });
+          });
 	}).catch(function(e) {
 	    reject('Repository ' + repositoryName + '.git not found.');
 	});
