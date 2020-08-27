@@ -70,7 +70,7 @@
     "moment": "2.19.3",
     "mongodb": "2.2.19",
     "mongoose": "4.1.1",
-    "morgan": "1.6.1",
+    "morgan": "1.10.0",
     "node-sass": "^4.9.2",
     "node-uuid": "1.4.7",
     "nodegit": "^0.27.0",
