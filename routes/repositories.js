@@ -52,8 +52,6 @@ function invalidateRepositoryCache(repositoryName) {
 			      client.del(items);
 			  
 			  client.del("activities:" + repositoryName);
-
-			  state.push( repositoryName );
 		      }
 		  });
 };
