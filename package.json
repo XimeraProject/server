@@ -16,7 +16,7 @@
     "babel-core": "^6.26.0",
     "babel-preset-es2015-node": "^6.1.1",
     "babelify": "^8.0.0",
-    "base64url": "^2.0.0",
+    "base64url": "^3.0.1",
     "bencode": "^1.0.0",
     "body-parser": "1.13.3",
     "bootstrap": "4.0.0-alpha.6",
