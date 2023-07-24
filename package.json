@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "test": "mocha",
-    "install": "napa tchapi/pagedown-bootstrap",
+    "install": "napa https://github.com/tchapi/pagedown-bootstrap",
     "postinstall": "gulp"
   },
   "dependencies": {
