@@ -384,6 +384,30 @@ exports.mostRecentMetadata = function(req, res, next) {
 	});
 };
 
+
+// If there is a main/index.html, use that; if not: there is a default index.pug
+exports.defaultHomePage = function(req, res, next) {
+	if ( ! config.homeRepo )   // The default index.pug homepage
+		res.render('index', { title: 'Home', landingPage: true });
+	else {
+		req.params.repository = config.homeRepo;
+		req.params.path = config.homeXourse + "/" + config.homeActivity;
+		req.repositoryName = req.params.repository;
+    	repositories.activitiesFromRecentCommitsOnMaster( req.repositoryName, req.params.path )
+		.then( function(activities) {
+			res.set( 'location', '/'+req.repositoryName+'/' + req.params.path );
+			res.status(301).send();
+	    // req.activities = activities;
+	    // next();
+		})
+		.catch( function(err) {
+			console.log("No main/index.html homepage found; use default index.pug");
+			res.render('index', { title: 'Home', landingPage: true });
+	    	// next(err);
+		});
+	}
+};
+
 exports.repositories = function (req, res, next) {
 	repositories.getRepositories().then(repos => {
 		res.render('repositories', { title: 'Home', repos });

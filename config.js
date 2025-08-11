@@ -102,12 +102,12 @@ config.smtp.address            = process.env.SMTP_FROM_ADDRESS || 'ximera@math.o
  */
 
 config.localAuth = false;
-if (config.environment == 'development') {
-    config.localAuth = true;
-}
+// if (config.environment == 'development') {
+//     config.localAuth = true;
+// }
 
 // Github
-config.githubAuth              = true;
+config.githubAuth              = process.env.GITHUB_AUTH ? true : false;
 config.github                  = {};
 config.github.clientID         = process.env.GITHUB_CLIENT_ID    || 'Your Key';
 config.github.clientSecret     = process.env.GITHUB_CLIENT_SECRET || 'Your Secret';
@@ -133,5 +133,23 @@ config.lti.secret     = process.env.LTI_SECRET || 'Your Secret';
 module.exports = config;
 
 
-config.brandHomeLink    = process.env.BRAND_HOME_LINK || "https://ximera.org";
+// config.brandHomeLink    = process.env.BRAND_HOME_LINK || "https://ximera.org";
+config.brandHomeLink    = process.env.BRAND_HOME_LINK || config.root;
 config.brandLogo        = process.env.BRAND_LOGO      || "/public/images/logo/logo.svg";
+
+config.privateUser     = process.env.PRIVATE_USER    || "private";
+config.privateCred     = process.env.PRIVATE_CRED    || "nietzichtbaar";
+config.privateRepoWithStar     = process.env.PRIVATE_REPO_WITH_STAR  || "1";
+
+config.showLogin        =  process.env.SHOW_LOGIN ? true : false; 
+config.showEdit         =  process.env.SHOW_EDIT  ? true : false; 
+
+config.emailMain         = process.env.EMAIL_MAIN         || 'info@ximera.org';
+config.emailXourse       = process.env.EMAIL_XOURSE       || 'info@ximera.org';
+config.emailNameXourse   = process.env.EMAIL_NAME_XOURSE  || "Ximera Team";
+
+
+
+config.homeRepo       = process.env.HOMEPAGE_REPO     || "";
+config.homeXourse     = process.env.HOMEPAGE_XOURSE   || "";
+config.homeActivity   = process.env.HOMEPAGE_ACTIVITY || "";

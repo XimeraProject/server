@@ -218,35 +218,43 @@ exports.create = function(repositoryName, givenKeyid) {
 };
 
 
-function recentCommitsOnBranch(repository, branchName) {
-    var revwalk = nodegit.Revwalk.create(repository);
-    var result = revwalk.pushRef("refs/heads/" + branchName);
-    revwalk.sorting(nodegit.Revwalk.SORT.TOPOLOGICAL | nodegit.Revwalk.SORT.TIME);
+async function recentCommitsOnBranch(repository, branchName) {
+    const MAX_COMMITS = 100;
+    const TAG_PREFIX = "refs/tags/publications/";
 
-    var commit = undefined;
-    // BADBAD: this is pretty deep -- should I really go this far back?
-    var commitDepth = 100;
+    try {
+        const revwalk = nodegit.Revwalk.create(repository);
+        revwalk.pushRef("refs/heads/" + branchName);
+        revwalk.sorting(nodegit.Revwalk.SORT.TOPOLOGICAL | nodegit.Revwalk.SORT.TIME);
 
-    return new Promise( function(resolve, reject) {
-	revwalk.getCommits(commitDepth).then(function(sourceCommits) {
-	    async.map( sourceCommits, function(sourceCommit, callback) {
-		nodegit.Reference.lookup(repository, "refs/tags/publications/" + sourceCommit.sha()).then(function(reference) {
-		    var oid = reference.target();
-		    repository.getCommit(oid).then(function(commit) {
-			callback(null, {commit: commit, sha: commit.sha(), sourceCommit: sourceCommit, sourceSha: sourceCommit.sha()});
-		    });
-		}).catch( function(err) {
-		    callback(null, null);
-		});	    
-	    }, function(err, results) {
-		if (err)
-		    reject(err);
-		else
-		    resolve( results.filter( function(x) { return x != null; } ) );
-	    });
-	});
-    });
-};
+        const sourceCommits = await revwalk.getCommits(MAX_COMMITS);
+
+        const resultPromises = sourceCommits.map(async (sourceCommit) => {
+            const tagRefName = TAG_PREFIX + sourceCommit.sha();
+
+            try {
+                const reference = await nodegit.Reference.lookup(repository, tagRefName);
+                const targetCommit = await repository.getCommit(reference.target());
+
+                return {
+                    commit: targetCommit,
+                    sha: targetCommit.sha(),
+                    sourceCommit: sourceCommit,
+                    sourceSha: sourceCommit.sha(),
+                };
+            } catch (err) {
+                // Tag not found or lookup failed — ignore silently
+                return null;
+            }
+        });
+
+        const results = await Promise.all(resultPromises);
+        return results.filter(entry => entry !== null);
+    } catch (err) {
+        throw new Error("Failed to retrieve recent commits: " + err.message);
+    }
+}
+
 
 // We never need to invalidate blobs, because blobs are keyed by a
 // hash of their content

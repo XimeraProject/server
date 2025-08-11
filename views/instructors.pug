@@ -46,13 +46,13 @@ block content
             | !{xourse.title}
           else
             | Home
-      li.breadcrumb-item.active
-          | Instructional Staff
+      li.nl-text.breadcrumb-item.active Lesgevers
+      li.en-text.breadcrumb-item.active Instructional Staff
   .container
     div.row
       if instructors.length == 0
-        p.nl-text  I am afraid that I do not know the names of your instructors.  Please email <a href="mailto:ximera-help@osu.edu">ximera-help@osu.edu</a> and we will try to help you find them.
-        p.en-text  I am afraid that I do not know the names of your instructors.  Please email <a href="mailto:ximera-help@osu.edu">ximera-help@osu.edu</a> and we will try to help you find them.
+        p.nl-text Stuur een zo duidelijk mogelijke omschrijving van uw vraag, probleem of opmerking naar het <a href=mailto://#{config.emailXourse}>#{config.emailNameXourse}</a> en dan zullen we proberen u te helpen.
+        p.en-text Send an email with a clear explanation of your question, problem or comment to the <a href=mailto://#{config.emailXourse}>#{config.emailNameXourse}</a> and we will try to help you.
       else
         for instructor in instructors
           +instructorPanel(instructor)

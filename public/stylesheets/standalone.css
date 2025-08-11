@@ -14278,11 +14278,15 @@ table.tabular td {
   height: 100%;
 }
 
-.xmdownload, .xmsettings, .xmuser {
+.xmdownload, .xmsettings, .xmlogin, .xmuser {
   position: relative;
 }
 
-.xmdownload-inhoud, .xmsettings-inhoud, .xmuser-inhoud {
+.xmlogin {
+  display: none;
+}
+
+.xmdownload-inhoud, .xmsettings-inhoud, .xmlogin-inhoud, .xmuser-inhoud {
   display: none;
   position: absolute;
   list-style-type: none;
@@ -14309,6 +14313,7 @@ table.tabular td {
 
 .xmdownload:hover .xmdownload-inhoud,
 .xmuser:hover .xmuser-inhoud,
+.xmlogin:hover .xmlogin-inhoud,
 .xmsettings:hover .xmsettings-inhoud {
   display: block;
 }
@@ -14359,7 +14364,7 @@ a#contact-instructor {
   grid-area: toc;
   overflow: auto;
   resize: horizontal;
-  width: 20rem;
+  width: 30rem;
   max-width: 100%; /* prevent bigger-than-grid-column */
   max-width: min(100vw, 80ch);
   padding: 0;
@@ -14527,7 +14532,7 @@ div.main-inhoud.main-toc {
   padding: 16px;
 }
 
-@media all and (max-width: 768px) {
+@media all and (max-width: 1025px) {
   .main-inhoud {
     grid-template-areas: "activity-head" "activity" "toc-head" "toc";
     grid-template-columns: 1fr;
@@ -14796,6 +14801,11 @@ button#math-edit-button {
 }
 /* Set logo on non-xourse pages  (was in brand.pug) */
 img.brandlogo {
+  max-height: 2rem;
+  max-width: 20vw;
+}
+
+img.xourselogo {
   max-height: 2rem;
   max-width: 20vw;
 }
@@ -15366,6 +15376,10 @@ div.quote p {
   border-top: none;
   border-right: none;
   border-left: none;
+}
+
+.nl-text {
+  display: initial;
 }
 
 .en-text {
