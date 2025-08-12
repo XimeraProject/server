@@ -13,36 +13,36 @@ Be careful that every environment has a color,
 and don't ever choose white, gray, or black, since the "saturation"
 and "hue" of white and black don't behave well. */
 $theoremEnvironments:
-theorem $color-grass theorie,
-axiom $color-grass axioma,
-conjecture $color-grass vermoeden,
-corollary $color-grass gevolgtrekking,
-proposition $color-grass eigenschap,
-lemma $color-grass lemma,
-claim $color-grass bewering,
-condition $color-grass voorwaarde,
-idea $color-grass idee,
-definition $color-grass definitie,
-conclusion $color-grass conclusie,
-summary $color-grass samenvatting,
-warning $color-blood waarschuwing,
-paradox $color-blood paradox,
-example $color-sun voorbeeld,
-observation $color-sun observatie,
-fact $color-sun feit,
-remark $color-sun opmerking,
-algorithm $color-sun algoritme,
-notation $color-sun notatie,
-criterion $color-sun criterium,
-exercise $color-sky oefening,
-problem $color-sky probleem,
-question $color-sky '',
-explanation $color-grass uitleg,
-exploration $color-sky exploratie,
-model $color-sky model,
-formula $color-sky formule,
-procedure $color-sky procedure,
-template $color-sky template;
+theorem $color-grass,
+axiom $color-grass,
+conjecture $color-grass,
+corollary $color-grass,
+proposition $color-grass,
+lemma $color-grass,
+claim $color-grass,
+condition $color-grass,
+idea $color-grass,
+definition $color-grass,
+conclusion $color-grass,
+summary $color-grass,
+warning $color-blood,
+paradox $color-blood,
+example $color-sun,
+observation $color-sun,
+fact $color-sun,
+remark $color-sun,
+algorithm $color-sun,
+notation $color-sun,
+criterion $color-sun,
+exercise $color-sky,
+problem $color-sky,
+question $color-sky,
+explanation $color-grass,
+exploration $color-sky,
+model $color-sky,
+formula $color-sky,
+procedure $color-sky,
+template $color-sky;
 
 /* This is a faux loop that doesn't end up in the final css. 
 Writing this does not actually cause the loop to be executed; see below
@@ -57,13 +57,22 @@ We want to stop when the index reaches the end of the list of environments. */
    /*Nth from the list the name and color of the class*/
    $nameOfClass: nth($thisTheoremEnvironment, 1);
    $colorOfClass: nth($thisTheoremEnvironment, 2);
-   $titleOfClass: nth($thisTheoremEnvironment, 3);
+   $counterToIncrement: $nameOfClass;
+
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+
+   body {
+      counter-reset: $counterToIncrement;     /* The body needs to initialize all the counters. */
+   }
    
    .#{$nameOfClass} {
        @extend .w-100;
        background-color: #FDFDFD;
        /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
        //background-color: hsl(hue($colorOfClass),$theoremEnvironmentSaturation,$theoremEnvironmentLightness);
+
+      /* Increment the counter for this theorem type. */
+      counter-increment: $counterToIncrement;
 
       border: 1px solid hsl(hue($colorOfClass),$theoremEnvironmentSaturation,$theoremEnvironmentLightness);      
       border-left: 12px solid hsl(hue($colorOfClass),$theoremEnvironmentSaturation,$theoremEnvironmentLightness);      
@@ -90,7 +99,9 @@ We want to stop when the index reaches the end of the list of environments. */
    }
    
    .#{$nameOfClass}::before {
-      content:"#{$titleOfClass}" attr(numbered) ".";
+      /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+      /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+      content:"#{$nameOfClass}" attr(numbered) ".";
       display: inline;
       text-transform: capitalize;   /* CSS here only applies to one word, like "Theorem." or "Example." */
       font-weight: bold;
@@ -106,7 +117,7 @@ We want to stop when the index reaches the end of the list of environments. */
 
 .explanation::before
 {
-  content:"Uitleg.";
+  content:"Explanation.";
 }
 
 /****************************************************************/
