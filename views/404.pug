@@ -8,10 +8,9 @@ block content
     .row.d-flex.align-items-center.justify-content-around
       div.mt-5
         h1(style="font-size: 100pt;") 404
-        h1.text-muted Het spijt me.
+        h1.text-muted I am so sorry.
       div.mt-5
-        h3 De pagina die je wilt bezoeken, kan niet worden gevonden.
-        p Ik kon de pagina <code>#{url}</code> niet vinden, maar ik zal de reden van dit probleem onderzoeken.
-        // Mmm, de hoofdpagina is 'private'; link werkt dus niet     
-        //     if repositoryName
-        //         p In de tussentijd, kan je naar <a href=#{toValidPath("/"+repositoryName)}><code>#{repositoryName}</code></a> gaan om te vinden wat je zoekt.
+        h3 The page you want could not be found.
+        p I could not find the page <code>#{url}</code> but I will look into the cause of this error.
+        if repositoryName
+          p In the meantime, perhaps look at <a href="/#{repositoryName}"><code>#{repositoryName}</code></a> to find what you seek.
