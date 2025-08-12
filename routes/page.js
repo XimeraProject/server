@@ -395,7 +395,7 @@ exports.defaultHomePage = function(req, res, next) {
 		req.repositoryName = req.params.repository;
     	repositories.activitiesFromRecentCommitsOnMaster( req.repositoryName, req.params.path )
 		.then( function(activities) {
-			res.set( 'location', '/'+req.repositoryName+'/' + req.params.path );
+			res.set( 'location', config.toValidPath('/'+req.repositoryName+'/' + req.params.path ));
 			res.status(301).send();
 	    // req.activities = activities;
 	    // next();
