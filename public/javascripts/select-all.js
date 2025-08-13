@@ -10,16 +10,16 @@ var TinCan = require('./tincan');
 var buttonTemplate = _.template( '<button class="btn text-left btn-secondary <%= correct %>" id="<%= id %>"></button>' );
 
 var answerHtml = '<div class="btn-group" style="vertical-align: bottom; " aria-live="assertive">' +
-	'<button class="btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Juiste answer!" style="display: none">' +
+	'<button class="btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Correct answer!" style="display: none">' +
 	'<i class="fa fa-check"></i>&nbsp;Correct' +
 	'</button></div>' +
 	'<div class="btn-group" style="vertical-align: bottom; " aria-live="assertive">' +
-	'<button class="btn btn-danger btn-ximera-incorrect" data-toggle="tooltip" data-placement="top" title="Fout. Probeer opnieuw!" style="display: none">' +
-	'<i class="fa fa-times"></i>&nbsp;Probeer opnieuw' +
+	'<button class="btn btn-danger btn-ximera-incorrect" data-toggle="tooltip" data-placement="top" title="Incorrect.  Try again!" style="display: none">' +
+	'<i class="fa fa-times"></i>&nbsp;Try again' +
 	'</button></div>' +
 	'<div class="btn-group" style="vertical-align: bottom; ">' +
-	'<button class="btn btn-primary btn-ximera-submit btn-ximera-check" data-toggle="tooltip" data-placement="top" title="Klik om je antwoord na te kijken.">' +
-	'<i class="fa fa-question"></i><span class="show-check-text">&nbsp;Controleer</span>' +
+	'<button class="btn btn-primary btn-ximera-submit" data-toggle="tooltip" data-placement="top" title="Click to check your answer.">' +
+	'<i class="fa fa-question"></i>&nbsp;Check work' +
 	'</button>' +
 	'</div>';
 
