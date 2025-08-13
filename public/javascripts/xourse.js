@@ -44,6 +44,12 @@ var layoutXourse = function( ) {
 			xourseIsotope.arrange({ filter: filtering });
 		})
 	})
+
+
+	/* make sure the part with the current activity is open */
+	document.querySelectorAll('.activity-card.active').forEach(function(crd) {
+			$('.part').eq($(crd).attr("data-part-counter") - 1).addClass('part-open');
+	})  	
 	
 	xourse.show();
     

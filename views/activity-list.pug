@@ -10,7 +10,7 @@ mixin practiceXourseCard(locator, url, card, active)
       div.progress-bar.bg-success(role="progressbar", style="width: 0%;")
 
 mixin titleXourseCard(locator, url, card, active)
-  li.activity-card.card-sectionheading.part-open(class=card.cssClass,data-toc-label=card.datatoclabel) !{card.title}
+  li.activity-card.card-sectionheading(class=card.cssClass,data-toc-label=card.datatoclabel) !{card.title}
        
 mixin linkXourseCard(locator, url, card, active)
   li.activity-card(class=card.cssClass + (active ? " active" : ""),data-toc-label=card.datatoclabel,data-weight=card.weight, href=toValidPath(url), data-repository-name=repositoryName, data-path=url, style=style, data-hashes=JSON.stringify(card.hashes))
