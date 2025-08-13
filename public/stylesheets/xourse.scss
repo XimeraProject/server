@@ -96,6 +96,18 @@ main.xourse:before {
     border-color: darkgray;
 }
 
+.activity-card.part::after {
+    content: "\25B8"; /* right */
+    position: absolute;
+    right: 0;
+}
+
+.activity-card.part.part-open::after {
+    content: "\25BE";   /* down */
+    position: absolute;
+    right: 0;
+}
+
 // The active card is displayed in an active way
 .activity-card.active {
     //@extend .card-info;
