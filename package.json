@@ -1,12 +1,14 @@
 {
   "name": "ximera",
   "description": "Ximera interactive textbook server",
-  "version": "1.6.5",
+  "version": "2.6.0",
   "private": true,
   "scripts": {
     "start": "node app.js",
     "test": "mocha --recursive",
-    "build": "gulp"
+    "build": "gulp",
+    "build:js": "gulp js",
+    "build:css": "gulp css"
   },
   "dependencies": {
     "annotator": "^2.0.0-alpha.3",

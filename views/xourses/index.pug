@@ -13,6 +13,7 @@ block content
       for xourse in xourses.sort((a, b) => a.title.localeCompare(b.title))
         if xourse.title
           li
-            a(href=toValidPath(`/${repositoryName}/${xourse.path}`)): h4  #{xourse.title}
+            a(href=toValidPath(`/${repositoryName}/${xourse.path}`)): h4  #{xourse.title} 
+            | [!{xourse.path}.tex]
             p !{xourse.abstract}
 

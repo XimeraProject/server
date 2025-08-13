@@ -7,10 +7,10 @@ block title
     | Activity
 
 block css
-  // Include css files from the repository
+  //- Include css files from the repository
   link(rel="stylesheet",type="text/css",href=toValidPath("/" + repositoryName + "/global.css"))
   link(rel="stylesheet",type="text/css",href=toValidPath("/" + repositoryName + "/" + activity.xourse.path + ".css"))
-  // link(rel="stylesheet",type="text/css",href=toValidPath("/" + repositoryName + "/" + activity.xourse.path + "/" +activity.path + ".css"))
+  //- link(rel="stylesheet",type="text/css",href=toValidPath("/" + repositoryName + "/" + activity.xourse.path + "/" +activity.path + ".css"))
 
 block modals
   include modals/reset  
@@ -19,10 +19,18 @@ block modals
   include modals/image
 
 block maintitle
-    // Could/should become 'xourseHomeLink' and 'xourseLogo' from REPO ...? 
+
     a(href=config.brandHomeLink)
-          img.brandlogo.logo(src=toValidPath(versionPath(config.brandLogo)))
-    // Show xourse-title (unless activity is not part of xourse ...)
+        img.brandlogo.logo(src=toValidPath(versionPath(config.brandLogo)))
+
+    //- Show xourse-logo (if there is one...)
+    if (activity.xourse.logo) && (activity.xourse.logo != '')
+      a(href=activity.xourse.path)
+        img.xourselogo.logo(src=toValidPath(activity.xourse.logo))
+
+
+    //- Show xourse-title (unless activity is not part of xourse ...)
+
     if (activity.xourse.title) && (activity.xourse.title != '')
       span.title-xourse 
         a(href=activity.xourse.path) !{activity.xourse.title}

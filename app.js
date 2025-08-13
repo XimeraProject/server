@@ -185,10 +185,16 @@ passport.deserializeUser(function(id, done) {
     }
 
     function private(req, res, next){
-        basicAuth({
-            users: { 'private': 'nietzichtbaar' },
-            challenge: true
-        })(req, res, next)
+        if( config.privateUser !== "none" ) {
+            // console.log("PRIVATE_USER = " + config.privateUser + ".");
+            basicAuth({
+                users: { [config.privateUser]: config.privateCred },
+                challenge: true
+            })(req, res, next)
+        }
+        else
+            next()
+    
     }
     
     function redirectUnnormalizeRepositoryName( req, res, next ) {
@@ -201,10 +207,10 @@ passport.deserializeUser(function(id, done) {
             return;
             }
         }
-        // if(req.params.repository.indexOf('*') !== -1)
-        //     private(req,res,next)
-        // else
-        next()
+        if(config.privateRepoWithStar == "1" && req.params.repository.indexOf('*') !== -1)
+            private(req,res,next)
+        else
+            next()
     }	
     
     ////////////////////////////////////////////////////////////////
@@ -280,9 +286,10 @@ passport.deserializeUser(function(id, done) {
 	res.sendFile('views/install.sh', { root: __dirname });
     });
 
-    app.get('/', function(req,res) {
-	res.render('index', { title: 'Home', landingPage: true });
-    });
+    app.get('/',
+        page.defaultHomePage,
+	    // res.render('index', { title: 'Home', landingPage: true });
+    );
     
     ////////////////////////////////////////////////////////////////
     // TinCan (aka Experience) API
@@ -560,7 +567,7 @@ passport.deserializeUser(function(id, done) {
          page.renderWithETag);
     
     app.get('/repositories', 
-        // private, 
+        private, 
         page.repositories)
 
     app.post('/repositories', 
@@ -572,29 +579,29 @@ passport.deserializeUser(function(id, done) {
         //  private,
 	     redirectUnnormalizeRepositoryName,	     	     
 	     page.mostRecentMetadata,
-         xourses.index );        
-    
+         xourses.index );      
     
     if(!module.parent){
         server.listen(app.get('port'), function(stream){
 	    console.log('Express server listening on port ' + app.get('port'));
-        });		    
-    }    
-        
-    // If nothing else matches, it is a 404
-    app.use(function(req, res, next){
-        res.status(404).render('404', { status: 404, url: req.url });
-    });
+    });		    
+}    
 
-    ////////////////////////////////////////////////////////////////
-    // Present errors to the user
-    
-    if ('development' == app.get('env')) {
-	// Middleware for development only, since this will dump a
+// If nothing else matches, it is a 404
+app.use(function(req, res, next){
+    res.status(404).render('404', { status: 404, url: req.url });
+});
+
+////////////////////////////////////////////////////////////////
+// Present errors to the user
+
+if ('development' == app.get('env')) {
+    // Middleware for development only, since this will dump a
 	// stack trace
+    console.log('Running development version ');
 	errorHandler.title = 'Ximera';
-        app.use(errorHandler());
-    }
+    app.use(errorHandler());
+}
 
     app.use(function(err, req, res, next){
 	if (res.headersSent) {

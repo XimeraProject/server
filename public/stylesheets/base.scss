@@ -252,8 +252,12 @@ div.quote p {
     @extend code;
 }
 
-.en-text {
+.nl-text {
     display: none;
+}
+
+.en-text {
+    display: initial;
 }
 
 @import './lds.scss'

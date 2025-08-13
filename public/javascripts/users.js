@@ -23,10 +23,9 @@ $(document).ready(function() {
 	    $('#loginUser').show();
 
 	    if (user.name.split(' ')[0])
-		$('#userFirstName').text(user.name.split(' ')[0]);
+			$('#userFirstName').text(user.name.split(' ')[0]);
 	} else {
-		// $('#loginGuest').show();
-		$('#loginGuest').hide();	 // no explicit login button (but one might get logged in through LTI)	
+			$('#loginGuest').show();  // If enabled in the server !
 	}
 
 	// Instructors should see a "statistics" button
