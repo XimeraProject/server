@@ -16,27 +16,27 @@ var buttonlessTemplate = '<input class="form-control" type="text"/>';
 var template = '<div class="input-group" style="width:100%">' +
    	'<input class="form-control answer-input-part" aria-label="answer" type="text"/>' +
         '<span class="input-group-btn answer-input-part">' +
-	'<button class="px-0 btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Juist!" style="display: none; z-index: 1;" aria-label="juist" aria-live="assertive">' +
+	'<button class="px-0 btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Correct!" style="display: none; z-index: 1;" aria-label="Correct" aria-live="polite">' +
 	'<i class="fa fa-fw fa-check"></i>' +
 	'</button>' +
-	'<button class="px-0 btn btn-danger btn-ximera-incorrect" data-toggle="tooltip" data-placement="top" title="Fout. Probeer opnieuw!" style="display: none; z-index: 1;" aria-label="fout! probeer opnieuw" aria-live="assertive">' +
+	'<button class="px-0 btn btn-danger btn-ximera-incorrect" data-toggle="tooltip" data-placement="top" title="Incorrect, try again!" style="display: none; z-index: 1;" aria-label="Incorrect, try again" aria-live="polite">' +
 	'<i class="fa fa-fw fa-times"></i>' +
         '</button>' +
-	'<button class="px-0 btn btn-primary disabled btn-ximera-checking" aria-label="aan het controleren" data-toggle="tooltip" data-placement="top" title="Controleren..." style="z-index: 1; display: none;">' +
+	'<button class="px-0 btn btn-primary disabled btn-ximera-checking" aria-label="Checking" data-toggle="tooltip" data-placement="top" title="Check..." style="z-index: 1; display: none;">' +
 	'<i class="fa fa-fw fa-spinner fa-spin"></i>' +
 	'</button>' +
-	'<button class="px-0 btn btn-primary btn-ximera-submit" aria-label="kijk na" data-toggle="tooltip" data-placement="top" title="Klik om je antwoord na te kijken." style="z-index: 1;">' +
+	'<button class="px-0 btn btn-primary btn-ximera-submit" aria-label="Check" data-toggle="tooltip" data-placement="top" title="Click to check your answer." style="z-index: 1;">' +
 	'<i class="fa fa-fw fa-question"></i>' +
 	'</button>' +
 	'</span>' +
 	'<span class="input-group-btn show-answer-small">' +
-	'<button class="px-0 btn btn-primary btn-info btn-ximera-show-answer" style="vertical-align:baseline" aria-label="Toon antwoord" data-toggle="tooltip" data-placement="top" title="Klik om het antwoord te tonen." style="z-index: 1;">' +
+	'<button class="px-0 btn btn-primary btn-info btn-ximera-show-answer" style="vertical-align:baseline" aria-label="Show Answer" data-toggle="tooltip" data-placement="top" title="Click to Show Answer." style="z-index: 1;">' +
 	'<i class="fa fa-fw fa-key"></i>' +
 	'</button>' +
 	'</span>' +
 	'<span class="input-group-btn show-answer-large" style="width:100%">' +
-	'<button class="px-0 btn btn-primary btn-info btn-ximera-show-answer" style="vertical-align:baseline; width:100%" aria-label="Toon antwoord" data-toggle="tooltip" data-placement="top" title="Klik om het antwoord te tonen." style="z-index: 1;">' +
-	'<i class="fa fa-fw fa-key"></i><span class="show-answer-text">Toon Antwoord</span>' +
+	'<button class="px-0 btn btn-primary btn-info btn-ximera-show-answer" style="vertical-align:baseline; width:100%" aria-label="Show Answer" data-toggle="tooltip" data-placement="top" title="Click to Show Answer." style="z-index: 1;">' +
+	'<i class="fa fa-fw fa-key"></i><span class="show-answer-text">Show Answer</span>' +
 	'</button>' +
 	'</span>' +
 	'</div>';
