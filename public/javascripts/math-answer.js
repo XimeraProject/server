@@ -181,8 +181,8 @@ exports.connectMathAnswer = function(result, answer) {
 		'<table class="table table-striped">' +
 		'<thead>' +
 		'  <tr>' +
-		'    <th>Aantal</th>' +
-		'    <th>Antwoord</th>' +
+		'    <th>Number</th>' +
+		'    <th>Answer</th>' +
 		'  </tr>' +
 		'</thead><tbody>';
 
@@ -202,15 +202,15 @@ exports.connectMathAnswer = function(result, answer) {
 		      '  <div class="modal-dialog">' + 
 		      '    <div class="modal-content">' + 
 		      '      <div class="modal-header">' + 
-		      '        <button type="button" class="close" data-dismiss="modal" aria-label="Sluit"><span aria-hidden="true">&times;</span></button>' + 
-		      '        <h4 class="modal-title">' + total + ' antwoorden</h4>' + 
+		      '        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + 
+		      '        <h4 class="modal-title">' + total + ' Answers</h4>' + 
 		      '      </div>' + 
 		      '      <div class="modal-body">' + 
 		      '        ' + table +
-		      '        <p>Bijkomende antwoorden: ' + additionalAnswers + '<p>' +
+		      '        <p>Additional Answers: ' + additionalAnswers + '<p>' +
 		      '      </div>' + 
 		      '      <div class="modal-footer">' + 
-		      '        <button type="button" class="btn btn-default" data-dismiss="modal">Sluit</button>' + 
+		      '        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' + 
 		      '      </div>' + 
 		      '    </div><!-- /.modal-content -->' + 
 		      '  </div><!-- /.modal-dialog -->' + 
@@ -221,7 +221,7 @@ exports.connectMathAnswer = function(result, answer) {
 	modal.find('button').click( function() { modal.modal('hide'); } );
 	
 	result.find('span.input-group-btn').prepend(
-	    $('<button class="btn btn-info" data-toggle="tooltip" data-placement="top" title="' + total + '  antwoorden">' +
+	    $('<button class="btn btn-info" data-toggle="tooltip" data-placement="top" title="' + total + '  Answers">' +
   	      '<i class="fa fa-bar-chart"/>' +
 	      '</button>')
 	);
