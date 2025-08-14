@@ -16,27 +16,27 @@ var buttonlessTemplate = '<input class="form-control" type="text"/>';
 var template = '<div class="input-group" style="width:100%">' +
    	'<input class="form-control answer-input-part" aria-label="answer" type="text"/>' +
         '<span class="input-group-btn answer-input-part">' +
-	'<button class="px-0 btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Juist!" style="display: none; z-index: 1;" aria-label="juist" aria-live="assertive">' +
+	'<button class="px-0 btn btn-success btn-ximera-correct" data-toggle="tooltip" data-placement="top" title="Correct!" style="display: none; z-index: 1;" aria-label="Correct" aria-live="polite">' +
 	'<i class="fa fa-fw fa-check"></i>' +
 	'</button>' +
-	'<button class="px-0 btn btn-danger btn-ximera-incorrect" data-toggle="tooltip" data-placement="top" title="Fout. Probeer opnieuw!" style="display: none; z-index: 1;" aria-label="fout! probeer opnieuw" aria-live="assertive">' +
+	'<button class="px-0 btn btn-danger btn-ximera-incorrect" data-toggle="tooltip" data-placement="top" title="Incorrect, try again!" style="display: none; z-index: 1;" aria-label="Incorrect, try again" aria-live="polite">' +
 	'<i class="fa fa-fw fa-times"></i>' +
         '</button>' +
-	'<button class="px-0 btn btn-primary disabled btn-ximera-checking" aria-label="aan het controleren" data-toggle="tooltip" data-placement="top" title="Controleren..." style="z-index: 1; display: none;">' +
+	'<button class="px-0 btn btn-primary disabled btn-ximera-checking" aria-label="Checking" data-toggle="tooltip" data-placement="top" title="Check..." style="z-index: 1; display: none;">' +
 	'<i class="fa fa-fw fa-spinner fa-spin"></i>' +
 	'</button>' +
-	'<button class="px-0 btn btn-primary btn-ximera-submit" aria-label="kijk na" data-toggle="tooltip" data-placement="top" title="Klik om je antwoord na te kijken." style="z-index: 1;">' +
+	'<button class="px-0 btn btn-primary btn-ximera-submit" aria-label="Check" data-toggle="tooltip" data-placement="top" title="Click to check your answer." style="z-index: 1;">' +
 	'<i class="fa fa-fw fa-question"></i>' +
 	'</button>' +
 	'</span>' +
 	'<span class="input-group-btn show-answer-small">' +
-	'<button class="px-0 btn btn-primary btn-info btn-ximera-show-answer" style="vertical-align:baseline" aria-label="Toon antwoord" data-toggle="tooltip" data-placement="top" title="Klik om het antwoord te tonen." style="z-index: 1;">' +
+	'<button class="px-0 btn btn-primary btn-info btn-ximera-show-answer" style="vertical-align:baseline" aria-label="Show Answer" data-toggle="tooltip" data-placement="top" title="Click to Show Answer." style="z-index: 1;">' +
 	'<i class="fa fa-fw fa-key"></i>' +
 	'</button>' +
 	'</span>' +
 	'<span class="input-group-btn show-answer-large" style="width:100%">' +
-	'<button class="px-0 btn btn-primary btn-info btn-ximera-show-answer" style="vertical-align:baseline; width:100%" aria-label="Toon antwoord" data-toggle="tooltip" data-placement="top" title="Klik om het antwoord te tonen." style="z-index: 1;">' +
-	'<i class="fa fa-fw fa-key"></i><span class="show-answer-text">Toon Antwoord</span>' +
+	'<button class="px-0 btn btn-primary btn-info btn-ximera-show-answer" style="vertical-align:baseline; width:100%" aria-label="Show Answer" data-toggle="tooltip" data-placement="top" title="Click to Show Answer." style="z-index: 1;">' +
+	'<i class="fa fa-fw fa-key"></i><span class="show-answer-text">Show Answer</span>' +
 	'</button>' +
 	'</span>' +
 	'</div>';
@@ -181,8 +181,8 @@ exports.connectMathAnswer = function(result, answer) {
 		'<table class="table table-striped">' +
 		'<thead>' +
 		'  <tr>' +
-		'    <th>Aantal</th>' +
-		'    <th>Antwoord</th>' +
+		'    <th>Number</th>' +
+		'    <th>Answer</th>' +
 		'  </tr>' +
 		'</thead><tbody>';
 
@@ -202,15 +202,15 @@ exports.connectMathAnswer = function(result, answer) {
 		      '  <div class="modal-dialog">' + 
 		      '    <div class="modal-content">' + 
 		      '      <div class="modal-header">' + 
-		      '        <button type="button" class="close" data-dismiss="modal" aria-label="Sluit"><span aria-hidden="true">&times;</span></button>' + 
-		      '        <h4 class="modal-title">' + total + ' antwoorden</h4>' + 
+		      '        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + 
+		      '        <h4 class="modal-title">' + total + ' Answers</h4>' + 
 		      '      </div>' + 
 		      '      <div class="modal-body">' + 
 		      '        ' + table +
-		      '        <p>Bijkomende antwoorden: ' + additionalAnswers + '<p>' +
+		      '        <p>Additional Answers: ' + additionalAnswers + '<p>' +
 		      '      </div>' + 
 		      '      <div class="modal-footer">' + 
-		      '        <button type="button" class="btn btn-default" data-dismiss="modal">Sluit</button>' + 
+		      '        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' + 
 		      '      </div>' + 
 		      '    </div><!-- /.modal-content -->' + 
 		      '  </div><!-- /.modal-dialog -->' + 
@@ -221,7 +221,7 @@ exports.connectMathAnswer = function(result, answer) {
 	modal.find('button').click( function() { modal.modal('hide'); } );
 	
 	result.find('span.input-group-btn').prepend(
-	    $('<button class="btn btn-info" data-toggle="tooltip" data-placement="top" title="' + total + '  antwoorden">' +
+	    $('<button class="btn btn-info" data-toggle="tooltip" data-placement="top" title="' + total + '  Answers">' +
   	      '<i class="fa fa-bar-chart"/>' +
 	      '</button>')
 	);
