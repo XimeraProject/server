@@ -163,8 +163,14 @@ exports.createKernel = _.once(function() {
 		
 		var d = document.createElement('div');    
 		window.sagecell.makeSagecell({inputLocation: d, linked: true});
-		d.children[0].children[1].click();
-		
+		// console.log(d);
+		var observer = new MutationObserver(function(mutations, observer) {
+  		  if (d.children && d.children[0] && d.children[0].children[1]) {
+    		     d.children[0].children[1].click();
+    		     observer.disconnect();
+  		  }
+		});
+		observer.observe(d, { childList: true, subtree: true });
 		// Make sage cells---but make them linked so there's just one kernel.
 		window.sagecell.makeSagecell({"inputLocation": ".sage", linked: true});
 		window.sagecell.makeSagecell({"inputLocation": ".sageOutput", "hide": ["editor","evalButton"], "autoeval": true, linked: true });
