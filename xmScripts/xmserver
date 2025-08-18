@@ -39,7 +39,7 @@ fi
 : "${SERVER_PORT:=2000}"
 : "${SERVER_NAME:=ximeraserver}"
 : "${SERVER_IMAGE:=ximeraserver}"
-: "${SERVER_VERSION:=v2.9}"
+: "${SERVER_VERSION:=v2.9.4}"
 
 : "${SERVER_FULLIMAGE:=${DOCKER_REPO}${SERVER_IMAGE}:${SERVER_VERSION}}"
 
