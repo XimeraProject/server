@@ -12539,9 +12539,16 @@ for that. @index is the counter variable, but .loop is not a keyword!
 We want to stop when the index reaches the end of the list of environments. */
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: theorem; /* The body needs to initialize all the counters. */
+}
+
 .theorem {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: theorem;
   border: 1px solid hsl(137.1428571429deg, 25%, 90%);
   border-left: 12px solid hsl(137.1428571429deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -12562,7 +12569,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .theorem::before {
-  content: "theorie" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "theorem" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -12576,9 +12585,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: axiom; /* The body needs to initialize all the counters. */
+}
+
 .axiom {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: axiom;
   border: 1px solid hsl(137.1428571429deg, 25%, 90%);
   border-left: 12px solid hsl(137.1428571429deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -12599,7 +12615,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .axiom::before {
-  content: "axioma" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "axiom" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -12613,9 +12631,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: conjecture; /* The body needs to initialize all the counters. */
+}
+
 .conjecture {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: conjecture;
   border: 1px solid hsl(137.1428571429deg, 25%, 90%);
   border-left: 12px solid hsl(137.1428571429deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -12636,7 +12661,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .conjecture::before {
-  content: "vermoeden" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "conjecture" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -12650,9 +12677,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: corollary; /* The body needs to initialize all the counters. */
+}
+
 .corollary {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: corollary;
   border: 1px solid hsl(137.1428571429deg, 25%, 90%);
   border-left: 12px solid hsl(137.1428571429deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -12673,7 +12707,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .corollary::before {
-  content: "gevolgtrekking" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "corollary" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -12687,9 +12723,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: proposition; /* The body needs to initialize all the counters. */
+}
+
 .proposition {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: proposition;
   border: 1px solid hsl(137.1428571429deg, 25%, 90%);
   border-left: 12px solid hsl(137.1428571429deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -12710,7 +12753,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .proposition::before {
-  content: "eigenschap" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "proposition" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -12724,9 +12769,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: lemma; /* The body needs to initialize all the counters. */
+}
+
 .lemma {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: lemma;
   border: 1px solid hsl(137.1428571429deg, 25%, 90%);
   border-left: 12px solid hsl(137.1428571429deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -12747,6 +12799,8 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .lemma::before {
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
   content: "lemma" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
@@ -12761,9 +12815,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: claim; /* The body needs to initialize all the counters. */
+}
+
 .claim {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: claim;
   border: 1px solid hsl(137.1428571429deg, 25%, 90%);
   border-left: 12px solid hsl(137.1428571429deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -12784,7 +12845,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .claim::before {
-  content: "bewering" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "claim" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -12798,9 +12861,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: condition; /* The body needs to initialize all the counters. */
+}
+
 .condition {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: condition;
   border: 1px solid hsl(137.1428571429deg, 25%, 90%);
   border-left: 12px solid hsl(137.1428571429deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -12821,7 +12891,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .condition::before {
-  content: "voorwaarde" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "condition" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -12835,9 +12907,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: idea; /* The body needs to initialize all the counters. */
+}
+
 .idea {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: idea;
   border: 1px solid hsl(137.1428571429deg, 25%, 90%);
   border-left: 12px solid hsl(137.1428571429deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -12858,7 +12937,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .idea::before {
-  content: "idee" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "idea" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -12872,9 +12953,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: definition; /* The body needs to initialize all the counters. */
+}
+
 .definition {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: definition;
   border: 1px solid hsl(137.1428571429deg, 25%, 90%);
   border-left: 12px solid hsl(137.1428571429deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -12895,7 +12983,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .definition::before {
-  content: "definitie" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "definition" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -12909,9 +12999,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: conclusion; /* The body needs to initialize all the counters. */
+}
+
 .conclusion {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: conclusion;
   border: 1px solid hsl(137.1428571429deg, 25%, 90%);
   border-left: 12px solid hsl(137.1428571429deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -12932,7 +13029,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .conclusion::before {
-  content: "conclusie" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "conclusion" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -12946,9 +13045,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: summary; /* The body needs to initialize all the counters. */
+}
+
 .summary {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: summary;
   border: 1px solid hsl(137.1428571429deg, 25%, 90%);
   border-left: 12px solid hsl(137.1428571429deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -12969,7 +13075,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .summary::before {
-  content: "samenvatting" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "summary" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -12983,9 +13091,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: warning; /* The body needs to initialize all the counters. */
+}
+
 .warning {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: warning;
   border: 1px solid hsl(0deg, 25%, 90%);
   border-left: 12px solid hsl(0deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -13006,7 +13121,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .warning::before {
-  content: "waarschuwing" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "warning" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -13020,9 +13137,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: paradox; /* The body needs to initialize all the counters. */
+}
+
 .paradox {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: paradox;
   border: 1px solid hsl(0deg, 25%, 90%);
   border-left: 12px solid hsl(0deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -13043,6 +13167,8 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .paradox::before {
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
   content: "paradox" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
@@ -13057,9 +13183,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: example; /* The body needs to initialize all the counters. */
+}
+
 .example {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: example;
   border: 1px solid hsl(60deg, 25%, 90%);
   border-left: 12px solid hsl(60deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -13080,7 +13213,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .example::before {
-  content: "voorbeeld" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "example" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -13094,9 +13229,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: observation; /* The body needs to initialize all the counters. */
+}
+
 .observation {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: observation;
   border: 1px solid hsl(60deg, 25%, 90%);
   border-left: 12px solid hsl(60deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -13117,7 +13259,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .observation::before {
-  content: "observatie" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "observation" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -13131,9 +13275,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: fact; /* The body needs to initialize all the counters. */
+}
+
 .fact {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: fact;
   border: 1px solid hsl(60deg, 25%, 90%);
   border-left: 12px solid hsl(60deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -13154,7 +13305,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .fact::before {
-  content: "feit" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "fact" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -13168,9 +13321,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: remark; /* The body needs to initialize all the counters. */
+}
+
 .remark {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: remark;
   border: 1px solid hsl(60deg, 25%, 90%);
   border-left: 12px solid hsl(60deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -13191,7 +13351,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .remark::before {
-  content: "opmerking" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "remark" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -13205,9 +13367,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: algorithm; /* The body needs to initialize all the counters. */
+}
+
 .algorithm {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: algorithm;
   border: 1px solid hsl(60deg, 25%, 90%);
   border-left: 12px solid hsl(60deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -13228,7 +13397,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .algorithm::before {
-  content: "algoritme" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "algorithm" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -13242,9 +13413,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: notation; /* The body needs to initialize all the counters. */
+}
+
 .notation {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: notation;
   border: 1px solid hsl(60deg, 25%, 90%);
   border-left: 12px solid hsl(60deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -13265,7 +13443,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .notation::before {
-  content: "notatie" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "notation" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -13279,9 +13459,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: criterion; /* The body needs to initialize all the counters. */
+}
+
 .criterion {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: criterion;
   border: 1px solid hsl(60deg, 25%, 90%);
   border-left: 12px solid hsl(60deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -13302,7 +13489,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .criterion::before {
-  content: "criterium" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "criterion" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -13316,9 +13505,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: exercise; /* The body needs to initialize all the counters. */
+}
+
 .exercise {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: exercise;
   border: 1px solid hsl(240deg, 25%, 90%);
   border-left: 12px solid hsl(240deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -13339,7 +13535,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .exercise::before {
-  content: "oefening" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "exercise" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -13353,9 +13551,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: problem; /* The body needs to initialize all the counters. */
+}
+
 .problem {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: problem;
   border: 1px solid hsl(240deg, 25%, 90%);
   border-left: 12px solid hsl(240deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -13376,7 +13581,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .problem::before {
-  content: "probleem" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "problem" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -13390,9 +13597,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: question; /* The body needs to initialize all the counters. */
+}
+
 .question {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: question;
   border: 1px solid hsl(240deg, 25%, 90%);
   border-left: 12px solid hsl(240deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -13413,7 +13627,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .question::before {
-  content: "" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "question" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -13427,9 +13643,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: explanation; /* The body needs to initialize all the counters. */
+}
+
 .explanation {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: explanation;
   border: 1px solid hsl(137.1428571429deg, 25%, 90%);
   border-left: 12px solid hsl(137.1428571429deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -13450,7 +13673,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .explanation::before {
-  content: "uitleg" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "explanation" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -13464,9 +13689,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: exploration; /* The body needs to initialize all the counters. */
+}
+
 .exploration {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: exploration;
   border: 1px solid hsl(240deg, 25%, 90%);
   border-left: 12px solid hsl(240deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -13487,7 +13719,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .exploration::before {
-  content: "exploratie" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "exploration" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -13501,9 +13735,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: model; /* The body needs to initialize all the counters. */
+}
+
 .model {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: model;
   border: 1px solid hsl(240deg, 25%, 90%);
   border-left: 12px solid hsl(240deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -13524,6 +13765,8 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .model::before {
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
   content: "model" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
@@ -13538,9 +13781,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: formula; /* The body needs to initialize all the counters. */
+}
+
 .formula {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: formula;
   border: 1px solid hsl(240deg, 25%, 90%);
   border-left: 12px solid hsl(240deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -13561,7 +13811,9 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .formula::before {
-  content: "formule" attr(numbered) ".";
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
+  content: "formula" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
   font-weight: bold;
@@ -13575,9 +13827,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: procedure; /* The body needs to initialize all the counters. */
+}
+
 .procedure {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: procedure;
   border: 1px solid hsl(240deg, 25%, 90%);
   border-left: 12px solid hsl(240deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -13598,6 +13857,8 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .procedure::before {
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
   content: "procedure" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
@@ -13612,9 +13873,16 @@ We want to stop when the index reaches the end of the list of environments. */
 
 /* theoremEnvironments above is a list of lists. Get the correct list: */
 /*Nth from the list the name and color of the class*/
+/* I can imagine us wanting some of the environments to share a counter, in which case you would put something else here. */
+body {
+  counter-reset: template; /* The body needs to initialize all the counters. */
+}
+
 .template {
   background-color: #FDFDFD;
   /* Take the color of the class, saturate it to a fixed value, and lighten it to a fixed value (see top of file) */
+  /* Increment the counter for this theorem type. */
+  counter-increment: template;
   border: 1px solid hsl(240deg, 25%, 90%);
   border-left: 12px solid hsl(240deg, 25%, 90%);
   /*These are the things that are common to all environments. */
@@ -13635,6 +13903,8 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .template::before {
+  /* Numbered everything in CSS is causing trouble.  TeX should decide the numbering. */
+  /* content:"${nameOfClass} " counter($counterToIncrement) ". ";*/
   content: "template" attr(numbered) ".";
   display: inline;
   text-transform: capitalize; /* CSS here only applies to one word, like "Theorem." or "Example." */
@@ -13648,7 +13918,7 @@ We want to stop when the index reaches the end of the list of environments. */
 }
 
 .explanation::before {
-  content: "Uitleg.";
+  content: "Explanation.";
 }
 
 /****************************************************************/
@@ -15067,6 +15337,18 @@ main.xourse:before {
   border-color: darkgray;
 }
 
+.activity-card.part::after {
+  content: "▸"; /* right */
+  position: absolute;
+  right: 0;
+  scale: 125%;
+}
+
+/* add arrow-right or arrow-down to parts (open/closed) */
+.activity-card.part.part-open::after {
+  content: "▾"; /* down */
+}
+
 .activity-card.active {
   background-color: #292b2c;
   border-color: #292b2c;
@@ -15379,11 +15661,11 @@ div.quote p {
 }
 
 .nl-text {
-  display: initial;
+  display: none;
 }
 
 .en-text {
-  display: none;
+  display: initial;
 }
 
 .lds-ring {
