@@ -5764,7 +5764,7 @@ a.badge:focus, a.badge:hover {
   overflow: hidden;
   font-size: 0.75rem;
   line-height: 1rem;
-  text-align: left;
+  text-align: center;
   background-color: #eceeef;
 }
 
@@ -14737,7 +14737,7 @@ div.main-inhoud.main-toc {
 }
 
 .toc li::before {
-  white-space:pre;
+  white-space: pre;
   content: attr(data-nav-counter) "  ";
   padding: 0 0 0 0.2rem;
   min-width: 2rem;
@@ -14755,15 +14755,22 @@ div.main-inhoud.main-toc {
 
 .toc .part {
   font-size: x-large;
-  background-color: #1D8DB0;
+  background-color: rgba(84, 94, 117, 0.6509803922);
 }
 
 .toc .chapter {
   font-size: larger;
+  background-color: rgba(99, 173, 242, 0.8509803922);
 }
 
 .toc .section {
   font-size: 100%;
+  background-color: rgba(167, 204, 237, 0.8509803922);
+}
+
+.toc .practice {
+  font-size: 90%;
+  background-color: rgba(130, 160, 188, 0.8509803922);
 }
 
 .toc .card {
@@ -14786,19 +14793,6 @@ div.main-inhoud.main-toc {
 
 .toc .card.activity-card.part::before {
   padding: 0 0;
-}
-
-.toc .card.activity-card.part {
-  background-color: rgba(84, 94, 117, 0.6509803922);
-}
-.toc .card.activity-card.chapter {
-  background-color: rgba(99, 173, 242, 0.8509803922);
-}
-.toc .card.activity-card.section {
-  background-color: rgba(167, 204, 237, 0.8509803922);
-}
-.card.activity-card.practice {
-  background-color: rgba(130, 160, 188, 0.8509803922);
 }
 
 .toc .activity-card.active {
@@ -15397,13 +15391,12 @@ main.xourse:before {
 
   transform-origin: top right;
   transform: rotate(-90deg);
-  
+
   left: -10rem;
   */
   position: relative;
   width: 70%;
   margin: 0.5rem;
-  
 }
 
 div.scroll::-webkit-scrollbar {
