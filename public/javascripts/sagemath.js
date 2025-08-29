@@ -222,4 +222,3 @@ window.sage = function(code) {
 	function(err) { console.log("err=",err); }
     );
 };
-

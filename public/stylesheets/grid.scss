@@ -269,23 +269,24 @@ div.main-inhoud.main-toc {
 
 .toc .part {
  font-size: x-large;
- background-color: rgba(84, 94, 117, 0.6509803922);
+ background-color: rgba(90, 190, 113, 0.7);
 }
 
 .toc .chapter {
  font-size: larger;
- background-color: rgba(99, 173, 242, 0.8509803922);
+ background-color: rgba(99, 173, 242, 0.7);
 }
 
 .toc .section {
  font-size: 100%;
- background-color: rgba(167, 204, 237, 0.8509803922);
+ background-color: rgba(90, 220, 127, 0.4);
 }
 
 .toc .practice {
   font-size:90%;
-  background-color: rgba(130, 160, 188, 0.8509803922);
+  background-color: rgba(80, 120, 220, 0.4);
 }
+
 // reset from bootstrap ...
 .toc .card {
   display: initial;
@@ -353,11 +354,11 @@ div.main-inhoud.main-toc {
   line-height: 1rem;
   text-align: left;
   position: absolute;
-  top: 30%;
-  left: 22.5%;
+  top: 0%;
+  left: 0%;
   z-index: 100;
-  height: 100%;
-  width: 70%;
+  height: 10%;
+  width: 100%;
   opacity: 0.5;
   /*background-color: transparent;*/
 }

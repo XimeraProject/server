@@ -14755,22 +14755,22 @@ div.main-inhoud.main-toc {
 
 .toc .part {
   font-size: x-large;
-  background-color: rgba(84, 94, 117, 0.6509803922);
+  background-color: rgba(90, 190, 113, 0.7);
 }
 
 .toc .chapter {
   font-size: larger;
-  background-color: rgba(99, 173, 242, 0.8509803922);
+  background-color: rgba(99, 173, 242, 0.7);
 }
 
 .toc .section {
   font-size: 100%;
-  background-color: rgba(167, 204, 237, 0.8509803922);
+  background-color: rgba(90, 220, 127, 0.4);
 }
 
 .toc .practice {
   font-size: 90%;
-  background-color: rgba(130, 160, 188, 0.8509803922);
+  background-color: rgba(80, 120, 220, 0.4);
 }
 
 .toc .card {
@@ -14823,11 +14823,11 @@ div.main-inhoud.main-toc {
   line-height: 1rem;
   text-align: left;
   position: absolute;
-  top: 30%;
-  left: 22.5%;
+  top: 0%;
+  left: 0%;
   z-index: 100;
-  height: 100%;
-  width: 70%;
+  height: 10%;
+  width: 100%;
   opacity: 0.5;
   /*background-color: transparent;*/
 }
@@ -15114,16 +15114,17 @@ main.xourse:before {
 }
 
 .card.activity-card .card-number {
-  opacity: 0.6;
-  float: left;
-  font-size: 95%;
+  opacity: 0.9;
+  float: right;
+  font-size: 105%;
   margin-right: 5px;
+  padding-top: 3%;
   line-height: 1;
 }
 
 .card.activity-card .card-number:before {
   content: "§";
-  margin-left: 2px;
+  margin-right: 2px;
 }
 
 .card-group .card.activity-card {
@@ -15368,7 +15369,7 @@ main.xourse:before {
   position: absolute;
   width: 100%;
   font-size: 90%;
-  padding-top: 0.75%;
+  padding-top: 5px;
   padding-left: 5%;
   text-align: left;
   z-index: 100;
@@ -15385,18 +15386,13 @@ main.xourse:before {
 }
 
 .vertical {
-  /*width: 176px;
-   position: relative;
-   left: -176px;
-
-  transform-origin: top right;
-  transform: rotate(-90deg);
-
-  left: -10rem;
-  */
+  /*  top: 3px;*/
+  left: 24%;
   position: relative;
-  width: 70%;
+  width: 72.5%;
   margin: 0.5rem;
+  opacity: 0.5;
+  /*background-color: transparent;*/
 }
 
 div.scroll::-webkit-scrollbar {

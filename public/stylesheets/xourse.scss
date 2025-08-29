@@ -28,15 +28,17 @@ main.xourse:before {
 }
 
 .card.activity-card .card-number {
-    opacity: 0.6;
-    float: left;
-    font-size: 95%;
-    margin-right: 5px;
-    line-height: 1;
+  opacity: 0.9;
+  float: right;
+  font-size: 105%;
+  margin-right: 5px;
+  padding-top: 3%;
+  line-height: 1;
 }
+
 .card.activity-card .card-number:before {
-    content: "§";
-    margin-left: 2px;
+  content: "§";
+  margin-right: 2px;
 }
 
 // Activity cards are square
@@ -116,7 +118,7 @@ main.xourse:before {
     @extend .card-inverse;
 }
 
-// Practice cards just include the progress bar
+
 .activity-card.practice {
   width: 100%;
 }
@@ -127,7 +129,7 @@ main.xourse:before {
   position: absolute;
   width: 100%;
   font-size: 90%;
-  padding-top: 0.75%;
+  padding-top: 5px;
   padding-left: 5%;
   text-align: left;
   z-index: 100;
@@ -146,19 +148,13 @@ main.xourse:before {
 
 // some activtiy cards had vertical progress bars, that are back to horizontal.
 .vertical {
-  /*width: 176px;
-   position: relative;
-   left: -176px;
-
-  transform-origin: top right;
-  transform: rotate(-90deg);
-  
-  left: -10rem;
-  */
+/*  top: 3px;*/
+  left: 24%;
   position: relative;
-  width: 70%;
+  width: 72.5%;
   margin: 0.5rem;
-  
+  opacity: 0.5;
+  /*background-color: transparent;*/
 }
 
  
