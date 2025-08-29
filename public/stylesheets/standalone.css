@@ -14737,6 +14737,7 @@ div.main-inhoud.main-toc {
 }
 
 .toc li::before {
+  white-space: pre;
   content: attr(data-nav-counter) "  ";
   padding: 0 0 0 0.2rem;
   min-width: 2rem;
@@ -14753,16 +14754,23 @@ div.main-inhoud.main-toc {
 }
 
 .toc .part {
-  font-size: larger;
-  background-color: #1D8DB0;
+  font-size: x-large;
+  background-color: rgba(90, 190, 113, 0.7);
 }
 
 .toc .chapter {
-  font-size: 90%;
+  font-size: larger;
+  background-color: rgba(99, 173, 242, 0.7);
 }
 
 .toc .section {
-  font-size: 75%;
+  font-size: 100%;
+  background-color: rgba(90, 220, 127, 0.4);
+}
+
+.toc .practice {
+  font-size: 90%;
+  background-color: rgba(80, 120, 220, 0.4);
 }
 
 .toc .card {
@@ -14785,10 +14793,6 @@ div.main-inhoud.main-toc {
 
 .toc .card.activity-card.part::before {
   padding: 0 0;
-}
-
-.toc .card.activity-card.section {
-  background-color: rgba(31, 171, 213, 0.2509803922);
 }
 
 .toc .activity-card.active {
@@ -14817,15 +14821,15 @@ div.main-inhoud.main-toc {
   overflow: hidden;
   font-size: 0.75rem;
   line-height: 1rem;
-  text-align: center;
+  text-align: left;
   position: absolute;
-  top: 0.5em;
-  left: 3em;
+  top: 0%;
+  left: 0%;
   z-index: 100;
-  height: 100%;
+  height: 10%;
   width: 100%;
   opacity: 0.5;
-  background-color: transparent;
+  /*background-color: transparent;*/
 }
 
 .progress-bar {
@@ -15110,16 +15114,17 @@ main.xourse:before {
 }
 
 .card.activity-card .card-number {
-  opacity: 0.6;
-  float: left;
-  font-size: 95%;
+  opacity: 0.9;
+  float: right;
+  font-size: 105%;
   margin-right: 5px;
+  padding-top: 3%;
   line-height: 1;
 }
 
 .card.activity-card .card-number:before {
   content: "§";
-  margin-left: 2px;
+  margin-right: 2px;
 }
 
 .card-group .card.activity-card {
@@ -15355,22 +15360,18 @@ main.xourse:before {
 }
 
 .activity-card.practice {
-  width: 2rem;
-  max-width: 2rem;
-  min-width: 2rem;
-  max-height: 11rem;
-  height: 11rem;
-  overflow: hidden;
+  width: 100%;
 }
 
 .activity-card.practice::before {
   counter-increment: practice;
-  content: counter(practice);
+  content: "Practice: " counter(practice);
   position: absolute;
-  width: 2rem;
-  font-size: 60%;
-  padding-top: 1em;
-  text-align: center;
+  width: 100%;
+  font-size: 90%;
+  padding-top: 5px;
+  padding-left: 5%;
+  text-align: left;
   z-index: 100;
   color: black;
   left: 0px;
@@ -15385,16 +15386,13 @@ main.xourse:before {
 }
 
 .vertical {
-  /*width: 176px;
-   position: relative;
-   left: -176px;
-  */
-  transform-origin: top right;
-  transform: rotate(-90deg);
+  /*  top: 3px;*/
+  left: 24%;
   position: relative;
-  left: -10rem;
-  width: 10rem;
+  width: 72.5%;
   margin: 0.5rem;
+  opacity: 0.5;
+  /*background-color: transparent;*/
 }
 
 div.scroll::-webkit-scrollbar {

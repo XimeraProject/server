@@ -251,6 +251,7 @@ div.main-inhoud.main-toc {
 
 // hack to get chapter/sectionnumbers in toc ...)
 .toc li::before {
+   white-space:pre;
    content: attr(data-nav-counter)"  ";
    padding: 0 0 0 0.2rem;
    min-width: 2rem;
@@ -267,21 +268,27 @@ div.main-inhoud.main-toc {
 }
 
 .toc .part {
- font-size: larger;
- background-color: #1D8DB0;  // KU Leuven medium blauw (alt: #116E8A )
+ font-size: x-large;
+ background-color: rgba(90, 190, 113, 0.7);
 }
 
 .toc .chapter {
- font-size: 90%;
+ font-size: larger;
+ background-color: rgba(99, 173, 242, 0.7);
 }
 
 .toc .section {
- font-size: 75%;
+ font-size: 100%;
+ background-color: rgba(90, 220, 127, 0.4);
+}
+
+.toc .practice {
+  font-size:90%;
+  background-color: rgba(80, 120, 220, 0.4);
 }
 
 // reset from bootstrap ...
-.toc .card, 
-{
+.toc .card {
   display: initial;
   flex: initial;
   position: relative;
@@ -301,10 +308,6 @@ div.main-inhoud.main-toc {
 
 .toc .card.activity-card.part::before{
     padding: 0 0;
-}
-
-.toc .card.activity-card.section{
-    background-color: #1FABD540; // KU Leuven light even lighter
 }
 
 // The active card is displayed in an active way
@@ -345,19 +348,19 @@ div.main-inhoud.main-toc {
 
 /* Overwrite bootstrap defaults */
 .progress {
-    display: flex;
-    overflow: hidden;
-    font-size: 0.75rem;
-    line-height: 1rem;
-    text-align: center;
-    position: absolute;
-    top: 0.5em;
-    left: 3em;
-    z-index: 100;
-    height: 100%;
-    width: 100%;
-    opacity: 0.5;
-    background-color: transparent;
+  display: flex;
+  overflow: hidden;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  text-align: left;
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  z-index: 100;
+  height: 10%;
+  width: 100%;
+  opacity: 0.5;
+  /*background-color: transparent;*/
 }
 
 .progress-bar {

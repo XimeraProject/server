@@ -28,15 +28,17 @@ main.xourse:before {
 }
 
 .card.activity-card .card-number {
-    opacity: 0.6;
-    float: left;
-    font-size: 95%;
-    margin-right: 5px;
-    line-height: 1;
+  opacity: 0.9;
+  float: right;
+  font-size: 105%;
+  margin-right: 5px;
+  padding-top: 3%;
+  line-height: 1;
 }
+
 .card.activity-card .card-number:before {
-    content: "§";
-    margin-left: 2px;
+  content: "§";
+  margin-right: 2px;
 }
 
 // Activity cards are square
@@ -116,24 +118,20 @@ main.xourse:before {
     @extend .card-inverse;
 }
 
-// Practice cards just include the progress bar
+
 .activity-card.practice {
-    width: 2rem;
-    max-width: 2rem;
-    min-width: 2rem;
-    max-height: 11rem;
-    height: 11rem;
-    overflow: hidden;
+  width: 100%;
 }
 
 .activity-card.practice::before {
   counter-increment: practice;
-  content: counter(practice);
+  content: "Practice: " counter(practice);
   position: absolute;
-  width: 2rem;
-  font-size: 60%;
-  padding-top: 1em;
-  text-align: center;
+  width: 100%;
+  font-size: 90%;
+  padding-top: 5px;
+  padding-left: 5%;
+  text-align: left;
   z-index: 100;
   color: black;
   left: 0px;
@@ -148,25 +146,15 @@ main.xourse:before {
   -ms-overflow-style: -ms-autohiding-scrollbar;
 }
 
-// some activtiy cards have vertical progress bars
+// some activtiy cards had vertical progress bars, that are back to horizontal.
 .vertical {
-    /*width: 176px;
-    position: relative;
-    left: -176px;
-   */
-    //-webkit-transform: rotate(-90deg);
-    //-webkit-transform-origin: top right;
-    //transform: rotate(-90deg);
-    //
-    //transform-origin: bottom center;
-    //padding: 0;
-    //margin: 0;
-    transform-origin: top right;
-    transform: rotate(-90deg);
-    position: relative;
-    left: -10rem;
-    width: 10rem;
-    margin: 0.5rem;
+/*  top: 3px;*/
+  left: 24%;
+  position: relative;
+  width: 72.5%;
+  margin: 0.5rem;
+  opacity: 0.5;
+  /*background-color: transparent;*/
 }
 
  
