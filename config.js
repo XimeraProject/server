@@ -116,5 +116,6 @@ config.ltiAuth        = true;
 config.lti            = {};
 config.lti.key        = process.env.LTI_KEY    || 'Your Key';
 config.lti.secret     = process.env.LTI_SECRET || 'Your Secret';
+config.lti.userAgent  = process.env.LTI_USER_AGENT || (config.name + '/' + config.version + ' LTI Passback');
 
 module.exports = config;

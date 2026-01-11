@@ -62,6 +62,7 @@ function processGradebook(id, callback) {
 			    oauth: oauth,
 			    headers: {
 				'Content-Type': 'application/xml',
+				'User-Agent': config.lti.userAgent
 			    }
 			}, function(err, response, body) {
 			    if (err) {
